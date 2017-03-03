@@ -14,6 +14,8 @@ ini_set('session.auto_start', 'off');
 ini_set('arg_separator.output', '&amp;');
 ini_set('allow_url_fopen', 'on');
 
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 $_test_dir = realpath(__DIR__.'/..');
 require_once($_test_dir.'/../lib/vendor/lime/lime.php');
 require_once($_test_dir.'/../lib/config/sfConfig.class.php');
