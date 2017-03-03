@@ -1,3 +1,9 @@
+<p align="center">
+  <img src="docs/assets/rock_symfony_hand.png" alt="Rock Symfony"><br/>
+  Rock with Symfony1 again.<br/>
+  Just when you thought it's dead.
+</p>
+
 RockSymfony
 -----------
 
