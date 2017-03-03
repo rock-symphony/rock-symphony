@@ -5,25 +5,25 @@
 </p>
 
 RockSymfony
------------
+===========
 
 It's a fork of [symfony1](https://github.com/lexpress/symfony1) that will move forward.
 
 Why not use Symfony2+?
-=====================
+----------------------
 
 We have a rather big project running on symfony1 you cannot just throw out everything.
 This fork is intended to move still-running and still-in-development legacy projects to  
 
 Philosophy
-==========
+----------
 
 - [Semantic versioning](http://semver.org/)
 - Incremental BC-breaking updates that bring something new to your symfony1 project
 - PHP 7.1 compatibility
 
 Roadmap
-======
+-------
 
 - **1.x** 
   + Add argument return type hints everywhere (improve IDE static analysis)
