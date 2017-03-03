@@ -12,8 +12,9 @@ It's a fork of [symfony1](https://github.com/lexpress/symfony1) that will move f
 Why not use Symfony2+?
 ----------------------
 
-We have a rather big project running on symfony1 you cannot just throw out everything.
-This fork is intended to move still-running and still-in-development legacy projects to  
+We have a rather big project running on symfony1 you cannot just throw out everything.  
+This fork is intended to move still-running and still-in-development legacy projects forward 
+to modern development best-practices.
 
 Philosophy
 ----------
