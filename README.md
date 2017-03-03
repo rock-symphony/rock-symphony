@@ -84,3 +84,11 @@ Contributing
 ------------
 
 You can send pull requests or create an issue.
+
+Credits
+-------
+
+- Original symfony1 implementation by [SensioLabs](https://sensiolabs.com/)
+- symfony1 v1.5 fork maintained by [L'Express Group](https://github.com/LExpress)
+- RockSymfony logo font by [Google Fonts Directory](https://fonts.google.com/specimen/New+Rocker)
+- RockSymfony logo hand icon by [Hum from TheNounProject](https://thenounproject.com/Hum/)
