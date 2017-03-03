@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+08/07/2017: Version 1.7.0 (IN DEVELOPMENT)
+-------------------------
+
+* Drop swiftmailer git sub-module
+
 03/03/2017: Version 1.6.0
 -------------------------
 
