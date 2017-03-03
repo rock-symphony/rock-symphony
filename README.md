@@ -1,24 +1,44 @@
-[![Build Status](https://secure.travis-ci.org/LExpress/symfony1.png?branch=master)](http://travis-ci.org/LExpress/symfony1)
+RockSymfony
+-----------
 
-About this version
-------------------
+It's a fork of [symfony1](https://github.com/lexpress/symfony1) that will move forward.
 
-This is a community driven fork of symfony 1, as official support has been [interrupted in November 2012](http://symfony.com/blog/symfony-1-4-end-of-maintenance-what-does-it-mean).
+Why not use Symfony2+?
+=====================
 
-**Do not use it for new projects: this version is great to improve existing symfony1 applications, but [Symfony2](http://symfony.com/) is the way to go today.**
+We have a rather big project running on symfony1 you cannot just throw out everything.
+This fork is intended to move still-running and still-in-development legacy projects to  
 
-All the enhancements and BC breaks are listed in the [WHATS_NEW](https://github.com/LExpress/symfony1/blob/master/WHATS_NEW.md) file, this include:
+Philosophy
+==========
 
-- [DIC](https://github.com/LExpress/symfony1/wiki/ServiceContainer)
-- Composer support
-- PHP 7.0 support
-- performance boost
-- new widgets & validators
-- some tickets fixed from the symfony trac
-- ...
+- [Semantic versioning](http://semver.org/)
+- Incremental BC-breaking updates that bring something new to your symfony1 project
+- PHP 7.1 compatibility
 
-About symfony
--------------
+Roadmap
+======
+
+- **1.x** 
+  + Add argument return type hints everywhere (improve IDE static analysis)
+  + Fix phpdoc / code inconsistencies
+- **2.x** - Descent service container, services auto-injection
+- **3.x** - Replace sfLogger with PSR Logger
+- **Future**
+  + CommandBus + JobQueue
+  + Logging with Logger object (not via sfEventDispatcher)
+  + Namespaced controllers
+  + PSR HTTP Requests
+  + .env
+  + Fix sfContext
+  + Fix sfApplicationConfiguration / ProjectConfiguration
+  + symfony/console
+  + Replace services.yml with pure-PHP services.php 
+  + Drop module-level .yml configurations support
+  + Symfony2-like Bundles instead of plugins
+
+About symfony1
+--------------
 
 Symfony is a complete framework designed to optimize the development of web applications by way of several key features.
 For starters, it separates a web application's business rules, server logic, and presentation views.
@@ -41,18 +61,12 @@ Installation
 
 See http://symfony.com/legacy/doc/getting-started/1_4/en/03-Symfony-Installation
 
-Option 1: Using [Composer](http://getcomposer.org/doc/00-intro.md) as dependency management:
+Using [Composer](http://getcomposer.org/doc/00-intro.md) as dependency management:
 
-    composer require lexpress/symfony1 "1.5.*"
+    composer require prezly/rock-symfony "1.5.*"
     composer install
     
 Note: On windows, if your project is a few directories down from the drive root, composer can throw an error  relating to ZipArchive::extractTo(), this can be because pathnames are too long. There currently appears to be no proper solution but a workaround is to move your project to the drive root, run the commands from there, where they will run happily, and then move your project back. 
-
-Option 2: Using Git submodules:
-  
-    git init # your project
-    git submodule add https://github.com/LExpress/symfony1.git lib/vendor/symfony
-    git submodule update --init --recursive
 
 Documentation
 -------------
