@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+03/03/2017: Version 1.6.0
+-------------------------
+
+* Fork as RockSymfony
+* Add and fix doc comments in symfony core classes
+
 09/02/2017: Version 1.5.9
 -------------------------
 
