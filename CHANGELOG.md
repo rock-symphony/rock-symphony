@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+IN-DEVELOPMENT: Version 2.0.0
+-------------------------
+
+* Drop swiftmailer git sub-module (BC break)  
+
 03/03/2017: Version 1.6.0
 -------------------------
 
