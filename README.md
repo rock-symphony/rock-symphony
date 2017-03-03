@@ -4,7 +4,9 @@
   Just when you thought it's dead.
 </p>
 
-[![Build Status](https://travis-ci.org/rocksymfony/symfony1.svg?branch=master)](https://travis-ci.org/rocksymfony/symfony1)
+<p align="center">
+  <img src="https://travis-ci.org/rocksymfony/symfony1.svg?branch=master" alt="Build status"/>
+</p>
 
 RockSymfony
 ===========
