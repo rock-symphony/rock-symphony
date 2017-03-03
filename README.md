@@ -70,7 +70,7 @@ See http://symfony.com/legacy/doc/getting-started/1_4/en/03-Symfony-Installation
 
 Using [Composer](http://getcomposer.org/doc/00-intro.md) as dependency management:
 
-    composer require rocksymfony/symfony1 "1.5.*"
+    composer require rocksymfony/symfony1 "1.6.*"
     composer install
     
 Note: On windows, if your project is a few directories down from the drive root, composer can throw an error  relating to ZipArchive::extractTo(), this can be because pathnames are too long. There currently appears to be no proper solution but a workaround is to move your project to the drive root, run the commands from there, where they will run happily, and then move your project back. 
