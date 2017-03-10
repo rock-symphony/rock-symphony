@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  <img src="https://travis-ci.org/rocksymfony/symfony1.svg?branch=master" alt="Build status"/>
+  <img src="https://travis-ci.org/rock-symphony/rock-symphony.svg?branch=master" alt="Build status"/>
 </p>
 
-RockSymfony
-===========
+RockSymphony Framework
+======================
 
 It's a fork of [symfony1](https://github.com/lexpress/symfony1) that will move forward.
 
@@ -74,7 +74,7 @@ See http://symfony.com/legacy/doc/getting-started/1_4/en/03-Symfony-Installation
 
 Using [Composer](http://getcomposer.org/doc/00-intro.md) as dependency management:
 
-    composer require rocksymfony/symfony1 "1.6.*"
+    composer require rock-symphony/rock-symphony "1.6.*"
     composer install
     
 Note: On windows, if your project is a few directories down from the drive root, composer can throw an error  relating to ZipArchive::extractTo(), this can be because pathnames are too long. There currently appears to be no proper solution but a workaround is to move your project to the drive root, run the commands from there, where they will run happily, and then move your project back. 
@@ -94,5 +94,5 @@ Credits
 
 - Original symfony1 implementation by [SensioLabs](https://sensiolabs.com/)
 - symfony1 v1.5 fork maintained by [L'Express Group](https://github.com/LExpress)
-- RockSymfony logo font by [Google Fonts Directory](https://fonts.google.com/specimen/New+Rocker)
-- RockSymfony logo hand icon by [Hum from TheNounProject](https://thenounproject.com/Hum/)
+- RockSymphony logo font by [Google Fonts Directory](https://fonts.google.com/specimen/New+Rocker)
+- RockSymphony logo hand icon by [Hum from TheNounProject](https://thenounproject.com/Hum/)
