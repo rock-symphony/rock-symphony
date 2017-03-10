@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/assets/rock_symfony_hand.png" alt="Rock Symfony"><br/>
+  <img src="docs/assets/logo_hand.png" alt="Rock Symphony"><br/>
   Rock with Symfony1 again.<br/>
   Just when you thought it's dead.
 </p>
