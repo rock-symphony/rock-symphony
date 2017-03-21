@@ -18,5 +18,5 @@
  */
 interface sfServiceContainerLoaderInterface
 {
-  function load($resource);
+  public function load($resource);
 }
