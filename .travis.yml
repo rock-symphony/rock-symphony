@@ -40,4 +40,4 @@ before_script:
     - make vendor
 
 script:
-    - make test
+    - make tests
