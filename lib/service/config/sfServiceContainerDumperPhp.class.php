@@ -117,30 +117,14 @@ PHP;
    * @param sfServiceDefinition $definition
    * @return string
    */
-  protected function addServiceShared($id, $definition)
-  {
-    if ($definition->isShared())
-    {
-      return <<<EOF
-    if (isset(\$this->shared['$id'])) return \$this->shared['$id'];
-
-
-EOF;
-    }
-  }
-
-  /**
-   * @param string $id
-   * @param sfServiceDefinition $definition
-   * @return string
-   */
   protected function addServiceReturn($id, $definition)
   {
     if ($definition->isShared())
     {
       return <<<EOF
 
-    return \$this->shared['$id'] = \$instance;
+    parent::setService('$id', \$instance);
+    return \$instance;
   }
 
 EOF;
@@ -252,7 +236,6 @@ EOF;
 
     $code .=
       $this->addServiceInclude($id, $definition).
-      $this->addServiceShared($id, $definition).
       $this->addServiceInstance($id, $definition).
       $this->addServiceMethodCalls($id, $definition).
       $this->addServiceConfigurator($id, $definition).
@@ -297,7 +280,6 @@ EOF;
     return <<<EOF
 class $class extends $baseClass
 {
-  protected \$shared = array();
 
 EOF;
   }
