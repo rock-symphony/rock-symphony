@@ -295,7 +295,9 @@ EOF;
 
   public function __construct()
   {
-    parent::__construct(\$this->getDefaultParameters());
+    parent::__construct();
+    
+    \$this->addParameters(\$this->getDefaultParameters());
   }
 
 EOF;
