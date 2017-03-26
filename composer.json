@@ -6,7 +6,8 @@
         "swiftmailer/swiftmailer": "~5.2"
     },
     "require-dev": {
-        "psr/log": "*"
+        "psr/log": "*",
+        "phpunit/phpunit": "^4.0"
     },
     "type": "library",
     "autoload": {
