@@ -161,7 +161,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    */
   public function hasService($id)
   {
-    return isset($this->services[$id]) || method_exists($this, 'get'.self::camelize($id).'Service');
+    return isset($this->services[$id]);
   }
 
   /**
@@ -183,32 +183,19 @@ class sfServiceContainer implements sfServiceContainerInterface
       return $this->services[$id];
     }
 
-    if (method_exists($this, $method = 'get'.self::camelize($id).'Service'))
-    {
-      return $this->$method();
-    }
-
     throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id));
   }
 
   /**
    * Gets all service ids.
    *
+   * TODO: Drop this undocumented public interface method support
+   *
    * @return array An array of all defined service ids
    */
   public function getServiceIds()
   {
-    $ids = array();
-    $r = new ReflectionClass($this);
-    foreach ($r->getMethods() as $method)
-    {
-      if (preg_match('/^get(.+)Service$/', $name = $method->getName(), $match))
-      {
-        $ids[] = self::underscore($match[1]);
-      }
-    }
-
-    return array_merge($ids, array_keys($this->services));
+    return array_keys($this->services);
   }
 
   static public function camelize($id)
