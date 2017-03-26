@@ -24,6 +24,14 @@ class sfServiceContainerBuilder
   protected $aliases = array();
 
   /**
+   * @param mixed[] $parameters
+   */
+  public function __construct(array $parameters = array())
+  {
+    $this->parameters = $parameters;
+  }
+
+  /**
    * Sets a service definition.
    *
    * @param  string              $id         The service identifier
