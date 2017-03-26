@@ -207,16 +207,16 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
       // Add service parameter reference
       $parts[] = new sfServiceParameter(substr($matched_text, 1, -1));
       // Advance last_offset
-      $last_offset = $offset;
+      $last_offset = $offset + strlen($matched_text);
     }
 
     // Add suffix plain-text part
-    if ($last_offset < (strlen($string) - 1))
+    if ($last_offset < strlen($string))
     {
       $parts[] = substr($string, $last_offset);
     }
 
-    return $parts;
+    return new sfServiceParameterStringExpression($parts);
   }
 
   /**
