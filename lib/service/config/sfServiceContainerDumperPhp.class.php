@@ -9,14 +9,12 @@
  */
 
 /**
- * sfServiceContainerDumperPhp dumps a service container as a PHP class.
+ * sfServiceContainerDumperPhp dumps a service container as a PHP code.
  *
  * @package    symfony
  * @subpackage service
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id$
  */
-class sfServiceContainerDumperPhp extends sfServiceContainerDumper
+class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 {
   /**
    * Dumps the service container as a PHP class.
@@ -26,11 +24,12 @@ class sfServiceContainerDumperPhp extends sfServiceContainerDumper
    *  * class:      The class name
    *  * base_class: The base class name
    *
-   * @param  array  $options An array of options
+   * @param  sfServiceContainerBuilder $builder
+   * @param  array                     $options
    *
    * @return string A PHP class representing of the service container
    */
-  public function dump(array $options = array())
+  public function dump(sfServiceContainerBuilder $builder, array $options = array())
   {
     $options = array_merge(array(
       'class'      => 'ProjectServiceContainer',
@@ -39,9 +38,9 @@ class sfServiceContainerDumperPhp extends sfServiceContainerDumper
 
     return
       $this->startClass($options['class'], $options['base_class']).
-      $this->addConstructor().
-      $this->addServices().
-      $this->addDefaultParametersMethod().
+      $this->addConstructor($builder).
+      $this->addServices($builder).
+      $this->addDefaultParametersMethod($builder).
       $this->endClass()
     ;
   }
@@ -223,15 +222,15 @@ EOF;
 EOF;
   }
 
-  protected function addServices()
+  protected function addServices(sfServiceContainerBuilder $builder)
   {
     $code = '';
-    foreach ($this->container->getServiceDefinitions() as $id => $definition)
+    foreach ($builder->getServiceDefinitions() as $id => $definition)
     {
       $code .= $this->addService($id, $definition);
     }
 
-    foreach ($this->container->getAliases() as $alias => $id)
+    foreach ($builder->getAliases() as $alias => $id)
     {
       $code .= $this->addServiceAlias($alias, $id);
     }
@@ -249,9 +248,9 @@ class $class extends $baseClass
 EOF;
   }
 
-  protected function addConstructor()
+  protected function addConstructor(sfServiceContainerBuilder $builder)
   {
-    if (!$this->container->getParameters())
+    if (!$builder->getParameters())
     {
       return '';
     }
@@ -266,14 +265,14 @@ EOF;
 EOF;
   }
 
-  protected function addDefaultParametersMethod()
+  protected function addDefaultParametersMethod(sfServiceContainerBuilder $builder)
   {
-    if (!$this->container->getParameters())
+    if (!$builder->getParameters())
     {
       return '';
     }
 
-    $parameters = $this->exportParameters($this->container->getParameters());
+    $parameters = $this->exportParameters($builder->getParameters());
 
     return <<<EOF
 
