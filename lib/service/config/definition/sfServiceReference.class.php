@@ -32,12 +32,20 @@ class sfServiceReference
   }
 
   /**
-   * __toString.
+   * @return string
+   */
+  public function getServiceId()
+  {
+    return $this->id;
+  }
+
+  /**
+   * Convert sfServiceReference back to string presentation.
    *
    * @return string The service identifier
    */
   public function __toString()
   {
-    return (string) $this->id;
+    return (string) '@' . $this->id;
   }
 }

@@ -32,12 +32,20 @@ class sfServiceParameter
   }
 
   /**
-   * __toString.
+   * @return string
+   */
+  public function getParameterName()
+  {
+    return $this->id;
+  }
+
+  /**
+   * Stringify parameter reference back to %...% form.
    *
-   * @return string The parameter key
+   * @return string
    */
   public function __toString()
   {
-    return (string) $this->id;
+    return '%' . $this->id . '%';
   }
 }

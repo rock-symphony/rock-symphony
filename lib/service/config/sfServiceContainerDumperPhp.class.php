@@ -39,9 +39,9 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
     return
       $this->startClass($options['class'], $options['base_class']).
       $this->addConstructor($builder).
+      $this->addParametersMethods($builder) .
       $this->addServicesMethods($builder) .
       $this->addServices($builder).
-      $this->addDefaultParametersMethod($builder).
       $this->endClass()
     ;
   }
@@ -303,51 +303,97 @@ EOF;
 EOF;
   }
 
-  protected function addDefaultParametersMethod(sfServiceContainerBuilder $builder)
+  protected function addParametersMethods(sfServiceContainerBuilder $builder)
   {
     if (!$builder->getParameters())
     {
       return '';
     }
 
-    $parameters = $this->exportParameters($builder->getParameters());
+    $parameters = $builder->getParameters();
+
+    $primitiveParameters = array_filter($parameters, array($this, 'isPrimitiveValue'));
+    $complexParameters = array_diff($parameters, $primitiveParameters);
 
     return <<<EOF
-
+    
   protected function getDefaultParameters()
   {
-    return $parameters;
+    return {$this->dumpValue($primitiveParameters)};
+  }
+    
+  /**
+   * @inheritdoc
+   */
+  public function hasParameter(\$name)
+  {
+    if (parent::hasParameter(\$name)) {
+      return true;
+    } 
+    return in_array(\$name, {$this->dumpValue(array_keys($parameters))}); 
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getParameter(\$name)
+  {
+    if (parent::hasParameter(\$name) {
+      return parent::getParameter(\$name);
+    }
+
+    switch (\$name) {
+      {$this->dumpParameterResolvers($complexParameters)};
+      
+      default:
+        // make parent::getParameter() throw "missing parameter" exception
+        return parent::getParameter(\$name);
+    }
+    parent::setParameter(\$name, \$value);
+    return \$value;
   }
 
 EOF;
   }
 
-  protected function exportParameters($parameters, $indent = 6)
+  protected function dumpParameterResolvers($parameters)
   {
-    $php = array();
+    $cases = array();
+
     foreach ($parameters as $key => $value)
     {
-      if (is_array($value))
-      {
-        $value = $this->exportParameters($value, $indent + 2);
-      }
-      elseif ($value instanceof sfServiceReference)
-      {
-        $value = sprintf("new sfServiceReference('%s')", $value);
-      }
-      elseif ($value instanceof sfServiceParameter)
-      {
-        $value = sprintf("\$this->getParameter('%s')", $value);
-      }
-      else
-      {
-        $value = var_export($value, true);
-      }
+      $key = var_export($key, true);
+      $value = $this->dumpValue($value);
 
-      $php[] = sprintf('%s%s => %s,', str_repeat(' ', $indent), var_export($key, true), $value);
+      $cases[] = <<<PHP
+      case {$key}:
+         \$value = $value;\n
+         break;
+PHP;
     }
 
-    return sprintf("array(\n%s\n%s)", implode("\n", $php), str_repeat(' ', $indent - 2));
+    return "\n" . implode("\n", $cases);
+  }
+
+  /**
+   * @internal Do not use this method from outside. It's not a part of API.
+   *
+   * @param mixed $value
+   * @return bool
+   */
+  public function isPrimitiveValue($value)
+  {
+    if (is_array($value)) {
+      foreach ($value as $v) {
+        if (!$this->isPrimitiveValue($v)) {
+          return false;
+        }
+      }
+    } elseif (is_object($value)) { // to cover sfServiceReference/sfServiceParameter/sfServiceParameterStringException
+      return false;
+    }
+    // otherwise it's primitive
+    return true;
   }
 
   protected function endClass()
@@ -358,7 +404,17 @@ EOF;
 EOF;
   }
 
-  protected function dumpValue($value)
+  /**
+   * Dump any supported dumpable value to string representation
+   *
+   * @throws RuntimeException if unable to dump the given value.
+   *
+   * @internal Do not use this method from outside. It's not a part of API.
+   *
+   * @param mixed $value
+   * @return string
+   */
+  public function dumpValue($value)
   {
     if (is_array($value))
     {
@@ -370,31 +426,18 @@ EOF;
 
       return sprintf("array(%s)", implode(', ', $code));
     }
-    elseif (is_object($value) && $value instanceof sfServiceReference)
+    elseif ($value instanceof sfServiceReference)
     {
-      return $this->getServiceCall((string) $value);
+      return $this->getServiceCall($value->getServiceId());
     }
-    elseif (is_object($value) && $value instanceof sfServiceParameter)
+    elseif ($value instanceof sfServiceParameter)
     {
-      return sprintf("\$this->getParameter('%s')", strtolower($value));
+      return sprintf("\$this->getParameter('%s')", strtolower($value->getParameterName()));
     }
-    elseif (is_string($value))
+    elseif ($value instanceof sfServiceParameterStringExpression)
     {
-      if (preg_match('/^%([^%]+)%$/', $value, $match))
-      {
-        // we do this to deal with non string values (boolean, integer, ...)
-        // the preg_replace_callback converts them to strings
-        return sprintf("\$this->getParameter('%s')", strtolower($match[1]));
-      }
-      else
-      {
-        $code = str_replace('%%', '%', preg_replace_callback('/(?<!%)(%)([^%]+)\1/', array($this, 'replaceParameter'), var_export($value, true)));
-
-        // optimize string
-        $code = preg_replace(array("/^''\./", "/\.''$/", "/\.''\./"), array('', '', '.'), $code);
-
-        return $code;
-      }
+      // concat dumpValue of each expression part
+      return implode('.', array_map(array($this, 'dumpValue'), $value->getParts()));
     }
     elseif (is_object($value) || is_resource($value))
     {
@@ -404,11 +447,6 @@ EOF;
     {
       return var_export($value, true);
     }
-  }
-
-  public function replaceParameter($match)
-  {
-    return sprintf("'.\$this->getParameter('%s').'", strtolower($match[2]));
   }
 
   protected function getServiceCall($id)
