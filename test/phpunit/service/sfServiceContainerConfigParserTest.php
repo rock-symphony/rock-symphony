@@ -143,6 +143,43 @@ class sfServiceContainerConfigParserTest extends \PHPUnit\Framework\TestCase
     $this->assertEquals('BazClass', $builder->getServiceDefinition('foo')->getClass(), '->parse() overrides already defined services');
   }
 
+  /**
+   * @test
+   */
+  public function it_should_parse_strings_with_parameter_references()
+  {
+    $parser = new sfServiceContainerConfigParser($builder = new sfServiceContainerBuilder());
+    $parser->parse(array(
+      'parameters' => array(
+        'base_host' => 'example.com',
+        'subdomain' => 'app',
+        'host' => '%subdomain%.%base_host%'
+      ),
+      'services' => array(
+        'foo' => array(
+          'class' => 'BazClass',
+          'arguments' => array('url' => 'http://%host%/'),
+        ),
+      ),
+    ));
+
+    $this->assertEquals(
+      new sfServiceParameterStringExpression(array(
+        new sfServiceParameter('subdomain'),
+        '.',
+        new sfServiceParameter('base_host'),
+      )),
+      $builder->getParameter('host')
+    );
+
+    $this->assertEquals(
+      new sfServiceDefinition('BazClass', array(
+        'url' => new sfServiceParameterStringExpression(array('http://', new sfServiceParameter('host'), '/'))
+      )),
+      $builder->getServiceDefinition('foo')
+    );
+  }
+
   private static function load($path)
   {
     return sfYaml::load(__DIR__ . '/../../unit/service/' . $path);
