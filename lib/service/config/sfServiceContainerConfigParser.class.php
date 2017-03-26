@@ -61,7 +61,10 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
 
     foreach ($parameters as $key => $value)
     {
-      $this->builder->setParameter($key, $value);
+      // Do not override already defined builder parameters (not sure why, but it's required for BC)
+      if (! $this->builder->hasParameter($key)) {
+        $this->builder->setParameter($key, $value);
+      }
     }
 
     return $this->builder;
