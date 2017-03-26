@@ -126,7 +126,7 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
    *
    * @param mixed $value
    *
-   * @return mixed|sfServiceParameter|class
+   * @return mixed|sfServiceParameter|sfServiceParameterStringExpression
    */
   protected function parseParameterValue($value)
   {
@@ -180,7 +180,7 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
    *
    * @param string $string
    *
-   * @return string|class
+   * @return string|sfServiceParameterStringExpression
    */
   protected function parseParameterStringExpression($string)
   {
