@@ -378,6 +378,7 @@ class sfCoreAutoload
     'sfservicecontainerdefaultconfigparser' => 'service/config/sfServiceContainerDefaultConfigParser.class.php',
     'sfservicedefinition' => 'service/config/definition/sfServiceDefinition.class.php',
     'sfserviceparameter' => 'service/config/definition/sfServiceParameter.class.php',
+    'sfserviceparameterstringexpression' => 'service/config/definition/sfServiceParameterStringExpression.class.php',
     'sfservicereference' => 'service/config/definition/sfServiceReference.class.php',
     'sfcachesessionstorage' => 'storage/sfCacheSessionStorage.class.php',
     'sfdatabasesessionstorage' => 'storage/sfDatabaseSessionStorage.class.php',
