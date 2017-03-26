@@ -14,7 +14,6 @@
  *
  * @package    symfony
  * @subpackage service
- * @author     Jerome Macias <jmacias@groupe-exp.com>
  */
 class sfServiceContainerConfigParser implements sfServiceContainerConfigParserInterface
 {
