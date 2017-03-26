@@ -12,7 +12,7 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 
 $t = new lime_test(20);
 
-class ProjectLoader extends sfServiceContainerLoaderArray
+class ProjectLoader extends sfServiceContainerDefaultConfigParser
 {
   public function validate($content)
   {

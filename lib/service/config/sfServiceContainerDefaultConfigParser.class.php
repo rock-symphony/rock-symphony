@@ -9,17 +9,56 @@
  */
 
 /**
- * sfServiceContainerLoaderArray loads an array service definitions.
- *
- * It does not include import functionnality.
+ * sfServiceContainerDefaultConfigParser parses a service definitions array
+ * and translates it to sfServiceContainerBuilder method calls.
  *
  * @package    symfony
  * @subpackage service
  * @author     Jerome Macias <jmacias@groupe-exp.com>
  */
-class sfServiceContainerLoaderArray extends sfServiceContainerLoader
+class sfServiceContainerDefaultConfigParser implements sfServiceContainerConfigParserInterface
 {
-  public function doLoad($content)
+  /** @var sfServiceContainerBuilder */
+  protected $builder;
+
+  /**
+   * Constructor.
+   *
+   * @param sfServiceContainerBuilder $builder A builder instance
+   */
+  public function __construct(sfServiceContainerBuilder $builder = null)
+  {
+    $this->builder = $builder ?: new sfServiceContainerBuilder();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function parse(array $config)
+  {
+    list($definitions, $parameters) = $this->doLoad($config);
+
+    foreach ($definitions as $id => $definition)
+    {
+      if (is_string($definition))
+      {
+        $this->builder->setAlias($id, $definition);
+      }
+      else
+      {
+        $this->builder->setServiceDefinition($id, $definition);
+      }
+    }
+
+    foreach ($parameters as $key => $value)
+    {
+      $this->builder->setParameter($key, $this->builder->resolveValue($value));
+    }
+
+    return $this->builder;
+  }
+
+  protected function doLoad($content)
   {
     $this->validate($content);
 
