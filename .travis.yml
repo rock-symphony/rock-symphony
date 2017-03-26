@@ -40,5 +40,4 @@ before_script:
     - composer install
 
 script:
-    - php data/bin/check_configuration.php
-    - php data/bin/symfony symfony:test --trace
+    - make test
