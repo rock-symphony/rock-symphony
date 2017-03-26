@@ -80,6 +80,24 @@ class sfServiceContainerBuilder
   }
 
   /**
+   * @param string $alias
+   * @return bool
+   */
+  public function hasAlias($alias)
+  {
+    return isset($this->aliases[$alias]);
+  }
+
+  /**
+   * @param string $alias
+   * @return string
+   */
+  public function getAlias($alias)
+  {
+    return $this->aliases[$alias];
+  }
+
+  /**
    * Sets an alias for an existing service.
    *
    * @param string $alias The alias to create
