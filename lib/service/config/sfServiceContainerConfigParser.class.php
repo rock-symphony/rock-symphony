@@ -168,7 +168,7 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
     // Short-circuit %...% strings
     if (preg_match('/^%([^%]+)%$/', $value, $match))
     {
-      return new sfServiceParameter($value);
+      return new sfServiceParameter($match[1]);
     }
 
     // Deep-process the string

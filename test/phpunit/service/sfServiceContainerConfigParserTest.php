@@ -124,22 +124,22 @@ class sfServiceContainerConfigParserTest extends \PHPUnit\Framework\TestCase
 
     $parser = new sfServiceContainerConfigParser($builder = new sfServiceContainerBuilder(array('bar' => 'foo')));
     $parser->parse(array('parameters' => array('foo' => '%bar%')));
-    $this->assertEquals(array('bar' => 'foo', 'foo' => 'bar'), $builder->getParameters(), '->parse() evaluates the values of the parameters towards already defined ones');
+    $this->assertEquals(array('bar' => 'foo', 'foo' => new sfServiceParameter('bar')), $builder->getParameters(), '->parse() evaluates the values of the parameters towards already defined ones');
 
     $parser = new sfServiceContainerConfigParser($builder = new sfServiceContainerBuilder(array('bar' => 'foo')));
     $parser->parse(array('parameters' => array('foo' => '%bar%', 'baz' => '%foo%')));
-    $this->assertEquals(array('bar' => 'foo', 'foo' => 'foo', 'baz' => 'foo'), $builder->getParameters(), '->parse() evaluates the values of the parameters towards already defined ones');
+    $this->assertEquals(array('bar' => 'foo', 'foo' => new sfServiceParameter('bar'), 'baz' => new sfServiceParameter('foo')), $builder->getParameters(), '->parse() evaluates the values of the parameters towards already defined ones');
 
     $parser = new sfServiceContainerConfigParser($builder = new sfServiceContainerBuilder());
-    $builder->setAlias('foo', 'FooClass');
-    $builder->setAlias('bar', 'BarClass');
-    $parser->parse(array('services' => array('baz' => new sfServiceDefinition('BazClass'), 'alias_for_foo' => 'foo')));
+    $builder->setServiceDefinition('foo', new sfServiceDefinition('FooClass'));
+    $builder->setServiceDefinition('bar', new sfServiceDefinition('BarClass'));
+    $parser->parse(array('services' => array('baz' => array('class' => 'BazClass'), 'alias_for_foo' => '@foo')));
     $this->assertEquals(array('foo', 'bar', 'baz'), array_keys($builder->getServiceDefinitions()), '->parse() merges definitions already defined ones');
     $this->assertEquals(array('alias_for_foo' => 'foo'), $builder->getAliases(), '->parse() registers defined aliases');
 
     $parser = new sfServiceContainerConfigParser($builder = new sfServiceContainerBuilder());
     $builder->setAlias('foo', 'FooClass');
-    $parser->parse(array('services' => array('foo' => new sfServiceDefinition('BazClass'))));
+    $parser->parse(array('services' => array('foo' => array('class' => 'BazClass'))));
     $this->assertEquals('BazClass', $builder->getServiceDefinition('foo')->getClass(), '->parse() overrides already defined services');
   }
 
