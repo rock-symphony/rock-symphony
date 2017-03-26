@@ -191,14 +191,4 @@ class sfServiceContainer implements sfServiceContainerInterface
   {
     return array_keys($this->services);
   }
-
-  static public function camelize($id)
-  {
-    return strtr(ucwords(strtr($id, array('_' => ' ', '-' => ' ', '.' => '_ '))), array(' ' => ''));
-  }
-
-  static public function underscore($id)
-  {
-    return strtolower(preg_replace(array('/_/', '/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('.', '\\1_\\2', '\\1_\\2'), $id));
-  }
 }

@@ -225,7 +225,7 @@ EOF;
 
   protected function addService($id, $definition)
   {
-    $name = sfServiceContainer::camelize($id);
+    $name = self::camelize($id);
 
     $code = <<<EOF
 
@@ -247,7 +247,7 @@ EOF;
 
   protected function addServiceAlias($alias, $id)
   {
-    $name = sfServiceContainer::camelize($alias);
+    $name = self::camelize($alias);
 
     return <<<EOF
 
@@ -457,5 +457,10 @@ EOF;
     }
 
     return sprintf('$this->getService(\'%s\')', $id);
+  }
+
+  protected static function camelize($id)
+  {
+    return strtr(ucwords(strtr($id, array('_' => ' ', '-' => ' ', '.' => '_ '))), array(' ' => ''));
   }
 }
