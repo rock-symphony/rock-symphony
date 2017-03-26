@@ -39,10 +39,64 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
     return
       $this->startClass($options['class'], $options['base_class']).
       $this->addConstructor($builder).
+      $this->addServicesMethods($builder) .
       $this->addServices($builder).
       $this->addDefaultParametersMethod($builder).
       $this->endClass()
     ;
+  }
+
+  protected function addServicesMethods(sfServiceContainerBuilder $builder)
+  {
+    $services = $builder->getServiceDefinitions();
+    $aliases = $builder->getAliases();
+
+    $known_ids = array_merge(array_keys($services), array_keys($aliases));
+
+    $code = <<<PHP
+    
+  /**
+   * @inheritdoc
+   */
+  public function hasService(\$id)
+  {
+     if (parent::hasService(\$id)) {
+       return true; 
+     }
+     
+     return in_array(\$id, {$this->dumpValue($known_ids)});
+  }
+    
+  /**
+   * @inheritdoc
+   */
+  public function getService(\$id)
+  {
+    if (parent::hasService(\$id)) {
+      return parent::getService(\$id);
+    }
+    
+    if (in_array(\$id, {$this->dumpValue($known_ids)})) {
+      \$method = 'get' . sfServiceContainer::camelize(\$id) . 'Service';
+      \$instance = \$this->\$method();
+      return \$instance;
+    }
+    
+    // make parent throw "missing service" exception
+    return parent::getService(\$id);
+  }
+  
+  /**
+   * @inheritdoc
+   */
+  public function getServiceIds()
+  {  
+    return array_merge(parent::getServiceIds(), {$this->dumpValue($known_ids)});
+  }
+    
+PHP;
+
+    return $code;
   }
 
   /**
