@@ -375,7 +375,7 @@ class sfCoreAutoload
     'sfservicecontainerdumperphp' => 'service/config/sfServiceContainerDumperPhp.class.php',
     'sfservicecontainerinterface' => 'service/sfServiceContainerInterface.class.php',
     'sfservicecontainerconfigparserinterface' => 'service/config/sfServiceContainerConfigParserInterface.class.php',
-    'sfservicecontainerdefaultconfigparser' => 'service/config/sfServiceContainerDefaultConfigParser.class.php',
+    'sfservicecontainerconfigparser' => 'service/config/sfServiceContainerConfigParser.class.php',
     'sfservicedefinition' => 'service/config/definition/sfServiceDefinition.class.php',
     'sfserviceparameter' => 'service/config/definition/sfServiceParameter.class.php',
     'sfserviceparameterstringexpression' => 'service/config/definition/sfServiceParameterStringExpression.class.php',
