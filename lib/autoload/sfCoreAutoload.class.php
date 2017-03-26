@@ -371,7 +371,6 @@ class sfCoreAutoload
     'sfrouting' => 'routing/sfRouting.class.php',
     'sfservicecontainer' => 'service/sfServiceContainer.class.php',
     'sfservicecontainerbuilder' => 'service/config/sfServiceContainerBuilder.class.php',
-    'sfservicecontainerdumper' => 'service/config/sfServiceContainerDumper.class.php',
     'sfservicecontainerdumperinterface' => 'service/config/sfServiceContainerDumperInterface.class.php',
     'sfservicecontainerdumperphp' => 'service/config/sfServiceContainerDumperPhp.class.php',
     'sfservicecontainerinterface' => 'service/sfServiceContainerInterface.class.php',

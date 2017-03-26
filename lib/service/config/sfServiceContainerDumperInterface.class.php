@@ -9,14 +9,22 @@
  */
 
 /**
- * sfServiceContainerDumperInterface is the interface implemented by service container dumper classes.
+ * sfServiceContainerDumperInterface dumps the given sfServiceContainerBuilder state
+ * to specific format string representation (to be stored to filesystem).
  *
  * @package    symfony
- * @subpackage dependency_injection
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id$
+ * @subpackage service
  */
 interface sfServiceContainerDumperInterface
 {
-  function dump(array $options = array());
+  /**
+   * Dump sfServiceContainerBuilder state to string representation.
+   *
+   * @param \sfServiceContainerBuilder $builder
+   * @param array                      $options
+   *
+   * @return string
+   */
+  public function dump(sfServiceContainerBuilder $builder, array $options = array());
+
 }
