@@ -9,14 +9,14 @@
  */
 
 /**
- * sfServiceContainerDefaultConfigParser parses a service definitions array
+ * sfServiceContainerConfigParser parses a service definitions array
  * and translates it to sfServiceContainerBuilder method calls.
  *
  * @package    symfony
  * @subpackage service
  * @author     Jerome Macias <jmacias@groupe-exp.com>
  */
-class sfServiceContainerDefaultConfigParser implements sfServiceContainerConfigParserInterface
+class sfServiceContainerConfigParser implements sfServiceContainerConfigParserInterface
 {
   /** @var sfServiceContainerBuilder */
   protected $builder;
