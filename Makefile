@@ -1,6 +1,9 @@
+vendor:
+	composer self-update
+
 check-configuration:
 	php data/bin/check_configuration.php
 
-tests: check-configuration
+tests: vendor check-configuration
 	php data/bin/symfony symfony:test --trace
 
