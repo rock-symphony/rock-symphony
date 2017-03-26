@@ -13,6 +13,7 @@
  *
  * @package    symfony
  * @subpackage service
+ * @author Ivan Voskoboinyk <ivan.voskoboinyk@gmail.com>
  */
 class sfServiceContainerBuilder
 {

@@ -13,6 +13,8 @@
  *
  * @package    symfony
  * @subpackage service
+ * @author Fabien Potencier <fabien@symfony.com>
+ * @author Ivan Voskoboinyk <ivan.voskoboinyk@gmail.com>
  */
 class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 {
