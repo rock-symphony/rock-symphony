@@ -1,5 +1,5 @@
 vendor:
-	composer self-update
+	composer install
 
 check-configuration:
 	php data/bin/check_configuration.php
