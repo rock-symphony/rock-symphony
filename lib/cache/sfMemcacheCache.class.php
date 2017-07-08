@@ -18,8 +18,8 @@
  */
 class sfMemcacheCache extends sfCache
 {
-  protected
-    $memcache = null;
+  /** @var Memcache */
+  protected $memcache = null;
 
   /**
    * Initializes this sfCache instance.
@@ -37,6 +37,7 @@ class sfMemcacheCache extends sfCache
    * * see sfCache for options available for all drivers
    *
    * @see sfCache
+   * @inheritdoc
    */
   public function initialize($options = array())
   {
@@ -79,15 +80,17 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @return Memcache
    */
   public function getBackend()
   {
     return $this->memcache;
   }
 
- /**
-  * @see sfCache
-  */
+  /**
+   * @see sfCache
+   * @inheritdoc
+   */
   public function get($key, $default = null)
   {
     $value = $this->memcache->get($this->getOption('prefix').$key);
@@ -97,6 +100,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function has($key)
   {
@@ -111,6 +115,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function set($key, $data, $lifetime = null)
   {
@@ -135,6 +140,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function remove($key)
   {
@@ -149,6 +155,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function clean($mode = sfCache::ALL)
   {
@@ -160,6 +167,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function getLastModified($key)
   {
@@ -173,6 +181,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function getTimeout($key)
   {
@@ -186,6 +195,9 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
+   *
+   * @throws sfCacheException
    */
   public function removePattern($pattern)
   {
@@ -206,6 +218,7 @@ class sfMemcacheCache extends sfCache
 
   /**
    * @see sfCache
+   * @inheritdoc
    */
   public function getMany($keys)
   {
@@ -275,6 +288,8 @@ class sfMemcacheCache extends sfCache
 
   /**
    * Gets cache information.
+   *
+   * @return array
    */
   protected function getCacheInfo()
   {

@@ -58,6 +58,8 @@ class sfCoreAutoload
    * Register sfCoreAutoload in spl autoloader.
    *
    * @return void
+   *
+   * @throws sfException If unable to register SPL autoload function
    */
   static public function register()
   {

@@ -15,6 +15,9 @@
  * @subpackage routing
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
+ *
+ * @property $firstOptional int
+ * @property $segments array
  */
 class sfRoute implements Serializable
 {
@@ -89,7 +92,7 @@ class sfRoute implements Serializable
    * @param  string  $url     The URL
    * @param  array   $context The context
    *
-   * @return array   An array of parameters
+   * @return array|bool   An array of parameters or false if not matching
    */
   public function matchesUrl($url, $context = array())
   {
@@ -268,6 +271,8 @@ class sfRoute implements Serializable
    * Generates a URL for the given parameters by using the route tokens.
    *
    * @param array $parameters An array of parameters
+   *
+   * @return string
    */
   protected function generateWithTokens($parameters)
   {
@@ -581,7 +586,7 @@ class sfRoute implements Serializable
         throw new InvalidArgumentException(sprintf('Unable to parse "%s" route near "%s".', $this->pattern, $buffer));
       }
     }
-    
+
     // check for suffix
     if ($this->suffix)
     {

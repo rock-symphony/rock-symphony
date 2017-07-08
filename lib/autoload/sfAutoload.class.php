@@ -36,7 +36,7 @@ class sfAutoload
   /**
    * Retrieves the singleton instance of this class.
    *
-   * @return sfCoreAutoload A sfCoreAutoload implementation instance.
+   * @return sfAutoload A sfAutoload implementation instance.
    */
   static public function getInstance()
   {
@@ -52,6 +52,8 @@ class sfAutoload
    * Register sfAutoload in spl autoloader.
    *
    * @return void
+   *
+   * @throws sfException
    */
   static public function register()
   {
