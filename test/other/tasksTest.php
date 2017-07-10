@@ -79,7 +79,7 @@ $c = new sf_test_project();
 $c->initialize($t);
 
 // generate:*
-$content = $c->execute_command('generate:project myproject --orm=Doctrine');
+$content = $c->execute_command('generate:project myproject');
 $t->ok(file_exists($c->tmp_dir.DS.'symfony'), '"generate:project" installs the symfony CLI in root project directory');
 
 $content = $c->execute_command('generate:app frontend');
