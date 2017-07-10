@@ -4,9 +4,9 @@
   Just when you thought it's dead.
 </p>
 
-<p align="center">
-  <img src="https://travis-ci.org/rock-symphony/rock-symphony.svg?branch=master" alt="Build status"/>
-</p>
+
+[![Build Status](https://travis-ci.org/rock-symphony/rock-symphony.svg?branch=master)](https://travis-ci.org/rock-symphony/rock-symphony)
+
 
 RockSymphony Framework
 ======================
