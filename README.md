@@ -26,6 +26,7 @@ Philosophy
 - [Semantic versioning](http://semver.org/)
 - Incremental BC-breaking updates that bring something new to your symfony1 project
 - PHP 7.1 compatibility
+- Replace legacy sf1 parts with modern libraries reducing framework footprint to the very minimum
 
 Roadmap
 -------
@@ -33,6 +34,7 @@ Roadmap
 - **1.x** 
   + Add argument return type hints everywhere (improve IDE static analysis)
   + Fix phpdoc / code inconsistencies
+  + composer support
 - **2.x** - Descent service container, services auto-injection
 - **3.x** - Replace sfLogger with PSR Logger
 - **Future**
