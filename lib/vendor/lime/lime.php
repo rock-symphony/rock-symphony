@@ -191,6 +191,36 @@ class lime_test
   }
 
   /**
+   * @param mixed $exp1
+   * @param mixed $exp2
+   * @return bool
+   */
+  private function equals($exp1, $exp2)
+  {
+    if (is_object($exp1) || is_object($exp2))
+    {
+      $value = $exp1 === $exp2;
+    }
+    else if (is_float($exp1) && is_float($exp2))
+    {
+      $value = abs($exp1 - $exp2) < self::EPSILON;
+    }
+    // Avoid comparing strings to numbers with ==
+    // There is an issue when you compare 'foo' == 0 (it's true)
+    // While probably you don't want it to be true
+    else if (is_string($exp1) || is_string($exp2))
+    {
+      $value = (string) $exp1 === (string)$exp2;
+    }
+    else
+    {
+      $value = $exp1 == $exp2;
+    }
+
+    return $value;
+  }
+
+  /**
    * Compares two values and passes if they are equal (==)
    *
    * @param mixed  $exp1    left value
@@ -201,18 +231,7 @@ class lime_test
    */
   public function is($exp1, $exp2, $message = '')
   {
-    if (is_object($exp1) || is_object($exp2))
-    {
-      $value = $exp1 === $exp2;
-    }
-    else if (is_float($exp1) && is_float($exp2))
-    {
-      $value = abs($exp1 - $exp2) < self::EPSILON;
-    }
-    else
-    {
-      $value = $exp1 == $exp2;
-    }
+    $value = $this->equals($exp1, $exp2);
 
     if (!$result = $this->ok($value, $message))
     {
@@ -233,7 +252,9 @@ class lime_test
    */
   public function isnt($exp1, $exp2, $message = '')
   {
-    if (!$result = $this->ok($exp1 != $exp2, $message))
+    $value = $this->equals($exp1, $exp2);
+
+    if (!$result = $this->ok(! $value, $message))
     {
       $this->set_last_test_errors(array(sprintf("      %s", var_export($exp2, true)), '          ne', sprintf("      %s", var_export($exp2, true))));
     }
