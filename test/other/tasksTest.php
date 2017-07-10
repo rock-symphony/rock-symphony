@@ -121,8 +121,9 @@ copy(__DIR__.'/fixtures/task/myPluginTask.class.php', $pluginDir.DS.'myPluginTas
 file_put_contents(
   $projectConfigurationFile = $c->tmp_dir.DS.'config'.DS.'ProjectConfiguration.class.php',
   str_replace(
-    '$this->enablePlugins(\'sfDoctrinePlugin\')',
-    '$this->enablePlugins(array(\'sfDoctrinePlugin\', \'myFooPlugin\'))',
+    '// {{injection}}',
+    "// {{injection}}\n    " .
+    "\$this->enablePlugins(array('myFooPlugin'));\n",
     file_get_contents($projectConfigurationFile)
   )
 );
