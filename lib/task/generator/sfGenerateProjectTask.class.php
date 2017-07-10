@@ -41,7 +41,6 @@ class sfGenerateProjectTask extends sfGeneratorBaseTask
     ));
 
     $this->addOptions(array(
-      new sfCommandOption('orm', null, sfCommandOption::PARAMETER_REQUIRED, 'The ORM to use by default', 'Doctrine'),
       new sfCommandOption('installer', null, sfCommandOption::PARAMETER_REQUIRED, 'An installer script to execute', null),
     ));
 
@@ -58,12 +57,6 @@ for a new project in the current directory:
 
 If the current directory already contains a symfony project,
 it throws a [sfCommandException|COMMENT].
-
-By default, the task configures Doctrine as the ORM.
-
-If you don't want to use an ORM, pass [none|COMMENT] to [--orm|COMMENT] option:
-
-  [./symfony generate:project blog --orm=none|INFO]
 
 You can also pass the [--installer|COMMENT] option to further customize the
 project:
@@ -87,18 +80,10 @@ EOF;
       throw new sfCommandException(sprintf('A symfony project already exists in this directory (%s).', getcwd()));
     }
 
-    if (!in_array(strtolower($options['orm']), array('doctrine', 'none')))
-    {
-      throw new InvalidArgumentException(sprintf('Invalid ORM name "%s".', $options['orm']));
-    }
-
     if ($options['installer'] && $this->commandApplication && !file_exists($options['installer']))
     {
       throw new InvalidArgumentException(sprintf('The installer "%s" does not exist.', $options['installer']));
     }
-
-    // clean orm option
-    $options['orm'] = ucfirst(strtolower($options['orm']));
 
     $this->arguments = $arguments;
     $this->options = $options;
@@ -114,19 +99,12 @@ EOF;
     $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array('SYMFONY_CORE_AUTOLOAD' => str_replace('\\', '/', $symfonyCoreAutoload)));
 
     $this->tokens = array(
-      'ORM'          => $this->options['orm'],
       'PROJECT_NAME' => $this->arguments['name'],
       'AUTHOR_NAME'  => $this->arguments['author'],
       'PROJECT_DIR'  => sfConfig::get('sf_root_dir'),
     );
 
     $this->replaceTokens();
-
-    // execute the choosen ORM installer script
-    if ('Doctrine' === $options['orm'])
-    {
-      include __DIR__.'/../../plugins/sf'.$options['orm'].'Plugin/config/installer.php';
-    }
 
     // execute a custom installer
     if ($options['installer'] && $this->commandApplication)

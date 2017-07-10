@@ -79,7 +79,7 @@ $c = new sf_test_project();
 $c->initialize($t);
 
 // generate:*
-$content = $c->execute_command('generate:project myproject --orm=Doctrine');
+$content = $c->execute_command('generate:project myproject');
 $t->ok(file_exists($c->tmp_dir.DS.'symfony'), '"generate:project" installs the symfony CLI in root project directory');
 
 $content = $c->execute_command('generate:app frontend');
@@ -121,8 +121,9 @@ copy(__DIR__.'/fixtures/task/myPluginTask.class.php', $pluginDir.DS.'myPluginTas
 file_put_contents(
   $projectConfigurationFile = $c->tmp_dir.DS.'config'.DS.'ProjectConfiguration.class.php',
   str_replace(
-    '$this->enablePlugins(\'sfDoctrinePlugin\')',
-    '$this->enablePlugins(array(\'sfDoctrinePlugin\', \'myFooPlugin\'))',
+    '// {{injection}}',
+    "// {{injection}}\n    " .
+    "\$this->enablePlugins(array('myFooPlugin'));\n",
     file_get_contents($projectConfigurationFile)
   )
 );

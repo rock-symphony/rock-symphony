@@ -8,7 +8,9 @@
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
+$app = 'frontend';
+require_once(__DIR__.'/../bootstrap/unit.php');
+require_once(__DIR__.'/../bootstrap/functional.php');
 
 $t = new lime_test(29);
 
@@ -33,7 +35,7 @@ class frontendConfiguration extends sfApplicationConfiguration
 */
 
 // use functional project configruration
-require_once realpath(__DIR__.'/../../functional/fixtures/config/ProjectConfiguration.class.php');
+require_once realpath(__DIR__.'/fixtures/config/ProjectConfiguration.class.php');
 
 $frontend_context = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('frontend', 'test', true));
 $frontend_context_prod = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('frontend', 'prod', false));
