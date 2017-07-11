@@ -6,11 +6,14 @@ All tests of 1.4 release pass without any change of excepted values and none of 
 Warning
 =======
 
-Plugin
-------
+Plugins
+-------
 
 The sfPropelPlugin has been removed.  
 Use the [sfPropelORMPlugin](https://github.com/propelorm/sfPropelORMPlugin) if you want to use the great Propel ORM.
+
+The sfDoctrinePlugin has been removed.
+Install it with `composer require rock-symphony/sf-doctrine-plugin`
 
 Form
 ----
