@@ -44,3 +44,9 @@ Now you need to rely on composer autoload to get swiftmailer running.
 
 Remove all mentions of *vendor/swiftmailer* in your project codebase. 
 SwiftMailer is now autoloaded via Composer.
+
+### 2. sfDoctrinePlugin is an optional composer dependency now
+ 
+Now you need to use composer to get sfDoctrinePlugin.
+
+Remove all direct links to sfDoctrinePlugin (if any) and re-publish your plugin assets.
