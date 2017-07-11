@@ -16,4 +16,4 @@ $t = new lime_test(1);
 $t->diag('__construct() ->__toString()');
 
 $ref = new sfServiceParameter('foo');
-$t->is((string) $ref, 'foo', '__construct() sets the id of the parameter, which is used for the __toString() method');
+$t->is((string) $ref, '%foo%', '__construct() sets the id of the parameter, which is used for the __toString() method');
