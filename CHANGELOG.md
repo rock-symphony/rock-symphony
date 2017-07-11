@@ -5,6 +5,8 @@ CHANGELOG
 -------------------------
 
 * Drop swiftmailer git sub-module
+* Drop sf-doctrine-plugin git sub-module
+* Fix test suite
 
 03/03/2017: Version 1.6.0
 -------------------------
