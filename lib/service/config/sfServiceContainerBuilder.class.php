@@ -33,6 +33,17 @@ class sfServiceContainerBuilder
   }
 
   /**
+   * @param $id
+   * @param $class
+   *
+   * @return sfServiceDefinition
+   */
+  public function registerServiceClass($id, $class)
+  {
+    return $this->setServiceDefinition($id, new sfServiceDefinition($class));
+  }
+
+  /**
    * Sets a service definition.
    *
    * @param  string              $id         The service identifier
@@ -56,7 +67,7 @@ class sfServiceContainerBuilder
    */
   public function hasServiceDefinition($id)
   {
-    return array_key_exists($id, $this->definitions);
+    return array_key_exists($id, $this->definitions) || array_key_exists($id, $this->aliases);
   }
 
   /**
@@ -70,12 +81,19 @@ class sfServiceContainerBuilder
    */
   public function getServiceDefinition($id)
   {
-    if (!$this->hasServiceDefinition($id))
+    $service_id = $id;
+
+    while ($this->hasAlias($service_id))
     {
-      throw new InvalidArgumentException(sprintf('The service definition "%s" does not exist.', $id));
+      $service_id = $this->getAlias($service_id);
     }
 
-    return $this->definitions[$id];
+    if ($this->hasServiceDefinition($service_id))
+    {
+      return $this->definitions[$service_id];
+    }
+
+    throw new InvalidArgumentException(sprintf('The service definition "%s" does not exist.', $id));
   }
 
   /**
