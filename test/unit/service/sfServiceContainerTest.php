@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(27);
+$t = new lime_test(25);
 
 // __construct()
 $t->diag('__construct()');
@@ -103,30 +103,19 @@ class ProjectServiceContainer extends sfServiceContainer
     $this->__bar = new stdClass();
     $this->__foo_bar = new stdClass();
     $this->__foo_baz = new stdClass();
-  }
 
-  protected function getBarService()
-  {
-    return $this->__bar;
-  }
-
-  protected function getFooBarService()
-  {
-    return $this->__foo_bar;
-  }
-
-  protected function getFoo_BazService()
-  {
-    return $this->__foo_baz;
+    $this->setService('bar', $this->__bar);
+    $this->setService('foo_bar', $this->__foo_bar);
+    $this->setService('foo_baz', $this->__foo_baz);
   }
 }
 
 $sc = new ProjectServiceContainer();
-$t->is(spl_object_hash($sc->getService('bar')), spl_object_hash($sc->__bar), '->getService() looks for a getXXXService() method');
-$t->ok($sc->hasService('bar'), '->hasService() returns true if the service has been defined as a getXXXService() method');
+$t->is(spl_object_hash($sc->getService('bar')), spl_object_hash($sc->__bar), '->getService() returns the same service object');
+$t->ok($sc->hasService('bar'), '->hasService() returns true if the service has been defined');
 
 $sc->setService('bar', $bar = new stdClass());
-$t->is(spl_object_hash($sc->getService('bar')), spl_object_hash($bar), '->getService() prefers to return a service defined with setService() than one defined with a getXXXService() method');
+$t->is(spl_object_hash($sc->getService('bar')), spl_object_hash($bar), '->getService() prefers to return a new service object if overrided');
 
 try
 {
@@ -137,6 +126,3 @@ catch (InvalidArgumentException $e)
 {
   $t->pass('->getService() thrown an InvalidArgumentException if the service does not exist');
 }
-
-$t->is(spl_object_hash($sc->getService('foo_bar')), spl_object_hash($sc->__foo_bar), '->getService() camelizes the service id when looking for a method');
-$t->is(spl_object_hash($sc->getService('foo.baz')), spl_object_hash($sc->__foo_baz), '->getService() camelizes the service id when looking for a method');
