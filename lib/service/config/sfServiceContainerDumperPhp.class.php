@@ -340,12 +340,12 @@ EOF;
    */
   public function getParameter(\$name)
   {
-    if (parent::hasParameter(\$name) {
+    if (parent::hasParameter(\$name)) {
       return parent::getParameter(\$name);
     }
 
     switch (\$name) {
-      {$this->dumpParameterResolvers($complexParameters)};
+      {$this->dumpParameterResolvers($complexParameters)}
       
       default:
         // make parent::getParameter() throw "missing parameter" exception
