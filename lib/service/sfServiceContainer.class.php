@@ -49,8 +49,9 @@ class sfServiceContainer implements sfServiceContainerInterface
     $services   = array(),
     $count      = 0;
 
-  public function __construct()
+  public function __construct(array $parameters = array())
   {
+    $this->setParameters($parameters);
     $this->setService('service_container', $this);
   }
 
