@@ -1,17 +1,95 @@
 class ProjectServiceContainer extends sfServiceContainer
 {
-  protected $shared = array();
 
   public function __construct()
   {
-    parent::__construct($this->getDefaultParameters());
+    parent::__construct();
+
+    $this->addParameters($this->getDefaultParameters());
+  }
+
+  protected function getDefaultParameters()
+  {
+    return array('baz_class' => 'BazClass', 'foo' => 'bar');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function hasParameter($name)
+  {
+    if (parent::hasParameter($name)) {
+      return true;
+    }
+    return in_array($name, array(0 => 'baz_class', 1 => 'foo', 2 => 'foo_bar'));
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getParameter($name)
+  {
+    if (parent::hasParameter($name)) {
+      return parent::getParameter($name);
+    }
+
+    switch ($name) {
+
+      case 'foo_bar':
+         $value = $this->getService('foo_bar');
+
+         break;
+      default:
+        // make parent::getParameter() throw "missing parameter" exception
+        return parent::getParameter($name);
+    }
+    parent::setParameter($name, $value);
+    return $value;
+  }
+  /**
+   * @inheritdoc
+   */
+  public function hasService($id)
+  {
+     if (parent::hasService($id)) {
+       return true;
+     }
+
+     return in_array($id, array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'));
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getService($id)
+  {
+    if (parent::hasService($id)) {
+      return parent::getService($id);
+    }
+
+    if (in_array($id, array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'))) {
+      $method = 'get' . sfServiceContainer::camelize($id) . 'Service';
+      $instance = $this->$method();
+      return $instance;
+    }
+
+    // make parent throw "missing service" exception
+    return parent::getService($id);
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function getServiceIds()
+  {
+    return array_merge(parent::getServiceIds(), array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'));
   }
 
   protected function getFooService()
   {
-    require_once '%path%/foo.php';
+    require_once '/home/io/workspace/fos1/symfony1/test/unit/service/fixtures/includes/foo.php';
 
-    $instance = call_user_func(array('FooClass', 'getInstance'), 'foo', $this->getService('foo.baz'), array($this->getParameter('foo') => 'foo is '.$this->getParameter('foo')), true, $this);
+    $instance = call_user_func(array('FooClass', 'getInstance'), 'foo', $this->getService('foo.baz'), array('%foo%' => 'foo is %foo%'), true, $this);
     $instance->setBar('bar');
     $instance->initialize();
     sc_configure($instance);
@@ -21,31 +99,28 @@ class ProjectServiceContainer extends sfServiceContainer
 
   protected function getBarService()
   {
-    if (isset($this->shared['bar'])) return $this->shared['bar'];
-
     $instance = new FooClass('foo', $this->getService('foo.baz'), $this->getParameter('foo_bar'));
-    $this->getService('foo.baz')->configure($instance);
+    $this->getService('@foo.baz')->configure($instance);
 
-    return $this->shared['bar'] = $instance;
+    parent::setService('bar', $instance);
+    return $instance;
   }
 
   protected function getFoo_BazService()
   {
-    if (isset($this->shared['foo.baz'])) return $this->shared['foo.baz'];
+    $instance = call_user_func(array('%baz_class%', 'getInstance'));
+    call_user_func(array('%baz_class%', 'configureStatic1'), $instance);
 
-    $instance = call_user_func(array($this->getParameter('baz_class'), 'getInstance'));
-    call_user_func(array($this->getParameter('baz_class'), 'configureStatic1'), $instance);
-
-    return $this->shared['foo.baz'] = $instance;
+    parent::setService('foo.baz', $instance);
+    return $instance;
   }
 
   protected function getFooBarService()
   {
-    if (isset($this->shared['foo_bar'])) return $this->shared['foo_bar'];
-
     $instance = new FooClass();
 
-    return $this->shared['foo_bar'] = $instance;
+    parent::setService('foo_bar', $instance);
+    return $instance;
   }
 
   protected function getAliasForFooService()
@@ -53,12 +128,4 @@ class ProjectServiceContainer extends sfServiceContainer
     return $this->getService('foo');
   }
 
-  protected function getDefaultParameters()
-  {
-    return array(
-      'baz_class' => 'BazClass',
-      'foo' => 'bar',
-      'foo_bar' => new sfServiceReference('foo_bar'),
-    );
-  }
 }

@@ -39,13 +39,14 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
     ), $options);
 
     return
-      $this->startClass($options['class'], $options['base_class']).
-      $this->addConstructor($builder).
-      $this->addParametersMethods($builder) .
-      $this->addServicesMethods($builder) .
-      $this->addServices($builder).
-      $this->endClass()
-    ;
+      $this->createClass(
+        $options['class'],
+        $options['base_class'],
+        $this->addConstructor($builder)
+        . $this->addParametersMethods($builder)
+        . $this->addServicesMethods($builder)
+        . $this->addServices($builder)
+      );
   }
 
   protected function addServicesMethods(sfServiceContainerBuilder $builder)
@@ -55,20 +56,25 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 
     $known_ids = array_merge(array_keys($services), array_keys($aliases));
 
+    // short circuit
+    if (count($known_ids) === 0) {
+      return '';
+    }
+
     $code = <<<PHP
-    
+
   /**
    * @inheritdoc
    */
   public function hasService(\$id)
   {
      if (parent::hasService(\$id)) {
-       return true; 
+       return true;
      }
-     
+
      return in_array(\$id, {$this->dumpValue($known_ids)});
   }
-    
+
   /**
    * @inheritdoc
    */
@@ -77,25 +83,25 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
     if (parent::hasService(\$id)) {
       return parent::getService(\$id);
     }
-    
+
     if (in_array(\$id, {$this->dumpValue($known_ids)})) {
       \$method = 'get' . sfServiceContainer::camelize(\$id) . 'Service';
       \$instance = \$this->\$method();
       return \$instance;
     }
-    
+
     // make parent throw "missing service" exception
     return parent::getService(\$id);
   }
-  
+
   /**
    * @inheritdoc
    */
   public function getServiceIds()
-  {  
+  {
     return array_merge(parent::getServiceIds(), {$this->dumpValue($known_ids)});
   }
-    
+
 PHP;
 
     return $code;
@@ -277,11 +283,19 @@ EOF;
     return $code;
   }
 
-  protected function startClass($class, $baseClass)
+  /**
+   * @param string $class
+   * @param string $baseClass
+   * @param string $body
+   * @return string
+   */
+  protected function createClass($class, $baseClass, $body)
   {
     return <<<EOF
 class $class extends $baseClass
 {
+$body
+}
 
 EOF;
   }
@@ -298,7 +312,7 @@ EOF;
   public function __construct()
   {
     parent::__construct();
-    
+
     \$this->addParameters(\$this->getDefaultParameters());
   }
 
@@ -315,15 +329,15 @@ EOF;
     $parameters = $builder->getParameters();
 
     $primitiveParameters = array_filter($parameters, array($this, 'isPrimitiveValue'));
-    $complexParameters = array_diff($parameters, $primitiveParameters);
+    $complexParameters = array_diff_key($parameters, $primitiveParameters);
 
     return <<<EOF
-    
+
   protected function getDefaultParameters()
   {
     return {$this->dumpValue($primitiveParameters)};
   }
-    
+
   /**
    * @inheritdoc
    */
@@ -331,8 +345,8 @@ EOF;
   {
     if (parent::hasParameter(\$name)) {
       return true;
-    } 
-    return in_array(\$name, {$this->dumpValue(array_keys($parameters))}); 
+    }
+    return in_array(\$name, {$this->dumpValue(array_keys($parameters))});
   }
 
   /**
@@ -345,8 +359,7 @@ EOF;
     }
 
     switch (\$name) {
-      {$this->dumpParameterResolvers($complexParameters)}
-      
+{$this->dumpParameterResolvers($complexParameters)}
       default:
         // make parent::getParameter() throw "missing parameter" exception
         return parent::getParameter(\$name);
@@ -354,7 +367,6 @@ EOF;
     parent::setParameter(\$name, \$value);
     return \$value;
   }
-
 EOF;
   }
 
@@ -396,14 +408,6 @@ PHP;
     }
     // otherwise it's primitive
     return true;
-  }
-
-  protected function endClass()
-  {
-    return <<<EOF
-}
-
-EOF;
   }
 
   /**

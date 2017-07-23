@@ -33,8 +33,8 @@ class sfServiceContainerBuilder
   }
 
   /**
-   * @param $id
-   * @param $class
+   * @param string $id    The service identifier
+   * @param string $class A class name (FQCN) to be used to resolve requested service
    *
    * @return sfServiceDefinition
    */
