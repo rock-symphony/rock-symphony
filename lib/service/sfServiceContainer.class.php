@@ -180,16 +180,4 @@ class sfServiceContainer implements sfServiceContainerInterface
 
     throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id));
   }
-
-  /**
-   * Gets all service ids.
-   *
-   * TODO: Drop this undocumented public interface method support
-   *
-   * @return array An array of all defined service ids
-   */
-  public function getServiceIds()
-  {
-    return array_keys($this->services);
-  }
 }

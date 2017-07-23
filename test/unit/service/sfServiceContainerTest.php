@@ -85,13 +85,6 @@ $sc->foo1 = $obj1 = new stdClass();
 $t->ok($sc->hasService('foo'), '->hasService() returns true if the service is defined');
 $t->ok(!$sc->hasService('bar'), '->hasService() returns false if the service is not defined');
 
-// ->getServiceIds()
-$t->diag('->getServiceIds()');
-$sc = new sfServiceContainer();
-$sc->setService('foo', $obj = new stdClass());
-$sc->setService('bar', $obj = new stdClass());
-$t->is($sc->getServiceIds(), array('service_container', 'foo', 'bar'), '->getServiceIds() returns all defined service ids');
-
 class ProjectServiceContainer extends sfServiceContainer
 {
   public $__bar, $__foo_bar, $__foo_baz;

@@ -75,14 +75,6 @@ class ProjectServiceContainer extends sfServiceContainer
     return parent::getService($id);
   }
 
-  /**
-   * @inheritdoc
-   */
-  public function getServiceIds()
-  {
-    return array_merge(parent::getServiceIds(), array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'));
-  }
-
   protected function getFooService()
   {
     require_once '/home/io/workspace/fos1/symfony1/test/unit/service/fixtures/includes/foo.php';

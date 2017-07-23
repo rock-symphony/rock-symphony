@@ -94,14 +94,6 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
     return parent::getService(\$id);
   }
 
-  /**
-   * @inheritdoc
-   */
-  public function getServiceIds()
-  {
-    return array_merge(parent::getServiceIds(), {$this->dumpValue($known_ids)});
-  }
-
 PHP;
 
     return $code;
