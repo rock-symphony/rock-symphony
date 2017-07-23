@@ -13,19 +13,23 @@
  *
  * @package    symfony
  * @subpackage service
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id: sfServiceDefinition.php 269 2009-03-26 20:39:16Z fabien $
  */
 class sfServiceDefinition
 {
-  protected
-    $class        = null,
-    $file         = null,
-    $constructor  = null,
-    $shared       = true,
-    $arguments    = array(),
-    $calls        = array(),
-    $configurator = null;
+  /** @var string */
+  protected $class        = null;
+  /** @var string|null */
+  protected $file         = null;
+  /** @var string|null */
+  protected $constructor  = null;
+  /** @var bool */
+  protected $shared       = true;
+  /** @var array */
+  protected $arguments    = array();
+  /** @var array */
+  protected $calls        = array();
+  /** @var string|null */
+  protected $configurator = null;
 
   /**
    * Constructor.
@@ -56,7 +60,7 @@ class sfServiceDefinition
   /**
    * Gets the constructor method.
    *
-   * @return sfServiceDefinition The constructor method name
+   * @return string The constructor method name
    */
   public function getConstructor()
   {

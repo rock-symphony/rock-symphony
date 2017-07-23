@@ -49,11 +49,6 @@ class sfServiceContainer implements sfServiceContainerInterface
     $services   = array(),
     $count      = 0;
 
-  /**
-   * Constructor.
-   *
-   * @param array $parameters An array of parameters
-   */
   public function __construct(array $parameters = array())
   {
     $this->setParameters($parameters);
@@ -161,7 +156,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    */
   public function hasService($id)
   {
-    return isset($this->services[$id]) || method_exists($this, 'get'.self::camelize($id).'Service');
+    return isset($this->services[$id]);
   }
 
   /**
@@ -183,41 +178,6 @@ class sfServiceContainer implements sfServiceContainerInterface
       return $this->services[$id];
     }
 
-    if (method_exists($this, $method = 'get'.self::camelize($id).'Service'))
-    {
-      return $this->$method();
-    }
-
     throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id));
-  }
-
-  /**
-   * Gets all service ids.
-   *
-   * @return array An array of all defined service ids
-   */
-  public function getServiceIds()
-  {
-    $ids = array();
-    $r = new ReflectionClass($this);
-    foreach ($r->getMethods() as $method)
-    {
-      if (preg_match('/^get(.+)Service$/', $name = $method->getName(), $match))
-      {
-        $ids[] = self::underscore($match[1]);
-      }
-    }
-
-    return array_merge($ids, array_keys($this->services));
-  }
-
-  static public function camelize($id)
-  {
-    return strtr(ucwords(strtr($id, array('_' => ' ', '-' => ' ', '.' => '_ '))), array(' ' => ''));
-  }
-
-  static public function underscore($id)
-  {
-    return strtolower(preg_replace(array('/_/', '/([A-Z]+)([A-Z][a-z])/', '/([a-z\d])([A-Z])/'), array('.', '\\1_\\2', '\\1_\\2'), $id));
   }
 }
