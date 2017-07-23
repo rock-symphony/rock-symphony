@@ -1,7 +1,12 @@
 CHANGELOG
 =========
 
-08/07/2017: Version 1.7.0 (IN DEVELOPMENT)
+24/07/2016: Version 2.0.0
+
+* Refactor Service Container related functionality (loader, dumper, container itself)
+* Drop `sfServiceContainer::getServiceIds` method (it wasn't part of sfServiceContainerInterface)
+
+08/07/2017: Version 1.7.0
 -------------------------
 
 * Drop swiftmailer git sub-module
