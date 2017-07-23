@@ -40,7 +40,5 @@ class ProjectServiceContainer extends sfServiceContainer
         // make parent::getParameter() throw "missing parameter" exception
         return parent::getParameter($name);
     }
-    parent::setParameter($name, $value);
-    return $value;
   }
 }
