@@ -30,7 +30,7 @@ $t->is($builder->getServiceDefinition('foobar'), $foo, '->getServiceDefinition()
 $t->ok($builder->setServiceDefinition('foobar', $foo = new sfServiceDefinition('FooBarClass')) === $foo, '->setServiceDefinition() implements a fluid interface by returning the service reference');
 
 $builder->setServiceDefinition('foobar', $def = new sfServiceDefinition('FooBarClass'));
-$t->is($builder->getServiceDefinitions(), array_merge($definitions, ['foobar' => $def]), '->setServiceDefinition() add a service definition');
+$t->is($builder->getServiceDefinitions(), array_merge($definitions, array('foobar' => $def)), '->setServiceDefinition() add a service definition');
 
 try
 {
