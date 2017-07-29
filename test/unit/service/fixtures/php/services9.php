@@ -77,7 +77,7 @@ class ProjectServiceContainer extends sfServiceContainer
 
   protected function getFooService()
   {
-    require_once '%path%/fixtures/includes/foo.php';
+    require_once '%path%/foo.php';
 
     $instance = call_user_func(array('FooClass', 'getInstance'), 'foo', $this->getService('foo.baz'), array('%foo%' => 'foo is %foo%'), true, $this);
     $instance->setBar('bar');
