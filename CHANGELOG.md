@@ -3,7 +3,7 @@ CHANGELOG
 
 24/07/2016: Version 2.0.0
 
-* Refactor Service Container related functionality (loader, dumper, container itself)
+* Refactor Service Container related functionality (loader, dumper, container itself). If you had some code overriding/hacking `services.yml` handling, it will be broken now.
 * Drop `sfServiceContainer::getServiceIds` method (it wasn't part of sfServiceContainerInterface)
 
 08/07/2017: Version 1.7.0
