@@ -9,20 +9,17 @@
  */
 
 // Try autoloading using composer if available.
-if (!file_exists($autoload = __DIR__.'/../../../../autoload.php'))
+if (file_exists(__DIR__.'/../../../../vendor/autoload.php'))
 {
-  $autoload = __DIR__.'/../../autoload.php';
+  require_once __DIR__.'/../../../../vendor/autoload.php';
 }
-
-// Fall back to classic Symfony loading
-if (!file_exists($autoload))
+elseif (file_exists(__DIR__.'/../../vendor/autoload.php'))
 {
-  require_once(__DIR__.'/../autoload/sfCoreAutoload.class.php');
-  sfCoreAutoload::register();
+  require_once __DIR__.'/../../vendor/autoload.php';
 }
 else
 {
-  require_once $autoload;
+  throw new RuntimeException('Cannot locate composer\'s vendor/autoload.php');
 }
 
 try

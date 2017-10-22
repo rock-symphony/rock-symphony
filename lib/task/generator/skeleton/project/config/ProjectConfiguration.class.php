@@ -1,7 +1,6 @@
 <?php
 
-require_once ##SYMFONY_CORE_AUTOLOAD##;
-sfCoreAutoload::register();
+require_once ##COMPOSER_AUTOLOAD##;
 
 class ProjectConfiguration extends sfProjectConfiguration
 {
