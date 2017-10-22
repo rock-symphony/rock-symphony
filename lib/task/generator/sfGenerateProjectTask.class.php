@@ -91,12 +91,12 @@ EOF;
     // create basic project structure
     $this->installDir(__DIR__.'/skeleton/project');
 
-    // update ProjectConfiguration class (use a relative path when the symfony core is nested within the project)
-    $symfonyCoreAutoload = 0 === strpos(sfConfig::get('sf_symfony_lib_dir'), sfConfig::get('sf_root_dir')) ?
-      sprintf('__DIR__.\'/..%s/autoload/sfCoreAutoload.class.php\'', str_replace(sfConfig::get('sf_root_dir'), '', sfConfig::get('sf_symfony_lib_dir'))) :
-      var_export(sfConfig::get('sf_symfony_lib_dir').'/autoload/sfCoreAutoload.class.php', true);
+    // try to locate vendor/autoload.php
+    $composerAutoload = $this->locateComposerAutoloadFile();
 
-    $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array('SYMFONY_CORE_AUTOLOAD' => str_replace('\\', '/', $symfonyCoreAutoload)));
+    $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array(
+      'COMPOSER_AUTOLOAD' => var_export(str_replace('\\', '/', $composerAutoload), true),
+    ));
 
     $this->tokens = array(
       'PROJECT_NAME' => $this->arguments['name'],
@@ -140,5 +140,21 @@ EOF;
       return ini_get('allow_url_fopen') && ini_get('allow_url_include');
     }
     return true;
+  }
+
+  private function locateComposerAutoloadFile()
+  {
+    $locations = array(
+      __DIR__ . '/../../../vendor/autoload.php',
+      __DIR__ . '/../../../../../vendor/autoload.php',
+    );
+
+    foreach ($locations as $location) {
+      if (file_exists($location)) {
+        return realpath($location);
+      }
+    }
+
+    throw new sfCommandException('Cannot locate composer\'s vendor/autoload.php file');
   }
 }

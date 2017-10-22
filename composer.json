@@ -10,7 +10,17 @@
     },
     "type": "library",
     "autoload": {
-        "files": ["autoload.php"]
+        "classmap": ["lib"],
+        "exclude-from-classmap": [
+            "/lib/command/cli.php",
+            "/lib/config/config",
+            "/lib/controller/default",
+            "/lib/exception/data",
+            "/lib/helper",
+            "/lib/i18n/data",
+            "/lib/task/generator/skeleton",
+            "/lib/test/w3"
+        ]
     },
     "suggest": {
         "rock-symphony/sf-doctrine-plugin": "Doctrine1 plugin",
