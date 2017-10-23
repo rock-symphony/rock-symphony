@@ -5,6 +5,7 @@ CHANGELOG
 
 * Refactor Service Container related functionality (loader, dumper, container itself). If you had some code overriding/hacking `services.yml` handling, it will be broken now.
 * Drop `sfServiceContainer::getServiceIds` method (it wasn't part of sfServiceContainerInterface)
+* Drop `sfCoreAutoload` autoloading functionality. Please rely on Composer autoload.php instead.
 
 08/07/2017: Version 1.7.0
 -------------------------
