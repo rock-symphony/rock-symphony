@@ -94,9 +94,9 @@ EOF;
     // try to locate vendor/autoload.php
     $composerAutoload = $this->locateComposerAutoloadFile();
 
-    $this->replaceTokens(array(sfConfig::get('sf_config_dir')), array(
+    $this->replaceTokens([sfConfig::get('sf_config_dir')], [
       'COMPOSER_AUTOLOAD' => var_export(str_replace('\\', '/', $composerAutoload), true),
-    ));
+    ]);
 
     $this->tokens = array(
       'PROJECT_NAME' => $this->arguments['name'],
@@ -144,10 +144,10 @@ EOF;
 
   private function locateComposerAutoloadFile()
   {
-    $locations = array(
+    $locations = [
       __DIR__ . '/../../../vendor/autoload.php',
       __DIR__ . '/../../../../../vendor/autoload.php',
-    );
+    ];
 
     foreach ($locations as $location) {
       if (file_exists($location)) {
