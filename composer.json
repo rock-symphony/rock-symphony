@@ -10,6 +10,7 @@
     },
     "type": "library",
     "autoload": {
+        "files": ["lib/SYMFONY_VERSION.php"],
         "classmap": ["lib"],
         "exclude-from-classmap": [
             "/lib/command/cli.php",
