@@ -24,7 +24,6 @@ class sfSymfonyTestTask extends sfTask
   protected function configure()
   {
     $this->addOptions(array(
-      new sfCommandOption('update-autoloader', 'u', sfCommandOption::PARAMETER_NONE, 'Update the sfCoreAutoload class'),
       new sfCommandOption('only-failed', 'f', sfCommandOption::PARAMETER_NONE, 'Only run tests that failed last time'),
       new sfCommandOption('xml', null, sfCommandOption::PARAMETER_REQUIRED, 'The file name for the JUnit compatible XML log file'),
       new sfCommandOption('rebuild-all', null, sfCommandOption::PARAMETER_NONE, 'Rebuild all generated fixture files'),
@@ -57,13 +56,6 @@ EOF;
       {
         unlink($file);
       }
-    }
-
-    // update sfCoreAutoload
-    if ($options['update-autoloader'])
-    {
-      require_once(__DIR__.'/../../autoload/sfCoreAutoload.class.php');
-      sfCoreAutoload::make();
     }
 
     $status = false;
