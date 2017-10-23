@@ -1,7 +1,6 @@
 <?php
 
-require_once __DIR__.'/../../../../lib/autoload/sfCoreAutoload.class.php';
-sfCoreAutoload::register();
+require_once __DIR__ . '/../../../../vendor/autoload.php';
 
 class ProjectConfiguration extends sfProjectConfiguration
 {
