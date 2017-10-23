@@ -9,11 +9,6 @@
  */
 
 /**
- * The current symfony version.
- */
-define('SYMFONY_VERSION', '1.7.1-dev');
-
-/**
  * sfCoreAutoload class.
  *
  * This class is a singleton as PHP seems to be unable to register 2 autoloaders that are instances
@@ -370,18 +365,16 @@ class sfCoreAutoload
     'sfroutecollection' => 'routing/sfRouteCollection.class.php',
     'sfrouting' => 'routing/sfRouting.class.php',
     'sfservicecontainer' => 'service/sfServiceContainer.class.php',
-    'sfservicecontainerbuilder' => 'service/sfServiceContainerBuilder.class.php',
-    'sfservicecontainerdumper' => 'service/sfServiceContainerDumper.class.php',
-    'sfservicecontainerdumpergraphviz' => 'service/sfServiceContainerDumperGraphviz.class.php',
-    'sfservicecontainerdumperinterface' => 'service/sfServiceContainerDumperInterface.class.php',
-    'sfservicecontainerdumperphp' => 'service/sfServiceContainerDumperPhp.class.php',
+    'sfservicecontainerbuilder' => 'service/config/sfServiceContainerBuilder.class.php',
+    'sfservicecontainerdumperinterface' => 'service/config/sfServiceContainerDumperInterface.class.php',
+    'sfservicecontainerdumperphp' => 'service/config/sfServiceContainerDumperPhp.class.php',
     'sfservicecontainerinterface' => 'service/sfServiceContainerInterface.class.php',
-    'sfservicecontainerloader' => 'service/sfServiceContainerLoader.class.php',
-    'sfservicecontainerloaderarray' => 'service/sfServiceContainerLoaderArray.class.php',
-    'sfservicecontainerloaderinterface' => 'service/sfServiceContainerLoaderInterface.class.php',
-    'sfservicedefinition' => 'service/sfServiceDefinition.class.php',
-    'sfserviceparameter' => 'service/sfServiceParameter.class.php',
-    'sfservicereference' => 'service/sfServiceReference.class.php',
+    'sfservicecontainerconfigparserinterface' => 'service/config/sfServiceContainerConfigParserInterface.class.php',
+    'sfservicecontainerconfigparser' => 'service/config/sfServiceContainerConfigParser.class.php',
+    'sfservicedefinition' => 'service/config/definition/sfServiceDefinition.class.php',
+    'sfserviceparameter' => 'service/config/definition/sfServiceParameter.class.php',
+    'sfserviceparameterstringexpression' => 'service/config/definition/sfServiceParameterStringExpression.class.php',
+    'sfservicereference' => 'service/config/definition/sfServiceReference.class.php',
     'sfcachesessionstorage' => 'storage/sfCacheSessionStorage.class.php',
     'sfdatabasesessionstorage' => 'storage/sfDatabaseSessionStorage.class.php',
     'sfmysqlsessionstorage' => 'storage/sfMySQLSessionStorage.class.php',
