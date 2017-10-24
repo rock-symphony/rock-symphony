@@ -43,97 +43,11 @@
  */
 class sfServiceContainer implements sfServiceContainerInterface
 {
-  protected
-    $serviceIds = array(),
-    $parameters = array(),
-    $services   = array(),
-    $count      = 0;
+  protected $services = [];
 
-  public function __construct(array $parameters = array())
+  public function __construct()
   {
-    $this->setParameters($parameters);
     $this->setService('service_container', $this);
-  }
-
-  /**
-   * Sets the service container parameters.
-   *
-   * @param array $parameters An array of parameters
-   */
-  public function setParameters(array $parameters)
-  {
-    $this->parameters = array();
-    foreach ($parameters as $key => $value)
-    {
-      $this->parameters[strtolower($key)] = $value;
-    }
-  }
-
-  /**
-   * Adds parameters to the service container parameters.
-   *
-   * @param array $parameters An array of parameters
-   */
-  public function addParameters(array $parameters)
-  {
-    $this->setParameters(array_merge($this->parameters, $parameters));
-  }
-
-  /**
-   * Gets the service container parameters.
-   *
-   * @return array An array of parameters
-   */
-  public function getParameters()
-  {
-    return $this->parameters;
-  }
-
-  /**
-   * Gets a service container parameter.
-   *
-   * @param  string $name The parameter name
-   *
-   * @return mixed  The parameter value
-   *
-   * @throw  InvalidArgumentException if the parameter is not defined
-   */
-  public function getParameter($name)
-  {
-    if ($this->hasParameter($name))
-    {
-      return $this->parameters[strtolower($name)];
-    }
-
-    if (sfConfig::has($name))
-    {
-      return sfConfig::get($name);
-    }
-
-    throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
-  }
-
-  /**
-   * Sets a service container parameter.
-   *
-   * @param string $name   The parameter name
-   * @param mixed  $value  The parameter value
-   */
-  public function setParameter($name, $value)
-  {
-    $this->parameters[strtolower($name)] = $value;
-  }
-
-  /**
-   * Returns true if a parameter name is defined.
-   *
-   * @param  string  $name       The parameter name
-   *
-   * @return Boolean true if the parameter name is defined, false otherwise
-   */
-  public function hasParameter($name)
-  {
-    return array_key_exists(strtolower($name), $this->parameters);
   }
 
   /**

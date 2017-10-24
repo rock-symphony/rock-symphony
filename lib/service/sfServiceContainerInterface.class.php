@@ -19,58 +19,6 @@
 interface sfServiceContainerInterface
 {
   /**
-   * Sets the service container parameters.
-   * All previously defined parameters would be removed.
-   *
-   * @see addParameters()
-   *
-   * @param array $parameters An array of parameters
-   */
-  public function setParameters(array $parameters);
-
-  /**
-   * Adds parameters to the service container parameters.
-   *
-   * @param array $parameters An array of parameters
-   */
-  public function addParameters(array $parameters);
-
-  /**
-   * Gets the service container parameters.
-   *
-   * @return array An array of parameters
-   */
-  public function getParameters();
-
-  /**
-   * Gets a service container parameter.
-   *
-   * @param  string $name The parameter name
-   *
-   * @return mixed  The parameter value
-   *
-   * @throw  InvalidArgumentException if the parameter is not defined
-   */
-  public function getParameter($name);
-
-  /**
-   * Sets a service container parameter.
-   *
-   * @param string $name  The parameter name
-   * @param mixed  $value The parameter value
-   */
-  public function setParameter($name, $value);
-
-  /**
-   * Returns true if a parameter name is defined.
-   *
-   * @param  string  $name       The parameter name
-   *
-   * @return Boolean true if the parameter name is defined, false otherwise
-   */
-  public function hasParameter($name);
-
-  /**
    * Sets a service.
    *
    * @param string $id      The service identifier

@@ -42,9 +42,7 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
       $this->createClass(
         $options['class'],
         $options['base_class'],
-        $this->addConstructor($builder)
-        . $this->addParametersMethods($builder)
-        . $this->addServicesMethods($builder)
+        $this->addServicesMethods($builder)
         . $this->addServices($builder)
       );
   }
@@ -292,114 +290,6 @@ $body
 EOF;
   }
 
-  protected function addConstructor(sfServiceContainerBuilder $builder)
-  {
-    if (!$builder->getParameters())
-    {
-      return '';
-    }
-
-    return <<<EOF
-
-  public function __construct()
-  {
-    parent::__construct();
-
-    \$this->addParameters(\$this->getDefaultParameters());
-  }
-
-EOF;
-  }
-
-  protected function addParametersMethods(sfServiceContainerBuilder $builder)
-  {
-    if (!$builder->getParameters())
-    {
-      return '';
-    }
-
-    $parameters = $builder->getParameters();
-
-    $primitiveParameters = array_filter($parameters, array($this, 'isPrimitiveValue'));
-    $complexParameters = array_diff_key($parameters, $primitiveParameters);
-
-    return <<<EOF
-
-  protected function getDefaultParameters()
-  {
-    return {$this->dumpValue($primitiveParameters)};
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function hasParameter(\$name)
-  {
-    if (parent::hasParameter(\$name)) {
-      return true;
-    }
-    return in_array(\$name, {$this->dumpValue(array_keys($parameters))});
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function getParameter(\$name)
-  {
-    if (parent::hasParameter(\$name)) {
-      return parent::getParameter(\$name);
-    }
-
-    switch (\$name) {
-{$this->dumpParameterResolvers($complexParameters)}
-      default:
-        // make parent::getParameter() throw "missing parameter" exception
-        return parent::getParameter(\$name);
-    }
-  }
-EOF;
-  }
-
-  protected function dumpParameterResolvers($parameters)
-  {
-    $cases = array();
-
-    foreach ($parameters as $key => $value)
-    {
-      $key = var_export($key, true);
-      $value = $this->dumpValue($value);
-
-      $cases[] = <<<PHP
-      case {$key}:
-         \$value = $value;\n
-         break;
-PHP;
-    }
-
-    return "\n" . implode("\n", $cases);
-  }
-
-  /**
-   * @internal Do not use this method from outside. It's not a part of API.
-   *
-   * @param mixed $value
-   * @return bool
-   */
-  public function isPrimitiveValue($value)
-  {
-    if (is_array($value)) {
-      foreach ($value as $v) {
-        if (!$this->isPrimitiveValue($v)) {
-          return false;
-        }
-      }
-    } elseif (is_object($value)) { // to cover sfServiceReference/sfServiceParameter/sfServiceParameterStringException
-      return false;
-    }
-    // otherwise it's primitive
-    return true;
-  }
-
   /**
    * Dump any supported dumpable value to string representation
    *
@@ -410,7 +300,7 @@ PHP;
    * @param mixed $value
    * @return string
    */
-  public function dumpValue($value)
+  protected function dumpValue($value)
   {
     if (is_array($value))
     {
@@ -428,12 +318,12 @@ PHP;
     }
     elseif ($value instanceof sfServiceParameter)
     {
-      return sprintf("\$this->getParameter('%s')", strtolower($value->getParameterName()));
+      return sprintf("sfConfig::get('%s')", strtolower($value->getParameterName()));
     }
     elseif ($value instanceof sfServiceParameterStringExpression)
     {
       // concat dumpValue of each expression part
-      return implode('.', array_map(array($this, 'dumpValue'), $value->getParts()));
+      return implode('.', array_map(function($value) { return $this->dumpValue($value); }, $value->getParts()));
     }
     elseif (is_object($value) || is_resource($value))
     {

@@ -10,70 +10,12 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(24);
+$t = new lime_test(8);
 
 // __construct()
 $t->diag('__construct()');
 $sc = new sfServiceContainer();
 $t->is(spl_object_hash($sc->getService('service_container')), spl_object_hash($sc), '__construct() automatically registers itself as a service');
-
-$sc = new sfServiceContainer(array('foo' => 'bar'));
-$t->is($sc->getParameters(), array('foo' => 'bar'), '__construct() takes an array of parameters as its first argument');
-
-// ->setParameters() ->getParameters()
-$t->diag('->setParameters() ->getParameters()');
-
-$sc = new sfServiceContainer();
-$t->is($sc->getParameters(), array(), '->getParameters() returns an empty array if no parameter has been defined');
-
-$sc->setParameters(array('foo' => 'bar'));
-$t->is($sc->getParameters(), array('foo' => 'bar'), '->setParameters() sets the parameters');
-
-$sc->setParameters(array('bar' => 'foo'));
-$t->is($sc->getParameters(), array('bar' => 'foo'), '->setParameters() overrides the previous defined parameters');
-
-$sc->setParameters(array('Bar' => 'foo'));
-$t->is($sc->getParameters(), array('bar' => 'foo'), '->setParameters() converts the key to lowercase');
-
-// ->setParameter() ->getParameter()
-$t->diag('->setParameter() ->getParameter() ');
-
-$sc = new sfServiceContainer(array('foo' => 'bar'));
-$sc->setParameter('bar', 'foo');
-$t->is($sc->getParameter('bar'), 'foo', '->setParameter() sets the value of a new parameter');
-$t->is($sc->getParameter('bar'), 'foo', '->getParameter() gets the value of a parameter');
-
-$sc->setParameter('foo', 'baz');
-$t->is($sc->getParameter('foo'), 'baz', '->setParameter() overrides previously set parameter');
-
-$sc->setParameter('Foo', 'baz1');
-$t->is($sc->getParameter('foo'), 'baz1', '->setParameter() converts the key to lowercase');
-$t->is($sc->getParameter('FOO'), 'baz1', '->getParameter() converts the key to lowercase');
-
-try
-{
-  $sc->getParameter('baba');
-  $t->fail('->getParameter() thrown an InvalidArgumentException if the key does not exist');
-}
-catch (InvalidArgumentException $e)
-{
-  $t->pass('->getParameter() thrown an InvalidArgumentException if the key does not exist');
-}
-
-// ->hasParameter()
-$t->diag('->hasParameter()');
-$sc = new sfServiceContainer(array('foo' => 'bar'));
-$t->ok($sc->hasParameter('foo'), '->hasParameter() returns true if a parameter is defined');
-$t->ok($sc->hasParameter('Foo'), '->hasParameter() converts the key to lowercase');
-$t->ok(!$sc->hasParameter('bar'), '->hasParameter() returns false if a parameter is not defined');
-
-// ->addParameters()
-$t->diag('->addParameters()');
-$sc = new sfServiceContainer(array('foo' => 'bar'));
-$sc->addParameters(array('bar' => 'foo'));
-$t->is($sc->getParameters(), array('foo' => 'bar', 'bar' => 'foo'), '->addParameters() adds parameters to the existing ones');
-$sc->addParameters(array('Bar' => 'fooz'));
-$t->is($sc->getParameters(), array('foo' => 'bar', 'bar' => 'fooz'), '->addParameters() converts keys to lowercase');
 
 // ->setService() ->hasService() ->getService()
 $t->diag('->setService() ->hasService() ->getService()');

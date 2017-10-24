@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(19);
+$t = new lime_test(17);
 
 $parser = new sfServiceContainerConfigParser();
 
@@ -42,17 +42,10 @@ catch (InvalidArgumentException $e)
 $t->diag('->parse # parameters');
 
 $builder = $parser->parse(array());
-$t->is($builder->getParameters(), array(), '->parse defines empty parameters array for an empty array definition');
-
-$builder = $parser->parse(sfYaml::load(__DIR__.'/fixtures/yaml/services2.yml'));
-$t->is($builder->getParameters(), array('foo' => 'bar', 'values' => array(true, false, 0, 1000.3), 'bar' => 'foo', 'foo_bar' => new sfServiceReference('foo_bar')), '->parse converts array keys to lowercase');
-
-// ->parse # services
-$builder = $parser->parse(sfYaml::load(__DIR__.'/fixtures/yaml/services2.yml'));
-$t->is($builder->getServiceDefinitions(), array(), '->parse return empty services array for an empty array definition');
+$t->is($builder->getServiceDefinitions(), array(), '->parse defines no services');
 
 $t->diag('->parse # services');
-$builder = $parser->parse(sfYaml::load(__DIR__.'/fixtures/yaml/services3.yml'));
+$builder = $parser->parse(sfYaml::load(__DIR__.'/fixtures/yaml/services2.yml'));
 $t->ok($builder->hasServiceDefinition('foo'), '->parse parses service elements');
 $t->is(get_class($builder->getServiceDefinition('foo')), 'sfServiceDefinition', '->parse converts service element to sfServiceDefinition instances');
 $t->is($builder->getServiceDefinition('foo')->getClass(), 'FooClass', '->parse parses the class attribute');

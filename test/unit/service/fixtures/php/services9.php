@@ -1,49 +1,6 @@
 class ProjectServiceContainer extends sfServiceContainer
 {
 
-  public function __construct()
-  {
-    parent::__construct();
-
-    $this->addParameters($this->getDefaultParameters());
-  }
-
-  protected function getDefaultParameters()
-  {
-    return array('baz_class' => 'BazClass', 'foo' => 'bar');
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function hasParameter($name)
-  {
-    if (parent::hasParameter($name)) {
-      return true;
-    }
-    return in_array($name, array(0 => 'baz_class', 1 => 'foo', 2 => 'foo_bar'));
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function getParameter($name)
-  {
-    if (parent::hasParameter($name)) {
-      return parent::getParameter($name);
-    }
-
-    switch ($name) {
-
-      case 'foo_bar':
-         $value = $this->getService('foo_bar');
-
-         break;
-      default:
-        // make parent::getParameter() throw "missing parameter" exception
-        return parent::getParameter($name);
-    }
-  }
   /**
    * @inheritdoc
    */
@@ -89,7 +46,7 @@ class ProjectServiceContainer extends sfServiceContainer
 
   protected function getBarService()
   {
-    $instance = new FooClass('foo', $this->getService('foo.baz'), $this->getParameter('foo_bar'));
+    $instance = new FooClass('foo', $this->getService('foo.baz'), sfConfig::get('foo_bar'));
     $this->getService('@foo.baz')->configure($instance);
 
     parent::setService('bar', $instance);
