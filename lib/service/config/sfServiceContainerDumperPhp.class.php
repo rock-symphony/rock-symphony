@@ -300,7 +300,7 @@ EOF;
    * @param mixed $value
    * @return string
    */
-  public function dumpValue($value)
+  protected function dumpValue($value)
   {
     if (is_array($value))
     {
@@ -323,7 +323,7 @@ EOF;
     elseif ($value instanceof sfServiceParameterStringExpression)
     {
       // concat dumpValue of each expression part
-      return implode('.', array_map(array($this, 'dumpValue'), $value->getParts()));
+      return implode('.', array_map(function($value) { return $this->dumpValue($value); }, $value->getParts()));
     }
     elseif (is_object($value) || is_resource($value))
     {
