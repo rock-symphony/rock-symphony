@@ -36,17 +36,16 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
    */
   public function parse(array $config)
   {
-    list($definitions, $parameters) = $this->doParse($config);
+    $definitions = $this->doParse($config);
 
-    return $this->doBuild($definitions, $parameters);
+    return $this->doBuild($definitions);
   }
 
   /**
    * @param array $definitions
-   * @param array $parameters
    * @return sfServiceContainerBuilder
    */
-  protected function doBuild($definitions, $parameters)
+  protected function doBuild($definitions)
   {
     foreach ($definitions as $id => $definition)
     {
@@ -60,14 +59,6 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
       }
     }
 
-    foreach ($parameters as $key => $value)
-    {
-      // Do not override already defined builder parameters (not sure why, but it's required for BC)
-      if (! $this->builder->hasParameter($key)) {
-        $this->builder->setParameter($key, $value);
-      }
-    }
-
     return $this->builder;
   }
 
@@ -76,22 +67,18 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
    *
    * @throws InvalidArgumentException if $config value or structure is invalid
    *
-   * @return array
+   * @return array of sfServiceDefinition|string
    */
   protected function doParse($config)
   {
     $this->validate($config);
 
-    $parameters = array();
     $definitions = array();
 
     // parameters
     if (isset($config['parameters']))
     {
-      foreach ($config['parameters'] as $key => $value)
-      {
-        $parameters[strtolower($key)] = $this->parseParameterValue($value);
-      }
+      throw new InvalidArgumentException('"parameters" are no longer supported. Please move those values to sfConfig');
     }
 
     // services
@@ -103,7 +90,7 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
       }
     }
 
-    return array($definitions, $parameters);
+    return $definitions;
   }
 
   protected function validate($config)

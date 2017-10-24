@@ -17,20 +17,10 @@
  */
 class sfServiceContainerBuilder
 {
-  /** @var mixed[] */
-  protected $parameters = array();
   /** @var sfServiceDefinition[] */
   protected $definitions = array();
   /** @var string[] */
   protected $aliases = array();
-
-  /**
-   * @param mixed[] $parameters
-   */
-  public function __construct(array $parameters = array())
-  {
-    $this->parameters = $parameters;
-  }
 
   /**
    * @param string $id    The service identifier
@@ -159,49 +149,5 @@ class sfServiceContainerBuilder
     });
 
     return $aliases;
-  }
-
-  /**
-   * Sets a service container parameter.
-   *
-   * @param string $name The parameter name
-   * @param mixed $value The parameter value
-   */
-  public function setParameter($name, $value)
-  {
-    $this->parameters[$name] = $value;
-  }
-
-  /**
-   * Returns true if a service parameter exists
-   *
-   * @param string $name The parameter name
-   *
-   * @return boolean
-   */
-  public function hasParameter($name)
-  {
-    return isset($this->parameters[$name]);
-  }
-
-  /**
-   * Sets a service container parameter.
-   *
-   * @param string $name The parameter name
-   * @return mixed
-   */
-  public function getParameter($name)
-  {
-    return $this->parameters[$name];
-  }
-
-  /**
-   * Gets the service container parameters.
-   *
-   * @return array An array of parameters
-   */
-  public function getParameters()
-  {
-    return $this->parameters;
   }
 }
