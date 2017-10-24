@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\ServiceContainer\Exceptions\BindingNotFoundException;
+use RockSymphony\ServiceContainer\ServiceContainer;
+
 /**
  * sfServiceContainer is a dependency injection container.
  *
@@ -43,11 +46,13 @@
  */
 class sfServiceContainer implements sfServiceContainerInterface
 {
-  protected $services = [];
+  /** @var ServiceContainer */
+  protected $container;
 
   public function __construct()
   {
-    $this->setService('service_container', $this);
+    $this->container = new ServiceContainer();
+    $this->container->set('service_container', $this);
   }
 
   /**
@@ -58,7 +63,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    */
   public function setService($id, $service)
   {
-    $this->services[$id] = $service;
+    $this->container->set($id, $service);
   }
 
   /**
@@ -70,7 +75,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    */
   public function hasService($id)
   {
-    return isset($this->services[$id]);
+    return $this->container->has($id);
   }
 
   /**
@@ -83,15 +88,15 @@ class sfServiceContainer implements sfServiceContainerInterface
    *
    * @return object The associated service
    *
-   * @throw InvalidArgumentException if the service is not defined
+   * @throws InvalidArgumentException if the service is not defined
+   * @throws \RockSymphony\ServiceContainer\Exceptions\BindingResolutionException if an error occurred during resolution
    */
   public function getService($id)
   {
-    if (isset($this->services[$id]))
-    {
-      return $this->services[$id];
+    try {
+      return $this->container->get($id);
+    } catch (BindingNotFoundException $exception) {
+      throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id), 0, $exception);
     }
-
-    throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id));
   }
 }
