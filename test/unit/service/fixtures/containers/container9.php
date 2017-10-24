@@ -25,9 +25,6 @@ $container->
   setConfigurator(array('%baz_class%', 'configureStatic1'))
 ;
 $container->registerServiceClass('foo_bar', 'FooClass');
-$container->setParameter('baz_class', 'BazClass');
-$container->setParameter('foo', 'bar');
-$container->setParameter('foo_bar', new sfServiceReference('foo_bar'));
 $container->setAlias('alias_for_foo', 'foo');
 
 return $container;

@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(5);
+$t = new lime_test(4);
 
 // ->dump()
 $t->diag('->dump()');
@@ -19,11 +19,6 @@ $dumper = new sfServiceContainerDumperPhp();
 
 $t->is($dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services1.php'), '->dump() dumps an empty container as an empty PHP class');
 $t->is($dumper->dump($builder, array('class' => 'Container', 'base_class' => 'AbstractContainer')), file_get_contents(__DIR__.'/fixtures/php/services1-1.php'), '->dump() takes a class and a base_class options');
-
-// ->addParameters()
-$t->diag('->addParameters()');
-$builder = include __DIR__.'/fixtures/containers/container8.php';
-$t->is($dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services8.php'), '->dump() dumps parameters');
 
 // ->addService()
 $t->diag('->addService()');
