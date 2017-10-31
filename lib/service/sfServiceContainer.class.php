@@ -14,11 +14,9 @@ use RockSymphony\ServiceContainer\ServiceContainer;
 /**
  * sfServiceContainer is a dependency injection container.
  *
- * It gives access to object instances (services), and parameters.
+ * It gives access to object instances services.
  *
- * Services and parameters are simple key/pair stores.
- *
- * Parameters keys are case insensitive.
+ * Services are stored as key/pair values. Mostly with deferred resolution.
  *
  * A service id can contain lowercased letters, digits, underscores, and dots.
  * Underscores are used to separate words, and dots to group services
@@ -28,15 +26,6 @@ use RockSymphony\ServiceContainer\ServiceContainer;
  *   <li>request</li>
  *   <li>mysql_session_storage</li>
  *   <li>symfony.mysql_session_storage</li>
- * </ul>
- *
- * A service can also be defined by creating a method named
- * getXXXService(), where XXX is the camelized version of the id:
- *
- * <ul>
- *   <li>request -> getRequestService()</li>
- *   <li>mysql_session_storage -> getMysqlSessionStorageService()</li>
- *   <li>symfony.mysql_session_storage -> getSymfony_MysqlSessionStorageService()</li>
  * </ul>
  *
  * @package    symfony
@@ -80,9 +69,6 @@ class sfServiceContainer implements sfServiceContainerInterface
 
   /**
    * Gets a service.
-   *
-   * If a service is both defined through a setService() method and
-   * with a set*Service() method, the former has always precedence.
    *
    * @param  string $id The service identifier
    *
