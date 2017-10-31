@@ -8,8 +8,7 @@
  * file that was distributed with this source code.
  */
 
-use RockSymphony\ServiceContainer\Exceptions\BindingNotFoundException;
-use RockSymphony\ServiceContainer\ServiceContainer;
+use RockSymphony\ServiceContainer\ServiceContainer as RockSymfonyContainer;
 
 /**
  * sfServiceContainer is a dependency injection container.
@@ -33,56 +32,15 @@ use RockSymphony\ServiceContainer\ServiceContainer;
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfServiceContainer implements sfServiceContainerInterface
+class sfServiceContainer extends RockSymfonyContainer implements sfServiceContainerInterface
 {
-  /** @var ServiceContainer */
-  protected $container;
-
   public function __construct()
   {
-    $this->container = new ServiceContainer();
-    $this->container->set('service_container', $this);
-  }
+    // auto-assign self to service_container
+    $this->set('service_container', $this);
 
-  /**
-   * Sets a service.
-   *
-   * @param string $id      The service identifier
-   * @param object $service The service instance
-   */
-  public function set($id, $service)
-  {
-    $this->container->set($id, $service);
-  }
-
-  /**
-   * Returns true if the given service is defined.
-   *
-   * @param  string  $id      The service identifier
-   *
-   * @return Boolean true if the service is defined, false otherwise
-   */
-  public function has($id)
-  {
-    return $this->container->has($id);
-  }
-
-  /**
-   * Gets a service.
-   *
-   * @param  string $id The service identifier
-   *
-   * @return object The associated service
-   *
-   * @throws InvalidArgumentException if the service is not defined
-   * @throws \RockSymphony\ServiceContainer\Exceptions\BindingResolutionException if an error occurred during resolution
-   */
-  public function get($id)
-  {
-    try {
-      return $this->container->get($id);
-    } catch (BindingNotFoundException $exception) {
-      throw new InvalidArgumentException(sprintf('The service "%s" does not exist.', $id), 0, $exception);
-    }
+    // add aliases to resolve by implemented interfaces
+    $this->alias('service_container', '\Psr\Container\ContainerInterface');
+    $this->alias('service_container', '\sfServiceContainerInterface');
   }
 }

@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use Psr\Container\ContainerInterface as PsrContainer;
+use RockSymphony\ServiceContainer\Interfaces\ServiceContainerInterface as RockSymphonyContainer;
+
 /**
  * sfServiceContainerInterface is the interface implemented by service container classes.
  *
@@ -16,7 +19,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-interface sfServiceContainerInterface extends \Psr\Container\ContainerInterface
+interface sfServiceContainerInterface extends PsrContainer, RockSymphonyContainer
 {
 
 }
