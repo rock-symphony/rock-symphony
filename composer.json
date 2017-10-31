@@ -5,7 +5,8 @@
     "require": {
         "php": ">=5.4.0 <7.3",
         "swiftmailer/swiftmailer": "~5.2",
-        "rock-symphony/container": "^1.0"
+        "rock-symphony/container": "^1.0",
+        "psr/container": "^1.0"
     },
     "require-dev": {
         "psr/log": "*"

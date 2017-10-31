@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-interface sfServiceContainerInterface
+interface sfServiceContainerInterface extends \Psr\Container\ContainerInterface
 {
   /**
    * Sets a service.
@@ -24,7 +24,7 @@ interface sfServiceContainerInterface
    * @param string $id      The service identifier
    * @param object $service The service instance
    */
-  public function setService($id, $service);
+  public function set($id, $service);
 
   /**
    * Gets a service.
@@ -38,7 +38,7 @@ interface sfServiceContainerInterface
    *
    * @throw InvalidArgumentException if the service is not defined
    */
-  public function getService($id);
+  public function get($id);
 
   /**
    * Returns true if the given service is defined.
@@ -47,5 +47,5 @@ interface sfServiceContainerInterface
    *
    * @return Boolean true if the service is defined, false otherwise
    */
-  public function hasService($id);
+  public function has($id);
 }

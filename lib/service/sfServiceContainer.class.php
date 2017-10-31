@@ -50,7 +50,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    * @param string $id      The service identifier
    * @param object $service The service instance
    */
-  public function setService($id, $service)
+  public function set($id, $service)
   {
     $this->container->set($id, $service);
   }
@@ -62,7 +62,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    *
    * @return Boolean true if the service is defined, false otherwise
    */
-  public function hasService($id)
+  public function has($id)
   {
     return $this->container->has($id);
   }
@@ -77,7 +77,7 @@ class sfServiceContainer implements sfServiceContainerInterface
    * @throws InvalidArgumentException if the service is not defined
    * @throws \RockSymphony\ServiceContainer\Exceptions\BindingResolutionException if an error occurred during resolution
    */
-  public function getService($id)
+  public function get($id)
   {
     try {
       return $this->container->get($id);
