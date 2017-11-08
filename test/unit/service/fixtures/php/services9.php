@@ -37,4 +37,6 @@ return function() {
 
   // alias_for_foo => foo
   $container->alias('foo', 'alias_for_foo');
+
+  return $container;
 };

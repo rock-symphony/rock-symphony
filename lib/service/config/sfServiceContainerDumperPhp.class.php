@@ -193,12 +193,14 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
  * @return \sfServiceContainer
  */
 return function() {
-  \$container = new \sfServiceContainer();%s
+  \$container = new \sfServiceContainer();
+%s
+  return \$container;
 };
 
 EOF;
 
-    return sprintf($template, $body ? "\n{$body}" : '');
+    return sprintf($template, $body ? "{$body}\n" : '');
   }
 
   /**
