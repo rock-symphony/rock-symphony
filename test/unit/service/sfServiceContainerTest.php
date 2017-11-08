@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\ServiceContainer\Exceptions\BindingNotFoundException;
+
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
 $t = new lime_test(8);
@@ -17,15 +19,15 @@ $t->diag('__construct()');
 $sc = new sfServiceContainer();
 $t->is(spl_object_hash($sc->get('service_container')), spl_object_hash($sc), '__construct() automatically registers itself as a service');
 
-// ->setService() ->hasService() ->getService()
-$t->diag('->setService() ->hasService() ->getService()');
+// ->set() ->has() ->get()
+$t->diag('->set() ->has() ->get()');
 $sc = new sfServiceContainer();
 $sc->set('foo', $obj = new stdClass());
-$t->is(spl_object_hash($sc->get('foo')), spl_object_hash($obj), '->setService() registers a service under a key name');
+$t->is(spl_object_hash($sc->get('foo')), spl_object_hash($obj), '->set() registers a service under a key name');
 
 $sc->foo1 = $obj1 = new stdClass();
-$t->ok($sc->has('foo'), '->hasService() returns true if the service is defined');
-$t->ok(!$sc->has('bar'), '->hasService() returns false if the service is not defined');
+$t->ok($sc->has('foo'), '->has() returns true if the service is defined');
+$t->ok(!$sc->has('bar'), '->has() returns false if the service is not defined');
 
 class ProjectServiceContainer extends sfServiceContainer
 {
@@ -46,18 +48,18 @@ class ProjectServiceContainer extends sfServiceContainer
 }
 
 $sc = new ProjectServiceContainer();
-$t->is(spl_object_hash($sc->get('bar')), spl_object_hash($sc->__bar), '->getService() returns the same service object');
-$t->ok($sc->has('bar'), '->hasService() returns true if the service has been defined');
+$t->is(spl_object_hash($sc->get('bar')), spl_object_hash($sc->__bar), '->get() returns the same service object');
+$t->ok($sc->has('bar'), '->has() returns true if the service has been defined');
 
 $sc->set('bar', $bar = new stdClass());
-$t->is(spl_object_hash($sc->get('bar')), spl_object_hash($bar), '->getService() prefers to return a new service object if overrided');
+$t->is(spl_object_hash($sc->get('bar')), spl_object_hash($bar), '->get() prefers to return a new service object if overrided');
 
 try
 {
   $sc->get('baba');
-  $t->fail('->getService() thrown an InvalidArgumentException if the service does not exist');
+  $t->fail('->get() thrown an InvalidArgumentException if the service does not exist');
 }
-catch (InvalidArgumentException $e)
+catch (BindingNotFoundException $e)
 {
-  $t->pass('->getService() thrown an InvalidArgumentException if the service does not exist');
+  $t->pass('->get() thrown a BindingResolutionException if the service does not exist');
 }
