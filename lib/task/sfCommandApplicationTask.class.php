@@ -195,12 +195,12 @@ abstract class sfCommandApplicationTask extends sfTask
   {
     if (null === $this->serviceContainer)
     {
-      $class = require $this->configuration->getConfigCache()->checkConfig('config/services.yml', true);
+      $resolver = require $this->configuration->getConfigCache()->checkConfig('config/services.yml', true);
 
-      $this->serviceContainer = new $class();
-      $this->serviceContainer->setService('sf_event_dispatcher', $this->dispatcher);
-      $this->serviceContainer->setService('sf_formatter', $this->formatter);
-      $this->serviceContainer->setService('sf_routing', $this->getRouting());
+      $this->serviceContainer = $resolver();
+      $this->serviceContainer->set('sf_event_dispatcher', $this->dispatcher);
+      $this->serviceContainer->set('sf_formatter', $this->formatter);
+      $this->serviceContainer->set('sf_routing', $this->getRouting());
     }
 
     return $this->serviceContainer;
@@ -215,7 +215,7 @@ abstract class sfCommandApplicationTask extends sfTask
    */
   public function getService($id)
   {
-    return $this->getServiceContainer()->getService($id);
+    return $this->getServiceContainer()->get($id);
   }
 
   /**

@@ -1,78 +1,42 @@
-class ProjectServiceContainer extends sfServiceContainer
-{
+/**
+ * @return \sfServiceContainer
+ */
+return function() {
+  $container = new \sfServiceContainer();
 
-  /**
-   * @inheritdoc
-   */
-  public function hasService($id)
-  {
-     if (parent::hasService($id)) {
-       return true;
-     }
-
-     return in_array($id, array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'));
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function getService($id)
-  {
-    if (parent::hasService($id)) {
-      return parent::getService($id);
-    }
-
-    if (in_array($id, array(0 => 'foo', 1 => 'bar', 2 => 'foo.baz', 3 => 'foo_bar', 4 => 'alias_for_foo'))) {
-      $method = 'get' . sfServiceContainer::camelize($id) . 'Service';
-      $instance = $this->$method();
-      return $instance;
-    }
-
-    // make parent throw "missing service" exception
-    return parent::getService($id);
-  }
-
-  protected function getFooService()
-  {
+  // foo
+  $container->bindResolver('foo', function(\sfServiceContainer $container) {
     require_once '%path%/foo.php';
 
-    $instance = call_user_func(array('FooClass', 'getInstance'), 'foo', $this->getService('foo.baz'), array('%foo%' => 'foo is %foo%'), true, $this);
-    $instance->setBar('bar');
-    $instance->initialize();
+    $instance = $container->call(array('FooClass', 'getInstance'), array(0 => 'foo', 1 => $this->get('foo.baz'), 2 => array('%foo%' => 'foo is %foo%'), 3 => true, 4 => $this));
+    $container->call(array($instance, 'setBar'), array(0 => 'bar'));
+    $container->call(array($instance, 'initialize'), array());
     sc_configure($instance);
-
     return $instance;
-  }
+  });
 
-  protected function getBarService()
-  {
-    $instance = new FooClass('foo', $this->getService('foo.baz'), sfConfig::get('foo_bar'));
-    $this->getService('@foo.baz')->configure($instance);
-
-    parent::setService('bar', $instance);
+  // bar
+  $container->bindSingletonResolver('bar', function(\sfServiceContainer $container) {
+    $instance = $container->construct('FooClass', array(0 => 'foo', 1 => $this->get('foo.baz'), 2 => sfConfig::get('foo_bar')));
+    $this->get('@foo.baz')->configure($instance);
     return $instance;
-  }
+  });
 
-  protected function getFoo_BazService()
-  {
-    $instance = call_user_func(array('%baz_class%', 'getInstance'));
-    call_user_func(array('%baz_class%', 'configureStatic1'), $instance);
-
-    parent::setService('foo.baz', $instance);
+  // foo.baz
+  $container->bindSingletonResolver('foo.baz', function(\sfServiceContainer $container) {
+    $instance = $container->call(array('%baz_class%', 'getInstance'), array());
+    $container->call(array(0 => '%baz_class%', 1 => 'configureStatic1'), array($instance));
     return $instance;
-  }
+  });
 
-  protected function getFooBarService()
-  {
-    $instance = new FooClass();
-
-    parent::setService('foo_bar', $instance);
+  // foo_bar
+  $container->bindSingletonResolver('foo_bar', function(\sfServiceContainer $container) {
+    $instance = $container->construct('FooClass', array());
     return $instance;
-  }
+  });
 
-  protected function getAliasForFooService()
-  {
-    return $this->getService('foo');
-  }
+  // alias_for_foo => foo
+  $container->alias('foo', 'alias_for_foo');
 
-}
+  return $container;
+};

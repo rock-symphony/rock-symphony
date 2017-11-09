@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -120,7 +120,7 @@ $serviceContainer = $task->getServiceContainer();
 
 $t->ok($serviceContainer instanceof sfServiceContainer, '->getServiceContainer() returns an sfServiceContainer');
 $t->is($serviceContainer, $task->getServiceContainer(), '->getServiceContainer() returns always the same instance');
-$t->ok($serviceContainer->hasService('my_project_service'), '->getServiceContainer() is correctly configured');
+$t->ok($serviceContainer->has('my_project_service'), '->getServiceContainer() is correctly configured');
 
 // ->getRouting()
 $t->diag('->getRouting()');

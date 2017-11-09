@@ -27,7 +27,8 @@ class sfContext implements ArrayAccess
   /** @var sfApplicationConfiguration */
   protected $configuration = null;
   protected $mailerConfiguration = array();
-  protected $serviceContainerConfiguration = array();
+  /** @var Closure */
+  protected $serviceContainerResolver;
   protected $factories = array();
   protected $hasShutdownUserAndStorage = false;
 
@@ -459,24 +460,33 @@ class sfContext implements ArrayAccess
   {
     if (!isset($this->factories['serviceContainer']))
     {
-      $this->factories['serviceContainer'] = new $this->serviceContainerConfiguration['class']();
-      $this->factories['serviceContainer']->setService('sf_event_dispatcher', $this->configuration->getEventDispatcher());
-      $this->factories['serviceContainer']->setService('sf_formatter', new sfFormatter());
-      $this->factories['serviceContainer']->setService('sf_user', $this->getUser());
-      $this->factories['serviceContainer']->setService('sf_routing', $this->getRouting());
+      /** @var \sfServiceContainerInterface $serviceContainer */
+      $this->factories['serviceContainer'] = $serviceContainer = call_user_func($this->serviceContainerResolver);
+
+      if (! $serviceContainer instanceof sfServiceContainer) {
+        $given_type = is_object($serviceContainer) ? get_class($serviceContainer) : gettype($serviceContainer);
+        throw new RuntimeException(
+          "Service container resolver is expected to return an instance of sfServiceContainer. $given_type given."
+        );
+      }
+
+      $serviceContainer->set('sf_event_dispatcher', $this->configuration->getEventDispatcher());
+      $serviceContainer->set('sf_formatter', new sfFormatter());
+      $serviceContainer->set('sf_user', $this->getUser());
+      $serviceContainer->set('sf_routing', $this->getRouting());
     }
 
     return $this->factories['serviceContainer'];
   }
 
   /**
-   * Set service ontainer configuration
+   * Set service container resolver
    *
-   * @param array $config
+   * @param Closure $resolver
    */
-  public function setServiceContainerConfiguration(array $config)
+  public function setServiceContainerResolver(Closure $resolver)
   {
-    $this->serviceContainerConfiguration = $config;
+    $this->serviceContainerResolver = $resolver;
   }
 
   /**
@@ -488,7 +498,7 @@ class sfContext implements ArrayAccess
    */
   public function getService($id)
   {
-    return $this->getServiceContainer()->getService($id);
+    return $this->getServiceContainer()->get($id);
   }
 
   /**

@@ -75,12 +75,6 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
 
     $definitions = array();
 
-    // parameters
-    if (isset($config['parameters']))
-    {
-      throw new InvalidArgumentException('"parameters" are no longer supported. Please move those values to sfConfig');
-    }
-
     // services
     if (isset($config['services']))
     {
@@ -106,6 +100,12 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
       {
         throw new InvalidArgumentException(sprintf('The service definition is not valid ("%s" is not recognized).', $key));
       }
+    }
+
+    // parameters are not support anymore
+    if (isset($config['parameters']))
+    {
+      throw new InvalidArgumentException('"parameters" are no longer supported. Please move those values to sfConfig');
     }
 
     return $config;

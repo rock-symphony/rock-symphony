@@ -19,12 +19,7 @@
 class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 {
   /**
-   * Dumps the service container as a PHP class.
-   *
-   * Available options:
-   *
-   *  * class:      The class name
-   *  * base_class: The base class name
+   * Dumps the service container initialization as PHP code.
    *
    * @param  sfServiceContainerBuilder $builder
    * @param  array                     $options
@@ -33,68 +28,14 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
    */
   public function dump(sfServiceContainerBuilder $builder, array $options = array())
   {
-    $options = array_merge(array(
-      'class'      => 'ProjectServiceContainer',
-      'base_class' => 'sfServiceContainer',
-    ), $options);
+    if ($options !== []) {
+      throw new InvalidArgumentException('Unsupported options given: ' . implode(', ', array_keys($options)));
+    }
 
     return
-      $this->createClass(
-        $options['class'],
-        $options['base_class'],
-        $this->addServicesMethods($builder)
-        . $this->addServices($builder)
+      $this->createClosureFunction(
+        $this->addServices($builder)
       );
-  }
-
-  protected function addServicesMethods(sfServiceContainerBuilder $builder)
-  {
-    $services = $builder->getServiceDefinitions();
-    $aliases = $builder->getAliases();
-
-    $known_ids = array_merge(array_keys($services), array_keys($aliases));
-
-    // short circuit
-    if (count($known_ids) === 0) {
-      return '';
-    }
-
-    $code = <<<PHP
-
-  /**
-   * @inheritdoc
-   */
-  public function hasService(\$id)
-  {
-     if (parent::hasService(\$id)) {
-       return true;
-     }
-
-     return in_array(\$id, {$this->dumpValue($known_ids)});
-  }
-
-  /**
-   * @inheritdoc
-   */
-  public function getService(\$id)
-  {
-    if (parent::hasService(\$id)) {
-      return parent::getService(\$id);
-    }
-
-    if (in_array(\$id, {$this->dumpValue($known_ids)})) {
-      \$method = 'get' . sfServiceContainer::camelize(\$id) . 'Service';
-      \$instance = \$this->\$method();
-      return \$instance;
-    }
-
-    // make parent throw "missing service" exception
-    return parent::getService(\$id);
-  }
-
-PHP;
-
-    return $code;
   }
 
   /**
@@ -108,6 +49,8 @@ PHP;
     {
       return sprintf("    require_once %s;\n\n", $this->dumpValue($definition->getFile()));
     }
+
+    return '';
   }
 
   /**
@@ -117,25 +60,7 @@ PHP;
    */
   protected function addServiceReturn($id, $definition)
   {
-    if ($definition->isShared())
-    {
-      return <<<EOF
-
-    parent::setService('$id', \$instance);
-    return \$instance;
-  }
-
-EOF;
-    }
-    else
-    {
-      return <<<EOF
-
-    return \$instance;
-  }
-
-EOF;
-    }
+    return "    return \$instance;\n";
   }
 
   /**
@@ -147,26 +72,15 @@ EOF;
   {
     $class = $this->dumpValue($definition->getClass());
 
-    $arguments = array();
-    foreach ($definition->getArguments() as $value)
-    {
-      $arguments[] = $this->dumpValue($value);
-    }
+    $arguments = $definition->getArguments();
 
     if (null !== $definition->getConstructor())
     {
-      return sprintf("    \$instance = call_user_func(array(%s, '%s')%s);\n", $class, $definition->getConstructor(), $arguments ? ', '.implode(', ', $arguments) : '');
+      return sprintf("    \$instance = \$container->call(array(%s, '%s'), %s);\n", $class, $definition->getConstructor(), $this->dumpValue($arguments));
     }
     else
     {
-      if ($class != "'".$definition->getClass()."'")
-      {
-        return sprintf("    \$class = %s;\n    \$instance = new \$class(%s);\n", $class, implode(', ', $arguments));
-      }
-      else
-      {
-        return sprintf("    \$instance = new %s(%s);\n", $definition->getClass(), implode(', ', $arguments));
-      }
+      return sprintf("    \$instance = \$container->construct(%s, %s);\n", $class, $this->dumpValue($arguments));
     }
   }
 
@@ -180,13 +94,9 @@ EOF;
     $calls = '';
     foreach ($definition->getMethodCalls() as $call)
     {
-      $arguments = array();
-      foreach ($call[1] as $value)
-      {
-        $arguments[] = $this->dumpValue($value);
-      }
+      $arguments = $call[1];
 
-      $calls .= sprintf("    \$instance->%s(%s);\n", $call[0], implode(', ', $arguments));
+      $calls .= sprintf("    \$container->call(array(\$instance, %s), %s);\n", $this->dumpValue($call[0]), $this->dumpValue($arguments));
     }
 
     return $calls;
@@ -212,7 +122,7 @@ EOF;
       }
       else
       {
-        return sprintf("    call_user_func(array(%s, '%s'), \$instance);\n", $this->dumpValue($callable[0]), $callable[1]);
+        return sprintf("    \$container->call(%s, array(\$instance));\n", $this->dumpValue($callable));
       }
     }
     else
@@ -221,18 +131,14 @@ EOF;
     }
   }
 
+  /**
+   * @param string $id
+   * @param \sfServiceDefinition $definition
+   * @return string
+   */
   protected function addService($id, $definition)
   {
-    $name = self::camelize($id);
-
-    $code = <<<EOF
-
-  protected function get{$name}Service()
-  {
-
-EOF;
-
-    $code .=
+    $code =
       $this->addServiceInclude($id, $definition).
       $this->addServiceInstance($id, $definition).
       $this->addServiceMethodCalls($id, $definition).
@@ -240,21 +146,16 @@ EOF;
       $this->addServiceReturn($id, $definition)
     ;
 
-    return $code;
+    if ($definition->isShared()) {
+      return $this->bindSingletonResolver($id, $code);
+    }
+
+    return $this->bindResolver($id, $code);
   }
 
   protected function addServiceAlias($alias, $id)
   {
-    $name = self::camelize($alias);
-
-    return <<<EOF
-
-  protected function get{$name}Service()
-  {
-    return {$this->getServiceCall($id)};
-  }
-
-EOF;
+    return sprintf("  \$container->alias(%s, %s);\n", $this->dumpValue($id), $this->dumpValue($alias));
   }
 
   protected function addServices(sfServiceContainerBuilder $builder)
@@ -262,32 +163,82 @@ EOF;
     $code = '';
     foreach ($builder->getServiceDefinitions() as $id => $definition)
     {
-      $code .= $this->addService($id, $definition);
+      $code .=
+        "\n" .
+        "  // $id\n" .
+        $this->addService($id, $definition);
     }
 
     foreach ($builder->getAliases() as $alias => $id)
     {
-      $code .= $this->addServiceAlias($alias, $id);
+      $code .=
+        "\n" .
+        "  // $alias => $id\n" .
+        $this->addServiceAlias($alias, $id);
     }
 
     return $code;
   }
 
   /**
-   * @param string $class
-   * @param string $baseClass
    * @param string $body
    * @return string
    */
-  protected function createClass($class, $baseClass, $body)
+  protected function createClosureFunction($body)
   {
-    return <<<EOF
-class $class extends $baseClass
-{
-$body
-}
+    $body = rtrim($body);
+
+    $template = <<<EOF
+/**
+ * @return \sfServiceContainer
+ */
+return function() {
+  \$container = new \sfServiceContainer();
+%s
+  return \$container;
+};
 
 EOF;
+
+    return sprintf($template, $body ? "{$body}\n" : '');
+  }
+
+  /**
+   * @param string $id
+   * @param string $code
+   * @return string
+   */
+  protected function bindResolver($id, $code)
+  {
+    $code = rtrim($code);
+
+    $template = <<<EOL
+  \$container->bindResolver(%s, function(\sfServiceContainer \$container) {
+    %s
+  });
+
+EOL;
+
+    return sprintf($template, $this->dumpValue($id), ltrim($code));
+  }
+
+  /**
+   * @param string $id
+   * @param string $code
+   * @return string
+   */
+  protected function bindSingletonResolver($id, $code)
+  {
+    $code = rtrim($code);
+
+    $template = <<<EOL
+  \$container->bindSingletonResolver(%s, function(\sfServiceContainer \$container) {
+    %s
+  });
+
+EOL;
+
+    return sprintf($template, $this->dumpValue($id), ltrim($code));
   }
 
   /**
@@ -342,11 +293,6 @@ EOF;
       return '$this';
     }
 
-    return sprintf('$this->getService(\'%s\')', $id);
-  }
-
-  protected static function camelize($id)
-  {
-    return strtr(ucwords(strtr($id, array('_' => ' ', '-' => ' ', '.' => '_ '))), array(' ' => ''));
+    return sprintf('$this->get(%s)', $this->dumpValue($id));
   }
 }

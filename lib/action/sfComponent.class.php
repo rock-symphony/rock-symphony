@@ -136,7 +136,7 @@ abstract class sfComponent
    */
   public function getService($id)
   {
-    return $this->getServiceContainer()->getService($id);
+    return $this->getServiceContainer()->get($id);
   }
 
   /**

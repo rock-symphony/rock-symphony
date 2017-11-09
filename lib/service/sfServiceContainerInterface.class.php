@@ -8,6 +8,9 @@
  * file that was distributed with this source code.
  */
 
+use Psr\Container\ContainerInterface as PsrContainer;
+use RockSymphony\ServiceContainer\Interfaces\ServiceContainerInterface as RockSymphonyContainer;
+
 /**
  * sfServiceContainerInterface is the interface implemented by service container classes.
  *
@@ -16,36 +19,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-interface sfServiceContainerInterface
+interface sfServiceContainerInterface extends PsrContainer, RockSymphonyContainer
 {
-  /**
-   * Sets a service.
-   *
-   * @param string $id      The service identifier
-   * @param object $service The service instance
-   */
-  public function setService($id, $service);
 
-  /**
-   * Gets a service.
-   *
-   * If a service is both defined through a setService() method and
-   * with a set*Service() method, the former has always precedence.
-   *
-   * @param  string $id The service identifier
-   *
-   * @return object The associated service
-   *
-   * @throw InvalidArgumentException if the service is not defined
-   */
-  public function getService($id);
-
-  /**
-   * Returns true if the given service is defined.
-   *
-   * @param  string  $id      The service identifier
-   *
-   * @return Boolean true if the service is defined, false otherwise
-   */
-  public function hasService($id);
 }
