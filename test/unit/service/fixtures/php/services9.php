@@ -6,7 +6,7 @@ return function() {
 
   // foo
   $container->bindResolver('foo', function(\sfServiceContainer $container) {
-    require_once '/home/io/workspace/fos1/symfony1/test/unit/service/fixtures/includes/foo.php';
+    require_once '%path%/foo.php';
 
     $instance = $container->call(array('FooClass', 'getInstance'), array(0 => 'foo', 1 => $this->get('foo.baz'), 2 => array('%foo%' => 'foo is %foo%'), 3 => true, 4 => $this));
     $container->call(array($instance, 'setBar'), array(0 => 'bar'));
