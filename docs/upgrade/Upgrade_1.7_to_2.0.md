@@ -37,6 +37,11 @@ composer require rock-symphony/rock-symphony:2.0-alpha+1
    If your project is using/extending them, please make sure you adapt your code
    accordingly.
 
+5. *service.yml* stock config handler options have been changed:
+   instead of *class* and *base_class* it has:
+   
+   - `class` the service container class to be instantiated.
+
 ## sfCoreAutoload dropped
 
 *sfCoreAutoload* auto-loading functionality has been dropped. 

@@ -27,13 +27,13 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
    */
   public function execute($configFiles)
   {
-    $class = sfConfig::get('sf_app').'_'.sfConfig::get('sf_environment').'ServiceContainer';
-
     $parser = new sfServiceContainerConfigParser();
     $builder = $parser->parse(static::getConfiguration($configFiles));
 
     $dumper = new sfServiceContainerDumperPhp();
-    $code = $dumper->dump($builder);
+    $code = $dumper->dump($builder, [
+      'class' => $this->parameterHolder->get('class'),
+    ]);
 
     // compile data
     $retval = sprintf(

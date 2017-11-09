@@ -28,12 +28,17 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
    */
   public function dump(sfServiceContainerBuilder $builder, array $options = array())
   {
-    if ($options !== []) {
-      throw new InvalidArgumentException('Unsupported options given: ' . implode(', ', array_keys($options)));
+    $unsupported_options = array_diff(array_keys($options), ['class']);
+
+    if (count($unsupported_options) > 0) {
+      throw new InvalidArgumentException('Unsupported options given: ' . implode(', ', $unsupported_options));
     }
+
+    $class = isset($options['class']) ? $options['class'] : '\sfServiceContainer';
 
     return
       $this->createClosureFunction(
+        $class,
         $this->addServices($builder)
       );
   }
@@ -181,26 +186,27 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
   }
 
   /**
+   * @param string $class
    * @param string $body
    * @return string
    */
-  protected function createClosureFunction($body)
+  protected function createClosureFunction($class, $body)
   {
     $body = rtrim($body);
 
     $template = <<<EOF
 /**
- * @return \sfServiceContainer
+ * @return \sfServiceContainerInterface
  */
 return function() {
-  \$container = new \sfServiceContainer();
+  \$container = new %s();
 %s
   return \$container;
 };
 
 EOF;
 
-    return sprintf($template, $body ? "{$body}\n" : '');
+    return sprintf($template, $class, $body ? "{$body}\n" : '');
   }
 
   /**
@@ -213,7 +219,7 @@ EOF;
     $code = rtrim($code);
 
     $template = <<<EOL
-  \$container->bindResolver(%s, function(\sfServiceContainer \$container) {
+  \$container->bindResolver(%s, function(\sfServiceContainerInterface \$container) {
     %s
   });
 
@@ -232,7 +238,7 @@ EOL;
     $code = rtrim($code);
 
     $template = <<<EOL
-  \$container->bindSingletonResolver(%s, function(\sfServiceContainer \$container) {
+  \$container->bindSingletonResolver(%s, function(\sfServiceContainerInterface \$container) {
     %s
   });
 
