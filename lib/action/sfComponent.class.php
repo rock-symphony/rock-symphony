@@ -120,7 +120,7 @@ abstract class sfComponent
   /**
    * Retrieves the current service container instance.
    *
-   * @return sfServiceContainer The current sfServiceContainer instance
+   * @return sfServiceContainerInterface The current sfServiceContainer instance
    */
   public final function getServiceContainer()
   {

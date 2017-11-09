@@ -454,7 +454,7 @@ class sfContext implements ArrayAccess
   /**
    * Retrieves the service container.
    *
-   * @return sfServiceContainer The current sfServiceContainer implementation instance.
+   * @return \sfServiceContainerInterface The current sfServiceContainer implementation instance.
    */
   public function getServiceContainer()
   {
