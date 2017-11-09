@@ -2,7 +2,7 @@ Upgrade guide 1.7 to 2.0
 ========================
 
 ```
-composer require rock-symphony/rock-symphony:2.0-alpha-1
+composer require rock-symphony/rock-symphony:2.0-alpha+1
 ```
 
 ## Service Container rewritten
