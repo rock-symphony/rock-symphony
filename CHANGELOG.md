@@ -9,7 +9,6 @@ CURRENTLY: Version 2.x.x-dev (Work in Progress)
 * Adopt [RockSymphony Container](https://github.com/rock-symphony/container/tree/2.0.0) as container implementation.
 * Rewrite Service Container related functionality (loader, dumper, container itself). 
   If you had some code modifying/extending `services.yml` handling, it will require your attention.
-* Drop `sfServiceContainer::getServiceIds` method (it wasn't part of sfServiceContainerInterface)
 * Drop `sfCoreAutoload` autoloading functionality. Please rely on Composer *autoload.php* instead.
 * Drop PHP 5.3 support
 
