@@ -1,5 +1,5 @@
 /**
- * @return \sfServiceContainer
+ * @return \sfServiceContainerInterface
  */
 return function() {
   $container = new \sfServiceContainer();
