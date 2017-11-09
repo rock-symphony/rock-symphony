@@ -107,8 +107,11 @@ catch (sfException $e)
 $t->diag('->getServiceContainer() test');
 $sc = $frontend_context->getServiceContainer();
 $t->ok(file_exists(sfConfig::get('sf_cache_dir').'/frontend/test/config/config_services.yml.php'), '->getServiceContainer() creates a cache file in /cache/frontend/test/config');
-$t->ok(class_exists('frontend_testServiceContainer'), '->getServiceContainer() creates and loads the frontend_testServiceContainer class');
-$t->ok($sc instanceof frontend_testServiceContainer, '->getServiceContainer() returns an instance of frontend_testServiceContainer');
+
+$resolver = require sfConfig::get('sf_cache_dir').'/frontend/test/config/config_services.yml.php';
+$t->ok($resolver instanceof Closure, 'a cache file provides a closure function');
+$t->ok($resolver() instanceof sfServiceContainer, 'a closure function returns an instance of sfServiceContainer');
+
 $t->ok($sc->has('my_app_service'), '->getServiceContainer() contains app/config/service.yml services');
 $t->ok($sc->has('my_project_service'), '->getServiceContainer() contains /config/service.yml services');
 $t->ok($sc->has('my_plugin_service'), '->getServiceContainer() contains plugin/config/service.yml services');
@@ -117,6 +120,9 @@ $t->ok($sc->has('my_app_test_service'), '->getServiceContainer() contains plugin
 $t->diag('->getServiceContainer() prod');
 $sc = $frontend_context_prod->getServiceContainer();
 $t->ok(file_exists(sfConfig::get('sf_cache_dir').'/frontend/prod/config/config_services.yml.php'), '->getServiceContainer() creates a cache file in /cache/frontend/prod/config');
-$t->ok(class_exists('frontend_prodServiceContainer'), '->getServiceContainer() creates and loads the frontend_prodServiceContainer class');
-$t->ok($sc instanceof frontend_prodServiceContainer, '->getServiceContainer() returns an instance of frontend_prodServiceContainer');
+
+$resolver = require sfConfig::get('sf_cache_dir').'/frontend/prod/config/config_services.yml.php';
+$t->ok($resolver instanceof Closure, 'a cache file provides a closure function');
+$t->ok($resolver() instanceof sfServiceContainer, 'a closure function returns an instance of sfServiceContainer');
+
 $t->ok(false === $sc->has('my_app_test_service'), '->getServiceContainer() does not contain other env specific services');
