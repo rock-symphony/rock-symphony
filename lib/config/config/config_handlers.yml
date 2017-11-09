@@ -29,7 +29,7 @@ config/routing.yml:
 config/services.yml:
   class:    sfServiceConfigHandler
   param:
-    base_class: sfServiceContainer
+    class: sfServiceContainer
 
 modules/*/config/generator.yml:
   class:    sfGeneratorConfigHandler
