@@ -4,6 +4,8 @@ CHANGELOG
 CURRENTLY: Version 2.x.x-dev (Work in Progress)
 -------------------------
 
+[Upgrade guide](./docs/upgrade/Upgrade_1.7_to_2.0.md)
+
 * Adopt [RockSymphony Container](https://github.com/rock-symphony/container/tree/2.0.0) as container implementation.
 * Rewrite Service Container related functionality (loader, dumper, container itself). 
   If you had some code modifying/extending `services.yml` handling, it will require your attention.
@@ -13,6 +15,8 @@ CURRENTLY: Version 2.x.x-dev (Work in Progress)
 
 08/07/2017: Version 1.7.0
 -------------------------
+
+[Upgrade guide](./docs/upgrade/Upgrade_1.5_to_1.7.md)
 
 * Drop swiftmailer git sub-module
 * Drop sf-doctrine-plugin git sub-module
