@@ -463,11 +463,11 @@ class sfContext implements ArrayAccess
       /** @var \sfServiceContainerInterface $serviceContainer */
       $this->factories['serviceContainer'] = $serviceContainer = call_user_func($this->serviceContainerResolver);
 
-      if (! $serviceContainer instanceof sfServiceContainer) {
-        $given_type = is_object($serviceContainer) ? get_class($serviceContainer) : gettype($serviceContainer);
-        throw new RuntimeException(
-          "Service container resolver is expected to return an instance of sfServiceContainer. $given_type given."
-        );
+      if (! $serviceContainer instanceof sfServiceContainerInterface) {
+        throw new RuntimeException(sprintf(
+          "Service container resolver is expected to return an instance of sfServiceContainerInterface. %s given.",
+          is_object($serviceContainer) ? get_class($serviceContainer) : gettype($serviceContainer)
+        ));
       }
 
       $serviceContainer->set('sf_event_dispatcher', $this->configuration->getEventDispatcher());
