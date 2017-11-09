@@ -196,7 +196,7 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 
     $template = <<<EOF
 /**
- * @return \sfServiceContainer
+ * @return \sfServiceContainerInterface
  */
 return function() {
   \$container = new %s();
@@ -219,7 +219,7 @@ EOF;
     $code = rtrim($code);
 
     $template = <<<EOL
-  \$container->bindResolver(%s, function(\sfServiceContainer \$container) {
+  \$container->bindResolver(%s, function(\sfServiceContainerInterface \$container) {
     %s
   });
 
@@ -238,7 +238,7 @@ EOL;
     $code = rtrim($code);
 
     $template = <<<EOL
-  \$container->bindSingletonResolver(%s, function(\sfServiceContainer \$container) {
+  \$container->bindSingletonResolver(%s, function(\sfServiceContainerInterface \$container) {
     %s
   });
 
