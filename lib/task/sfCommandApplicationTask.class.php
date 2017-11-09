@@ -195,9 +195,9 @@ abstract class sfCommandApplicationTask extends sfTask
   {
     if (null === $this->serviceContainer)
     {
-      $class = require $this->configuration->getConfigCache()->checkConfig('config/services.yml', true);
+      $resolver = require $this->configuration->getConfigCache()->checkConfig('config/services.yml', true);
 
-      $this->serviceContainer = new $class();
+      $this->serviceContainer = $resolver();
       $this->serviceContainer->set('sf_event_dispatcher', $this->dispatcher);
       $this->serviceContainer->set('sf_formatter', $this->formatter);
       $this->serviceContainer->set('sf_routing', $this->getRouting());
