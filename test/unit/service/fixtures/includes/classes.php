@@ -11,7 +11,7 @@ class BarClass
 
 class BazClass
 {
-  public function configure($instance)
+  public function configure(FooClass $instance)
   {
     $instance->configure();
   }
@@ -21,7 +21,7 @@ class BazClass
     return new self();
   }
 
-  static public function configureStatic($instance)
+  static public function configureStatic(FooClass $instance)
   {
     $instance->configure();
   }
