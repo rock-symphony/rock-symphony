@@ -13,7 +13,7 @@ return function() {
 
   // baz_dependent
   $container->bindSingletonResolver('baz_dependent', function(\sfServiceContainerInterface $container) {
-    $instance = $container->construct('BazDependentClass', array('baz' => $this->get('baz')));
+    $instance = $container->construct('BazDependentClass', array('baz' => $container->get('baz')));
     return $instance;
   });
 

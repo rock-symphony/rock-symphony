@@ -9,7 +9,7 @@ return function() {
   $container->bindResolver('foo', function(\sfServiceContainerInterface $container) {
     require_once '%path%/foo.php';
 
-    $instance = $container->call(array('FooClass', 'getInstance'), array(0 => 'foo', 1 => $this->get('foo.baz'), 2 => array('%foo%' => 'foo is %foo%'), 3 => true, 4 => $this));
+    $instance = $container->call(array('FooClass', 'getInstance'), array(0 => 'foo', 1 => $container->get('foo.baz'), 2 => array('%foo%' => 'foo is %foo%'), 3 => true, 4 => $container));
     $container->call(array($instance, 'setBar'), array(0 => 'bar'));
     $container->call(array($instance, 'initialize'), array());
     sc_configure($instance);
@@ -18,8 +18,8 @@ return function() {
 
   // bar
   $container->bindSingletonResolver('bar', function(\sfServiceContainerInterface $container) {
-    $instance = $container->construct('FooClass', array(0 => 'foo', 1 => $this->get('foo.baz'), 2 => sfConfig::get('foo_bar')));
-    $this->get('@foo.baz')->configure($instance);
+    $instance = $container->construct('FooClass', array(0 => 'foo', 1 => $container->get('foo.baz'), 2 => sfConfig::get('foo_bar')));
+    $container->get('@foo.baz')->configure($instance);
     return $instance;
   });
 

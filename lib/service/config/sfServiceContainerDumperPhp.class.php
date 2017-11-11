@@ -296,9 +296,9 @@ EOL;
   {
     if ('service_container' == $id)
     {
-      return '$this';
+      return '$container';
     }
 
-    return sprintf('$this->get(%s)', $this->dumpValue($id));
+    return sprintf('$container->get(%s)', $this->dumpValue($id));
   }
 }
