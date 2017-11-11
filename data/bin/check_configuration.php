@@ -89,6 +89,10 @@ $accelerator =
   function_exists('eaccelerator_put') && ini_get('eaccelerator.enable')
   ||
   function_exists('xcache_set')
+  ||
+  // Since PHP 5.5.0 there is OPcache built-in
+  // @see http://php.net/manual/en/intro.opcache.php
+  version_compare(PHP_VERSION, '5.5.0') >= 0
 ;
 check($accelerator, 'A PHP accelerator is installed', 'Install a PHP accelerator like APC (highly recommended)', false);
 
