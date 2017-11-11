@@ -1,0 +1,3 @@
+services: []
+# parameters section is no longer supported
+parameters: []

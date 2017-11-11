@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(17);
+$t = new lime_test(18);
 
 $parser = new sfServiceContainerConfigParser();
 
@@ -37,6 +37,17 @@ catch (InvalidArgumentException $e)
 //{
 //  $t->pass('->parse() throws an InvalidArgumentException if the loaded definition is not a valid array');
 //}
+
+try
+{
+  $parser->parse(sfYaml::load(__DIR__.'/fixtures/yaml/nonvalid3.yml'));
+  $t->fail('->parse() throws an InvalidArgumentException if the loaded definition is not an array');
+}
+catch (InvalidArgumentException $e)
+{
+  $t->pass('->parse() throws an InvalidArgumentException if the loaded definition has "parameters" section');
+}
+
 
 // ->parse # parameters
 $t->diag('->parse # parameters');
