@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(5);
+$t = new lime_test(10);
 
 // ->dump()
 $t->diag('->dump()');
@@ -44,3 +44,17 @@ $t->diag('->addService() recursive resolution');
 $builder = include __DIR__.'/fixtures/containers/container10.php';
 $dumper = new sfServiceContainerDumperPhp();
 $t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services10.php'), '->dump() handles recursive services dependencies');
+
+/** @var \sfServiceContainerInterface $container */
+$container = call_user_func(require __DIR__.'/fixtures/php/services10.php');
+$t->ok($container->has('BazClass'), 'Generated container has "BazClass" inside');
+$t->ok($container->has('BazDependentClass'), 'Generated container has "BazDependentClass" inside');
+
+/** @var \BazClass $baz */
+$baz = $container->get('BazClass');
+/** @var \BazDependentClass $baz_dependent */
+$baz_dependent = $container->get('BazDependentClass');
+
+$t->ok($baz instanceof BazClass, '$baz is instance of BazClass');
+$t->ok($baz_dependent instanceof BazDependentClass, '$baz_dependent is instance of BazDependentClass');
+$t->ok($baz === $baz_dependent->baz, '$baz instance is reused');
