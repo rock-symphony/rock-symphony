@@ -2,10 +2,12 @@
 
 require_once __DIR__.'/../includes/classes.php';
 
-$container = new sfServiceContainerBuilder();
-$container->
-  register('foo', 'FooClass')->
-  addArgument(new sfServiceReference('bar'))
-;
+$builder = new sfServiceContainerBuilder();
+$builder
+  ->registerServiceClass('BazClass', 'BazClass')
+  ->setConstructor('getInstance');
 
-return $container;
+$builder
+  ->registerServiceClass('BazDependentClass', 'BazDependentClass');
+
+return $builder;

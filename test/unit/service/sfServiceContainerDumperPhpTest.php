@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(4);
+$t = new lime_test(5);
 
 // ->dump()
 $t->diag('->dump()');
@@ -39,3 +39,8 @@ catch (RuntimeException $e)
   $t->pass('->dump() throws a RuntimeException if the container to be dumped has reference to objects or resources');
 }
 
+// ->addService()
+$t->diag('->addService() recursive resolution');
+$builder = include __DIR__.'/fixtures/containers/container10.php';
+$dumper = new sfServiceContainerDumperPhp();
+$t->is($dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services10.php'), '->dump() handles recursive services dependencies');
