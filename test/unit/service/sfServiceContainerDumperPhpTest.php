@@ -17,14 +17,14 @@ $t->diag('->dump()');
 $builder = new sfServiceContainerBuilder();
 $dumper = new sfServiceContainerDumperPhp();
 
-$t->is($dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services1.php'), '->dump() dumps an empty container as an empty closure function');
-$t->is($dumper->dump($builder, ['class' => 'CustomContainer']), file_get_contents(__DIR__ . '/fixtures/php/services1-1.php'), '->dump() takes a class option');
+$t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services1.php'), '->dump() dumps an empty container as an empty closure function');
+$t->is("<?php\n" . $dumper->dump($builder, ['class' => 'CustomContainer']), file_get_contents(__DIR__ . '/fixtures/php/services1-1.php'), '->dump() takes a class option');
 
 // ->addService()
 $t->diag('->addService()');
 $builder = include __DIR__.'/fixtures/containers/container9.php';
 $dumper = new sfServiceContainerDumperPhp();
-$t->is($dumper->dump($builder), str_replace('%path%', __DIR__.'/fixtures/includes', str_replace('%path%', __DIR__.'/fixtures/includes', file_get_contents(__DIR__.'/fixtures/php/services9.php'))), '->dump() dumps services');
+$t->is("<?php\n" . $dumper->dump($builder), str_replace('%path%', __DIR__.'/fixtures/includes', file_get_contents(__DIR__.'/fixtures/php/services9.php')), '->dump() dumps services');
 
 
 $dumper = new sfServiceContainerDumperPhp();
@@ -43,4 +43,4 @@ catch (RuntimeException $e)
 $t->diag('->addService() recursive resolution');
 $builder = include __DIR__.'/fixtures/containers/container10.php';
 $dumper = new sfServiceContainerDumperPhp();
-$t->is($dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services10.php'), '->dump() handles recursive services dependencies');
+$t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services10.php'), '->dump() handles recursive services dependencies');
