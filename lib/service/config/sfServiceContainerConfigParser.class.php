@@ -94,11 +94,11 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
       throw new InvalidArgumentException('The service definition is not valid.');
     }
 
-    foreach (array_keys($config) as $key)
+    foreach (array_keys($config) as $service_key)
     {
-      if (!in_array($key, array('parameters', 'services')))
+      if (!in_array($service_key, array('parameters', 'services')))
       {
-        throw new InvalidArgumentException(sprintf('The service definition is not valid ("%s" is not recognized).', $key));
+        throw new InvalidArgumentException(sprintf('The service definition is not valid ("%s" is not recognized).', $service_key));
       }
     }
 
@@ -106,6 +106,36 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
     if (isset($config['parameters']))
     {
       throw new InvalidArgumentException('"parameters" are no longer supported. Please move those values to sfConfig');
+    }
+
+    if (isset($config['services'])) {
+      if (! is_array($config['services'])) {
+        throw new InvalidArgumentException('"services" section should be an array.');
+      }
+
+      foreach ($config['services'] as $service_key => $service) {
+        if (! is_string($service_key)) {
+          throw new InvalidArgumentException('Every "services" section entry should have a string key.');
+        }
+
+        if (! is_string($service) && ! is_array($service)) {
+          throw new InvalidArgumentException('Every "services" section entry should be either a string or an array.');
+        }
+
+        if (is_array($service)) {
+          $unsupported_keys = array_diff(
+            array_keys($service),
+            ['class', 'arguments', 'shared', 'configurator', 'constructor', 'file', 'calls']
+          );
+          if (count($unsupported_keys) > 0) {
+            throw new InvalidArgumentException(sprintf(
+              'Unsupported options given for %s service definition: %s',
+              $service_key,
+              implode(', ', $unsupported_keys)
+            ));
+          }
+        }
+      }
     }
 
     return $config;

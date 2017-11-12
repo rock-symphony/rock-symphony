@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(18);
+$t = new lime_test(21);
 
 $parser = new sfServiceContainerConfigParser();
 
@@ -72,3 +72,17 @@ $t->is($builder->getServiceDefinition('method_call1')->getMethodCalls(), array(a
 $t->is($builder->getServiceDefinition('method_call2')->getMethodCalls(), array(array('setBar', array('foo', new sfServiceReference('foo'), array(true, false)))), '->parse parses the method_call tag');
 $t->ok($builder->hasAlias('alias_for_foo'), '->parse parses aliases');
 $t->is($builder->getAlias('alias_for_foo'), 'foo', '->parse parses aliases');
+
+$t->diag('->parse # validation');
+foreach ([
+           __DIR__ . '/fixtures/yaml/nonvalid4-1.yml',
+           __DIR__ . '/fixtures/yaml/nonvalid4-2.yml',
+           __DIR__ . '/fixtures/yaml/nonvalid4-3.yml',
+         ] as $file) {
+  try {
+    $builder = $parser->parse(sfYaml::load($file));
+    $t->fail('->parse() throws an InvalidArgumentException if the loaded definition is not valid');
+  } catch (InvalidArgumentException $e) {
+    $t->pass('->parse() throws an InvalidArgumentException if the loaded definition is not valid');
+  }
+}

@@ -1,0 +1,3 @@
+services:
+  # should fail -- a string key is missing
+  - class: HelloWorld

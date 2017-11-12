@@ -1,0 +1,5 @@
+services:
+  hello:
+    class: HelloWorld
+    # should fail -- "options" is not supported -- it should be "arguments"
+    options: [ 'hello', 'world' ]

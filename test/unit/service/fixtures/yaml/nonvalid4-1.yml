@@ -1,0 +1,2 @@
+# should fail -- the "services" section is not an array
+services: 0
