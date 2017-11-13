@@ -32,9 +32,7 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
 
     $builder = $parser->parse(static::getConfiguration($configFiles));
 
-    $code = $dumper->dump($builder, [
-      'class' => $this->parameterHolder->get('class'),
-    ]);
+    $code = $dumper->dump($builder);
 
     // compile data
     $retval = sprintf(

@@ -29,9 +29,10 @@ config/routing.yml:
 config/services.yml:
   class:    sfServiceConfigHandler
   param:
-    class: sfServiceContainer
     parser: { class: sfServiceContainerConfigParser }
-    dumper: { class: sfServiceContainerDumperPhp }
+    dumper:
+      class: sfServiceContainerDumperPhp
+      arguments: { class: sfServiceContainer }
 
 modules/*/config/generator.yml:
   class:    sfGeneratorConfigHandler

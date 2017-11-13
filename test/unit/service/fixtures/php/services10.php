@@ -3,7 +3,7 @@
  * @return \sfServiceContainerInterface
  */
 return function() {
-  $container = new \sfServiceContainer();
+  $container = new sfServiceContainer();
 
   // BazClass
   $container->bindSingletonResolver('BazClass', function(\sfServiceContainerInterface $container) {

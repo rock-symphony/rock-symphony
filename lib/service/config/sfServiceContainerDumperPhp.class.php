@@ -18,6 +18,14 @@
  */
 class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 {
+  /** @var string */
+  private $class;
+
+  public function __construct($class = 'sfServiceContainer')
+  {
+    $this->class = $class;
+  }
+
   /**
    * Dumps the service container initialization as PHP code.
    *
@@ -28,17 +36,15 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
    */
   public function dump(sfServiceContainerBuilder $builder, array $options = array())
   {
-    $unsupported_options = array_diff(array_keys($options), ['class']);
+    $unsupported_options = array_diff(array_keys($options), []);
 
     if (count($unsupported_options) > 0) {
       throw new InvalidArgumentException('Unsupported options given: ' . implode(', ', $unsupported_options));
     }
 
-    $class = isset($options['class']) ? $options['class'] : '\sfServiceContainer';
-
     return
       $this->createClosureFunction(
-        $class,
+        $this->class,
         $this->addServices($builder)
       );
   }

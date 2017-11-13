@@ -18,7 +18,9 @@ $builder = new sfServiceContainerBuilder();
 $dumper = new sfServiceContainerDumperPhp();
 
 $t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services1.php'), '->dump() dumps an empty container as an empty closure function');
-$t->is("<?php\n" . $dumper->dump($builder, ['class' => 'CustomContainer']), file_get_contents(__DIR__ . '/fixtures/php/services1-1.php'), '->dump() takes a class option');
+
+$customClassDumper = new sfServiceContainerDumperPhp('CustomContainer');
+$t->is("<?php\n" . $customClassDumper->dump($builder), file_get_contents(__DIR__ . '/fixtures/php/services1-1.php'), '->dump() can use a custom container class');
 
 // ->addService()
 $t->diag('->addService()');
