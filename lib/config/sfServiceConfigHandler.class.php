@@ -27,10 +27,11 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
    */
   public function execute($configFiles)
   {
-    $parser = new sfServiceContainerConfigParser();
+    $parser = $this->constructParser();
+    $dumper = $this->constructDumper();
+
     $builder = $parser->parse(static::getConfiguration($configFiles));
 
-    $dumper = new sfServiceContainerDumperPhp();
     $code = $dumper->dump($builder, [
       'class' => $this->parameterHolder->get('class'),
     ]);
@@ -56,5 +57,69 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
     $config = static::flattenConfigurationWithEnvironment($config);
 
     return $config;
+  }
+
+  /**
+   * @return \sfServiceContainerConfigParserInterface
+   */
+  private function constructParser()
+  {
+    // tmp container to construct the parser instance
+    $container = new sfServiceContainer();
+
+    $config = $this->parameterHolder->get('parser', [
+      'class'     => 'sfServiceContainerConfigParser',
+      'arguments' => [],
+    ]);
+    if (!is_array($config)) {
+      throw new InvalidArgumentException('"parser" configuration given is invalid: it should be an hash array');
+    }
+
+    try {
+      /** @var \sfServiceContainerConfigParserInterface $parser */
+      $parser = $container->construct($config['class'], isset($config['arguments']) ? $config['arguments'] : []);
+    } catch (\RockSymphony\ServiceContainer\Exceptions\BindingResolutionException $ex) {
+      throw new InvalidArgumentException('Cannot construct services.yml parser: ' . $ex->getMessage(), 0, $ex);
+    }
+
+    if (!$parser instanceof sfServiceContainerConfigParserInterface) {
+      throw new InvalidArgumentException(
+        '"parser" class should be an instance of sfServiceContainerConfigParserInterface'
+      );
+    }
+
+    return $parser;
+  }
+
+  /**
+   * @return \sfServiceContainerDumperInterface
+   */
+  private function constructDumper()
+  {
+    // tmp container to construct the dumper instance
+    $container = new sfServiceContainer();
+
+    $config = $this->parameterHolder->get('dumper', [
+      'class'     => 'sfServiceContainerDumperPhp',
+      'arguments' => [],
+    ]);
+    if (!is_array($config)) {
+      throw new InvalidArgumentException('"dumper" configuration given is invalid: it should be an hash array');
+    }
+
+    try {
+      /** @var \sfServiceContainerDumperInterface $dumper */
+      $dumper = $container->construct($config['class'], isset($config['arguments']) ? $config['arguments'] : []);
+    } catch (\RockSymphony\ServiceContainer\Exceptions\BindingResolutionException $ex) {
+      throw new InvalidArgumentException('Cannot construct service container dumper: ' . $ex->getMessage(), 0, $ex);
+    }
+
+    if (!$dumper instanceof sfServiceContainerDumperInterface) {
+      throw new InvalidArgumentException(
+        '"dumper" class should be an instance of sfServiceContainerDumperInterface'
+      );
+    }
+
+    return $dumper;
   }
 }

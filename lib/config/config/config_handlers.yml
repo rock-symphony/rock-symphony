@@ -30,6 +30,8 @@ config/services.yml:
   class:    sfServiceConfigHandler
   param:
     class: sfServiceContainer
+    parser: { class: sfServiceContainerConfigParser }
+    dumper: { class: sfServiceContainerDumperPhp }
 
 modules/*/config/generator.yml:
   class:    sfGeneratorConfigHandler
