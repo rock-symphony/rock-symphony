@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(17);
+$t = new lime_test(20);
 
 // ->dump()
 $t->diag('->dump()');
@@ -85,10 +85,15 @@ $t->ok($baz === $baz_dependent->baz, '$baz instance is reused');
 // service container aliases
 $t->diag('service_container aliases');
 $builder = include __DIR__ . '/fixtures/containers/container12.php';
-$dumper = new sfServiceContainerDumperPhp('MyServiceContainer', [
+$dumper = new sfServiceContainerDumperPhp('sfServiceContainer', [
   'Psr\Container\ContainerInterface',
   'sfServiceContainerInterface',
-  'sfServiceContainer',
 ]);
 
 $t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services12.php'), '->dump() adds service_container aliases');
+
+$container = call_user_func(include __DIR__ . '/fixtures/php/services12.php');
+
+$t->ok($container === $container->get('service_container'), '"service_container" is auto defined inside dumped container');
+$t->ok($container === $container->get('sfServiceContainerInterface'), '"sfServiceContainerInterface" alias is resolved to "service_container"');
+$t->ok($container === $container->get('Psr\Container\ContainerInterface'), '"Psr\Container\ContainerInterface" alias is resolved to "service_container"');
