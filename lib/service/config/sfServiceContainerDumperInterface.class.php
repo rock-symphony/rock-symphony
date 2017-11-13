@@ -23,10 +23,9 @@ interface sfServiceContainerDumperInterface
    * Dump sfServiceContainerBuilder state to string representation.
    *
    * @param \sfServiceContainerBuilder $builder
-   * @param array                      $options
    *
    * @return string
    */
-  public function dump(sfServiceContainerBuilder $builder, array $options = array());
+  public function dump(sfServiceContainerBuilder $builder);
 
 }

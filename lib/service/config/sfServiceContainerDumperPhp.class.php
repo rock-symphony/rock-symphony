@@ -30,23 +30,15 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
    * Dumps the service container initialization as PHP code.
    *
    * @param  sfServiceContainerBuilder $builder
-   * @param  array                     $options
    *
    * @return string A PHP class representing of the service container
    */
-  public function dump(sfServiceContainerBuilder $builder, array $options = array())
+  public function dump(sfServiceContainerBuilder $builder)
   {
-    $unsupported_options = array_diff(array_keys($options), []);
-
-    if (count($unsupported_options) > 0) {
-      throw new InvalidArgumentException('Unsupported options given: ' . implode(', ', $unsupported_options));
-    }
-
-    return
-      $this->createClosureFunction(
-        $this->class,
-        $this->addServices($builder)
-      );
+    return $this->createClosureFunction(
+      $this->class,
+      $this->addServices($builder)
+    );
   }
 
   /**
