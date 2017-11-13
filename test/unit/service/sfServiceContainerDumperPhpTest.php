@@ -57,9 +57,9 @@ $baz = $container->get('BazClass');
 /** @var \BazDependentClass $baz_dependent */
 $baz_dependent = $container->get('BazDependentClass');
 
-$t->ok($baz instanceof BazClass, '$baz is instance of BazClass');
-$t->ok($baz_dependent instanceof BazDependentClass, '$baz_dependent is instance of BazDependentClass');
-$t->ok($baz === $baz_dependent->baz, '$baz instance is reused');
+$t->ok($baz instanceof BazClass, '"$baz" is instance of "BazClass"');
+$t->ok($baz_dependent instanceof BazDependentClass, '"$baz_dependent" is instance of "BazDependentClass"');
+$t->ok($baz === $baz_dependent->baz, '"$baz" instance is reused');
 
 
 // ->addService()
@@ -78,9 +78,9 @@ $baz = $container->get('baz');
 /** @var \BazDependentClass $baz_dependent */
 $baz_dependent = $container->get('baz_dependent');
 
-$t->ok($baz instanceof BazClass, '$baz is instance of BazClass');
-$t->ok($baz_dependent instanceof BazDependentClass, '$baz_dependent is instance of BazDependentClass');
-$t->ok($baz === $baz_dependent->baz, '$baz instance is reused');
+$t->ok($baz instanceof BazClass, '"$baz" is instance of "BazClass"');
+$t->ok($baz_dependent instanceof BazDependentClass, '"$baz_dependent" is instance of "BazDependentClass"');
+$t->ok($baz === $baz_dependent->baz, '"$baz" instance is reused');
 
 // service container aliases
 $t->diag('service_container aliases');
