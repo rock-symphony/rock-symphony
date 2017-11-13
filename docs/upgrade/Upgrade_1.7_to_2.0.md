@@ -39,11 +39,11 @@ composer require rock-symphony/rock-symphony:v2.0.0-alpha3
 
 5. *service.yml* stock config handler options have been changed
    
-   - instead of *class* and *base_class* it now has: `class` the service container class to be instantiated.
    - added `parser` option to replace parser implementation by your own: 
      an object with `class` and `arguments` props.
    - added `dumper` option to replace dumper implementation by your own:
      an object with `class` and `arguments` props.
+   - *class* option is now moved to `dumper.arguments`. See *config/config/config_handlers.yml*.
      
    Usage:
    
