@@ -2,7 +2,7 @@ Upgrade guide 1.7 to 2.0
 ========================
 
 ```
-composer require rock-symphony/rock-symphony:2.0-alpha+1
+composer require rock-symphony/rock-symphony:v2.0.0-alpha3
 ```
 
 ## Service Container rewritten
@@ -37,10 +37,25 @@ composer require rock-symphony/rock-symphony:2.0-alpha+1
    If your project is using/extending them, please make sure you adapt your code
    accordingly.
 
-5. *service.yml* stock config handler options have been changed:
-   instead of *class* and *base_class* it has:
+5. *service.yml* stock config handler options have been changed
    
-   - `class` the service container class to be instantiated.
+   - instead of *class* and *base_class* it now has: `class` the service container class to be instantiated.
+   - added `parser` option to replace parser implementation by your own: 
+     an object with `class` and `arguments` props.
+   - added `dumper` option to replace dumper implementation by your own:
+     an object with `class` and `arguments` props.
+     
+   Usage:
+   
+   ```yaml
+   # config_handlers.yml
+   config/services.yml:
+     class:    sfServiceConfigHandler
+     param:
+       class: sfServiceContainer
+       parser: { class: MyServiceContainerConfigParser }
+       dumper: { class: MyServiceContainerDumperPhp, arguments: { indent: 4 } }
+   ```   
 
 ## sfCoreAutoload dropped
 
