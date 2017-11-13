@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(16);
+$t = new lime_test(17);
 
 // ->dump()
 $t->diag('->dump()');
@@ -81,3 +81,14 @@ $baz_dependent = $container->get('baz_dependent');
 $t->ok($baz instanceof BazClass, '$baz is instance of BazClass');
 $t->ok($baz_dependent instanceof BazDependentClass, '$baz_dependent is instance of BazDependentClass');
 $t->ok($baz === $baz_dependent->baz, '$baz instance is reused');
+
+// service container aliases
+$t->diag('service_container aliases');
+$builder = include __DIR__ . '/fixtures/containers/container12.php';
+$dumper = new sfServiceContainerDumperPhp('MyServiceContainer', [
+  'Psr\Container\ContainerInterface',
+  'sfServiceContainerInterface',
+  'sfServiceContainer',
+]);
+
+$t->is("<?php\n" . $dumper->dump($builder), file_get_contents(__DIR__.'/fixtures/php/services12.php'), '->dump() adds service_container aliases');

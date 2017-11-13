@@ -38,9 +38,5 @@ class sfServiceContainer extends RockSymfonyContainer implements sfServiceContai
   {
     // auto-assign self to service_container
     $this->set('service_container', $this);
-
-    // add aliases to resolve by implemented interfaces
-    $this->alias('service_container', '\Psr\Container\ContainerInterface');
-    $this->alias('service_container', '\sfServiceContainerInterface');
   }
 }

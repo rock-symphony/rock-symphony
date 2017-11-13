@@ -20,10 +20,18 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
 {
   /** @var string */
   private $class;
+  /** @var array */
+  private $alias;
 
-  public function __construct($class = 'sfServiceContainer')
+  /**
+   * sfServiceContainerDumperPhp constructor.
+   * @param string $class
+   * @param string|array $alias
+   */
+  public function __construct($class = 'sfServiceContainer', $alias = [])
   {
     $this->class = $class;
+    $this->alias = $alias;
   }
 
   /**
@@ -37,7 +45,8 @@ class sfServiceContainerDumperPhp implements sfServiceContainerDumperInterface
   {
     return $this->createClosureFunction(
       $this->class,
-      $this->addServices($builder)
+      $this->addSelfAliases()
+      . $this->addServices($builder)
     );
   }
 
@@ -298,5 +307,19 @@ EOL;
     }
 
     return sprintf('$container->get(%s)', $this->dumpValue($id));
+  }
+
+  /**
+   * @return string
+   */
+  protected function addSelfAliases()
+  {
+    $code = '';
+
+    foreach ($this->alias as $alias) {
+      $code .= sprintf("  \$container->alias('service_container', %s);\n", var_export($alias, true));
+    }
+
+    return $code ? "\n$code" : $code;
   }
 }

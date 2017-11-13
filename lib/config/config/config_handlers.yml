@@ -32,7 +32,11 @@ config/services.yml:
     parser: { class: sfServiceContainerConfigParser }
     dumper:
       class: sfServiceContainerDumperPhp
-      arguments: { class: sfServiceContainer }
+      arguments:
+          class: sfServiceContainer
+          alias:
+            - sfServiceContainerInterface
+            - Psr\Container\ContainerInterface
 
 modules/*/config/generator.yml:
   class:    sfGeneratorConfigHandler
