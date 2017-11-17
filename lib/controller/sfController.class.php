@@ -312,7 +312,11 @@ abstract class sfController
       $class = $moduleClass;
     }
 
-    return new $class($this->context, $moduleName, $controllerName);
+    /** @see \sfComponent::__construct */
+    return $this->context->getServiceContainer()->construct(
+      $class,
+      ['moduleName' => $moduleName, 'actionName' => $controllerName]
+    );
   }
 
   /**
