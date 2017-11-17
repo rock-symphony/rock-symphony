@@ -37,7 +37,7 @@ abstract class sfController
    * @see initialize()
    * @param sfContext $context A sfContext implementation instance
    */
-  public function __construct($context)
+  public function __construct(sfContext $context)
   {
     $this->initialize($context);
   }
@@ -47,7 +47,7 @@ abstract class sfController
    *
    * @param sfContext $context A sfContext implementation instance
    */
-  public function initialize($context)
+  public function initialize(sfContext $context)
   {
     $this->context    = $context;
     $this->dispatcher = $context->getEventDispatcher();

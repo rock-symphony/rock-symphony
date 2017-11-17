@@ -44,7 +44,7 @@ abstract class sfComponent
    * @param string $moduleName
    * @param string $actionName
    */
-  public function __construct($context, $moduleName, $actionName)
+  public function __construct(sfContext $context, $moduleName, $actionName)
   {
     $this->initialize($context, $moduleName, $actionName);
   }
@@ -58,7 +58,7 @@ abstract class sfComponent
    *
    * @return void
    */
-  public function initialize($context, $moduleName, $actionName)
+  public function initialize(sfContext $context, $moduleName, $actionName)
   {
     $this->moduleName             = $moduleName;
     $this->actionName             = $actionName;
