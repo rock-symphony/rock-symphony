@@ -2,7 +2,7 @@
 
 class configFiltersSimpleFilterFilter extends sfFilter
 {
-  public function execute ($filterChain)
+  public function execute(sfFilterChain $filterChain)
   {
     $this->getContext()->getRequest()->setParameter('filter', 'in a filter');
 

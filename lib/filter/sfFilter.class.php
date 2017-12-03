@@ -61,6 +61,13 @@ abstract class sfFilter
   }
 
   /**
+   * Executes this filter.
+   *
+   * @param sfFilterChain $filterChain A sfFilterChain instance. Call $filterChain->execute() to continue dispatching.
+   */
+  abstract public function execute(sfFilterChain $filterChain);
+
+  /**
    * Returns true if this is the first call to the sfFilter instance.
    *
    * @return boolean true if this is the first call to the sfFilter instance, false otherwise
