@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(20);
+$t = new lime_test(21);
 
 // ->dump()
 $t->diag('->dump()');
@@ -97,3 +97,6 @@ $container = call_user_func(include __DIR__ . '/fixtures/php/services12.php');
 $t->ok($container === $container->get('service_container'), '"service_container" is auto defined inside dumped container');
 $t->ok($container === $container->get('sfServiceContainerInterface'), '"sfServiceContainerInterface" alias is resolved to "service_container"');
 $t->ok($container === $container->get('Psr\Container\ContainerInterface'), '"Psr\Container\ContainerInterface" alias is resolved to "service_container"');
+
+$container_2 = call_user_func(include __DIR__ . '/fixtures/php/services12.php');
+$t->ok($container !== $container_2, 'It constructs a new container instance every time you invoke resolver');

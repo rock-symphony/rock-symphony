@@ -37,7 +37,7 @@ abstract class sfFilter
    * @param sfContext $context
    * @param array     $parameters
    */
-  public function __construct($context, $parameters = array())
+  public function __construct(sfContext $context, $parameters = array())
   {
     $this->initialize($context, $parameters);
   }
@@ -50,7 +50,7 @@ abstract class sfFilter
    *
    * @return boolean|void true
    */
-  public function initialize($context, $parameters = array())
+  public function initialize(sfContext $context, $parameters = array())
   {
     $this->context = $context;
 
@@ -59,6 +59,13 @@ abstract class sfFilter
 
     return true;
   }
+
+  /**
+   * Executes this filter.
+   *
+   * @param sfFilterChain $filterChain A sfFilterChain instance. Call $filterChain->execute() to continue dispatching.
+   */
+  abstract public function execute(sfFilterChain $filterChain);
 
   /**
    * Returns true if this is the first call to the sfFilter instance.

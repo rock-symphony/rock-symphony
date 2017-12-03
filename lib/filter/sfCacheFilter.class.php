@@ -35,7 +35,7 @@ class sfCacheFilter extends sfFilter
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this Filter
    */
-  public function initialize($context, $parameters = array())
+  public function initialize(sfContext $context, $parameters = array())
   {
     parent::initialize($context, $parameters);
 
@@ -50,7 +50,7 @@ class sfCacheFilter extends sfFilter
    *
    * @param sfFilterChain $filterChain A sfFilterChain instance
    */
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain)
   {
     // execute this filter only once, if cache is set and no GET or POST parameters
     if (!sfConfig::get('sf_cache'))

@@ -470,10 +470,18 @@ class sfContext implements ArrayAccess
         ));
       }
 
+      $serviceContainer->set('sf_context', $this);
       $serviceContainer->set('sf_event_dispatcher', $this->configuration->getEventDispatcher());
       $serviceContainer->set('sf_formatter', new sfFormatter());
       $serviceContainer->set('sf_user', $this->getUser());
       $serviceContainer->set('sf_routing', $this->getRouting());
+
+      // alias class names to their original container entries
+      $serviceContainer->alias('sf_context', __CLASS__);
+      $serviceContainer->alias('sf_event_dispatcher', 'sfEventDispatcher');
+      $serviceContainer->alias('sf_formatter', 'sfFormatter');
+      $serviceContainer->alias('sf_user', 'sfUser');
+      $serviceContainer->alias('sf_routing', 'sfRouting');
     }
 
     return $this->factories['serviceContainer'];

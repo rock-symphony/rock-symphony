@@ -27,7 +27,7 @@ class sfRenderingFilter extends sfFilter
    * @throws <b>sfInitializeException</b> If an error occurs during view initialization
    * @throws <b>sfViewException</b>       If an error occurs while executing the view
    */
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain)
   {
     // execute next filter
     $filterChain->execute();
