@@ -35,7 +35,7 @@ abstract class sfAction extends sfComponent
    *
    * @return void
    */
-  public function initialize($context, $moduleName, $actionName)
+  public function initialize(sfContext $context, $moduleName, $actionName)
   {
     parent::initialize($context, $moduleName, $actionName);
 
