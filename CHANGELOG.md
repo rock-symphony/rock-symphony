@@ -11,6 +11,25 @@ CURRENTLY: Version 2.x.x-dev (Work in Progress)
   If you had some code modifying/extending `services.yml` handling, it will require your attention.
 * Drop `sfCoreAutoload` autoloading functionality. Please rely on Composer *autoload.php* instead.
 * Drop PHP 5.3 support
+* Add `alias` option support to *services.yml* (See #10)
+* Declare `\sfFilter::execute()` as an *abstract* method
+* Add argument type-hints:
+  - `\sfComponent::__construct()` 
+  - `\sfComponent::initialize()` 
+  - `\sfAction::initialize()`
+  - `\sfFilter::execute()`
+  - `\sfController::__construct()`
+  - `\sfController::initialize()`
+  
+* Controller instances are now constructed with service container. 
+* Add `sf_context` to container in `sfContext::getServiceContainer()`. 
+  Needed for context auto-injection.
+* Add aliases to resolve the following services by class names:
+  - `sfContext` &rarr; `sf_context`
+  - `sfFormatter` &rarr; `sf_formatter`
+  - `sfEventDispatcher` &rarr; `sf_event_dispatcher`
+  - `sfUser` &rarr; `sf_user`
+  - `sfRouting` &rarr; `sf_routing`
 
 08/07/2017: Version 1.7.0
 -------------------------

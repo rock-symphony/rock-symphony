@@ -62,3 +62,34 @@ composer require rock-symphony/rock-symphony:v2.0.0-alpha3
 *sfCoreAutoload* auto-loading functionality has been dropped. 
 All the classes are auto-loaded with [composer](https://getcomposer.org/) now.
 Remove all the mentions of *sfCoreAutoload* from your codebase.   
+
+
+## Declared `sfFilter::execute()` as abstract
+
+If you have any customer filters defined in your project, 
+please make sure their `execute()` method is compatible with the following interface:
+
+```php
+public function execute(sfFilterChain $filterChain);
+``` 
+
+
+## Argument type-hints added
+
+If you have any custom code overriding these methods, please make sure they're compatible: 
+
+  - `\sfComponent::__construct()` 
+  - `\sfComponent::initialize()` 
+  - `\sfAction::initialize()`
+  - `\sfFilter::execute()`
+  - `\sfController::__construct()`
+  - `\sfController::initialize()`
+  
+If you have any custom code overriding controller *constructor* please make sure it following this interface:
+
+```php
+public function initialize(sfContext $context, $moduleName, $actionName)
+```
+
+> Please note that `sfContext` type hint is required, 
+> as well as `$moduleName` and `$actionName` having either the same positions or names.
