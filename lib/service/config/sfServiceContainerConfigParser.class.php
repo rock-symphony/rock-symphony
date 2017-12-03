@@ -78,9 +78,24 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
     // services
     if (isset($config['services']))
     {
+      // service definitions
       foreach ($config['services'] as $id => $service)
       {
         $definitions[$id] = $this->parseServiceDefinition($service);
+      }
+
+      // aliases
+      foreach ($config['services'] as $id => $service) {
+        foreach ($this->parseServiceAliases($id, $service) as $alias) {
+          // sanity check
+          if (isset($definitions[$alias])) {
+            throw new InvalidArgumentException(
+              "Cannot declare an alias \"$alias\" for \"$id\" service. This key is already present in container"
+            );
+          }
+          // declare alias
+          $definitions[$alias] = $id;
+        }
       }
     }
 
@@ -125,7 +140,7 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
         if (is_array($service)) {
           $unsupported_keys = array_diff(
             array_keys($service),
-            ['class', 'arguments', 'shared', 'configurator', 'constructor', 'file', 'calls']
+            ['class', 'arguments', 'shared', 'configurator', 'constructor', 'file', 'calls', 'alias']
           );
           if (count($unsupported_keys) > 0) {
             throw new InvalidArgumentException(sprintf(
@@ -292,6 +307,31 @@ class sfServiceContainerConfigParser implements sfServiceContainerConfigParserIn
     }
 
     return $definition;
+  }
+
+  /**
+   * @param string $service
+   * @param string|array $config
+   * @return array A list of service aliases
+   */
+  protected function parseServiceAliases($service, $config)
+  {
+    if (!is_array($config)) {
+      return [];
+    }
+    if (!isset($config['alias'])) {
+      return [];
+    }
+
+    $aliases = (array)$config['alias'];
+
+    foreach ($aliases as $alias) {
+      if (!is_string($alias)) {
+        throw new InvalidArgumentException(sprintf('Invalid "alias" configuration given for "%s" service', $service));
+      }
+    }
+
+    return $aliases;
   }
 
   protected function resolveServices($value)

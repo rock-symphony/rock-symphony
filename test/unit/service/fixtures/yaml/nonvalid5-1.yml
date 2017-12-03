@@ -1,0 +1,8 @@
+services:
+  hello:
+    class: HelloWorld
+    alias: greeting
+
+  hi:
+    class: SayHi
+    alias: hello # should fail because of "hello" already existing

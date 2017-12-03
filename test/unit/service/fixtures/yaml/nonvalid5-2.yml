@@ -1,0 +1,8 @@
+services:
+  hello:
+    class: HelloWorld
+    alias: greeting
+
+  hi:
+    class: SayHi
+    alias: greeting # should fail because of duplicated alias

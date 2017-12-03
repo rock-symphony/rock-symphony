@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(21);
+$t = new lime_test(26);
 
 $parser = new sfServiceContainerConfigParser();
 
@@ -73,11 +73,17 @@ $t->is($builder->getServiceDefinition('method_call2')->getMethodCalls(), array(a
 $t->ok($builder->hasAlias('alias_for_foo'), '->parse parses aliases');
 $t->is($builder->getAlias('alias_for_foo'), 'foo', '->parse parses aliases');
 
+$t->is($builder->getAlias('foo__alias'), 'foo', '->parse parses "alias" option (string)');
+$t->is($builder->getAlias('baz__alias1'), 'baz', '->parse parses "alias" option (array)');
+$t->is($builder->getAlias('baz__alias2'), 'baz', '->parse parses "alias" option (array)');
+
 $t->diag('->parse # validation');
 foreach ([
            __DIR__ . '/fixtures/yaml/nonvalid4-1.yml',
            __DIR__ . '/fixtures/yaml/nonvalid4-2.yml',
            __DIR__ . '/fixtures/yaml/nonvalid4-3.yml',
+           __DIR__ . '/fixtures/yaml/nonvalid5-1.yml',
+           __DIR__ . '/fixtures/yaml/nonvalid5-2.yml',
          ] as $file) {
   try {
     $builder = $parser->parse(sfYaml::load($file));
