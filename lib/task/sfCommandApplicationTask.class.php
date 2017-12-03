@@ -201,6 +201,10 @@ abstract class sfCommandApplicationTask extends sfTask
       $this->serviceContainer->set('sf_event_dispatcher', $this->dispatcher);
       $this->serviceContainer->set('sf_formatter', $this->formatter);
       $this->serviceContainer->set('sf_routing', $this->getRouting());
+
+      $this->serviceContainer->alias('sf_event_dispatcher',  'sfEventDispatcher');
+      $this->serviceContainer->alias('sf_formatter',  'sfFormatter');
+      $this->serviceContainer->alias('sf_routing',  'sfRouting');
     }
 
     return $this->serviceContainer;
