@@ -37,7 +37,7 @@ abstract class sfFilter
    * @param sfContext $context
    * @param array     $parameters
    */
-  public function __construct($context, $parameters = array())
+  public function __construct(sfContext $context, $parameters = array())
   {
     $this->initialize($context, $parameters);
   }
@@ -50,7 +50,7 @@ abstract class sfFilter
    *
    * @return boolean|void true
    */
-  public function initialize($context, $parameters = array())
+  public function initialize(sfContext $context, $parameters = array())
   {
     $this->context = $context;
 

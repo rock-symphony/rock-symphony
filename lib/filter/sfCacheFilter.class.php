@@ -35,7 +35,7 @@ class sfCacheFilter extends sfFilter
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this Filter
    */
-  public function initialize($context, $parameters = array())
+  public function initialize(sfContext $context, $parameters = array())
   {
     parent::initialize($context, $parameters);
 
