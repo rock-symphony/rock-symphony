@@ -1,6 +1,6 @@
 services:
-  foo: { class: FooClass }
-  baz: { class: BazClass }
+  foo: { class: FooClass, alias: foo__alias } # string alias
+  baz: { class: BazClass, alias: [ baz__alias1, baz__alias2 ] } # array of aliases
   shared: { class: FooClass, shared: true }
   non_shared: { class: FooClass, shared: false }
   constructor: { class: FooClass, constructor: getInstance }
