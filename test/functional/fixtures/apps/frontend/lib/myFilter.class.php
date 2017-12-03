@@ -2,7 +2,7 @@
 
 class myFilter extends sfFilter
 {
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain)
   {
     // only activate if we are in the filter module
     if ('filter' != $this->getContext()->getModuleName())
