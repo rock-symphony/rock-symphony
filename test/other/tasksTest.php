@@ -63,7 +63,7 @@ class sf_test_project
   }
 }
 
-$plan = 18;
+$plan = 19;
 $t = new lime_test($plan);
 
 if (!extension_loaded('SQLite') && !extension_loaded('pdo_SQLite'))
@@ -79,6 +79,7 @@ $c->initialize($t);
 // generate:*
 $content = $c->execute_command('generate:project myproject');
 $t->ok(file_exists($c->tmp_dir.'/symfony'), '"generate:project" installs the symfony CLI in root project directory');
+$t->ok(file_exists($c->tmp_dir.'/composer.json'), '"generate:project" creates a composer.json file');
 
 $content = $c->execute_command('generate:app frontend');
 $t->ok(is_dir($c->tmp_dir.'/apps/frontend'), '"generate:app" creates a "frontend" directory under "apps" directory');
