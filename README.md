@@ -35,8 +35,9 @@ Roadmap
   + Add argument return type hints everywhere (improve IDE static analysis)
   + Fix phpdoc / code inconsistencies
   + composer support
-- **2.x** - Descent service container, services auto-injection
-- **3.x** - Replace sfLogger with PSR Logger
+- ~~**2.x** - Descent service container, services auto-injection~~ (see #11)
+- **3.x** - Replace sfYaml with Symfony\Yaml
+- **4.x** - Replace sfLogger with PSR Logger
 - **Future**
   + CommandBus + JobQueue
   + Logging with Logger object (not via sfEventDispatcher)
