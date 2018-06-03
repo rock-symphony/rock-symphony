@@ -57,6 +57,26 @@ class sf_test_project
     return $content;
   }
 
+  /**
+   * Emulate "composer install".
+   * Yeah, it's dirty :puke:
+   */
+  public function composer_install()
+  {
+      $fs = new sfFilesystem();
+      $fs->mkdirs($this->tmp_dir . '/vendor');
+
+      // mirror vendor directory entries
+      foreach (sfFinder::type('any')->maxdepth(0)->in(__DIR__.'/../../vendor') as $vendor_entry) {
+          $vendor_entry_basename = basename($vendor_entry);
+          $fs->symlink($vendor_entry, "{$this->tmp_dir}/vendor/{$vendor_entry_basename}");
+      }
+
+      // link current repo as "vendor/rock-symphony/rock-symphony"
+      $fs->mkdirs("{$this->tmp_dir}/vendor/rock-symphony");
+      $fs->symlink(__DIR__ . '/../..', "{$this->tmp_dir}/vendor/rock-symphony/rock-symphony");
+  }
+
   public function get_fixture_content($file)
   {
     return str_replace("\r\n", "\n", file_get_contents(__DIR__.'/fixtures/'.$file));
@@ -80,6 +100,9 @@ $c->initialize($t);
 $content = $c->execute_command('generate:project myproject');
 $t->ok(file_exists($c->tmp_dir.'/symfony'), '"generate:project" installs the symfony CLI in root project directory');
 $t->ok(file_exists($c->tmp_dir.'/composer.json'), '"generate:project" creates a composer.json file');
+
+// Emulate "composer install"
+$c->composer_install();
 
 $content = $c->execute_command('generate:app frontend');
 $t->ok(is_dir($c->tmp_dir.'/apps/frontend'), '"generate:app" creates a "frontend" directory under "apps" directory');
