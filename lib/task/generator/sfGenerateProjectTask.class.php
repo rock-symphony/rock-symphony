@@ -94,14 +94,11 @@ EOF;
     // try to locate vendor/autoload.php
     $composerAutoload = $this->locateComposerAutoloadFile();
 
-    $this->replaceTokens([sfConfig::get('sf_config_dir')], [
-      'COMPOSER_AUTOLOAD' => var_export(str_replace('\\', '/', $composerAutoload), true),
-    ]);
-
     $this->tokens = array(
-      'PROJECT_NAME' => $this->arguments['name'],
-      'AUTHOR_NAME'  => $this->arguments['author'],
-      'PROJECT_DIR'  => sfConfig::get('sf_root_dir'),
+      'PROJECT_NAME'      => $this->arguments['name'],
+      'AUTHOR_NAME'       => $this->arguments['author'],
+      'PROJECT_DIR'       => sfConfig::get('sf_root_dir'),
+      'COMPOSER_AUTOLOAD' => var_export(str_replace('\\', '/', $composerAutoload), true),
     );
 
     $this->replaceTokens();
