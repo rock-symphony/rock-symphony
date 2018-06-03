@@ -1,11 +1,22 @@
 CHANGELOG
 =========
 
-03/03/2017: Version 1.6.0
+03/03/2017: Version 1.6.x
 -------------------------
 
 * Fork as RockSymfony
 * Add and fix doc comments in symfony core classes
+
+17/03/2018: Version 1.5.11
+--------------------------
+
+* Fix a bug in the lime unit-testing lib #168
+* Fix error 'A non well formed numeric value' on sfValidatorFile #181
+* Fix usage of octet in recent patch #182
+* Allow PATCH as an option in functional tests #185
+* Fix case for isSubclassOf method #189
+* Remove typehint from exception handler #188
+* Fix counting of non-countable var for PHP 7.2 #178
 
 02/08/2017: Version 1.5.10
 --------------------------
