@@ -1,4 +1,4 @@
-vendor:
+vendor: composer.json composer.lock
 	composer install
 
 check-configuration:
