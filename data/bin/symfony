@@ -19,18 +19,11 @@ else
 {
   if (is_readable(__DIR__.'/../../lib/SYMFONY_VERSION.php'))
   {
-    // SVN
     $dir = realpath(__DIR__.'/../../lib');
   }
   else
   {
-    // PEAR
-    $dir = '@PEAR-DIR@/symfony';
-
-    if (!is_dir($dir))
-    {
-      throw new Exception('Unable to find symfony libraries');
-    }
+    throw new Exception('Unable to find symfony libraries');
   }
 }
 
