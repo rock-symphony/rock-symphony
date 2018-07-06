@@ -20,6 +20,9 @@ We have a rather big project running on symfony1 you cannot just throw out every
 This fork is intended to move still-running and still-in-development legacy projects forward 
 to modern development best-practices.
 
+If you start a new project, consider using latest Laravel, Symfony 
+or another *modern maintained* framework of your choice.
+
 Philosophy
 ----------
 
@@ -34,7 +37,7 @@ Roadmap
 - ✓ ~~Add argument return type hints everywhere (improve IDE static analysis)~~
 - ✓ ~~Fix phpdoc / code inconsistencies~~
 - ✓ ~~composer support~~
-- Drop sfCoreAutoload
+- ✓ ~~Drop sfCoreAutoload~~
 - Replace sfYaml with Symfony\Yaml
 - Replace sfLogger with PSR Logger
 - Descent service container, services auto-injection
@@ -50,41 +53,27 @@ Roadmap
 - Drop module-level .yml configurations support
 - Symfony2-like Bundles instead of plugins
 
-About symfony1
---------------
-
-Symfony is a complete framework designed to optimize the development of web applications by way of several key features.
-For starters, it separates a web application's business rules, server logic, and presentation views.
-It contains numerous tools and classes aimed at shortening the development time of a complex web application.
-Additionally, it automates common tasks so that the developer can focus entirely on the specifics of an application.
-The end result of these advantages means there is no need to reinvent the wheel every time a new web application is built!
-
-Symfony was written entirely in PHP 5.
-It has been thoroughly tested in various real-world projects, and is actually in use for high-demand e-business websites.
-It is compatible with most of the available databases engines, including MySQL, PostgreSQL, Oracle, and Microsoft SQL Server.
-It runs on *nix and Windows platforms.
-
 Requirements
 ------------
 
 PHP 5.4.0 and up. See prerequisites on http://symfony.com/legacy/doc/getting-started/1_4/en/02-Prerequisites
 
-Installation
-------------
+Migrating to Rock Symphony
+--------------------------
 
-See http://symfony.com/legacy/doc/getting-started/1_4/en/03-Symfony-Installation
+It's not recommended to start a new project with Rock Symphony.
+It's only intended for old projects to migrate to. 
 
-Using [Composer](http://getcomposer.org/doc/00-intro.md) as dependency management:
+1. Start using [Composer](http://getcomposer.org/doc/00-intro.md) for your project,
+   if you haven't done so yet.
+   
+2. Remove from your codebase symfony framework you use 
+   (stock symfony1, lexpress/symfony1 or whatever you have).
 
-    composer require rock-symphony/rock-symphony "1.7.*"
-    composer install
-    
-Note: On windows, if your project is a few directories down from the drive root, composer can throw an error  relating to ZipArchive::extractTo(), this can be because pathnames are too long. There currently appears to be no proper solution but a workaround is to move your project to the drive root, run the commands from there, where they will run happily, and then move your project back. 
+3. Require `rock-symphony/rock-symphony`:
 
-Documentation
--------------
+       composer require rock-symphony/rock-symphony "^3.0"
 
-Read the official [symfony1 documentation](http://symfony.com/legacy)
 
 Contributing
 ------------
