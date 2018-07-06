@@ -4,7 +4,7 @@ $root_dir = realpath(__DIR__.'/../..');
 require_once($root_dir.'/lib/vendor/lime/lime.php');
 require_once($root_dir.'/lib/util/sfFinder.class.php');
 
-require_once($root_dir.'/lib/autoload/sfCoreAutoload.class.php');
+require_once($root_dir.'/lib/SYMFONY_VERSION.php');
 $version = SYMFONY_VERSION;
 
 printf("symfony LOC (%s)\n", $version);

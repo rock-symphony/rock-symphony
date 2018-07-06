@@ -183,27 +183,6 @@ Test
 A new option `test_path` has been added.  
 This allow you to use another directory for unit tests temporary files storage.
 
-Doctrine
---------
-
-### Widget
-
-A new `sfWidgetFormDoctrineArrayChoice` has been added.  
-This allow you to use an array built by a table method of a model to increase performance.  
-See [unit tests](https://github.com/LExpress/symfony1/blob/master/lib/plugins/sfDoctrinePlugin/test/unit/widget/sfWidgetFormDoctrineArrayChoiceTest.php) for usage examples.
-
-### Form generation
-
-Added column name for foreign key colums.  
-This allow you to add a foreign key on a non primary key (works only for indexed columns on MySQL).
-
-### Task
-
-A new option `skip-build` has been added to `sfDoctrineCreateModelTablesTask`.  
-This option allow you to skip the build model subtask called before the model creation.
-
-The `doctrine:compile` task has been added and the generated file is automaticaly detect and use by symfony.
-
 Tasks
 -----
 

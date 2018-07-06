@@ -1,4 +1,4 @@
-vendor:
+vendor: composer.json composer.lock
 	composer install
 
 check-configuration:
@@ -6,4 +6,4 @@ check-configuration:
 
 tests: vendor check-configuration
 	php data/bin/symfony symfony:test --trace
-	php vendor/bin/phpunit -c phpunit.xml
+	# php vendor/bin/phpunit -c phpunit.xml

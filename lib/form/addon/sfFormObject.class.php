@@ -262,7 +262,7 @@ abstract class sfFormObject extends BaseForm
   /**
    * Renders a form tag suitable for the related object.
    *
-   * The method is automatically guessed based on the Doctrine object:
+   * The method is automatically guessed based on the ORM object:
    *
    *  * if the object is new, the method is POST
    *  * if the object already exists, the method is PUT

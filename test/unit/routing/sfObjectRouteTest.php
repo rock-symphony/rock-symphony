@@ -20,7 +20,7 @@ class Foo
   }
 }
 
-// simulate Doctrine route
+// simulate ORM route
 class ObjectRoute extends sfObjectRoute
 {
   protected function doConvertObjectToArray($object)

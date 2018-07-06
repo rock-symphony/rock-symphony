@@ -3,6 +3,7 @@
     "description": "Fork of symfony 1.4 with dic, form enhancements, latest swiftmailer and better performance",
     "license": "MIT",
     "require": {
+        "php": ">=5.4.0 <7.3",
         "swiftmailer/swiftmailer": "~5.2"
     },
     "require-dev": {
@@ -10,10 +11,20 @@
     },
     "type": "library",
     "autoload": {
-        "files": ["autoload.php"]
+        "files": ["lib/SYMFONY_VERSION.php"],
+        "classmap": ["lib"],
+        "exclude-from-classmap": [
+            "/lib/command/cli.php",
+            "/lib/config/config",
+            "/lib/controller/default",
+            "/lib/exception/data",
+            "/lib/helper",
+            "/lib/i18n/data",
+            "/lib/task/generator/skeleton",
+            "/lib/test/w3"
+        ]
     },
     "suggest": {
-        "rock-symphony/sf-doctrine-plugin": "Doctrine1 plugin",
         "propel/sf-propel-o-r-m-plugin": "Propel plugin",
         "psr/log": "Psr logger"
     },

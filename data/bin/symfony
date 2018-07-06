@@ -4,7 +4,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -13,25 +13,15 @@
 if (file_exists('config/ProjectConfiguration.class.php'))
 {
   require_once('config/ProjectConfiguration.class.php');
-  $dir = sfCoreAutoload::getInstance()->getBaseDir();
+  $dir = __DIR__ . '/vendor/rock-symphony/rock-symphony';
+}
+elseif (is_readable(__DIR__.'/../../lib/SYMFONY_VERSION.php'))
+{
+  $dir = realpath(__DIR__.'/../../lib');
 }
 else
 {
-  if (is_readable(__DIR__.'/../../lib/autoload/sfCoreAutoload.class.php'))
-  {
-    // SVN
-    $dir = realpath(__DIR__.'/../../lib');
-  }
-  else
-  {
-    // PEAR
-    $dir = '@PEAR-DIR@/symfony';
-
-    if (!is_dir($dir))
-    {
-      throw new Exception('Unable to find symfony libraries');
-    }
-  }
+  throw new Exception('Unable to find symfony libraries');
 }
 
 include($dir.'/command/cli.php');
