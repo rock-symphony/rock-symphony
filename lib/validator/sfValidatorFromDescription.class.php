@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfValidatorFromDescription converts a string to a validator.
  *
@@ -186,7 +188,7 @@ class sfValidatorFromDescription extends sfValidatorDecorator
 
     ++$i;
 
-    return sfYamlInline::load('['.(!$args ? '{}' : $args).']');
+    return Yaml::parse('['.(!$args ? '{}' : $args).']');
   }
 
   /**
