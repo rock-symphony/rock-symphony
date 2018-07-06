@@ -1,0 +1,10 @@
+{
+  "name": "##PROJECT_NAME##",
+  "description": "Project based on Rock-Symfony framework (symfony1 fork)",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0 <7.3",
+    "rock-symphony/rock-symphony": "dev-3.x"
+  },
+  "type": "project"
+}

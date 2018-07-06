@@ -1,10 +1,8 @@
 <?php
 
-$_test_dir = realpath(__DIR__.'/..');
-require_once($_test_dir.'/../lib/vendor/lime/lime.php');
-require_once($_test_dir.'/../lib/util/sfToolkit.class.php');
-
-define('DS', DIRECTORY_SEPARATOR);
+require_once __DIR__.'/../../vendor/autoload.php';
+require_once __DIR__.'/../../lib/vendor/lime/lime.php';
+require_once __DIR__.'/../../lib/util/sfToolkit.class.php';
 
 class sf_test_project
 {
@@ -17,7 +15,7 @@ class sf_test_project
   {
     $this->t = $t;
 
-    $this->tmp_dir = sys_get_temp_dir().DS.'sf_test_project';
+    $this->tmp_dir = sys_get_temp_dir().'/sf_test_project';
 
     if (is_dir($this->tmp_dir))
     {
@@ -59,13 +57,33 @@ class sf_test_project
     return $content;
   }
 
+  /**
+   * Emulate "composer install".
+   * Yeah, it's dirty :puke:
+   */
+  public function composer_install()
+  {
+      $fs = new sfFilesystem();
+      $fs->mkdirs($this->tmp_dir . '/vendor');
+
+      // mirror vendor directory entries
+      foreach (sfFinder::type('any')->maxdepth(0)->in(__DIR__.'/../../vendor') as $vendor_entry) {
+          $vendor_entry_basename = basename($vendor_entry);
+          $fs->symlink($vendor_entry, "{$this->tmp_dir}/vendor/{$vendor_entry_basename}");
+      }
+
+      // link current repo as "vendor/rock-symphony/rock-symphony"
+      $fs->mkdirs("{$this->tmp_dir}/vendor/rock-symphony");
+      $fs->symlink(__DIR__ . '/../..', "{$this->tmp_dir}/vendor/rock-symphony/rock-symphony");
+  }
+
   public function get_fixture_content($file)
   {
     return str_replace("\r\n", "\n", file_get_contents(__DIR__.'/fixtures/'.$file));
   }
 }
 
-$plan = 18;
+$plan = 19;
 $t = new lime_test($plan);
 
 if (!extension_loaded('SQLite') && !extension_loaded('pdo_SQLite'))
@@ -80,10 +98,14 @@ $c->initialize($t);
 
 // generate:*
 $content = $c->execute_command('generate:project myproject');
-$t->ok(file_exists($c->tmp_dir.DS.'symfony'), '"generate:project" installs the symfony CLI in root project directory');
+$t->ok(file_exists($c->tmp_dir.'/symfony'), '"generate:project" installs the symfony CLI in root project directory');
+$t->ok(file_exists($c->tmp_dir.'/composer.json'), '"generate:project" creates a composer.json file');
+
+// Emulate "composer install"
+$c->composer_install();
 
 $content = $c->execute_command('generate:app frontend');
-$t->ok(is_dir($c->tmp_dir.DS.'apps'.DS.'frontend'), '"generate:app" creates a "frontend" directory under "apps" directory');
+$t->ok(is_dir($c->tmp_dir.'/apps/frontend'), '"generate:app" creates a "frontend" directory under "apps" directory');
 $t->like(file_get_contents($c->tmp_dir.'/apps/frontend/config/settings.yml'), '/escaping_strategy: +true/', '"generate:app" switches escaping_strategy "on" by default');
 $t->like(file_get_contents($c->tmp_dir.'/apps/frontend/config/settings.yml'), '/csrf_secret: +\w+/', '"generate:app" generates a csrf_token by default');
 
@@ -95,12 +117,12 @@ $t->like(file_get_contents($c->tmp_dir.'/apps/backend/config/settings.yml'), '/c
 $content = $c->execute_command('generate:module wrongapp foo', 1);
 
 $content = $c->execute_command('generate:module frontend foo');
-$t->ok(is_dir($c->tmp_dir.DS.'apps'.DS.'frontend'.DS.'modules'.DS.'foo'), '"generate:module" creates a "foo" directory under "modules" directory');
+$t->ok(is_dir($c->tmp_dir.'/apps/frontend/modules/foo'), '"generate:module" creates a "foo" directory under "modules" directory');
 
-copy(__DIR__.'/fixtures/factories.yml', $c->tmp_dir.DS.'apps'.DS.'frontend'.DS.'config'.DS.'factories.yml');
+copy(__DIR__.'/fixtures/factories.yml', $c->tmp_dir.'/apps/frontend/config/factories.yml');
 
 // test:*
-copy(__DIR__.'/fixtures/test/unit/testTest.php', $c->tmp_dir.DS.'test'.DS.'unit'.DS.'testTest.php');
+copy(__DIR__.'/fixtures/test/unit/testTest.php', $c->tmp_dir.'/test/unit/testTest.php');
 
 $content = $c->execute_command('test:unit test');
 $t->is($content, $c->get_fixture_content('/test/unit/result.txt'), '"test:unit" can launch a particular unit test');
@@ -115,11 +137,11 @@ $t->ok(false !== stripos($content, $c->get_fixture_content('test/unit/result-har
 $content = $c->execute_command('cache:clear');
 
 // Test task autoloading
-mkdir($c->tmp_dir.DS.'lib'.DS.'task');
-mkdir($pluginDir = $c->tmp_dir.DS.'plugins'.DS.'myFooPlugin'.DS.'lib'.DS.'task', 0777, true);
-copy(__DIR__.'/fixtures/task/myPluginTask.class.php', $pluginDir.DS.'myPluginTask.class.php');
+mkdir($c->tmp_dir.'/lib/task');
+mkdir($pluginDir = $c->tmp_dir.'/plugins/myFooPlugin/lib/task', 0777, true);
+copy(__DIR__.'/fixtures/task/myPluginTask.class.php', $pluginDir.'/myPluginTask.class.php');
 file_put_contents(
-  $projectConfigurationFile = $c->tmp_dir.DS.'config'.DS.'ProjectConfiguration.class.php',
+  $projectConfigurationFile = $c->tmp_dir.'/config/ProjectConfiguration.class.php',
   str_replace(
     '// {{injection}}',
     "// {{injection}}\n    " .
