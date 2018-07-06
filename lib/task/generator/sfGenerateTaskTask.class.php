@@ -51,7 +51,7 @@ if it does not already exist.
 
   [./symfony generate:task namespace:name --dir=plugins/myPlugin/lib/task|INFO]
 
-If you want the task to default to a connection other than [doctrine|COMMENT], provide
+If you want the task to default to a connection other than default, provide
 the name of this connection with the [--use-database|COMMENT] option:
 
   [./symfony generate:task namespace:name --use-database=main|INFO]

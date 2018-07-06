@@ -25,7 +25,6 @@
         ]
     },
     "suggest": {
-        "rock-symphony/sf-doctrine-plugin": "Doctrine1 plugin",
         "propel/sf-propel-o-r-m-plugin": "Propel plugin",
         "psr/log": "Psr logger"
     },

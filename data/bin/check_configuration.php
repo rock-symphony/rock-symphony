@@ -71,11 +71,11 @@ check(version_compare(phpversion(), '5.3.1', '>='), sprintf('PHP version is at l
 
 // warnings
 echo "\n** Optional checks **\n\n";
-check(class_exists('PDO'), 'PDO is installed', 'Install PDO (mandatory for Doctrine)', false);
+check(class_exists('PDO'), 'PDO is installed', 'Install PDO (mandatory for ORM)', false);
 if (class_exists('PDO'))
 {
   $drivers = PDO::getAvailableDrivers();
-  check(count($drivers), 'PDO has some drivers installed: '.implode(', ', $drivers), 'Install PDO drivers (mandatory for Doctrine)');
+  check(count($drivers), 'PDO has some drivers installed: '.implode(', ', $drivers), 'Install PDO drivers (mandatory for ORM)');
 }
 check(function_exists('token_get_all'), 'The token_get_all() function is available', 'Install and enable the Tokenizer extension (highly recommended)', false);
 check(function_exists('mb_strlen'), 'The mb_strlen() function is available', 'Install and enable the mbstring extension', false);
