@@ -35,7 +35,7 @@ default:
 
     # Logging and debugging settings
     web_debug:              false       # Enable the web debug toolbar
-    error_reporting:        <?php echo (E_PARSE | E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR | E_USER_ERROR)."\n" ?> # Determines which events are logged.
+    error_reporting:        [E_PARSE, E_COMPILE_ERROR, E_ERROR, E_CORE_ERROR, E_USER_ERROR] # Determines which events are logged.
     file_link_format:       ~         # Format to use to make file paths clickable (include placeholders %f and %l for file and line number)
 
     # Assets paths
