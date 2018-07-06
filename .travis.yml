@@ -13,10 +13,6 @@ matrix:
     fast_finish: true
     allow_failures:
         - php: nightly
-    include:
-        - php: 5.4
-          dist: precise
-          sudo: required
 
 # faster builds on new travis setup not using sudo
 sudo: false
