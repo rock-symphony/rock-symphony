@@ -6,4 +6,4 @@ all:
   services:
     my_plugin_service:
       class: sfOutputEscaperSafe
-      arguments: [%my_plugin_param%]
+      arguments: ['%my_plugin_param%']

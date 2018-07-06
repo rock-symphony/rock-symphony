@@ -6,4 +6,4 @@ all:
   services:
     my_project_service:
       class: sfOutputEscaperSafe
-      arguments: [%my_project_param%, %sf_cache_dir%]
+      arguments: ['%my_project_param%', '%sf_cache_dir%']

@@ -4,7 +4,7 @@ services:
   shared: { class: FooClass, shared: true }
   non_shared: { class: FooClass, shared: false }
   constructor: { class: FooClass, constructor: getInstance }
-  file: { class: FooClass, file: %path%/foo.php }
+  file: { class: FooClass, file: '%path%/foo.php' }
   arguments: { class: FooClass, arguments: [foo, "@foo", [true, false]] }
   configurator1: { class: FooClass, configurator: sc_configure }
   configurator2: { class: FooClass, configurator: [@baz, configure] }
