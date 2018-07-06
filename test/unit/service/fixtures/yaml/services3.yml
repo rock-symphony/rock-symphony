@@ -7,7 +7,7 @@ services:
   file: { class: FooClass, file: '%path%/foo.php' }
   arguments: { class: FooClass, arguments: [foo, "@foo", [true, false]] }
   configurator1: { class: FooClass, configurator: sc_configure }
-  configurator2: { class: FooClass, configurator: [@baz, configure] }
+  configurator2: { class: FooClass, configurator: ['@baz', configure] }
   configurator3: { class: FooClass, configurator: [BazClass, configureStatic] }
   method_call1:
     class: FooClass
@@ -16,5 +16,5 @@ services:
   method_call2:
     class: FooClass
     calls:
-      - [ setBar, [ foo, @foo, [true, false] ] ]
-  alias_for_foo: @foo
+      - [ setBar, [ foo, '@foo', [true, false] ] ]
+  alias_for_foo: '@foo'
