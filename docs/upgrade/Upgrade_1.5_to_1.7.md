@@ -22,7 +22,13 @@ c. Require *rock-symphony/rock-symphony*
 
 d. Commit `composer.json` and `composer.lock` files.
 
-e. Make sure you require `vendor/autoload.php` in your *config/ProjectConfiguration.php*:
+e. Ignore `vendor` folder.
+
+   ```bash
+   echo '/vendor' >> .gitignore
+   ```
+
+f. Make sure you require `vendor/autoload.php` in your *config/ProjectConfiguration.php*:
 
    ```php
    
