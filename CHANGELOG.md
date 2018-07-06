@@ -1,6 +1,13 @@
 CHANGELOG
 =========
 
+06/07/2018: Version 3.x
+-----------------------
+
+* Drop PHP 5.3 support
+* Drop sfCoreAutoload and rely on Composer instead
+* Drop sfDoctrinePlugin support and mentions
+
 08/07/2017: Version 1.7.x
 -------------------------
 
