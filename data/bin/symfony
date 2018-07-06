@@ -15,16 +15,13 @@ if (file_exists('config/ProjectConfiguration.class.php'))
   require_once('config/ProjectConfiguration.class.php');
   $dir = __DIR__ . '/vendor/rock-symphony/rock-symphony';
 }
+elseif (is_readable(__DIR__.'/../../lib/SYMFONY_VERSION.php'))
+{
+  $dir = realpath(__DIR__.'/../../lib');
+}
 else
 {
-  if (is_readable(__DIR__.'/../../lib/SYMFONY_VERSION.php'))
-  {
-    $dir = realpath(__DIR__.'/../../lib');
-  }
-  else
-  {
-    throw new Exception('Unable to find symfony libraries');
-  }
+  throw new Exception('Unable to find symfony libraries');
 }
 
 include($dir.'/command/cli.php');
