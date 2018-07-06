@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfWebDebugPanelConfig adds a panel to the web debug toolbar with the current configuration.
  *
@@ -75,7 +77,7 @@ class sfWebDebugPanelConfig extends sfWebDebugPanel
 
     return '
     <h2>'.$id.' '.$this->getToggler('sfWebDebug'.$id).'</h2>
-    <div id="sfWebDebug'.$id.'" style="display: none"><pre>'.htmlspecialchars(sfYaml::dump(sfDebug::removeObjects($values)), ENT_QUOTES, sfConfig::get('sf_charset')).'</pre></div>
+    <div id="sfWebDebug'.$id.'" style="display: none"><pre>'.htmlspecialchars(Yaml::dump(sfDebug::removeObjects($values)), ENT_QUOTES, sfConfig::get('sf_charset')).'</pre></div>
     ';
   }
 }

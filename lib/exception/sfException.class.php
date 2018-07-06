@@ -9,6 +9,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfException is the base class for all symfony related throwables and
  * provides an additional method for printing up a detailed view of an
@@ -353,7 +355,7 @@ class sfException extends Exception
    */
   static protected function formatArrayAsHtml($values)
   {
-    return '<pre>'.self::escape(@sfYaml::dump($values)).'</pre>';
+    return '<pre>'.self::escape(Yaml::dump($values)).'</pre>';
   }
 
   /**

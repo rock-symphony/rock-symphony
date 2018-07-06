@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfYamlConfigHandler is a base class for YAML (.yml) configuration handlers. This class
  * provides a central location for parsing YAML files.
@@ -69,7 +71,7 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
     }
 
     // parse our config
-    $config = sfYaml::load($configFile, sfConfig::get('sf_charset', 'UTF-8'));
+    $config = Yaml::parseFile($configFile);
 
     if ($config === false)
     {
