@@ -10,7 +10,7 @@ Upgrade guide 1.7 to 3.0
 3. Upgrade `rock-symphony` dependency to `3.0`
 
     ```bash
-    composer require rock-symphony/rock-symphony:3.0
+    composer require rock-symphony/rock-symphony:^3.0
     ````
  
 ## Changelog
