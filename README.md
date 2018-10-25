@@ -76,9 +76,9 @@ It's only intended for old projects to migrate to.
 
 4. Follow changelog and upgrade your codebase step by step:
 
-   - composer require rock-symphony/rock-symphony "^1.7"
-   - composer require rock-symphony/rock-symphony "^3.0"
-   - composer require rock-symphony/rock-symphony "^4.0"
+   - `composer require rock-symphony/rock-symphony "^1.7"`
+   - `composer require rock-symphony/rock-symphony "^3.0"`
+   - `composer require rock-symphony/rock-symphony "^4.0"`
 
 
 Contributing
