@@ -17,8 +17,8 @@
  * 2. string (constant name):
  *    error_reporting: E_ALL
  *
- * 3. array of int/strings:
- *     error_reporting: [E_ALL, E_STRICT, ^E_DEPRECATED] # equivalent of (E_ALL | E_STRICT) ^ E_DEPRECATED
+ * 3. string expression:
+ *     error_reporting: (E_ALL | E_STRICT) ^ E_DEPRECATED
  *
  * @internal Do not use this class in your project. It's internal and can be removed/modified at any time.
  *
@@ -28,7 +28,7 @@
 class sfErrorReporting
 {
   /**
-   * @param array|null|string|int $error_reporting_config
+   * @param null|string|int $error_reporting_config
    * @return void
    */
   public function set($error_reporting_config)
@@ -45,7 +45,7 @@ class sfErrorReporting
    */
   public function parse($error_reporting_config)
   {
-    if (is_null($error_reporting_config)) {
+    if (is_null($error_reporting_config) || $error_reporting_config === '') {
       // NULL === Keep current error reporting
       return null;
     }
@@ -57,82 +57,55 @@ class sfErrorReporting
 
     if (is_string($error_reporting_config)) {
       // Leave it to parseArray()
-      $error_reporting_config = [$error_reporting_config];
-    }
-
-    if (is_array($error_reporting_config)) {
-      return $this->parseArray($error_reporting_config);
+      return $this->parseString($error_reporting_config);
     }
 
     throw new InvalidArgumentException('Invalid value defined for "error_reporting" config entry.');
   }
 
   /**
-   * @param array $error_reporting_config
-   * @return int|null
-   */
-  private function parseArray($error_reporting_config)
-  {
-    if (count($error_reporting_config) === 0) {
-      // Keep current error_reporting level
-      return null;
-    }
-
-    $combined = 0;
-
-    foreach ($error_reporting_config as $level) {
-      if (is_string($level) && strlen($level) > 1 && $level[0] === '^') {
-        $combined = $combined ^ $this->decodeLevel(substr($level, 1));
-      } else {
-        $combined = $combined | $this->decodeLevel($level);
-      }
-    }
-
-    return $combined;
-  }
-
-  /**
-   * @param int|string $level
+   * @param string $error_reporting_config
    * @return int
-   *
-   * @throws \InvalidArgumentException if the given level cannot be decoded (unsupported string value or type)
    */
-  private function decodeLevel($level)
+  private function parseString($error_reporting_config)
   {
-    if (is_int($level)) {
-      return $level;
+    $level = implode('|', [
+      'E_ERROR',
+      'E_WARNING',
+      'E_PARSE',
+      'E_NOTICE',
+      'E_CORE_ERROR',
+      'E_CORE_WARNING',
+      'E_COMPILE_ERROR',
+      'E_COMPILE_WARNING',
+      'E_USER_ERROR',
+      'E_USER_WARNING',
+      'E_USER_NOTICE',
+      'E_STRICT',
+      'E_RECOVERABLE_ERROR',
+      'E_DEPRECATED',
+      'E_USER_DEPRECATED',
+      'E_ALL',
+    ]);
+
+    $operator = "[~&|^]";
+    $parenthesis = "[()]";
+    $space = "\s";
+
+    $regex = "/^ 
+        (?:{$operator}|{$parenthesis}|{$space})* 
+        (?:{$level})
+        ( 
+          (?:{$operator}|{$parenthesis}|{$space})+ 
+          (?:{$level}) 
+        )*
+        {$parenthesis}*
+        $ /x";
+
+    if (! preg_match($regex, $error_reporting_config)) {
+      throw new InvalidArgumentException('Error reporting level configuration does not match format expectations');
     }
 
-    if (is_string($level)) {
-      $mapping = [
-        'E_ERROR'             => E_ERROR,
-        'E_WARNING'           => E_WARNING,
-        'E_PARSE'             => E_PARSE,
-        'E_NOTICE'            => E_NOTICE,
-        'E_CORE_ERROR'        => E_CORE_ERROR,
-        'E_CORE_WARNING'      => E_CORE_WARNING,
-        'E_COMPILE_ERROR'     => E_COMPILE_ERROR,
-        'E_COMPILE_WARNING'   => E_COMPILE_WARNING,
-        'E_USER_ERROR'        => E_USER_ERROR,
-        'E_USER_WARNING'      => E_USER_WARNING,
-        'E_USER_NOTICE'       => E_USER_NOTICE,
-        'E_STRICT'            => E_STRICT,
-        'E_RECOVERABLE_ERROR' => E_RECOVERABLE_ERROR,
-        'E_DEPRECATED'        => E_DEPRECATED,
-        'E_USER_DEPRECATED'   => E_USER_DEPRECATED,
-        'E_ALL'               => E_ALL,
-      ];
-
-      if (isset($mapping[$level])) {
-        return $mapping[$level];
-      }
-
-      throw new InvalidArgumentException(sprintf('Unsupported error_reporting level string given: "%s"', $level));
-    }
-
-    throw new InvalidArgumentException(sprintf(
-      'Unsupported value type given for error_reporting level: %s',
-      sprintf(gettype($level))
-    ));
+    return eval("return {$error_reporting_config};");
   }
 }

@@ -18,24 +18,20 @@ $t->diag('->parse() unwraps strings to constant values');
 $t->is(E_ALL, $error_reporting->parse('E_ALL'), 'E_ALL');
 $t->is(E_WARNING, $error_reporting->parse('E_WARNING'), 'E_WARNING');
 
-$t->diag('->parse() combines array of integers using | (bitwise OR operation)');
-$t->is(E_ERROR | E_WARNING, $error_reporting->parse([E_ERROR, E_WARNING]), 'E_ERROR | E_WARNING');
-$t->is(E_STRICT | E_DEPRECATED, $error_reporting->parse([E_STRICT, E_DEPRECATED]), 'E_STRICT | E_DEPRECATED');
-
-$t->diag('->parse() unwraps & combines array of strings using | (bitwise OR operation)');
-$t->is(E_ERROR | E_WARNING, $error_reporting->parse(['E_ERROR', 'E_WARNING']), 'E_ERROR | E_WARNING');
-$t->is(E_STRICT | E_DEPRECATED, $error_reporting->parse(['E_STRICT', 'E_DEPRECATED']), 'E_STRICT | E_DEPRECATED');
-
-$t->diag('->parse() parses ^-prefixed strings to exclude an error level (bitwise XOR)');
+$t->diag('->parse() compiles strings to their values');
+$t->is(E_ERROR | E_WARNING, $error_reporting->parse('E_ERROR | E_WARNING'), 'E_ERROR | E_WARNING');
+$t->is(E_STRICT | E_DEPRECATED, $error_reporting->parse('E_STRICT | E_DEPRECATED'), 'E_STRICT | E_DEPRECATED');
+$t->is(E_ERROR & E_WARNING, $error_reporting->parse('E_ERROR & E_WARNING'), 'E_ERROR & E_WARNING');
+$t->is(E_STRICT & E_DEPRECATED, $error_reporting->parse('E_STRICT & E_DEPRECATED'), 'E_STRICT & E_DEPRECATED');
 $t->is(
   (E_ALL | E_STRICT) ^ E_DEPRECATED,
-  $error_reporting->parse(['E_ALL', 'E_STRICT', '^E_DEPRECATED']),
+  $error_reporting->parse('(E_ALL | E_STRICT) ^ E_DEPRECATED'),
   'E_ALL | E_STRICT ^ E_DEPRECATED'
 );
 $t->is(
-  (E_ALL | E_STRICT) ^ E_NOTICE,
-  $error_reporting->parse(['E_ALL', 'E_STRICT', '^E_NOTICE']),
-  'E_ALL | E_STRICT ^ E_NOTICE'
+  (E_ALL & E_STRICT) ^ E_NOTICE,
+  $error_reporting->parse('(E_ALL & E_STRICT) ^ E_NOTICE'),
+  'E_ALL & E_STRICT ^ E_NOTICE'
 );
 
 $t->diag('->parse() throws InvalidArgumentException for unsupported input');
@@ -44,11 +40,11 @@ foreach ([
            'boolean true'                   => true,
            'objects'                        => new stdClass(),
            'float'                          => 1.6,
+           'array'                          => [],
            'array with boolean'             => [E_ALL, false],
            'array with object'              => [E_ALL, new stdClass()],
            'array with float'               => [E_ALL, 5.6],
            'unknown error level'            => 'E_CRAZY',
-           'array with unknown error level' => ['E_ALL', 'E_CRAZY'],
          ] as $description => $unsupported_input
 ) {
   try {
