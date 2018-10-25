@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfValidatorAnd validates an input value if all validators passes.
  *
@@ -156,8 +158,8 @@ class sfValidatorAnd extends sfValidatorBase
         if ($options || $messages)
         {
           $validators .= sprintf('(%s%s)',
-            $options ? sfYamlInline::dump($options) : ($messages ? '{}' : ''),
-            $messages ? ', '.sfYamlInline::dump($messages) : ''
+            $options ? Yaml::dump($options, 0) : ($messages ? '{}' : ''),
+            $messages ? ', '.Yaml::dump($messages, 0) : ''
           );
         }
       }

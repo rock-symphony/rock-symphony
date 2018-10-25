@@ -6,7 +6,7 @@ execution:
 default:
   class:     defaultFilterClass
   param:
-    condition: %DEFAULT_TEST%
+    condition: '%DEFAULT_TEST%'
 
 rendering:
   class:  sfRenderingFilter

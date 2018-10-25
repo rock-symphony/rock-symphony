@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * sfValidatorBase is the base class for all validators.
  *
@@ -449,8 +451,8 @@ abstract class sfValidatorBase
     return sprintf('%s%s(%s%s)',
       str_repeat(' ', $indent),
       str_replace('sfValidator', '', get_class($this)),
-      $options ? sfYamlInline::dump($options) : ($messages ? '{}' : ''),
-      $messages ? ', '.sfYamlInline::dump($messages) : ''
+      $options ? Yaml::dump($options, 0) : ($messages ? '{}' : ''),
+      $messages ? ', '.Yaml::dump($messages, 0) : ''
     );
   }
 

@@ -144,7 +144,10 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
 
     // error settings
     ini_set('display_errors', $this->isDebug() ? 'on' : 'off');
-    error_reporting(sfConfig::get('sf_error_reporting'));
+
+    // parse and set error reporting level
+    $error_reporting = new sfErrorReporting();
+    $error_reporting->set(sfConfig::get('sf_error_reporting'));
 
     // initialize plugin configuration objects
     $this->initializePlugins();

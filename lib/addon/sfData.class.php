@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * This class defines the interface for interacting with data, as well
  * as default implementations.
@@ -53,7 +55,7 @@ abstract class sfData
   protected function doLoadDataFromFile($file)
   {
     // import new datas
-    $data = sfYaml::load($file, sfConfig::get('sf_charset', 'UTF-8'));
+    $data = Yaml::parseFile($file);
 
     $this->loadDataFromArray($data);
   }

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 require_once(__DIR__.'/sfGeneratorBaseTask.class.php');
 
 /**
@@ -125,8 +127,8 @@ EOF;
     $finder = sfFinder::type('file')->name('settings.yml');
     $this->getFilesystem()->replaceTokens($finder->in($appDir.'/config'), '##', '##', array(
       'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',
-      'CSRF_SECRET'       => sfYamlInline::dump(sfYamlInline::parseScalar($options['csrf-secret'])),
-      'ESCAPING_STRATEGY' => sfYamlInline::dump((boolean) sfYamlInline::parseScalar($options['escaping-strategy'])),
+      'CSRF_SECRET'       => Yaml::dump(Yaml::parse($options['csrf-secret']), 0),
+      'ESCAPING_STRATEGY' => Yaml::dump((boolean) Yaml::parse($options['escaping-strategy']), 0),
       'USE_DATABASE'      => sfConfig::has('sf_orm') ? 'true' : 'false',
     ));
 

@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use Symfony\Component\Yaml\Yaml;
+
 /**
  * @package    symfony
  * @subpackage i18n
@@ -29,7 +31,7 @@ class sfI18nYamlGeneratorExtractor extends sfI18nYamlExtractor
   {
     $this->strings = array();
 
-    $config = sfYaml::load($content, sfConfig::get('sf_charset', 'UTF-8'));
+    $config = Yaml::parse($content);
 
     if (!isset($config['generator']['param']['config']))
     {

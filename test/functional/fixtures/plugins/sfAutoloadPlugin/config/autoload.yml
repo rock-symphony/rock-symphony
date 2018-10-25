@@ -1,11 +1,11 @@
 autoload:
   sfAutoloadPlugin_lib:
     name:       sfAutoloadPlugin lib
-    path:       <?php echo __DIR__."/../lib\n" ?>
+    path:       '%SF_PLUGINS_DIR%/sfAutoloadPlugin/lib'
     exclude:    [vendor]
     recursive:  true
 
   not_in_lib_class:
     name:       NotInLib class
     files:
-      NotInLib: <?php echo __DIR__."/NotInLib.class.php\n" ?>
+      NotInLib: '%SF_PLUGINS_DIR%/sfAutoloadPlugin/config/NotInLib.class.php'
