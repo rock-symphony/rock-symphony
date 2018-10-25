@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+25/10/2018: Version 4.x
+-----------------------
+
+* Drop PHP 5.4 support
+* Drop sfYaml code and switch to Symfony/Yaml instead
+
 06/07/2018: Version 3.x
 -----------------------
 
