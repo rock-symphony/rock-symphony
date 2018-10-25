@@ -14,10 +14,7 @@
  * 1. int (bitmask):
  *    error_reporting: 2056
  *
- * 2. string (constant name):
- *    error_reporting: E_ALL
- *
- * 3. string expression:
+ * 2. string expression:
  *     error_reporting: (E_ALL | E_STRICT) ^ E_DEPRECATED
  *
  * @internal Do not use this class in your project. It's internal and can be removed/modified at any time.
@@ -69,37 +66,14 @@ class sfErrorReporting
    */
   private function parseString($error_reporting_config)
   {
-    $level = implode('|', [
-      'E_ERROR',
-      'E_WARNING',
-      'E_PARSE',
-      'E_NOTICE',
-      'E_CORE_ERROR',
-      'E_CORE_WARNING',
-      'E_COMPILE_ERROR',
-      'E_COMPILE_WARNING',
-      'E_USER_ERROR',
-      'E_USER_WARNING',
-      'E_USER_NOTICE',
-      'E_STRICT',
-      'E_RECOVERABLE_ERROR',
-      'E_DEPRECATED',
-      'E_USER_DEPRECATED',
-      'E_ALL',
-    ]);
-
+    $level = 'E_\w+';
+    $number = "\d+";
     $operator = "[~&|^]";
     $parenthesis = "[()]";
     $space = "\s";
 
     $regex = "/^ 
-        (?:{$operator}|{$parenthesis}|{$space})* 
-        (?:{$level})
-        ( 
-          (?:{$operator}|{$parenthesis}|{$space})+ 
-          (?:{$level}) 
-        )*
-        {$parenthesis}*
+        (?:{$operator}|{$parenthesis}|{$space}|{$level}|{$number})+
         $ /x";
 
     if (! preg_match($regex, $error_reporting_config)) {

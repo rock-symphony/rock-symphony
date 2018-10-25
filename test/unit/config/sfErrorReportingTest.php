@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/../../bootstrap/unit.php');
 
-$t = new lime_test(21);
+$t = new lime_test(20);
 
 $error_reporting = new sfErrorReporting();
 
@@ -44,7 +44,6 @@ foreach ([
            'array with boolean'             => [E_ALL, false],
            'array with object'              => [E_ALL, new stdClass()],
            'array with float'               => [E_ALL, 5.6],
-           'unknown error level'            => 'E_CRAZY',
          ] as $description => $unsupported_input
 ) {
   try {
