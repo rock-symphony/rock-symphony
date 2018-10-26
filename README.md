@@ -72,13 +72,13 @@ It's only intended for old projects to migrate to.
 
 3. Require `rock-symphony/rock-symphony`:
 
-       composer require rock-symphony/rock-symphony "^1.6"
+       composer require rock-symphony/rock-symphony:^1.6
 
 4. Follow [Upgrade guide](./UPGRADE.md) to upgrade your codebase step by step:
 
-   - `composer require rock-symphony/rock-symphony "^1.7"`
-   - `composer require rock-symphony/rock-symphony "^3.0"`
-   - `composer require rock-symphony/rock-symphony "^4.0"`
+   - `composer require rock-symphony/rock-symphony:^1.7`
+   - `composer require rock-symphony/rock-symphony:^3.0`
+   - `composer require rock-symphony/rock-symphony:^4.0`
 
 
 Contributing
