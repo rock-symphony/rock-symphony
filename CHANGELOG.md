@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+xx/xx/xxxx: Version 5.x
+-----------------------
+
+* Drop plugin installation/management code (`plugin:*` CLI commands) (#17)
+* Do not include plugin's tests into project test suite (#18)
+
 25/10/2018: Version 4.x
 -----------------------
 
