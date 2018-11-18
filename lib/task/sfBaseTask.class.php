@@ -18,10 +18,10 @@
  */
 abstract class sfBaseTask extends sfCommandApplicationTask
 {
-  protected
-    $configuration   = null,
-    $pluginManager   = null,
-    $statusStartTime = null;
+  /** @var \sfProjectConfiguration|\sfApplicationConfiguration */
+  protected $configuration   = null;
+  /** @var int|null */
+  protected $statusStartTime = null;
 
   /**
    * @see sfTask
@@ -384,48 +384,6 @@ abstract class sfBaseTask extends sfCommandApplicationTask
     }
 
     $this->commandApplication->registerTasks($tasks);
-  }
-
-  /**
-   * Enables a plugin in the ProjectConfiguration class.
-   *
-   * @param string $plugin The name of the plugin
-   */
-  protected function enablePlugin($plugin)
-  {
-    sfSymfonyPluginManager::enablePlugin($plugin, sfConfig::get('sf_config_dir'));
-  }
-
-  /**
-   * Disables a plugin in the ProjectConfiguration class.
-   *
-   * @param string $plugin The name of the plugin
-   */
-  protected function disablePlugin($plugin)
-  {
-    sfSymfonyPluginManager::disablePlugin($plugin, sfConfig::get('sf_config_dir'));
-  }
-
-  /**
-   * Returns a plugin manager instance.
-   *
-   * @return sfSymfonyPluginManager A sfSymfonyPluginManager instance
-   */
-  protected function getPluginManager()
-  {
-    if (null === $this->pluginManager)
-    {
-      $environment = new sfPearEnvironment($this->dispatcher, array(
-        'plugin_dir' => sfConfig::get('sf_plugins_dir'),
-        'cache_dir'  => sfConfig::get('sf_cache_dir').'/.pear',
-        'web_dir'    => sfConfig::get('sf_web_dir'),
-        'config_dir' => sfConfig::get('sf_config_dir'),
-      ));
-
-      $this->pluginManager = new sfSymfonyPluginManager($this->dispatcher, $environment);
-    }
-
-    return $this->pluginManager;
   }
 
   /**

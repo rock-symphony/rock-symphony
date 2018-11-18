@@ -18,9 +18,10 @@
  */
 class sfFilesystem
 {
-  protected
-    $dispatcher = null,
-    $formatter  = null;
+  /** @var \sfEventDispatcher|null */
+  protected $dispatcher = null;
+  /** @var \sfFormatter|null */
+  protected $formatter  = null;
 
   /**
    * Constructor.

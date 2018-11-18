@@ -8,8 +8,6 @@
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/sfPluginBaseTask.class.php');
-
 /**
  * Publishes Web Assets for Core and third party plugins
  *
@@ -18,7 +16,7 @@ require_once(__DIR__.'/sfPluginBaseTask.class.php');
  * @author     Fabian Lange <fabian.lange@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfPluginPublishAssetsTask extends sfPluginBaseTask
+class sfPluginPublishAssetsTask extends sfBaseTask
 {
   /**
    * @see sfTask
