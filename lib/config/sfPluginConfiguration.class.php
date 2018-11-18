@@ -18,11 +18,14 @@
  */
 abstract class sfPluginConfiguration
 {
-  protected
-    $configuration = null,
-    $dispatcher    = null,
-    $name          = null,
-    $rootDir       = null;
+  /** @var \sfProjectConfiguration */
+  protected $configuration;
+  /** @var \sfEventDispatcher */
+  protected $dispatcher;
+  /** @var string */
+  protected $name;
+  /** @var string */
+  protected $rootDir;
 
   /**
    * Constructor.

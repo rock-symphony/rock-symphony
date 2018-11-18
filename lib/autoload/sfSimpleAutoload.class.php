@@ -21,19 +21,29 @@
  */
 class sfSimpleAutoload
 {
-  static protected
-    $registered = false,
-    $instance   = null;
+  /** @var bool */
+  static protected $registered = false;
+  /** @var \sfSimpleAutoload */
+  static protected $instance = null;
 
-  protected
-    $cacheFile    = null,
-    $cacheLoaded  = false,
-    $cacheChanged = false,
-    $dirs         = array(),
-    $files        = array(),
-    $classes      = array(),
-    $overriden    = array();
+  /** @var string|null */
+  protected $cacheFile    = null;
+  /** @var bool */
+  protected $cacheLoaded  = false;
+  /** @var bool */
+  protected $cacheChanged = false;
+  /** @var string[] */
+  protected $dirs         = array();
+  /** @var string[] */
+  protected $files        = array();
+  /** @var string[] [ string $classname => string $filepath, ... ] */
+  protected $classes      = array();
+  /** @var string[] [ string $classname => string $filepath, ... ] */
+  protected $overriden    = array();
 
+  /**
+   * @param string|null $cacheFile
+   */
   protected function __construct($cacheFile = null)
   {
     if (null !== $cacheFile)
@@ -47,7 +57,7 @@ class sfSimpleAutoload
   /**
    * Retrieves the singleton instance of this class.
    *
-   * @param  string $cacheFile  The file path to save the cache
+   * @param  string|null $cacheFile  The file path to save the cache
    *
    * @return sfSimpleAutoload   A sfSimpleAutoload implementation instance.
    */

@@ -21,13 +21,15 @@
  */
 class sfAutoload
 {
-  static protected
-    $freshCache = false,
-    $instance   = null;
+  /** @var bool */
+  static protected $freshCache = false;
+  /** \sfAutoload */
+  static protected $instance   = null;
 
-  protected
-    $overriden = array(),
-    $classes   = array();
+  /** @var string[] [ string $classname => string $filepath, ... ] */
+  protected $overriden = array();
+  /** @var string[] [ string $classname => string $filepath, ... ] */
+  protected $classes   = array();
 
   protected function __construct()
   {

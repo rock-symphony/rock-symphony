@@ -18,17 +18,23 @@
  */
 abstract class sfApplicationConfiguration extends ProjectConfiguration
 {
-  static protected
-    $coreLoaded    = false,
-    $loadedHelpers = array();
+  /** @var bool */
+  static protected $coreLoaded = false;
+  /** @var bool[] [ string $helper_name => bool, ... ] */
+  static protected $loadedHelpers = [];
 
-  protected
-    $configCache = null,
-    $application = null,
-    $environment = null,
-    $debug       = false,
-    $config      = array(),
-    $cache       = null;
+  /** @var \sfConfigCache|null */
+  protected $configCache = null;
+  /** @var string */
+  protected $application = null;
+  /** @var string */
+  protected $environment = null;
+  /** @var bool */
+  protected $debug = false;
+  /** @var array Multi-level configuration array structure */
+  protected $config = [];
+  /** @var mixed[] Multi-level configuration cache */
+  protected $cache = null;
 
   /**
    * Constructor.
