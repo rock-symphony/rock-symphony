@@ -77,9 +77,9 @@ EOF;
         $files = array_merge($files, $finder->in(sfConfig::get('sf_test_dir').'/unit/'.dirname($name)));
       }
 
-      if($allFiles = $this->filterTestFiles($files, $arguments, $options))
+      if(count($files) > 0)
       {
-        foreach ($allFiles as $file)
+        foreach ($files as $file)
         {
           include($file);
         }
@@ -103,7 +103,7 @@ EOF;
 
       // filter and register unit tests
       $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
-      $h->register($this->filterTestFiles($finder->in($h->base_dir), $arguments, $options));
+      $h->register($finder->in($h->base_dir));
 
       $ret = $h->run() ? 0 : 1;
 
