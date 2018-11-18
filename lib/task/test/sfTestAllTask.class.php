@@ -107,7 +107,7 @@ EOF;
     {
       // filter and register all tests
       $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
-      $h->register($this->filterTestFiles($finder->in($h->base_dir), $arguments, $options));
+      $h->register($finder->in($h->base_dir));
     }
 
     $ret = $h->run() ? 0 : 1;
