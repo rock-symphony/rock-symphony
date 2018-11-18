@@ -6,3 +6,5 @@ Upgrade guide
 2. [Upgrade 1.7 to 3.0](./docs/upgrade/Upgrade_1.7_to_3.0.md)
 
 3. [Upgrade 3.0 to 4.0](./docs/upgrade/Upgrade_3.0_to_4.0.md)
+
+4. [Upgrade 4.0 to 5.0](./docs/upgrade/Upgrade_4.0_to_5.0.md)
