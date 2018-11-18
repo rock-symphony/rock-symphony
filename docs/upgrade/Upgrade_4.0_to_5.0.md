@@ -8,3 +8,7 @@ Upgrade guide 3.0 to 4.0
    See the complete list in the Pull Request description: 
    [#17](https://github.com/rock-symphony/rock-symphony/pull/17).
    
+2. Make sure your project plugins don't rely on symfony's testing commands.
+   See the complete list of dropped stuff in 
+   [#17](https://github.com/rock-symphony/rock-symphony/pull/18).
+
