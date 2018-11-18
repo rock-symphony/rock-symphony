@@ -18,10 +18,12 @@
  */
 abstract class sfBaseTask extends sfCommandApplicationTask
 {
-  protected
-    $configuration   = null,
-    $pluginManager   = null,
-    $statusStartTime = null;
+  /** @var \sfProjectConfiguration|\sfApplicationConfiguration */
+  protected $configuration   = null;
+  /** @var \sfPluginManager */
+  protected $pluginManager   = null;
+  /** @var int|null */
+  protected $statusStartTime = null;
 
   /**
    * @see sfTask

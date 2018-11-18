@@ -29,6 +29,7 @@ abstract class sfCommandApplicationTask extends sfTask
   private $routing;
   /** @var sfServiceContainer */
   private $serviceContainer;
+  /** @var array|null */
   private $factoryConfiguration;
 
   /**

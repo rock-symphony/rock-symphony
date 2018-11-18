@@ -18,16 +18,23 @@
  */
 abstract class sfTask
 {
+  /** @var string */
   protected $namespace = '';
+  /** @var string */
   protected $name = null;
+  /** @var string[] */
   protected $aliases = array();
+  /** @var string */
   protected $briefDescription = '';
+  /** @var string */
   protected $detailedDescription = '';
+  /** @var \sfCommandArgument[] */
   protected $arguments = array();
+  /** @var \sfCommandOption[] */
   protected $options = array();
-  /** @var sfEventDispatcher */
+  /** @var \sfEventDispatcher */
   protected $dispatcher = null;
-  /** @var sfFormatter */
+  /** @var \sfFormatter */
   protected $formatter = null;
 
   /**
