@@ -82,9 +82,9 @@ EOF;
         $files = array_merge($files, $finder->in(sfConfig::get('sf_test_dir').'/functional/'.$app.'/'.dirname($controller)));
       }
 
-      if($allFiles = $files)
+      if(count($files) > 0)
       {
-        foreach ($allFiles as $file)
+        foreach ($files as $file)
         {
           include($file);
         }
