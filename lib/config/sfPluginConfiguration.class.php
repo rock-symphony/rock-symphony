@@ -46,7 +46,6 @@ abstract class sfPluginConfiguration
 
     if (!$this->configuration instanceof sfApplicationConfiguration)
     {
-      $this->initializeAutoload();
       $this->initialize();
     }
   }
@@ -62,8 +61,6 @@ abstract class sfPluginConfiguration
 
   /**
    * Configures the plugin.
-   *
-   * This method is called before the plugin's classes have been added to sfAutoload.
    */
   public function configure()
   {
@@ -71,8 +68,6 @@ abstract class sfPluginConfiguration
 
   /**
    * Initializes the plugin.
-   *
-   * This method is called after the plugin's classes have been added to sfAutoload.
    *
    * @return boolean|null If false sfApplicationConfiguration will look for a config.php (maintains BC with symfony < 1.2)
    */
@@ -98,68 +93,6 @@ abstract class sfPluginConfiguration
   public function getName()
   {
     return $this->name;
-  }
-
-  /**
-   * Initializes autoloading for the plugin.
-   *
-   * This method is called when a plugin is initialized in a project
-   * configuration. Otherwise, autoload is handled in
-   * {@link sfApplicationConfiguration} using {@link sfAutoload}.
-   *
-   * @see sfSimpleAutoload
-   */
-  public function initializeAutoload()
-  {
-    $autoload = sfSimpleAutoload::getInstance(sfConfig::get('sf_cache_dir').'/project_autoload.cache');
-
-    if (is_readable($file = $this->rootDir.'/config/autoload.yml'))
-    {
-      $this->configuration->getEventDispatcher()->connect('autoload.filter_config', array($this, 'filterAutoloadConfig'));
-      $autoload->loadConfiguration(array($file));
-      $this->configuration->getEventDispatcher()->disconnect('autoload.filter_config', array($this, 'filterAutoloadConfig'));
-    }
-    else
-    {
-      $autoload->addDirectory($this->rootDir.'/lib');
-    }
-
-    $autoload->register();
-  }
-
-  /**
-   * Filters sfAutoload configuration values.
-   *
-   * @param sfEvent $event
-   * @param array   $config
-   *
-   * @return array
-   */
-  public function filterAutoloadConfig(sfEvent $event, array $config)
-  {
-    // use array_merge so config is added to the front of the autoload array
-    if (!isset($config['autoload'][$this->name.'_lib']))
-    {
-      $config['autoload'] = array_merge(array(
-        $this->name.'_lib' => array(
-          'path'      => $this->rootDir.'/lib',
-          'recursive' => true,
-        ),
-      ), $config['autoload']);
-    }
-
-    if (!isset($config['autoload'][$this->name.'_module_libs']))
-    {
-      $config['autoload'] = array_merge(array(
-        $this->name.'_module_libs' => array(
-          'path'      => $this->rootDir.'/modules/*/lib',
-          'recursive' => true,
-          'prefix'    => 1,
-        ),
-      ), $config['autoload']);
-    }
-
-    return $config;
   }
 
   /**

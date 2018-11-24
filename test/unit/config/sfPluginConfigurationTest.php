@@ -10,10 +10,10 @@
 
 require_once __DIR__.'/../../bootstrap/unit.php';
 
-$rootDir = realpath(__DIR__.'/../../functional/fixtures');
-$pluginRoot = realpath($rootDir.'/plugins/sfAutoloadPlugin');
+$rootDir = realpath(__DIR__ . '/../../functional/fixtures');
+$pluginRoot = realpath($rootDir . '/plugins/sfConfigPlugin');
 
-require_once $pluginRoot.'/config/sfAutoloadPluginConfiguration.class.php';
+require_once $pluginRoot . '/config/sfConfigPluginConfiguration.class.php';
 
 $t = new lime_test(2);
 
@@ -21,7 +21,7 @@ class ProjectConfiguration extends sfProjectConfiguration
 {
   public function setup()
   {
-    $this->enablePlugins('sfAutoloadPlugin');
+    $this->enablePlugins('sfConfigPlugin');
   }
 }
 
@@ -29,7 +29,7 @@ class ProjectConfiguration extends sfProjectConfiguration
 $t->diag('->guessRootDir() ->guessName()');
 
 $configuration = new sfProjectConfiguration($rootDir);
-$pluginConfig = new sfAutoloadPluginConfiguration($configuration);
+$pluginConfig = new sfConfigPluginConfiguration($configuration);
 
 $t->is($pluginConfig->getRootDir(), $pluginRoot, '->guessRootDir() guesses plugin root directory');
-$t->is($pluginConfig->getName(), 'sfAutoloadPlugin', '->guessName() guesses plugin name');
+$t->is($pluginConfig->getName(), 'sfConfigPlugin', '->guessName() guesses plugin name');

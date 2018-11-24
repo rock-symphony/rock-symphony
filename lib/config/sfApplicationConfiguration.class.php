@@ -115,14 +115,6 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
       $configCache->import('config/core_compile.yml', false);
     }
 
-    // autoloader(s)
-    $this->dispatcher->connect('autoload.filter_config', array($this, 'filterAutoloadConfig'));
-    sfAutoload::getInstance()->register();
-    if ($this->isDebug())
-    {
-      sfAutoloadAgain::getInstance()->register();
-    }
-
     // load base settings
     include($configCache->checkConfig('config/settings.yml'));
     if ($file = $configCache->checkConfig('config/app.yml', true))
@@ -183,24 +175,6 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
         require $config;
       }
     }
-  }
-
-  /**
-   * Adds enabled plugins to autoload config.
-   *
-   * @param   sfEvent $event
-   * @param   array   $config
-   *
-   * @return  array
-   */
-  public function filterAutoloadConfig(sfEvent $event, array $config)
-  {
-    foreach ($this->pluginConfigurations as $name => $configuration)
-    {
-      $config = $configuration->filterAutoloadConfig($event, $config);
-    }
-
-    return $config;
   }
 
   /**
