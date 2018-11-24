@@ -56,7 +56,7 @@ Roadmap
 Requirements
 ------------
 
-PHP 5.5.9 and up. See prerequisites on http://symfony.com/legacy/doc/getting-started/1_4/en/02-Prerequisites
+PHP 5.6.0 and up. See prerequisites on http://symfony.com/legacy/doc/getting-started/1_4/en/02-Prerequisites
 
 Migrating to Rock Symphony
 --------------------------
