@@ -1,3 +1,7 @@
+all:
+  user:
+    class: myCacheAppUser
+
 prod:
   logger:
     class:   sfNoLogger

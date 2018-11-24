@@ -25,7 +25,7 @@ $dispatcher = new sfEventDispatcher();
 require_once $rootDir.'/config/ProjectConfiguration.class.php';
 $configuration = new ProjectConfiguration($rootDir, $dispatcher);
 
-$t = new lime_test(16);
+$t = new lime_test(11);
 $task = new TestTask($dispatcher, new sfFormatter());
 
 // ->run()

@@ -6,8 +6,8 @@ myFilter:
   class: myFilter
 
 simpleFilter:
+  file: '%sf_app_dir%/modules/configFiltersSimpleFilter/lib/configFiltersSimpleFilterFilter.class.php'
   class: configFiltersSimpleFilterFilter
-
 
 cache:     ~
 
