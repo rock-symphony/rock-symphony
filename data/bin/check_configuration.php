@@ -7,6 +7,10 @@ function is_cli()
 
 /**
  * Checks a configuration.
+ * @param bool $boolean
+ * @param string $message
+ * @param string $help
+ * @param bool $fatal
  */
 function check($boolean, $message, $help = '', $fatal = false)
 {
@@ -18,7 +22,8 @@ function check($boolean, $message, $help = '', $fatal = false)
     echo "            *** $help ***\n";
     if ($fatal)
     {
-      die("You must fix this problem before resuming the check.\n");
+      echo "You must fix this problem before resuming the check.\n";
+      exit(1);
     }
   }
 }
