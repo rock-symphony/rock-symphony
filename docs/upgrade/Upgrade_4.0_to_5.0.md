@@ -37,5 +37,8 @@ Upgrade guide 4.0 to 5.0
    See the complete list of dropped stuff in 
    [#17](https://github.com/rock-symphony/rock-symphony/pull/18).
 
-3. Make sure you don't rely on symfony's response compression (`sf_compressed` setting).
+5. Make sure you don't rely on symfony's response compression (`sf_compressed` setting).
    Move compression to your webserver instead.
+
+6. Make sure your code is using neither *APC* nor *eAccelerator* sfCache implementations.
+   You can switch to `sfAPCuCache`. 

@@ -9,6 +9,7 @@ xx/xx/xxxx: Version 5.0
 * Drop plugin installation/management code (`plugin:*` CLI commands) ([#17](https://github.com/rock-symphony/rock-symphony/pull/17))
 * Do not include plugin's tests into project test suite ([#18](https://github.com/rock-symphony/rock-symphony/pull/18))
 * Drop in-framework response compression support (`sf_compressed` setting) ([#20](https://github.com/rock-symphony/rock-symphony/pull/20))
+* Drop *APC* and *eAccelarator* cache support  ([#21](https://github.com/rock-symphony/rock-symphony/pull/21))
 
 25/10/2018: Version 4.0
 -----------------------
