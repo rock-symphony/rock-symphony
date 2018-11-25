@@ -113,13 +113,7 @@ class sfCacheSessionStorage extends sfStorage
       }
 
       // only send cookie when id is issued
-       $this->response->setCookie($this->options['session_name'],
-                                  $this->id.':'.sha1($this->id.':'.$this->options['session_cookie_secret']),
-                                  $this->options['session_cookie_lifetime'],
-                                  $this->options['session_cookie_path'],
-                                  $this->options['session_cookie_domain'],
-                                  $this->options['session_cookie_secure'],
-                                  $this->options['session_cookie_httponly']);
+      $this->setSessionCookie($this->id);
 
       $this->data = array();
     }
@@ -245,14 +239,10 @@ class sfCacheSessionStorage extends sfStorage
     $this->cache->set($this->id, serialize($this->data));
 
     // update session id in signed cookie
-    $this->response->setCookie($this->options['session_name'],
-                               $this->id.':'.sha1($this->id.':'.$this->options['session_cookie_secret']),
-                               $this->options['session_cookie_lifetime'],
-                               $this->options['session_cookie_path'],
-                               $this->options['session_cookie_domain'],
-                               $this->options['session_cookie_secure'],
-                               $this->options['session_cookie_httponly']);
+    $this->setSessionCookie($this->id);
+
     session_id($this->id);
+
     return true;
   }
 
@@ -298,5 +288,22 @@ class sfCacheSessionStorage extends sfStorage
 
     // generate new id based on random # / ip / user agent / secret
     return md5(mt_rand(0, 999999) . $ip . $ua . $this->options['session_cookie_secret']);
+  }
+
+  /**
+   * @param string $session_id
+   * @return void
+   */
+  private function setSessionCookie($session_id)
+  {
+    $this->response->setCookie(
+      $this->options['session_name'],
+      $session_id . ':' . sha1($session_id . ':' . $this->options['session_cookie_secret']),
+      $this->options['session_cookie_lifetime'],
+      $this->options['session_cookie_path'],
+      $this->options['session_cookie_domain'],
+      $this->options['session_cookie_secure'],
+      $this->options['session_cookie_httponly']
+    );
   }
 }
