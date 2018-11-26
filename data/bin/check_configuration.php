@@ -7,6 +7,10 @@ function is_cli()
 
 /**
  * Checks a configuration.
+ * @param bool $boolean
+ * @param string $message
+ * @param string $help
+ * @param bool $fatal
  */
 function check($boolean, $message, $help = '', $fatal = false)
 {
@@ -18,7 +22,8 @@ function check($boolean, $message, $help = '', $fatal = false)
     echo "            *** $help ***\n";
     if ($fatal)
     {
-      die("You must fix this problem before resuming the check.\n");
+      echo "You must fix this problem before resuming the check.\n";
+      exit(1);
     }
   }
 }
@@ -67,7 +72,7 @@ if (is_cli())
 
 // mandatory
 echo "\n** Mandatory requirements **\n\n";
-check(version_compare(phpversion(), '5.6.0', '>='), sprintf('PHP version is at least 5.3.1 (%s)', phpversion()), 'Current version is '.phpversion(), true);
+check(version_compare(phpversion(), '5.6.0', '>='), sprintf('PHP version is at least 5.6.0. Current version is %s.', phpversion()), true);
 
 // warnings
 echo "\n** Optional checks **\n\n";
