@@ -39,9 +39,10 @@ class lime_test
       'output'          => null,
       'verbose'         => false,
       'error_reporting' => false,
+      'output_buffer'   => false,
     ), $options);
 
-    $this->output = $this->options['output'] ? $this->options['output'] : new lime_output($this->options['force_colors']);
+    $this->output = $this->options['output'] ?: new lime_output($this->options['force_colors'], null, $this->options['output_buffer']);
 
     $caller = $this->find_caller(debug_backtrace());
     self::$all_results[] = array(
@@ -600,11 +601,22 @@ class lime_output
 {
   public $colorizer = null;
   public $base_dir = null;
+  /** @var string */
+  private $output_buffer = '';
+  /** @var bool */
+  private $output_buffering = false;
 
-  public function __construct($force_colors = false, $base_dir = null)
+  public function __construct($force_colors = false, $base_dir = null, $output_buffering = false)
   {
     $this->colorizer = new lime_colorizer($force_colors);
     $this->base_dir = $base_dir === null ? getcwd() : $base_dir;
+    $this->output_buffering = $output_buffering;
+
+    if ($output_buffering) {
+      register_shutdown_function(function() {
+        $this->flush();
+      });
+    }
   }
 
   public function diag()
@@ -612,18 +624,18 @@ class lime_output
     $messages = func_get_args();
     foreach ($messages as $message)
     {
-      echo $this->colorizer->colorize('# '.join("\n# ", (array) $message), 'COMMENT')."\n";
+      $this->output($this->colorizer->colorize('# '.join("\n# ", (array) $message), 'COMMENT')."\n");
     }
   }
 
   public function comment($message)
   {
-    echo $this->colorizer->colorize(sprintf('# %s', $message), 'COMMENT')."\n";
+    $this->output($this->colorizer->colorize(sprintf('# %s', $message), 'COMMENT')."\n");
   }
 
   public function info($message)
   {
-    echo $this->colorizer->colorize(sprintf('> %s', $message), 'INFO_BAR')."\n";
+    $this->output($this->colorizer->colorize(sprintf('> %s', $message), 'INFO_BAR')."\n");
   }
 
   public function error($message, $file = null, $line = null, $traces = array())
@@ -640,16 +652,16 @@ class lime_output
     $message = trim($message);
     $message = wordwrap($message, 66, "\n");
 
-    echo "\n".$space;
+    $this->output("\n".$space);
     foreach (explode("\n", $message) as $message_line)
     {
-      echo $this->colorizer->colorize(str_pad('  '.$message_line, 71, ' '), 'RED_BAR')."\n";
+      $this->output($this->colorizer->colorize(str_pad('  '.$message_line, 71, ' '), 'RED_BAR')."\n");
     }
-    echo $space."\n";
+    $this->output($space."\n");
 
     if (count($traces) > 0)
     {
-      echo $this->colorizer->colorize('Exception trace:', 'COMMENT')."\n";
+      $this->output($this->colorizer->colorize('Exception trace:', 'COMMENT')."\n");
 
       $this->print_trace(null, $file, $line);
 
@@ -674,7 +686,7 @@ class lime_output
         }
       }
 
-      echo "\n";
+      $this->output("\n");
     }
   }
 
@@ -685,7 +697,7 @@ class lime_output
       $method .= ' ';
     }
 
-    echo '  '.$method.'at ';
+    $this->output('  '.$method.'at ');
 
     if (!is_null($file) && !is_null($line))
     {
@@ -693,7 +705,7 @@ class lime_output
     }
     else
     {
-      echo "[internal function]\n";
+      $this->output("[internal function]\n");
     }
   }
 
@@ -732,22 +744,42 @@ class lime_output
       );
     }
 
-    echo ($colorizer_parameter ? $this->colorizer->colorize($message, $colorizer_parameter) : $message)."\n";
+    $this->output(($colorizer_parameter ? $this->colorizer->colorize($message, $colorizer_parameter) : $message)."\n");
   }
 
   public function green_bar($message)
   {
-    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'GREEN_BAR')."\n";
+    $this->output($this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'GREEN_BAR')."\n");
   }
 
   public function red_bar($message)
   {
-    echo $this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'RED_BAR')."\n";
+    $this->output($this->colorizer->colorize($message.str_repeat(' ', 71 - min(71, strlen($message))), 'RED_BAR')."\n");
   }
 
   protected function strip_base_dir($text)
   {
     return str_replace(DIRECTORY_SEPARATOR, '/', str_replace(realpath($this->base_dir).DIRECTORY_SEPARATOR, '', $text));
+  }
+
+  private function output($text)
+  {
+    if ($this->output_buffering) {
+      $this->output_buffer .= $text;
+      return;
+    }
+    echo $text;
+  }
+
+  private function flush()
+  {
+    echo $this->output_buffer;
+    $this->output_buffer = '';
+  }
+
+  public function __destruct()
+  {
+    $this->flush();
   }
 }
 

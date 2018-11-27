@@ -17,7 +17,7 @@ require_once($_test_dir.'/../lib/vendor/lime/lime.php');
 
 sfConfig::set('sf_symfony_lib_dir', realpath($_test_dir.'/../lib'));
 
-$t = new lime_test(8);
+$t = new lime_test(8, ['output_buffer' => true]);
 
 // initialize the storage
 try
@@ -51,6 +51,8 @@ $session_id = session_id();
 $storage->regenerate(false);
 $t->is($storage->read($key), $oldSessionData, '->regenerate() regenerated the session with a different session id');
 $t->isnt(session_id(), $session_id, '->regenerate() regenerated the session with a different session id');
+
+sleep(10);
 
 $storage->regenerate(true);
 $t->isnt($storage->read($key), $oldSessionData, '->regenerate() regenerated the session with a different session id and destroyed data');
