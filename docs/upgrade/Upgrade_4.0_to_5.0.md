@@ -1,4 +1,4 @@
-Upgrade guide 3.0 to 4.0
+Upgrade guide 4.0 to 5.0
 ========================
 
 1. Make sure you're not relying on symfony's built-in plugin management.
