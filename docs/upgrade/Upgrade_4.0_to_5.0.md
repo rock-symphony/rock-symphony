@@ -1,4 +1,4 @@
-Upgrade guide 3.0 to 4.0
+Upgrade guide 4.0 to 5.0
 ========================
 
 1. Make sure you're running PHP 5.6.0+.
@@ -37,3 +37,5 @@ Upgrade guide 3.0 to 4.0
    See the complete list of dropped stuff in 
    [#17](https://github.com/rock-symphony/rock-symphony/pull/18).
 
+3. Make sure you don't rely on symfony's response compression (`sf_compressed` setting).
+   Move compression to your webserver instead.
