@@ -66,7 +66,8 @@ class sfCacheSessionStorage extends sfStorage
     // create cache instance
     if (isset($this->options['cache']) && $this->options['cache']['class'])
     {
-      $this->cache = new $this->options['cache']['class'](is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
+      $cacheClass = $this->options['cache']['class'];
+      $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
     }
     else
     {
