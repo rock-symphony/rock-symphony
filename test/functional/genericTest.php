@@ -162,29 +162,6 @@ $b->
   end()
 ;
 
-// libraries autoloading
-$b->
-  get('/autoload/index')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('#lib1', 'pong')->
-    checkElement('#lib2', 'pong')->
-    checkElement('#lib3', 'pong')->
-    checkElement('#lib4', 'nopong')->
-  end()
-;
-
-// libraries autoloading in a plugin
-$b->
-  get('/autoloadPlugin/index')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('#lib1', 'pong')->
-    checkElement('#lib2', 'pong')->
-    checkElement('#lib3', 'pong')->
-  end()
-;
-
 // renderText
 $b->
   get('/renderText')->

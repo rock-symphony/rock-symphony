@@ -83,6 +83,7 @@ EOF;
   protected function execute($arguments = array(), $options = array())
   {
     $app = $arguments['app'];
+    $appUserClass = lcfirst(sfInflector::camelize($app)) . 'User';
 
     // Validate the application name
     if (!preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*$/', $app))
@@ -124,12 +125,14 @@ EOF;
     }
 
     // Set no_script_name value in settings.yml for production environment
-    $finder = sfFinder::type('file')->name('settings.yml');
-    $this->getFilesystem()->replaceTokens($finder->in($appDir.'/config'), '##', '##', array(
+    $files = sfFinder::type('file')->in([$appDir.'/config', $appDir.'/lib']);
+    $this->getFilesystem()->replaceTokens($files, '##', '##', array(
+      'APP_NAME'          => $app,
       'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',
       'CSRF_SECRET'       => Yaml::dump(Yaml::parse($options['csrf-secret']), 0),
       'ESCAPING_STRATEGY' => Yaml::dump((boolean) Yaml::parse($options['escaping-strategy']), 0),
       'USE_DATABASE'      => sfConfig::has('sf_orm') ? 'true' : 'false',
+      'APP_USER_CLASS'    => $appUserClass,
     ));
 
     $this->getFilesystem()->copy($skeletonDir.'/web/index.php', sfConfig::get('sf_web_dir').'/'.$indexName.'.php');
@@ -154,9 +157,9 @@ EOF;
                        '}'.PHP_EOL,
     ));
 
-    $this->getFilesystem()->rename($appDir.'/config/ApplicationConfiguration.class.php', $appDir.'/config/'.$app.'Configuration.class.php');
 
-    $this->getFilesystem()->replaceTokens($appDir.'/config/'.$app.'Configuration.class.php', '##', '##', array('APP_NAME' => $app));
+    $this->getFilesystem()->rename($appDir.'/lib/myUser.class.php', $appDir.'/lib/'.$appUserClass.'.class.php');
+    $this->getFilesystem()->rename($appDir.'/config/ApplicationConfiguration.class.php', $appDir.'/config/'.$app.'Configuration.class.php');
 
     $fixPerms = new sfProjectPermissionsTask($this->dispatcher, $this->formatter);
     $fixPerms->setCommandApplication($this->commandApplication);

@@ -18,17 +18,23 @@
  */
 abstract class sfApplicationConfiguration extends ProjectConfiguration
 {
-  static protected
-    $coreLoaded    = false,
-    $loadedHelpers = array();
+  /** @var bool */
+  static protected $coreLoaded = false;
+  /** @var bool[] [ string $helper_name => bool, ... ] */
+  static protected $loadedHelpers = [];
 
-  protected
-    $configCache = null,
-    $application = null,
-    $environment = null,
-    $debug       = false,
-    $config      = array(),
-    $cache       = null;
+  /** @var \sfConfigCache|null */
+  protected $configCache = null;
+  /** @var string */
+  protected $application = null;
+  /** @var string */
+  protected $environment = null;
+  /** @var bool */
+  protected $debug = false;
+  /** @var array Multi-level configuration array structure */
+  protected $config = [];
+  /** @var mixed[] Multi-level configuration cache */
+  protected $cache = null;
 
   /**
    * Constructor.
@@ -109,14 +115,6 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
       $configCache->import('config/core_compile.yml', false);
     }
 
-    // autoloader(s)
-    $this->dispatcher->connect('autoload.filter_config', array($this, 'filterAutoloadConfig'));
-    sfAutoload::getInstance()->register();
-    if ($this->isDebug())
-    {
-      sfAutoloadAgain::getInstance()->register();
-    }
-
     // load base settings
     include($configCache->checkConfig('config/settings.yml'));
     if ($file = $configCache->checkConfig('config/app.yml', true))
@@ -171,24 +169,6 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
         require $config;
       }
     }
-  }
-
-  /**
-   * Adds enabled plugins to autoload config.
-   *
-   * @param   sfEvent $event
-   * @param   array   $config
-   *
-   * @return  array
-   */
-  public function filterAutoloadConfig(sfEvent $event, array $config)
-  {
-    foreach ($this->pluginConfigurations as $name => $configuration)
-    {
-      $config = $configuration->filterAutoloadConfig($event, $config);
-    }
-
-    return $config;
   }
 
   /**

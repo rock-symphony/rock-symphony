@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -16,7 +16,7 @@ class ProjectConfiguration extends sfProjectConfiguration
 {
   public function setup()
   {
-    $this->enablePlugins(array('sfAutoloadPlugin', 'sfConfigPlugin'));
+    $this->enablePlugins(array('sfConfigPlugin'));
     $this->setPluginPath('sfConfigPlugin', $this->rootDir.'/lib/plugins/sfConfigPlugin');
   }
 }
@@ -43,12 +43,12 @@ class ProjectConfiguration2 extends sfProjectConfiguration
 {
   public function setup()
   {
-    $this->enablePlugins('sfAutoloadPlugin', 'sfConfigPlugin');
+    $this->enablePlugins('sfI18NPlugin', 'sfConfigPlugin');
   }
 }
 
 $configuration = new ProjectConfiguration2(__DIR__.'/../../functional/fixtures');
-$t->is_deeply($configuration->getPlugins(), array('sfAutoloadPlugin', 'sfConfigPlugin'), '->enablePlugins() can enable plugins passed as arguments instead of array');
+$t->is_deeply($configuration->getPlugins(), array('sfI18NPlugin', 'sfConfigPlugin'), '->enablePlugins() can enable plugins passed as arguments instead of array');
 
 // ->__construct()
 $t->diag('->__construct()');
