@@ -29,7 +29,10 @@ install:
     - composer self-update
 
 before_script:
-    - sh -c 'pecl config-set preferred_state beta; printf "yes\n" | pecl install apcu ; else echo 'extension="apc.so"' >> ./tests/travis/php.ini'
+    - pecl channel-update pecl.php.net
+    - pecl config-set preferred_state beta
+    - echo yes | pecl upgrade apcu
+    - phpenv config-add ./tests/travis/php.ini
     - sh -c 'if [ $(php -r "echo PHP_RELEASE_VERSION;") -le 98 ] && [ $(php -r "echo PHP_MAJOR_VERSION;") -le 5 ]; then echo "extension = memcache.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini; fi;'
     - composer install
 
