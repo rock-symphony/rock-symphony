@@ -8,6 +8,11 @@
     "require-dev": {
         "psr/log": "*"
     },
+    "provide": {
+        "rock-symphony/yaml-contract": "1.5",
+        "rock-symphony/autoloader-contract": "1.5",
+        "rock-symphony/plugin-contract": "1.5"
+    },
     "type": "library",
     "autoload": {
         "files": ["autoload.php"]
