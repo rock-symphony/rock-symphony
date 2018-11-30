@@ -11,6 +11,10 @@
         "psr/log": "*",
         "nette/robot-loader": "^3.1"
     },
+    "provide": {
+        "rock-symphony/autoloader-contract": "2.0",
+        "rock-symphony/plugin-contract": "1.5"
+    },
     "type": "library",
     "autoload": {
         "files": ["lib/SYMFONY_VERSION.php"],
