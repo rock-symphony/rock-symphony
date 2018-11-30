@@ -13,7 +13,7 @@
     },
     "provide": {
         "rock-symphony/autoloader-contract": "2.0",
-        "rock-symphony/plugin-contract": "1.5"
+        "rock-symphony/plugin-contract": "2.0"
     },
     "type": "library",
     "autoload": {
