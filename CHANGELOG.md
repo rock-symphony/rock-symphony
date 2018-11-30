@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-xx/xx/xxxx: Version 5.x
+xx/xx/xxxx: Version 5.0
 -----------------------
 
 * Drop PHP 5.5 support. It's PHP 5.6+ only now
@@ -9,27 +9,27 @@ xx/xx/xxxx: Version 5.x
 * Do not include plugin's tests into project test suite ([#18](https://github.com/rock-symphony/rock-symphony/pull/18))
 * Drop in-framework response compression support (`sf_compressed` setting) ([#20](https://github.com/rock-symphony/rock-symphony/pull/20))
 
-25/10/2018: Version 4.x
+25/10/2018: Version 4.0
 -----------------------
 
 * Drop PHP 5.4 support
 * Drop sfYaml code and switch to Symfony/Yaml instead
 
-06/07/2018: Version 3.x
+06/07/2018: Version 3.0
 -----------------------
 
 * Drop PHP 5.3 support
 * Drop sfCoreAutoload and rely on Composer instead
 * Drop sfDoctrinePlugin support and mentions
 
-08/07/2017: Version 1.7.x
+08/07/2017: Version 1.7.0
 -------------------------
 
 * Drop swiftmailer git sub-module
 * Drop sf-doctrine-plugin git sub-module
 * Fix test suite
 
-03/03/2017: Version 1.6.x
+03/03/2017: Version 1.6.0
 -------------------------
 
 * Fork as RockSymfony
