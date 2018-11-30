@@ -10,6 +10,11 @@
     "require-dev": {
         "psr/log": "*"
     },
+    "provide": {
+        "rock-symphony/yaml-contract": "1.5",
+        "rock-symphony/autoloader-contract": "2.0",
+        "rock-symphony/plugin-contract": "1.5"
+    },
     "type": "library",
     "autoload": {
         "files": ["lib/SYMFONY_VERSION.php"],
