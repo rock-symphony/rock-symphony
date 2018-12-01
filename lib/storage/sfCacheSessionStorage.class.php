@@ -66,7 +66,8 @@ class sfCacheSessionStorage extends sfStorage
     // create cache instance
     if (isset($this->options['cache']) && $this->options['cache']['class'])
     {
-      $this->cache = new $this->options['cache']['class'](is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
+      $cacheClass = $this->options['cache']['class'];
+      $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
     }
     else
     {
@@ -105,27 +106,17 @@ class sfCacheSessionStorage extends sfStorage
 
     if(empty($this->id))
     {
-       $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
-       $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ua';
+      $this->id = $this->generateSessionId();
 
-       // generate new id based on random # / ip / user agent / secret
-       $this->id = md5(mt_rand(0, 999999).$ip.$ua.$this->options['session_cookie_secret']);
-
-       if(sfConfig::get('sf_logging_enabled'))
-       {
+      if(sfConfig::get('sf_logging_enabled'))
+      {
          $this->dispatcher->notify(new sfEvent($this, 'application.log', array('New session created')));
-       }
+      }
 
-       // only send cookie when id is issued
-       $this->response->setCookie($this->options['session_name'],
-                                  $this->id.':'.sha1($this->id.':'.$this->options['session_cookie_secret']),
-                                  $this->options['session_cookie_lifetime'],
-                                  $this->options['session_cookie_path'],
-                                  $this->options['session_cookie_domain'],
-                                  $this->options['session_cookie_secure'],
-                                  $this->options['session_cookie_httponly']);
+      // only send cookie when id is issued
+      $this->setSessionCookie($this->id);
 
-       $this->data = array();
+      $this->data = array();
     }
     else
     {
@@ -243,23 +234,16 @@ class sfCacheSessionStorage extends sfStorage
       $this->cache->remove($this->id);
     }
 
-    // generate session id
-    $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ua';
-
-    $this->id = md5(mt_rand(0, 999999).$_SERVER['REMOTE_ADDR'].$ua.$this->options['session_cookie_secret']);
+    $this->id = $this->generateSessionId();
 
     // save data to cache
     $this->cache->set($this->id, serialize($this->data));
 
     // update session id in signed cookie
-    $this->response->setCookie($this->options['session_name'],
-                               $this->id.':'.sha1($this->id.':'.$this->options['session_cookie_secret']),
-                               $this->options['session_cookie_lifetime'],
-                               $this->options['session_cookie_path'],
-                               $this->options['session_cookie_domain'],
-                               $this->options['session_cookie_secure'],
-                               $this->options['session_cookie_httponly']);
+    $this->setSessionCookie($this->id);
+
     session_id($this->id);
+
     return true;
   }
 
@@ -293,5 +277,34 @@ class sfCacheSessionStorage extends sfStorage
         $this->dispatcher->notify(new sfEvent($this, 'application.log', array('Storing session to cache')));
       }
     }
+  }
+
+  /**
+   * @return string
+   */
+  private function generateSessionId()
+  {
+    $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
+    $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ua';
+
+    // generate new id based on random # / ip / user agent / secret
+    return md5(mt_rand(0, 999999) . $ip . $ua . $this->options['session_cookie_secret']);
+  }
+
+  /**
+   * @param string $session_id
+   * @return void
+   */
+  private function setSessionCookie($session_id)
+  {
+    $this->response->setCookie(
+      $this->options['session_name'],
+      $session_id . ':' . sha1($session_id . ':' . $this->options['session_cookie_secret']),
+      $this->options['session_cookie_lifetime'],
+      $this->options['session_cookie_path'],
+      $this->options['session_cookie_domain'],
+      $this->options['session_cookie_secure'],
+      $this->options['session_cookie_httponly']
+    );
   }
 }

@@ -40,8 +40,8 @@ class sfPatternRouting extends sfRouting
    *  * generate_shortest_url:            Whether to generate the shortest URL possible (true by default)
    *  * extra_parameters_as_query_string: Whether to generate extra parameters as a query string
    *  * lookup_cache_dedicated_keys:      Whether to use dedicated keys for parse/generate cache (false by default)
-   *                                      WARNING: When this option is activated, do not use sfFileCache; use a fast access
-   *                                      cache backend (like sfAPCCache).
+   *                                      WARNING: When this option is activated, do not use sfFileCache;
+   *                                      use a fast access cache in-memory backend.
    *
    * @see sfRouting
    * @inheritdoc
