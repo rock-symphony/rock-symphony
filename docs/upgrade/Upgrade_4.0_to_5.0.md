@@ -42,3 +42,8 @@ Upgrade guide 4.0 to 5.0
 
 6. Make sure your code is using neither *APC* nor *eAccelerator* sfCache implementations.
    You can switch to `sfAPCuCache`. 
+
+7. Make sure you use *PDO* versions of DB-interacting classes.
+   - `sfPDODataase` instead of `sfMySQLDatabase`, `sfMySQLiDatabase` and `sfPostgreSQLDatabase`
+   - `sfPDOSessionStorage` instead of `sfMySQLSessionStorage`, `sfMySQLiSessionStorage` and `sfPostgreSQLSessionStorage`
+   - Don't use `sfMessageSource_MySQL` 
