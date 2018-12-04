@@ -79,6 +79,7 @@ It's only intended for old projects to migrate to.
    - `composer require rock-symphony/rock-symphony:^1.7`
    - `composer require rock-symphony/rock-symphony:^3.0`
    - `composer require rock-symphony/rock-symphony:^4.0`
+   - `composer require rock-symphony/rock-symphony:^5.0`
 
 
 Contributing
