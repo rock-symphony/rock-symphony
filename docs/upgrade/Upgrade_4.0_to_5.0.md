@@ -42,3 +42,9 @@ Upgrade guide 4.0 to 5.0
 
 6. Make sure your code is using neither *APC* nor *eAccelerator* sfCache implementations.
    You can switch to `sfAPCuCache`. 
+
+7. Upgrade rock-symphony dependency to `5.0`
+
+   ```bash
+   composer require rock-symphony/rock-symphony:^5.0
+   ```
