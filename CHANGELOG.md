@@ -1,7 +1,12 @@
 CHANGELOG
 =========
 
-xx/xx/xxxx: Version 5.0
+13/03/2019: Version 5.0.1
+-------------------------
+
+* Replace symfony1 logo at Web Developer Toolbar
+
+01/12/2018: Version 5.0
 -----------------------
 
 * Drop PHP 5.5 support. It's PHP 5.6+ only now
