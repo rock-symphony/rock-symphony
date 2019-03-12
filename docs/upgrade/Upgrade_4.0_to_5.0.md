@@ -44,3 +44,9 @@ Upgrade guide 4.0 to 5.0
    You can switch to `sfAPCuCache`. 
 
 7. Make sure you don't use `sfServiceContainerDumperGraphviz`.
+
+8. Upgrade rock-symphony dependency to `5.0`
+
+   ```bash
+   composer require rock-symphony/rock-symphony:^5.0
+   ```
