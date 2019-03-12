@@ -7,7 +7,12 @@ XX/XX/XXXX: Version 6.0
 * Drop direct db-extensions interacting code in favour of PDO ([#22](https://github.com/rock-symphony/rock-symphony/pull/22))
 * Drop GraphViz container dumper ([#23](https://github.com/rock-symphony/rock-symphony/pull/23))
 
-02/12/2018: Version 5.0
+13/03/2019: Version 5.0.1
+-------------------------
+
+* Replace symfony1 logo at Web Developer Toolbar
+
+01/12/2018: Version 5.0
 -----------------------
 
 * Drop PHP 5.5 support. It's PHP 5.6+ only now
