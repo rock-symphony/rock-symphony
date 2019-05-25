@@ -28,9 +28,6 @@ config/services.yml:
   param:
     base_class: sfServiceContainer
 
-modules/*/config/generator.yml:
-  class:    sfGeneratorConfigHandler
-
 modules/*/config/view.yml:
   class:    sfViewConfigHandler
 
