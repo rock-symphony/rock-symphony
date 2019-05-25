@@ -1,4 +1,3 @@
-- '%SF_SYMFONY_LIB_DIR%/autoload/sfAutoload.class.php'
 - '%SF_SYMFONY_LIB_DIR%/action/sfComponent.class.php'
 - '%SF_SYMFONY_LIB_DIR%/action/sfAction.class.php'
 - '%SF_SYMFONY_LIB_DIR%/action/sfActions.class.php'
