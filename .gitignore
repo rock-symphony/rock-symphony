@@ -2,3 +2,4 @@
 /test/functional/fixtures/log
 /vendor
 /composer.lock
+/composer.phar
