@@ -4,8 +4,6 @@ CHANGELOG
 XX/XX/XXXX: Version 6.0
 -----------------------
 
-* Drop direct db-extensions interacting code in favour of PDO ([#22](https://github.com/rock-symphony/rock-symphony/pull/22))
-* Drop GraphViz container dumper ([#23](https://github.com/rock-symphony/rock-symphony/pull/23))
 
 25/05/2019: Version 5.0.4
 -------------------------
@@ -26,6 +24,8 @@ XX/XX/XXXX: Version 6.0
 -------------------------
 
 * Replace symfony1 logo at Web Developer Toolbar
+* Drop direct db-extensions interacting code in favour of PDO ([#22](https://github.com/rock-symphony/rock-symphony/pull/22))
+* Drop GraphViz container dumper ([#23](https://github.com/rock-symphony/rock-symphony/pull/23))
 
 01/12/2018: Version 5.0
 -----------------------
