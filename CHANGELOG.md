@@ -7,6 +7,21 @@ XX/XX/XXXX: Version 6.0
 * Drop direct db-extensions interacting code in favour of PDO ([#22](https://github.com/rock-symphony/rock-symphony/pull/22))
 * Drop GraphViz container dumper ([#23](https://github.com/rock-symphony/rock-symphony/pull/23))
 
+25/05/2019: Version 5.0.4
+-------------------------
+
+* Enable PHP 7.3 support
+
+25/05/2019: Version 5.0.3
+-------------------------
+
+* Fix web-debug bar icon logo dimension
+
+25/05/2019: Version 5.0.3
+-------------------------
+
+* Fix dropped class usage at *core_compile.yml*
+
 13/03/2019: Version 5.0.1
 -------------------------
 
