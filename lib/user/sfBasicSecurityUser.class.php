@@ -248,7 +248,7 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
 
     if (!array_key_exists('timeout', $this->options))
     {
-      $this->options['timeout'] = 1800;
+      $this->options['timeout'] = false;
     }
 
     // force the max lifetime for session garbage collector to be greater than timeout
