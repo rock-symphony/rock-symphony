@@ -3,14 +3,14 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(47);
+$t = new lime_test(50);
 
 class MySessionStorage extends sfSessionTestStorage
 {
@@ -166,4 +166,18 @@ $t->is($user->isTimedOut(), true, '->initialize() times out the user if no reque
 $user = new sfBasicSecurityUser($dispatcher, $storage, array('timeout' => false));
 $t->is($user->isTimedOut(), false, '->initialize() takes a timeout parameter which can be false to disable session timeout');
 
-sfToolkit::clearDirectory($sessionPath);
+// session.gc_maxlifetime
+$user = new sfBasicSecurityUser($dispatcher, $storage, ['timeout' => ini_get('session.gc_maxlifetime') - 1]);
+$t->ok($user, 'sfBasicSecurityUser does initialize if timeout < session.gc_maxlifetime');
+$user = new sfBasicSecurityUser($dispatcher, $storage, ['timeout' => ini_get('session.gc_maxlifetime')]);
+$t->ok($user, 'sfBasicSecurityUser does initialize if timeout == session.gc_maxlifetime');
+
+$exception = call_user_func(function() use ($dispatcher, $storage) {
+  try {
+    new sfBasicSecurityUser($dispatcher, $storage, ['timeout' => ini_get('session.gc_maxlifetime') + 1]);
+  } catch (LogicException $exception) {
+    return $exception;
+  }
+  return null;
+});
+$t->ok($exception instanceof LogicException, 'sfBasicSecurityUser throws LogicException if timeout > session.gc_maxlifetime');
