@@ -4,6 +4,10 @@ CHANGELOG
 XX/XX/XXXX: Version 6.0
 -----------------------
 
+29/05/2019: Version 5.0.5
+-------------------------
+
+* Fix user session "timeout" handling for PHP 7.3 ([#26](https://github.com/rock-symphony/rock-symphony/pull/26))
 
 25/05/2019: Version 5.0.4
 -------------------------
