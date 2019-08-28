@@ -39,15 +39,15 @@ Roadmap
 - ✓ ~~composer support~~
 - ✓ ~~Drop sfCoreAutoload~~
 - ✓ ~~Replace sfYaml with Symfony\Yaml~~
+- Fix sfApplicationConfiguration / ProjectConfiguration
 - Replace sfLogger with PSR Logger
 - Descent service container, services auto-injection
 - CommandBus + JobQueue
 - Logging with Logger object (not via sfEventDispatcher)
+- Drop sfContext
 - Namespaced controllers
 - PSR HTTP Requests
 - .env
-- Fix sfContext
-- Fix sfApplicationConfiguration / ProjectConfiguration
 - symfony/console
 - Replace services.yml with pure-PHP services.php 
 - Drop module-level .yml configurations support
