@@ -92,5 +92,5 @@ Credits
 
 - Original symfony1 implementation by [SensioLabs](https://sensiolabs.com/)
 - symfony1 v1.5 fork maintained by [L'Express Group](https://github.com/LExpress)
-- RockSymphony logo font by [Google Fonts Directory](https://fonts.google.com/specimen/New+Rocker)
-- RockSymphony logo hand icon by [Hum from TheNounProject](https://thenounproject.com/Hum/)
+- *New Rocker* font by [Google Fonts Directory](https://fonts.google.com/specimen/New+Rocker)
+- *Hand* icon by [Hum from TheNounProject](https://thenounproject.com/Hum/)
