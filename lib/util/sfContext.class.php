@@ -404,16 +404,6 @@ class sfContext implements ArrayAccess
   }
 
   /**
-   * Retrieve the view cache manager
-   *
-   * @return sfViewCacheManager The current sfViewCacheManager implementation instance.
-   */
-  public function getViewCacheManager()
-  {
-    return isset($this->factories['viewCacheManager']) ? $this->factories['viewCacheManager'] : null;
-  }
-
-  /**
    * Retrieve the i18n instance
    *
    * @return sfI18N The current sfI18N implementation instance.
