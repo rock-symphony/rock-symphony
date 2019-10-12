@@ -41,7 +41,7 @@ class sfFactoryConfigHandler extends sfYamlConfigHandler
     $instances = array();
 
     // available list of factories
-    $factories = array('view_cache_manager', 'logger', 'i18n', 'controller', 'request', 'response', 'routing', 'storage', 'user', 'view_cache', 'mailer', 'service_container');
+    $factories = array('view_cache_manager', 'logger', 'i18n', 'controller', 'request', 'response', 'routing', 'storage', 'user', 'mailer', 'service_container');
 
     // let's do our fancy work
     foreach ($factories as $factory)
@@ -114,19 +114,6 @@ class sfFactoryConfigHandler extends sfYamlConfigHandler
 
         case 'user':
           $instances[] = sprintf("  \$class = sfConfig::get('sf_factory_user', '%s');\n  \$this->factories['user'] = new \$class(\$this->dispatcher, \$this->factories['storage'], array_merge(array('auto_shutdown' => false, 'culture' => \$this->factories['request']->getParameter('sf_culture')), sfConfig::get('sf_factory_user_parameters', %s)));", $class, var_export($parameters, true));
-          break;
-
-        case 'view_cache':
-          $instances[] = sprintf("\n  if (sfConfig::get('sf_cache'))\n  {\n".
-                             "    \$class = sfConfig::get('sf_factory_view_cache', '%s');\n".
-                             "    \$cache = new \$class(sfConfig::get('sf_factory_view_cache_parameters', %s));\n".
-                             "    \$this->factories['viewCacheManager'] = new %s(\$this, \$cache, %s);\n".
-                             "  }\n".
-                             "  else\n".
-                             "  {\n".
-                             "    \$this->factories['viewCacheManager'] = null;\n".
-                             "  }\n",
-                             $class, var_export($parameters, true), $config['view_cache_manager']['class'], var_export($config['view_cache_manager']['param'], true));
           break;
 
         case 'i18n':

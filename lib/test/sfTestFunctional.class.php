@@ -26,10 +26,7 @@ class sfTestFunctional extends sfTestFunctionalBase
    */
   public function __construct(sfBrowserBase $browser, lime_test $lime = null, $testers = array())
   {
-    $testers = array_merge(array(
-      'view_cache' => 'sfTesterViewCache',
-      'form'       => 'sfTesterForm',
-    ), $testers);
+    $testers = array_merge(['form' => 'sfTesterForm'], $testers);
 
     parent::__construct($browser, $lime, $testers);
   }
