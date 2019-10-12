@@ -63,10 +63,6 @@ class sfWebDebug
   public function configure()
   {
     $this->setPanel('symfony_version', new sfWebDebugPanelSymfonyVersion($this));
-    if (sfConfig::get('sf_debug') && sfConfig::get('sf_cache'))
-    {
-      $this->setPanel('cache', new sfWebDebugPanelCache($this));
-    }
     if (sfConfig::get('sf_logging_enabled'))
     {
       $this->setPanel('config', new sfWebDebugPanelConfig($this));
