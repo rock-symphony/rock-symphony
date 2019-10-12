@@ -42,7 +42,7 @@ default:
     web_debug_web_dir:      /sf/sf_web_debug
 
     # Helpers included in all templates by default
-    standard_helpers:       [Partial, Cache]
+    standard_helpers:       [Partial]
 
     # Activated modules from plugins or from the symfony core
     enabled_modules:        [default]
