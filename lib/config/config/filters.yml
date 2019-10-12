@@ -12,11 +12,6 @@ security:
 
 # generally, you will want to insert your own filters here
 
-cache:
-  class: sfCacheFilter
-  param:
-    condition: '%SF_CACHE%'
-
 # execution filter must be the last registered filter
 execution:
   class:  sfExecutionFilter
