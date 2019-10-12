@@ -6,14 +6,15 @@ php:
     - 7.1
     - 7.2
     - 7.3
-    - 7.4
-    - nightly
+    - nightly-7.4
+    - nightly-8.0
 
 # run build against nightly but allow them to fail
 matrix:
     fast_finish: true
     allow_failures:
-        - php: nightly
+        - php: nightly-7.4
+        - php: nightly-8.0
 
 # faster builds on new travis setup not using sudo
 sudo: false
