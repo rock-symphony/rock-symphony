@@ -66,16 +66,6 @@ class sfExecutionFilter extends sfFilter
    */
   protected function handleAction($filterChain, $actionInstance)
   {
-    if (sfConfig::get('sf_cache'))
-    {
-      $uri = $this->context->getViewCacheManager()->getCurrentCacheKey();
-      if (null !== $uri && $this->context->getViewCacheManager()->hasActionCache($uri))
-      {
-        // action in cache, so go to the view
-        return sfView::SUCCESS;
-      }
-    }
-
     return $this->executeAction($actionInstance);
   }
 

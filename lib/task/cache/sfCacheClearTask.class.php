@@ -138,7 +138,6 @@ EOF;
   {
     $this->clearI18NCache($appConfiguration);
     $this->clearRoutingCache($appConfiguration);
-    $this->clearTemplateCache($appConfiguration);
     $this->clearModuleCache($appConfiguration);
     $this->clearConfigCache($appConfiguration);
   }
@@ -171,16 +170,6 @@ EOF;
     if (isset($config['routing']['param']['cache']))
     {
       $this->cleanCacheFromFactoryConfig($config['routing']['param']['cache']);
-    }
-  }
-
-  protected function clearTemplateCache(sfApplicationConfiguration $appConfiguration)
-  {
-    $config = $this->getFactoriesConfiguration($appConfiguration);
-
-    if (isset($config['view_cache']))
-    {
-      $this->cleanCacheFromFactoryConfig($config['view_cache']);
     }
   }
 

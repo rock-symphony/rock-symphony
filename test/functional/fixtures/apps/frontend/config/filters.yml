@@ -5,7 +5,4 @@ security:  ~
 myFilter:
   class: myFilter
 
-
-cache:     ~
-
 execution: ~

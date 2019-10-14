@@ -28,10 +28,6 @@ default:
     # Routing settings
     no_script_name:         false       # Enable the front controller name in generated URLs
 
-    # Cache settings
-    cache:                  false       # Enable the template cache
-    etag:                   true        # Enable etag handling
-
     # Logging and debugging settings
     web_debug:              false       # Enable the web debug toolbar
     error_reporting:        E_PARSE | E_COMPILE_ERROR | E_ERROR | E_CORE_ERROR | E_USER_ERROR # Determines which events are logged.
@@ -42,7 +38,7 @@ default:
     web_debug_web_dir:      /sf/sf_web_debug
 
     # Helpers included in all templates by default
-    standard_helpers:       [Partial, Cache]
+    standard_helpers:       [Partial]
 
     # Activated modules from plugins or from the symfony core
     enabled_modules:        [default]

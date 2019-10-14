@@ -35,12 +35,6 @@ all:
       generate_shortest_url:            true
       extra_parameters_as_query_string: true
 
-  view_cache_manager:
-    class: sfViewCacheManager
-    param:
-      cache_key_use_vary_headers: true
-      cache_key_use_host_name:    true
-
   user:
     class: ##APP_USER_CLASS##
     file:  '%SF_APP_DIR%/lib/##APP_USER_CLASS##.class.php'

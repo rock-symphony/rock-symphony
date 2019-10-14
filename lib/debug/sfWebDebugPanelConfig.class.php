@@ -36,7 +36,6 @@ class sfWebDebugPanelConfig extends sfWebDebugPanel
       'debug'        => sfConfig::get('sf_debug')           ? 'on' : 'off',
       'xdebug'       => extension_loaded('xdebug')          ? 'on' : 'off',
       'logging'      => sfConfig::get('sf_logging_enabled') ? 'on' : 'off',
-      'cache'        => sfConfig::get('sf_cache')           ? 'on' : 'off',
       'tokenizer'    => function_exists('token_get_all')    ? 'on' : 'off',
     );
 

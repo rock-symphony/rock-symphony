@@ -39,32 +39,6 @@ $b->
   isStatusCode(404)
 ;
 */
-// 404 with ETag enabled must returns 404, not 304
-sfConfig::set('sf_cache', true);
-sfConfig::set('sf_etag', true);
-$b->
-  get('/notfound')->
-  with('request')->begin()->
-    isParameter('module', 'notfound')->
-    isParameter('action', 'index')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(404)->
-    checkElement('body', '/404/')->
-  end()->
-
-  get('/notfound')->
-  with('request')->begin()->
-    isParameter('module', 'notfound')->
-    isParameter('action', 'index')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(404)->
-    checkElement('body', '/404/')->
-  end()
-;
-sfConfig::set('sf_cache', false);
-sfConfig::set('sf_etag', false);
 
 // unexistant action
 $b->
