@@ -95,8 +95,3 @@ $pht->launchTests($request, 'parameter');
 // attribute holder proxy
 $pht = new sfParameterHolderProxyTest($t);
 $pht->launchTests($request, 'attribute');
-
-// new methods via sfEventDispatcher
-require_once($_test_dir.'/unit/sfEventDispatcherTest.class.php');
-$dispatcherTest = new sfEventDispatcherTest($t);
-$dispatcherTest->launchTests($dispatcher, $request, 'request');

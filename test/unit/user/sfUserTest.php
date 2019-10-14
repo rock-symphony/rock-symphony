@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -80,11 +80,6 @@ $user = new sfUser($dispatcher, $storage);
 require_once($_test_dir.'/unit/sfParameterHolderTest.class.php');
 $pht = new sfParameterHolderProxyTest($t);
 $pht->launchTests($user, 'attribute');
-
-// new methods via sfEventDispatcher
-require_once($_test_dir.'/unit/sfEventDispatcherTest.class.php');
-$dispatcherTest = new sfEventDispatcherTest($t);
-$dispatcherTest->launchTests($dispatcher, $user, 'user');
 
 $storage->clear();
 
