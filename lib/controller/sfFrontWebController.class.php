@@ -27,7 +27,7 @@ class sfFrontWebController extends sfWebController
    *
    * This will determine which module and action to use by request parameters specified by the user.
    */
-  public function dispatch()
+  public function dispatch(): void
   {
     try
     {

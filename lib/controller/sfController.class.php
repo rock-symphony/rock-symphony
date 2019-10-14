@@ -22,12 +22,16 @@ abstract class sfController
 {
   /** @var sfContext */
   protected $context = null;
+
   /** @var sfEventDispatcher */
   protected $dispatcher = null;
+
   /** @var string[] */
-  protected $controllerClasses = array();
+  protected $controllerClasses = [];
+
   /** @var int */
   protected $renderMode = sfView::RENDER_CLIENT;
+
   /** @var int */
   protected $maxForwards = 5;
 
@@ -37,7 +41,7 @@ abstract class sfController
    * @see initialize()
    * @param sfContext $context A sfContext implementation instance
    */
-  public function __construct($context)
+  public function __construct(sfContext $context)
   {
     $this->initialize($context);
   }
@@ -47,7 +51,7 @@ abstract class sfController
    *
    * @param sfContext $context A sfContext implementation instance
    */
-  public function initialize($context)
+  public function initialize(sfContext $context): void
   {
     $this->context    = $context;
     $this->dispatcher = $context->getEventDispatcher();
@@ -61,7 +65,7 @@ abstract class sfController
    *
    * @return bool true, if the component exists, otherwise false
    */
-  public function componentExists($moduleName, $componentName)
+  public function componentExists(string $moduleName, string $componentName): bool
   {
     return $this->controllerExists($moduleName, $componentName, 'component', false);
   }
@@ -74,7 +78,7 @@ abstract class sfController
    *
    * @return bool true, if the action exists, otherwise false
    */
-  public function actionExists($moduleName, $actionName)
+  public function actionExists(string $moduleName, string $actionName): bool
   {
     return $this->controllerExists($moduleName, $actionName, 'action', false);
   }
@@ -93,7 +97,7 @@ abstract class sfController
    *
    * @return boolean true if the controller exists, false otherwise
    */
-  protected function controllerExists($moduleName, $controllerName, $extension, $throwExceptions)
+  protected function controllerExists(string $moduleName, string $controllerName, string $extension, bool $throwExceptions): bool
   {
     $dirs = $this->context->getConfiguration()->getControllerDirs($moduleName);
     foreach ($dirs as $dir => $checkEnabled)
@@ -175,7 +179,7 @@ abstract class sfController
    * @throws sfError404Exception       If the action not exist
    * @throws sfInitializationException If the action could not be initialized
    */
-  public function forward($moduleName, $actionName)
+  public function forward(string $moduleName, string $actionName): void
   {
     // replace unwanted characters
     $moduleName = preg_replace('/[^a-z0-9_]+/i', '', $moduleName);
@@ -265,7 +269,7 @@ abstract class sfController
    *
    * @return sfAction An sfAction implementation instance, if the action exists, otherwise null
    */
-  public function getAction($moduleName, $actionName)
+  public function getAction(string $moduleName, string $actionName): ?sfAction
   {
     return $this->getController($moduleName, $actionName, 'action');
   }
@@ -278,7 +282,7 @@ abstract class sfController
    *
    * @return sfComponent A sfComponent implementation instance, if the component exists, otherwise null
    */
-  public function getComponent($moduleName, $componentName)
+  public function getComponent(string $moduleName, string $componentName): ?sfComponent
   {
     return $this->getController($moduleName, $componentName, 'component');
   }
@@ -294,7 +298,7 @@ abstract class sfController
    *
    * @see getComponent(), getAction()
    */
-  protected function getController($moduleName, $controllerName, $extension)
+  protected function getController(string $moduleName, string $controllerName, string $extension): sfAction
   {
     $classSuffix = ucfirst(strtolower($extension));
     if (!isset($this->controllerClasses[$moduleName.'_'.$controllerName.'_'.$classSuffix]))
@@ -320,7 +324,7 @@ abstract class sfController
    *
    * @return sfActionStack An sfActionStack instance, if the action stack is enabled, otherwise null
    */
-  public function getActionStack()
+  public function getActionStack(): sfActionStack
   {
     return $this->context->getActionStack();
   }
@@ -332,7 +336,7 @@ abstract class sfController
    *             - sfView::RENDER_CLIENT
    *             - sfView::RENDER_VAR
    */
-  public function getRenderMode()
+  public function getRenderMode(): int
   {
     return $this->renderMode;
   }
@@ -346,7 +350,7 @@ abstract class sfController
    *
    * @return sfView A sfView implementation instance, if the view exists, otherwise null
    */
-  public function getView($moduleName, $actionName, $viewName)
+  public function getView(string $moduleName, string $actionName, string $viewName): sfView
   {
     // user view exists?
     $file = sfConfig::get('sf_app_module_dir').'/'.$moduleName.'/view/'.$actionName.$viewName.'View.class.php';
@@ -386,7 +390,7 @@ abstract class sfController
    * @throws Exception
    * @throws sfException
    */
-  public function getPresentationFor($module, $action, $viewName = null)
+  public function getPresentationFor(string $module, string $action, string $viewName = null): string
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -477,7 +481,7 @@ abstract class sfController
    *
    * @throws sfRenderException If an invalid render mode has been set
    */
-  public function setRenderMode($mode)
+  public function setRenderMode(int $mode): void
   {
     if ($mode == sfView::RENDER_CLIENT || $mode == sfView::RENDER_VAR || $mode == sfView::RENDER_NONE)
     {
@@ -495,7 +499,7 @@ abstract class sfController
    *
    * @return bool true, if using cli, otherwise false.
    */
-  public function inCLI()
+  public function inCLI(): bool
   {
     return 'cli' == PHP_SAPI;
   }

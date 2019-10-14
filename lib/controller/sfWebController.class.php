@@ -28,7 +28,7 @@ abstract class sfWebController extends sfController
    *
    * @return string A URL to a symfony resource
    */
-  public function genUrl($parameters = array(), $absolute = false)
+  public function genUrl($parameters, bool $absolute = false): string
   {
     $route = '';
     $fragment = '';
@@ -90,7 +90,7 @@ abstract class sfWebController extends sfController
    *
    * @throws sfParseException
    */
-  public function convertUrlStringToParameters($url)
+  public function convertUrlStringToParameters(string $url): array
   {
     $givenUrl = $url;
 
@@ -175,7 +175,7 @@ abstract class sfWebController extends sfController
    *
    * @throws InvalidArgumentException If the url argument is null or an empty string
    */
-  public function redirect($url, $delay = 0, $statusCode = 302)
+  public function redirect(string $url, int $delay = 0, int $statusCode = 302): void
   {
     if (empty($url))
     {
