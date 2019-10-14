@@ -16,6 +16,7 @@
  */
 class sfAPCuCache extends sfCache
 {
+  /** @var bool */
   protected $enabled;
 
   /**
@@ -28,7 +29,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     parent::initialize($options);
 
@@ -39,7 +40,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
     if (!$this->enabled)
     {
@@ -55,7 +56,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     if (!$this->enabled)
     {
@@ -67,7 +68,7 @@ class sfAPCuCache extends sfCache
     return $has;
   }
 
-  private function fetch($key, &$success)
+  private function fetch(string $key, &$success)
   {
     $has = null;
     $value = apcu_fetch($key, $has);
@@ -89,7 +90,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     if (!$this->enabled)
     {
@@ -103,7 +104,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     if (!$this->enabled)
     {
@@ -117,7 +118,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = sfCache::ALL)
+  public function clean(int $mode = sfCache::ALL): bool
   {
     if (!$this->enabled)
     {
@@ -128,13 +129,14 @@ class sfAPCuCache extends sfCache
     {
       return apcu_clear_cache();
     }
+    return false;
   }
 
   /**
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     if ($info = $this->getCacheInfo($key))
     {
@@ -148,7 +150,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
     if ($info = $this->getCacheInfo($key))
     {
@@ -162,7 +164,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function removePattern($pattern)
+  public function removePattern(string $pattern): bool
   {
     if (!$this->enabled)
     {
@@ -172,7 +174,7 @@ class sfAPCuCache extends sfCache
     $infos = apcu_cache_info();
     if (!is_array($infos['cache_list']))
     {
-      return;
+      return false;
     }
 
     $regexp = self::patternToRegexp($this->getOption('prefix').$pattern);
@@ -184,6 +186,7 @@ class sfAPCuCache extends sfCache
         apcu_delete($info['info']);
       }
     }
+    return true;
   }
 
   /**
@@ -191,13 +194,13 @@ class sfAPCuCache extends sfCache
    *
    * @param  string $key The cache key
    *
-   * @return string
+   * @return array|null
    */
-  protected function getCacheInfo($key)
+  protected function getCacheInfo(string $key): ?array
   {
     if (!$this->enabled)
     {
-      return false;
+      return null;
     }
 
     $infos = apcu_cache_info();
