@@ -401,25 +401,4 @@ abstract class sfComponent
   {
     $this->varHolder->remove($name);
   }
-
-  /**
-   * Calls methods defined via sfEventDispatcher.
-   *
-   * @param string $method The method name
-   * @param array  $arguments The method arguments
-   *
-   * @return mixed The returned value of the called method
-   *
-   * @throws sfException If called method is undefined
-   */
-  public function __call($method, $arguments)
-  {
-    $event = $this->dispatcher->notifyUntil(new sfEvent($this, 'component.method_not_found', array('method' => $method, 'arguments' => $arguments)));
-    if (!$event->isProcessed())
-    {
-      throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
-    }
-
-    return $event->getReturnValue();
-  }
 }

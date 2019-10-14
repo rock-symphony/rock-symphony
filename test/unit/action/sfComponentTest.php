@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please component the LICENSE
  * file that was distributed with this source code.
  */
@@ -12,7 +12,7 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 require_once($_test_dir.'/unit/sfContextMock.class.php');
 require_once($_test_dir.'/unit/sfNoRouting.class.php');
 
-$t = new lime_test(8);
+$t = new lime_test(6);
 
 class myComponent extends sfComponent
 {
@@ -51,8 +51,3 @@ $t->diag('__set()');
 $component->foo = array();
 $component->foo[] = 'bar';
 $t->is($component->foo, array('bar'), '__set() populates component variables');
-
-// new methods via sfEventDispatcher
-require_once($_test_dir.'/unit/sfEventDispatcherTest.class.php');
-$dispatcherTest = new sfEventDispatcherTest($t);
-$dispatcherTest->launchTests($context->getEventDispatcher(), $component, 'component');
