@@ -20,7 +20,7 @@ class fakeResponse
 {
 }
 
-$t = new lime_test(8);
+$t = new lime_test(6);
 
 $dispatcher = new sfEventDispatcher();
 

@@ -12,7 +12,7 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 require_once($_test_dir.'/unit/sfContextMock.class.php');
 require_once($_test_dir.'/unit/sfNoRouting.class.php');
 
-$t = new lime_test(8);
+$t = new lime_test(6);
 
 class myComponent extends sfComponent
 {

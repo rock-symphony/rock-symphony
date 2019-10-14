@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(32);
+$t = new lime_test(30);
 
 $_SERVER['session_id'] = 'test';
 
