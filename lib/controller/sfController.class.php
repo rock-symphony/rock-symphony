@@ -499,25 +499,4 @@ abstract class sfController
   {
     return 'cli' == PHP_SAPI;
   }
-
-  /**
-   * Calls methods defined via sfEventDispatcher.
-   *
-   * @param string $method    The method name
-   * @param array  $arguments The method arguments
-   *
-   * @return mixed The returned value of the called method
-   *
-   * @throws sfException
-   */
-  public function __call($method, $arguments)
-  {
-    $event = $this->dispatcher->notifyUntil(new sfEvent($this, 'controller.method_not_found', array('method' => $method, 'arguments' => $arguments)));
-    if (!$event->isProcessed())
-    {
-      throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
-    }
-
-    return $event->getReturnValue();
-  }
 }
