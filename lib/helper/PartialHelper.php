@@ -84,7 +84,7 @@ function has_component_slot($name)
   {
     return false;
   }
-  
+
   // check to see if component slot is empty (null)
   if ($viewInstance->getComponentSlot($name))
   {
@@ -131,7 +131,7 @@ function include_component($moduleName, $componentName, $vars = array())
  * @return string result of the component execution
  * @see    include_component
  */
-function get_component($moduleName, $componentName, $vars = array())
+function get_component(string $moduleName, string $componentName, array $vars = array()): string
 {
   $context = sfContext::getInstance();
   $actionName = '_'.$componentName;
@@ -151,6 +151,8 @@ function get_component($moduleName, $componentName, $vars = array())
 
     return $view->render();
   }
+
+  return '';
 }
 
 /**
@@ -192,7 +194,7 @@ function include_partial($templateName, $vars = array())
  * @return string result of the partial execution
  * @see    include_partial
  */
-function get_partial($templateName, $vars = array())
+function get_partial(string $templateName, array $vars = []): string
 {
   $context = sfContext::getInstance();
 

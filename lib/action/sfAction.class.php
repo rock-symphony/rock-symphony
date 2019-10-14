@@ -23,8 +23,7 @@
  */
 abstract class sfAction extends sfComponent
 {
-  protected
-    $security = array();
+  protected $security = [];
 
   /**
    * Initializes this action.
@@ -35,7 +34,7 @@ abstract class sfAction extends sfComponent
    *
    * @return void
    */
-  public function initialize($context, $moduleName, $actionName)
+  public function initialize(sfContext $context, string $moduleName, string $actionName): void
   {
     parent::initialize($context, $moduleName, $actionName);
 
@@ -51,7 +50,7 @@ abstract class sfAction extends sfComponent
    *
    * By default, this method is empty.
    */
-  public function preExecute()
+  public function preExecute(): void
   {
   }
 
@@ -60,7 +59,7 @@ abstract class sfAction extends sfComponent
    *
    * By default, this method is empty.
    */
-  public function postExecute()
+  public function postExecute(): void
   {
   }
 
@@ -72,7 +71,7 @@ abstract class sfAction extends sfComponent
    * @throws sfError404Exception
    *
    */
-  public function forward404($message = null)
+  public function forward404(string $message = null): void
   {
     throw new sfError404Exception($this->get404Message($message));
   }
@@ -85,7 +84,7 @@ abstract class sfAction extends sfComponent
    *
    * @throws sfError404Exception
    */
-  public function forward404Unless($condition, $message = null)
+  public function forward404Unless(bool $condition, string $message = null): void
   {
     if (!$condition)
     {
@@ -101,7 +100,7 @@ abstract class sfAction extends sfComponent
    *
    * @throws sfError404Exception
    */
-  public function forward404If($condition, $message = null)
+  public function forward404If(bool $condition, string $message = null): void
   {
     if ($condition)
     {
@@ -193,15 +192,8 @@ abstract class sfAction extends sfComponent
    *
    * @throws sfStopException
    */
-  public function redirect($url, $statusCode = 302)
+  public function redirect(string $url, int $statusCode = 302): void
   {
-    // compatibility with url_for2() style signature
-    if (is_object($statusCode) || is_array($statusCode))
-    {
-      $url = array_merge(array('sf_route' => $url), is_object($statusCode) ? array('sf_subject' => $statusCode) : $statusCode);
-      $statusCode = func_num_args() >= 3 ? func_get_arg(2) : 302;
-    }
-
     $this->getController()->redirect($url, 0, $statusCode);
 
     throw new sfStopException();
@@ -220,13 +212,11 @@ abstract class sfAction extends sfComponent
    *
    * @see redirect
    */
-  public function redirectIf($condition, $url, $statusCode = 302)
+  public function redirectIf(bool $condition, string $url, int $statusCode = 302): void
   {
     if ($condition)
     {
-      // compatibility with url_for2() style signature
-      $arguments = func_get_args();
-      call_user_func_array(array($this, 'redirect'), array_slice($arguments, 1));
+      $this->redirect($url, $statusCode);
     }
   }
 
@@ -243,13 +233,11 @@ abstract class sfAction extends sfComponent
    *
    * @see redirect
    */
-  public function redirectUnless($condition, $url, $statusCode = 302)
+  public function redirectUnless(bool $condition, string $url, int $statusCode = 302): void
   {
     if (!$condition)
     {
-      // compatibility with url_for2() style signature
-      $arguments = func_get_args();
-      call_user_func_array(array($this, 'redirect'), array_slice($arguments, 1));
+      $this->redirect($url, $statusCode);
     }
   }
 
@@ -264,7 +252,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string sfView::NONE
    */
-  public function renderText($text)
+  public function renderText(string $text): string
   {
     $this->getResponse()->setContent($this->getResponse()->getContent().$text);
 
@@ -280,7 +268,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string sfView::NONE
    */
-  public function renderJson($data)
+  public function renderJson($data): string
   {
     $this->getResponse()->setContentType('application/json');
     $this->getResponse()->setContent(json_encode($data));
@@ -302,7 +290,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string The partial content
    */
-  public function getPartial($templateName, $vars = null)
+  public function getPartial(string $templateName, array $vars = null): string
   {
     $this->getContext()->getConfiguration()->loadHelpers('Partial');
 
@@ -325,7 +313,7 @@ abstract class sfAction extends sfComponent
    *
    * @see    getPartial
    */
-  public function renderPartial($templateName, $vars = null)
+  public function renderPartial(string $templateName, array $vars = null): string
   {
     return $this->renderText($this->getPartial($templateName, $vars));
   }
@@ -345,7 +333,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string  The component rendered content
    */
-  public function getComponent($moduleName, $componentName, $vars = null)
+  public function getComponent(string $moduleName, string $componentName, array $vars = null): string
   {
     $this->getContext()->getConfiguration()->loadHelpers('Partial');
 
@@ -369,7 +357,7 @@ abstract class sfAction extends sfComponent
    *
    * @see    getComponent
    */
-  public function renderComponent($moduleName, $componentName, $vars = null)
+  public function renderComponent(string $moduleName, string $componentName, array $vars = null): string
   {
     return $this->renderText($this->getComponent($moduleName, $componentName, $vars));
   }
@@ -377,9 +365,9 @@ abstract class sfAction extends sfComponent
   /**
    * Returns the security configuration for this module.
    *
-   * @return string Current security configuration as an array
+   * @return array Current security configuration as an array
    */
-  public function getSecurityConfiguration()
+  public function getSecurityConfiguration(): array
   {
     return $this->security;
   }
@@ -389,7 +377,7 @@ abstract class sfAction extends sfComponent
    *
    * @param array $security The new security configuration
    */
-  public function setSecurityConfiguration($security)
+  public function setSecurityConfiguration(array $security): void
   {
     $this->security = $security;
   }
@@ -402,7 +390,7 @@ abstract class sfAction extends sfComponent
    *
    * @return mixed
    */
-  public function getSecurityValue($name, $default = null)
+  public function getSecurityValue(string $name, $default = null)
   {
     $actionName = strtolower($this->getActionName());
 
@@ -424,7 +412,7 @@ abstract class sfAction extends sfComponent
    *
    * @return bool true, if this action requires security, otherwise false.
    */
-  public function isSecure()
+  public function isSecure(): bool
   {
     return $this->getSecurityValue('is_secure', false);
   }
@@ -447,7 +435,7 @@ abstract class sfAction extends sfComponent
    * @param string $name    Template name
    * @param string $module  The module (current if null)
    */
-  public function setTemplate($name, $module = null)
+  public function setTemplate(string $name, string $module = null): void
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -473,7 +461,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string Template name. Returns null if no template has been set within the action
    */
-  public function getTemplate()
+  public function getTemplate(): ?string
   {
     return sfConfig::get('symfony.view.'.$this->getModuleName().'_'.$this->getActionName().'_template');
   }
@@ -487,7 +475,7 @@ abstract class sfAction extends sfComponent
    *
    * @param mixed $name Layout name or false to de-activate the layout
    */
-  public function setLayout($name)
+  public function setLayout($name): void
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -503,7 +491,7 @@ abstract class sfAction extends sfComponent
    * WARNING: It only returns the layout you set with the setLayout() method,
    *          and does not return the layout that you configured in your view.yml.
    *
-   * @return mixed Layout name. Returns null if no layout has been set within the action
+   * @return string|false|null Layout name. Returns null if no layout has been set within the action
    */
   public function getLayout()
   {
@@ -515,7 +503,7 @@ abstract class sfAction extends sfComponent
    *
    * @param string $class View class name
    */
-  public function setViewClass($class)
+  public function setViewClass(string $class): void
   {
     sfConfig::set('mod_'.strtolower($this->getModuleName()).'_view_class', $class);
   }
@@ -525,7 +513,7 @@ abstract class sfAction extends sfComponent
    *
    * @return sfRoute The route for the request
    */
-  public function getRoute()
+  public function getRoute(): sfRoute
   {
     return $this->getRequest()->getAttribute('sf_route');
   }
@@ -537,7 +525,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string The error message or a default one if null
    */
-  protected function get404Message($message = null)
+  protected function get404Message(string $message = null): string
   {
     return null === $message ? sprintf('This request has been forwarded to a 404 error page by the action "%s/%s".', $this->getModuleName(), $this->getActionName()) : $message;
   }
