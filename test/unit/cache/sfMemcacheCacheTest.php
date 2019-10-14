@@ -32,7 +32,7 @@ try
 }
 catch (sfInitializationException $e)
 {
-  $t->skip('Memcached must be active to run these tests', $plan);
+  $t->skip("Failed to initialize sfMemcacheCache: {$e->getMessage()}", $plan);
   return;
 }
 
