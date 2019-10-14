@@ -46,7 +46,7 @@ class sfContext implements ArrayAccess
    *
    * @throws sfFactoryException
    */
-  static public function createInstance(sfApplicationConfiguration $configuration, $name = null, $class = __CLASS__)
+  static public function createInstance(sfApplicationConfiguration $configuration, string $name = null, string $class = __CLASS__): sfContext
   {
     if (null === $name)
     {
@@ -72,7 +72,7 @@ class sfContext implements ArrayAccess
    *
    * @param sfApplicationConfiguration $configuration  An sfApplicationConfiguration instance
    */
-  public function initialize(sfApplicationConfiguration $configuration)
+  public function initialize(sfApplicationConfiguration $configuration): void
   {
     $this->configuration = $configuration;
     $this->dispatcher    = $configuration->getEventDispatcher();
@@ -107,7 +107,7 @@ class sfContext implements ArrayAccess
    *
    * @throws sfException
    */
-  static public function getInstance($name = null, $class = __CLASS__)
+  static public function getInstance(string $name = null, string $class = __CLASS__): sfContext
   {
     if (null === $name)
     {
@@ -130,7 +130,7 @@ class sfContext implements ArrayAccess
    * @return bool true is instanced, otherwise false
    */
 
-  public static function hasInstance($name = null)
+  public static function hasInstance(string $name = null): bool
   {
     if (null === $name)
     {
@@ -143,7 +143,7 @@ class sfContext implements ArrayAccess
   /**
    * Loads the symfony factories.
    */
-  public function loadFactories()
+  public function loadFactories(): void
   {
     if (sfConfig::get('sf_use_database'))
     {
@@ -174,7 +174,7 @@ class sfContext implements ArrayAccess
   /**
    * Dispatches the current request.
    */
-  public function dispatch()
+  public function dispatch(): void
   {
     $this->getController()->dispatch();
   }
@@ -185,7 +185,7 @@ class sfContext implements ArrayAccess
    * @param string $name  The name of the context to switch to
    *
    */
-  public static function switchTo($name)
+  public static function switchTo(string $name): void
   {
     if (!isset(self::$instances[$name]))
     {
@@ -203,7 +203,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfApplicationConfiguration  The current application configuration instance
    */
-  public function getConfiguration()
+  public function getConfiguration(): sfApplicationConfiguration
   {
     return $this->configuration;
   }
@@ -213,7 +213,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfEventDispatcher An sfEventDispatcher instance
    */
-  public function getEventDispatcher()
+  public function getEventDispatcher(): sfEventDispatcher
   {
     return $this->dispatcher;
   }
@@ -224,7 +224,7 @@ class sfContext implements ArrayAccess
    * @return string The currently executing action name, if one is set,
    *                otherwise null.
    */
-  public function getActionName()
+  public function getActionName(): ?string
   {
     // get the last action stack entry
     if ($this->factories['actionStack'] && $lastEntry = $this->factories['actionStack']->getLastEntry())
@@ -232,6 +232,7 @@ class sfContext implements ArrayAccess
       /** @var $lastEntry sfActionStackEntry */
       return $lastEntry->getActionName();
     }
+    return null;
   }
 
 
@@ -240,7 +241,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfActionStack the sfActionStack instance
    */
-  public function getActionStack()
+  public function getActionStack(): sfActionStack
   {
     return $this->factories['actionStack'];
   }
@@ -250,7 +251,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfFrontWebController The current sfController implementation instance.
    */
-  public function getController()
+  public function getController(): ?sfFrontWebController
   {
     return isset($this->factories['controller']) ? $this->factories['controller'] : null;
   }
@@ -260,7 +261,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfMailer The current sfMailer implementation instance.
    */
-  public function getMailer()
+  public function getMailer(): sfMailer
   {
     if (!isset($this->factories['mailer']))
     {
@@ -275,7 +276,7 @@ class sfContext implements ArrayAccess
    *
    * @param array $configuration
    */
-  public function setMailerConfiguration($configuration)
+  public function setMailerConfiguration(array $configuration): void
   {
     $this->mailerConfiguration = $configuration;
   }
@@ -285,7 +286,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfLogger The current sfLogger implementation instance.
    */
-  public function getLogger()
+  public function getLogger(): sfLogger
   {
     if (!isset($this->factories['logger']))
     {
@@ -305,11 +306,11 @@ class sfContext implements ArrayAccess
    *
    * @param  string  $name  A database name.
    *
-   * @return mixed A database instance.
+   * @return mixed|null A database instance.
    *
    * @throws sfDatabaseException if the requested database name does not exist.
    */
-  public function getDatabaseConnection($name = 'default')
+  public function getDatabaseConnection(string $name = 'default')
   {
     if (null !== $this->factories['databaseManager'])
     {
@@ -324,7 +325,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfDatabaseManager The current sfDatabaseManager instance.
    */
-  public function getDatabaseManager()
+  public function getDatabaseManager(): ?sfDatabaseManager
   {
     return isset($this->factories['databaseManager']) ? $this->factories['databaseManager'] : null;
   }
@@ -335,7 +336,7 @@ class sfContext implements ArrayAccess
    * @return string An absolute filesystem path to the directory of the
    *                currently executing module, if one is set, otherwise null.
    */
-  public function getModuleDirectory()
+  public function getModuleDirectory(): ?string
   {
     // get the last action stack entry
     if (isset($this->factories['actionStack']) && $lastEntry = $this->factories['actionStack']->getLastEntry())
@@ -343,6 +344,7 @@ class sfContext implements ArrayAccess
       /** @var $lastEntry sfActionStackEntry */
       return sfConfig::get('sf_app_module_dir').'/'.$lastEntry->getModuleName();
     }
+    return null;
   }
 
   /**
@@ -351,7 +353,7 @@ class sfContext implements ArrayAccess
    * @return string The currently executing module name, if one is set,
    *                otherwise null.
    */
-  public function getModuleName()
+  public function getModuleName(): ?string
   {
     // get the last action stack entry
     if (isset($this->factories['actionStack']) && $lastEntry = $this->factories['actionStack']->getLastEntry())
@@ -359,6 +361,7 @@ class sfContext implements ArrayAccess
       /** @var $lastEntry sfActionStackEntry */
       return $lastEntry->getModuleName();
     }
+    return null;
   }
 
   /**
@@ -366,7 +369,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfRequest The current sfRequest implementation instance.
    */
-  public function getRequest()
+  public function getRequest(): ?sfRequest
   {
     return isset($this->factories['request']) ? $this->factories['request'] : null;
   }
@@ -376,7 +379,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfResponse The current sfResponse implementation instance.
    */
-  public function getResponse()
+  public function getResponse(): ?sfResponse
   {
     return isset($this->factories['response']) ? $this->factories['response'] : null;
   }
@@ -388,7 +391,7 @@ class sfContext implements ArrayAccess
    *
    * @return void
    */
-  public function setResponse($response)
+  public function setResponse(sfResponse $response): void
   {
     $this->factories['response'] = $response;
   }
@@ -398,7 +401,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfStorage The current sfStorage implementation instance.
    */
-  public function getStorage()
+  public function getStorage(): ?sfStorage
   {
     return isset($this->factories['storage']) ? $this->factories['storage'] : null;
   }
@@ -410,7 +413,7 @@ class sfContext implements ArrayAccess
    *
    * @throws sfConfigurationException
    */
-  public function getI18N()
+  public function getI18N(): sfI18N
   {
     if (!sfConfig::get('sf_i18n'))
     {
@@ -425,7 +428,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfRouting The current sfRouting implementation instance.
    */
-  public function getRouting()
+  public function getRouting(): ?sfRouting
   {
     return isset($this->factories['routing']) ? $this->factories['routing'] : null;
   }
@@ -435,7 +438,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfUser The current sfUser implementation instance.
    */
-  public function getUser()
+  public function getUser(): ?sfUser
   {
     return isset($this->factories['user']) ? $this->factories['user'] : null;
   }
@@ -445,7 +448,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfServiceContainer The current sfServiceContainer implementation instance.
    */
-  public function getServiceContainer()
+  public function getServiceContainer(): sfServiceContainer
   {
     if (!isset($this->factories['serviceContainer']))
     {
@@ -464,7 +467,7 @@ class sfContext implements ArrayAccess
    *
    * @param array $config
    */
-  public function setServiceContainerConfiguration(array $config)
+  public function setServiceContainerConfiguration(array $config): void
   {
     $this->serviceContainerConfiguration = $config;
   }
@@ -476,7 +479,7 @@ class sfContext implements ArrayAccess
    *
    * @return object The service instance
    */
-  public function getService($id)
+  public function getService(string $id)
   {
     return $this->getServiceContainer()->getService($id);
   }
@@ -486,7 +489,7 @@ class sfContext implements ArrayAccess
    *
    * @return sfConfigCache A sfConfigCache instance
    */
-  public function getConfigCache()
+  public function getConfigCache(): sfConfigCache
   {
     return $this->configuration->getConfigCache();
   }
@@ -543,7 +546,7 @@ class sfContext implements ArrayAccess
    *
    * @return object The object associated with the given name
    */
-  public function get($name)
+  public function get(string $name)
   {
     if (!$this->has($name))
     {
@@ -559,7 +562,7 @@ class sfContext implements ArrayAccess
    * @param string $name    The name of the object to store
    * @param mixed $object   The object to store
    */
-  public function set($name, $object)
+  public function set(string $name, $object): void
   {
     $this->factories[$name] = $object;
   }
@@ -571,7 +574,7 @@ class sfContext implements ArrayAccess
    *
    * @return bool true if the object is not null, false otherwise
    */
-  public function has($name)
+  public function has(string $name): bool
   {
     return isset($this->factories[$name]);
   }
@@ -584,7 +587,7 @@ class sfContext implements ArrayAccess
    *
    * @return array   The filtered parameters array
    */
-  public function filterTemplateParameters(sfEvent $event, $parameters)
+  public function filterTemplateParameters(sfEvent $event, array $parameters): array
   {
     $parameters['sf_context']  = $this;
     $parameters['sf_request']  = $this->factories['request'];
@@ -600,7 +603,7 @@ class sfContext implements ArrayAccess
    *
    * @internal Should be called only via invoking "response.fastcgi_finish_request" or context shutting down.
    */
-  public function shutdownUserAndStorage()
+  public function shutdownUserAndStorage(): void
   {
     if (!$this->hasShutdownUserAndStorage && $this->has('user'))
     {
@@ -632,7 +635,7 @@ class sfContext implements ArrayAccess
     }
     else if ('set' == $verb && isset($arguments[0]))
     {
-      return $this->set($factory, $arguments[0]);
+      $this->set($factory, $arguments[0]);
     }
 
     throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
@@ -643,7 +646,7 @@ class sfContext implements ArrayAccess
    *
    * @return void
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     $this->shutdownUserAndStorage();
 
