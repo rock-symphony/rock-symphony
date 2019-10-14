@@ -4,11 +4,11 @@ dist: trusty
 
 php:
     - 5.6.0
-#    - 7.0
-#    - 7.1
-#    - 7.2
-#    - 7.3
-#    - nightly
+    - 7.0
+    - 7.1
+    - 7.2
+    - 7.3
+    - nightly
 
 # run build against nightly but allow them to fail
 matrix:
@@ -38,5 +38,4 @@ before_script:
 
 script:
     - php data/bin/check_configuration.php
-    - php test/unit/cache/sfMemcacheCacheTest.php
     - php data/bin/symfony symfony:test --trace
