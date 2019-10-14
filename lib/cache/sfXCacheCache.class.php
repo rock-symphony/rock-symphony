@@ -28,7 +28,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     parent::initialize($options);
 
@@ -47,7 +47,7 @@ class sfXCacheCache extends sfCache
   * @see sfCache
   * @inheritdoc
   */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
 
     $set = $this->getBaseValue($key);
@@ -65,7 +65,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     return xcache_isset($this->getOption('prefix').$key);
   }
@@ -74,7 +74,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     $lifetime = $this->getLifetime($lifetime);
 
@@ -91,7 +91,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     return xcache_unset($this->getOption('prefix').$key);
   }
@@ -100,7 +100,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = sfCache::ALL)
+  public function clean(int $mode = sfCache::ALL): bool
   {
     if ($mode !== sfCache::ALL)
     {
@@ -124,13 +124,12 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     $set = $this->getBaseValue($key);
 
     if (!is_array($set) || !array_key_exists('ctime', $set))
     {
-
       return 0;
     }
 
@@ -141,7 +140,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
 
     $set = $this->getBaseValue($key);
@@ -159,7 +158,7 @@ class sfXCacheCache extends sfCache
    * @param string $key
    * @return mixed|null
    */
-  public function getBaseValue($key)
+  public function getBaseValue(string $key)
   {
     return xcache_isset($this->getOption('prefix').$key) ? xcache_get($this->getOption('prefix').$key) : null;
   }
@@ -168,7 +167,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function removePattern($pattern)
+  public function removePattern(string $pattern): bool
   {
     $this->checkAuth();
 
@@ -179,7 +178,7 @@ class sfXCacheCache extends sfCache
       $infos = xcache_list(XC_TYPE_VAR, $i);
       if (!is_array($infos['cache_list']))
       {
-        return;
+        return true;
       }
 
       foreach ($infos['cache_list'] as $info)
@@ -190,13 +189,14 @@ class sfXCacheCache extends sfCache
         }
       }
     }
+    return true;
   }
 
   /**
    * @param string $key
    * @return array|null
    */
-  public function getCacheInfo($key)
+  public function getCacheInfo(string $key): ?array
   {
     $this->checkAuth();
 
@@ -219,7 +219,7 @@ class sfXCacheCache extends sfCache
     return null;
   }
 
-  protected function checkAuth()
+  protected function checkAuth(): void
   {
     if (ini_get('xcache.admin.enable_auth'))
     {

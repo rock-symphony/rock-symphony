@@ -18,10 +18,14 @@
  */
 class sfSQLiteCache extends sfCache
 {
-  protected
-    $dbh            = null,
-    $sqlLiteVersion = null,
-    $database       = '';
+  /** @var SQLite3|SQLiteDatabase */
+  protected $dbh = null;
+
+  /** @var int */
+  protected $sqlLiteVersion = null;
+
+  /** @var string */
+  protected $database = '';
 
   /**
    * Initializes this sfCache instance.
@@ -35,7 +39,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     if (!extension_loaded('SQLite') && !extension_loaded('pdo_SQLite'))
     {
@@ -66,7 +70,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
     if ($this->isSqLite3())
     {
@@ -84,7 +88,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     if ($this->isSqLite3())
     {
@@ -98,7 +102,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     if ($this->getOption('automatic_cleaning_factor') > 0 && mt_rand(1, $this->getOption('automatic_cleaning_factor')) == 1)
     {
@@ -117,7 +121,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     if ($this->isSqLite3())
     {
@@ -131,7 +135,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function removePattern($pattern)
+  public function removePattern(string $pattern): bool
   {
     if ($this->isSqLite3())
     {
@@ -145,7 +149,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = sfCache::ALL)
+  public function clean(int $mode = sfCache::ALL): bool
   {
     if ($this->isSqLite3())
     {
@@ -166,7 +170,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
     if ($this->isSqLite3())
     {
@@ -184,7 +188,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     if ($this->isSqLite3())
     {
@@ -193,6 +197,7 @@ class sfSQLiteCache extends sfCache
       return null === $rs ? 0 : $rs;
     }
 
+    /** @var SQLiteResult $rs */
     $rs = $this->dbh->query(sprintf("SELECT last_modified FROM cache WHERE key = '%s' AND timeout > %d", sqlite_escape_string($key), time()));
 
     return $rs->numRows() ? (int) $rs->fetchSingle() : 0;
@@ -205,7 +210,7 @@ class sfSQLiteCache extends sfCache
    *
    * @throws sfCacheException
    */
-  protected function setDatabase($database)
+  protected function setDatabase(string $database): void
   {
     $this->database = $database;
 
@@ -258,9 +263,9 @@ class sfSQLiteCache extends sfCache
    * Callback used when deleting keys from cache.
    * @param string $regexp
    * @param string $key
-   * @return int
+   * @return int|false
    */
-  public function removePatternRegexpCallback($regexp, $key)
+  public function removePatternRegexpCallback(string $regexp, string $key)
   {
     return preg_match($regexp, $key);
   }
@@ -269,7 +274,7 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getMany($keys)
+  public function getMany(array $keys): array
   {
     if ($this->isSqLite3())
     {
@@ -301,7 +306,7 @@ class sfSQLiteCache extends sfCache
    *
    * @throws sfCacheException
    */
-  protected function createSchema()
+  protected function createSchema(): void
   {
     $statements = array(
       'CREATE TABLE [cache] (
@@ -339,7 +344,7 @@ class sfSQLiteCache extends sfCache
    *
    * @return integer
    */
-  protected function getSqLiteVersion()
+  protected function getSqLiteVersion(): int
   {
     if (null === $this->sqlLiteVersion)
     {

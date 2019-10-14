@@ -36,7 +36,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     parent::initialize($options);
 
@@ -52,7 +52,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
     $file_path = $this->getFilePath($key);
     if (!is_file($file_path))
@@ -74,7 +74,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     $path = $this->getFilePath($key);
 
@@ -85,7 +85,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     if ($this->getOption('automatic_cleaning_factor') > 0 && mt_rand(1, $this->getOption('automatic_cleaning_factor')) == 1)
     {
@@ -99,7 +99,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     return @unlink($this->getFilePath($key));
   }
@@ -108,7 +108,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function removePattern($pattern)
+  public function removePattern(string  $pattern): bool
   {
     if (false !== strpos($pattern, '**'))
     {
@@ -140,13 +140,15 @@ class sfFileCache extends sfCache
         @unlink($path);
       }
     }
+
+    return true;
   }
 
   /**
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = sfCache::ALL)
+  public function clean(int $mode = sfCache::ALL): bool
   {
     if (!is_dir($this->getOption('cache_dir')))
     {
@@ -169,7 +171,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
     $path = $this->getFilePath($key);
 
@@ -187,7 +189,7 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     $path = $this->getFilePath($key);
 
@@ -205,7 +207,7 @@ class sfFileCache extends sfCache
     return $data[self::READ_LAST_MODIFIED];
   }
 
-  protected function isValid($path)
+  protected function isValid(string $path): bool
   {
     $data = $this->read($path, self::READ_TIMEOUT);
     return time() < $data[self::READ_TIMEOUT];
@@ -218,7 +220,7 @@ class sfFileCache extends sfCache
   *
   * @return string The full path to the cache file
   */
-  protected function getFilePath($key)
+  protected function getFilePath(string $key): string
   {
     return $this->getOption('cache_dir').DIRECTORY_SEPARATOR.str_replace(sfCache::SEPARATOR, DIRECTORY_SEPARATOR, $key).self::EXTENSION;
   }
@@ -236,7 +238,7 @@ class sfFileCache extends sfCache
   *
   * @throws sfCacheException
   */
-  protected function read($path, $type = self::READ_DATA)
+  protected function read(string $path, int $type = self::READ_DATA): array
   {
     if (!$fp = @fopen($path, 'rb'))
     {
@@ -281,7 +283,7 @@ class sfFileCache extends sfCache
   *
   * @throws sfCacheException
   */
-  protected function write($path, $data, $timeout)
+  protected function write(string $path, string $data, int $timeout): bool
   {
     $current_umask = umask();
     umask(0000);
@@ -326,7 +328,7 @@ class sfFileCache extends sfCache
    *
    * @param string $cache_dir The directory where to put the cache files
    */
-  protected function setcache_dir($cache_dir)
+  protected function setcache_dir(string $cache_dir): void
   {
     // remove last DIRECTORY_SEPARATOR
     if (DIRECTORY_SEPARATOR == substr($cache_dir, -1))

@@ -39,7 +39,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     parent::initialize($options);
 
@@ -82,7 +82,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @return Memcache
    */
-  public function getBackend()
+  public function getBackend(): Memcache
   {
     return $this->memcache;
   }
@@ -91,7 +91,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
     $value = $this->memcache->get($this->getOption('prefix').$key);
 
@@ -102,7 +102,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     if (false === $this->memcache->get($this->getOption('prefix') . $key))
     {
@@ -117,7 +117,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     $lifetime = null === $lifetime ? $this->getOption('lifetime') : $lifetime;
 
@@ -142,7 +142,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     // delete metadata
     $this->memcache->delete($this->getOption('prefix').'_metadata'.self::SEPARATOR.$key, 0);
@@ -157,19 +157,20 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = sfCache::ALL)
+  public function clean(int $mode = sfCache::ALL): bool
   {
     if (sfCache::ALL === $mode)
     {
       return $this->memcache->flush();
     }
+    return false;
   }
 
   /**
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     if (false === ($retval = $this->getMetadata($key)))
     {
@@ -183,7 +184,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
     if (false === ($retval = $this->getMetadata($key)))
     {
@@ -199,7 +200,7 @@ class sfMemcacheCache extends sfCache
    *
    * @throws sfCacheException
    */
-  public function removePattern($pattern)
+  public function removePattern(string $pattern): bool
   {
     if (!$this->getOption('storeCacheInfo', false))
     {
@@ -214,15 +215,17 @@ class sfMemcacheCache extends sfCache
         $this->remove(substr($key, strlen($this->getOption('prefix'))));
       }
     }
+
+    return true;
   }
 
   /**
    * @see sfCache
    * @inheritdoc
    */
-  public function getMany($keys)
+  public function getMany(array $keys): array
   {
-    $values = array();
+    $values = [];
     $prefix = $this->getOption('prefix');
     $prefixed_keys = array_map(function($k) use ($prefix) { return $prefix . $k; }, $keys);
 
@@ -241,7 +244,7 @@ class sfMemcacheCache extends sfCache
    *
    * @return array An array of metadata information
    */
-  protected function getMetadata($key)
+  protected function getMetadata(string $key): array
   {
     return $this->memcache->get($this->getOption('prefix').'_metadata'.self::SEPARATOR.$key);
   }
@@ -250,9 +253,9 @@ class sfMemcacheCache extends sfCache
    * Stores metadata about a key in the cache.
    *
    * @param string $key      A cache key
-   * @param string $lifetime The lifetime
+   * @param int $lifetime The lifetime
    */
-  protected function setMetadata($key, $lifetime)
+  protected function setMetadata(string $key, int $lifetime): void
   {
     $this->memcache->set($this->getOption('prefix').'_metadata'.self::SEPARATOR.$key, array('lastModified' => time(), 'timeout' => time() + $lifetime), false, time() + $lifetime);
   }
@@ -263,7 +266,7 @@ class sfMemcacheCache extends sfCache
    * @param string $key The cache key
    * @param boolean $delete Delete key or not
    */
-  protected function setCacheInfo($key, $delete = false)
+  protected function setCacheInfo(string $key, bool $delete = false): void
   {
     $keys = $this->memcache->get($this->getOption('prefix').'_metadata');
     if (!is_array($keys))
@@ -294,12 +297,11 @@ class sfMemcacheCache extends sfCache
    *
    * @return array
    */
-  protected function getCacheInfo()
+  protected function getCacheInfo(): array
   {
-    $keys = $this->memcache->get($this->getOption('prefix').'_metadata');
-    if (!is_array($keys))
-    {
-      return array();
+    $keys = $this->memcache->get($this->getOption('prefix') . '_metadata');
+    if (!is_array($keys)) {
+      return [];
     }
 
     return $keys;

@@ -22,8 +22,8 @@ abstract class sfCache
   const ALL = 2;
   const SEPARATOR = ':';
 
-  protected
-    $options = array();
+  /** @var array */
+  protected $options = [];
 
   /**
    * Class constructor.
@@ -32,7 +32,7 @@ abstract class sfCache
    *
    * @param array $options
    */
-  public function __construct($options = array())
+  public function __construct(array $options = [])
   {
     $this->initialize($options);
   }
@@ -54,7 +54,7 @@ abstract class sfCache
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfCache instance.
    */
-  public function initialize($options = array())
+  public function initialize(array $options = []): void
   {
     $this->options = array_merge(array(
       'automatic_cleaning_factor' => 1000,
@@ -73,7 +73,7 @@ abstract class sfCache
    *
    * @return string The data of the cache
    */
-  abstract public function get($key, $default = null);
+  abstract public function get(string $key, $default = null): ?string;
 
   /**
    * Returns true if there is a cache for the given key.
@@ -82,7 +82,7 @@ abstract class sfCache
    *
    * @return Boolean true if the cache exists, false otherwise
    */
-  abstract public function has($key);
+  abstract public function has(string $key): bool;
 
   /**
    * Saves some data in the cache.
@@ -93,7 +93,7 @@ abstract class sfCache
    *
    * @return Boolean true if no problem
    */
-  abstract public function set($key, $data, $lifetime = null);
+  abstract public function set(string $key, string $data, int $lifetime = null): bool;
 
   /**
    * Removes a content from the cache.
@@ -102,7 +102,7 @@ abstract class sfCache
    *
    * @return Boolean true if no problem
    */
-  abstract public function remove($key);
+  abstract public function remove(string $key): bool;
 
   /**
    * Removes content from the cache that matches the given pattern.
@@ -113,7 +113,7 @@ abstract class sfCache
    *
    * @see patternToRegexp
    */
-  abstract public function removePattern($pattern);
+  abstract public function removePattern(string $pattern): bool;
 
   /**
    * Cleans the cache.
@@ -124,7 +124,7 @@ abstract class sfCache
    *
    * @return Boolean true if no problem
    */
-  abstract public function clean($mode = self::ALL);
+  abstract public function clean(int $mode = self::ALL): bool;
 
   /**
    * Returns the timeout for the given key.
@@ -133,7 +133,7 @@ abstract class sfCache
    *
    * @return int The timeout time
    */
-  abstract public function getTimeout($key);
+  abstract public function getTimeout(string $key): int;
 
   /**
    * Returns the last modification date of the given key.
@@ -142,7 +142,7 @@ abstract class sfCache
    *
    * @return int The last modified time (timestamp)
    */
-  abstract public function getLastModified($key);
+  abstract public function getLastModified(string $key): int;
 
   /**
    * Gets many keys at once.
@@ -151,11 +151,10 @@ abstract class sfCache
    *
    * @return array An associative array of data from cache
    */
-  public function getMany($keys)
+  public function getMany(array $keys): array
   {
-    $data = array();
-    foreach ($keys as $key)
-    {
+    $data = [];
+    foreach ($keys as $key) {
       $data[$key] = $this->get($key);
     }
 
@@ -165,11 +164,11 @@ abstract class sfCache
   /**
    * Computes lifetime.
    *
-   * @param integer $lifetime Lifetime in seconds
+   * @param int $lifetime Lifetime in seconds
    *
-   * @return integer Lifetime in seconds
+   * @return int Lifetime in seconds
    */
-  public function getLifetime($lifetime)
+  public function getLifetime(?int $lifetime = null): int
   {
     return null === $lifetime ? $this->getOption('lifetime') : $lifetime;
   }
@@ -194,7 +193,7 @@ abstract class sfCache
    *
    * @return mixed The option value
    */
-  public function getOption($name, $default = null)
+  public function getOption(string $name, $default = null)
   {
     return isset($this->options[$name]) ? $this->options[$name] : $default;
   }
@@ -207,9 +206,9 @@ abstract class sfCache
    *
    * @return mixed
    */
-  public function setOption($name, $value)
+  public function setOption(string $name, $value): void
   {
-    return $this->options[$name] = $value;
+    $this->options[$name] = $value;
   }
 
   /**
@@ -224,7 +223,7 @@ abstract class sfCache
    *
    * @return string A regular expression
    */
-  protected function patternToRegexp($pattern)
+  protected function patternToRegexp(string $pattern): string
   {
     $regexp = str_replace(
       array('\\*\\*', '\\*'),

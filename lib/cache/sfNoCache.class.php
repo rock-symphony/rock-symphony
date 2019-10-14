@@ -22,7 +22,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function get($key, $default = null)
+  public function get(string $key, $default = null): ?string
   {
     return $default;
   }
@@ -31,7 +31,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function has($key)
+  public function has(string $key): bool
   {
     return false;
   }
@@ -40,7 +40,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set($key, $data, $lifetime = null)
+  public function set(string $key, string $data, int $lifetime = null): bool
   {
     return true;
   }
@@ -49,7 +49,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function remove($key)
+  public function remove(string $key): bool
   {
     return true;
   }
@@ -58,7 +58,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function removePattern($pattern)
+  public function removePattern(string $pattern): bool
   {
     return true;
   }
@@ -67,7 +67,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function clean($mode = self::ALL)
+  public function clean(int $mode = self::ALL): bool
   {
     return true;
   }
@@ -76,7 +76,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getLastModified($key)
+  public function getLastModified(string $key): int
   {
     return 0;
   }
@@ -85,7 +85,7 @@ class sfNoCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function getTimeout($key)
+  public function getTimeout(string $key): int
   {
     return 0;
   }
