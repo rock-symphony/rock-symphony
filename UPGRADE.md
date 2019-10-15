@@ -8,3 +8,5 @@ Upgrade guide
 3. [Upgrade 3.0 to 4.0](./docs/upgrade/Upgrade_3.0_to_4.0.md)
 
 4. [Upgrade 4.0 to 5.0](./docs/upgrade/Upgrade_4.0_to_5.0.md)
+
+5. [Upgrade 5.0 to 6.0](./docs/upgrade/Upgrade_5.0_to_6.0.md)
