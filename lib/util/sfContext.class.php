@@ -26,14 +26,19 @@ class sfContext implements ArrayAccess
   protected $dispatcher = null;
   /** @var sfApplicationConfiguration */
   protected $configuration = null;
-  protected $mailerConfiguration = array();
-  protected $serviceContainerConfiguration = array();
-  protected $factories = array();
+  /** @var array */
+  protected $mailerConfiguration = [];
+  /** @var array */
+  protected $serviceContainerConfiguration = [];
+  /** @var array */
+  protected $factories = [];
+  /** @var bool */
   protected $hasShutdownUserAndStorage = false;
 
-  protected static
-    $instances = array(),
-    $current   = 'default';
+  /** @var \sfContext[] */
+  protected static $instances = [];
+  /** @var string */
+  protected static $current = 'default';
 
   /**
    * Creates a new context instance.
@@ -46,7 +51,7 @@ class sfContext implements ArrayAccess
    *
    * @throws sfFactoryException
    */
-  static public function createInstance(sfApplicationConfiguration $configuration, string $name = null, string $class = __CLASS__): sfContext
+  static public function createInstance(sfApplicationConfiguration $configuration, string $name = null, string $class = self::class): sfContext
   {
     if (null === $name)
     {
@@ -54,7 +59,6 @@ class sfContext implements ArrayAccess
     }
 
     self::$current = $name;
-
     self::$instances[$name] = new $class();
 
     if (!self::$instances[$name] instanceof sfContext)
@@ -101,13 +105,12 @@ class sfContext implements ArrayAccess
    * Retrieves the singleton instance of this class.
    *
    * @param string  $name   The name of the sfContext to retrieve.
-   * @param string  $class  The context class to use (sfContext by default)
    *
    * @return sfContext An sfContext implementation instance.
    *
    * @throws sfException
    */
-  static public function getInstance(string $name = null, string $class = __CLASS__): sfContext
+  static public function getInstance(string $name = null): sfContext
   {
     if (null === $name)
     {
@@ -221,8 +224,8 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the action name for this context.
    *
-   * @return string The currently executing action name, if one is set,
-   *                otherwise null.
+   * @return string|null The currently executing action name, if one is set,
+   *                     otherwise null.
    */
   public function getActionName(): ?string
   {
@@ -323,7 +326,7 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the database manager.
    *
-   * @return sfDatabaseManager The current sfDatabaseManager instance.
+   * @return sfDatabaseManager|null The current sfDatabaseManager instance.
    */
   public function getDatabaseManager(): ?sfDatabaseManager
   {
@@ -333,8 +336,8 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the module directory for this context.
    *
-   * @return string An absolute filesystem path to the directory of the
-   *                currently executing module, if one is set, otherwise null.
+   * @return string|null An absolute filesystem path to the directory of the
+   *                     currently executing module, if one is set, otherwise null.
    */
   public function getModuleDirectory(): ?string
   {
@@ -350,8 +353,8 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the module name for this context.
    *
-   * @return string The currently executing module name, if one is set,
-   *                otherwise null.
+   * @return string|null The currently executing module name, if one is set,
+   *                     otherwise null.
    */
   public function getModuleName(): ?string
   {
@@ -399,7 +402,7 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the storage.
    *
-   * @return sfStorage The current sfStorage implementation instance.
+   * @return sfStorage|null The current sfStorage implementation instance.
    */
   public function getStorage(): ?sfStorage
   {
@@ -426,7 +429,7 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the routing instance.
    *
-   * @return sfRouting The current sfRouting implementation instance.
+   * @return sfRouting|null The current sfRouting implementation instance.
    */
   public function getRouting(): ?sfRouting
   {
@@ -436,7 +439,7 @@ class sfContext implements ArrayAccess
   /**
    * Retrieve the user.
    *
-   * @return sfUser The current sfUser implementation instance.
+   * @return sfUser|null The current sfUser implementation instance.
    */
   public function getUser(): ?sfUser
   {
@@ -542,7 +545,7 @@ class sfContext implements ArrayAccess
   /**
    * Gets an object from the current context.
    *
-   * @param  string $name  The name of the object to retrieve
+   * @param string $name The name of the object to retrieve
    *
    * @return object The object associated with the given name
    */
@@ -636,6 +639,7 @@ class sfContext implements ArrayAccess
     else if ('set' == $verb && isset($arguments[0]))
     {
       $this->set($factory, $arguments[0]);
+      return null;
     }
 
     throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
