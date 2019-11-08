@@ -3,14 +3,14 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
-require_once($_test_dir.'/unit/sfContextMock.class.php');
-require_once(__DIR__.'/../../../lib/helper/PartialHelper.php');
+require_once(__DIR__ . '/../../bootstrap/unit.php');
+require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
+require_once(__DIR__ . '/../../../lib/helper/PartialHelper.php');
 
 // Fixme: make this test more beautiful and extend it
 
@@ -39,7 +39,7 @@ $t->is(get_partial('module/dummy'), '==RENDERED==', 'get_partial() uses the clas
 $t->is(get_partial('MODULE/dummy'), '==RENDERED==', 'get_partial() accepts a case-insensitive module name');
 
 // slots tests
-sfContext::getInstance()->inject('response', 'sfWebResponse');
+sfContextMock::mockInstance(['response' => 'sfWebResponse']);
 
 $t->diag('get_slot()');
 $t->is(get_slot('foo', 'baz'), 'baz', 'get_slot() retrieves default slot content');
