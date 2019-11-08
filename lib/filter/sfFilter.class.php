@@ -150,6 +150,6 @@ abstract class sfFilter
    */
   public function setParameter(string $name, $value): void
   {
-    return $this->parameterHolder->set($name, $value);
+    $this->parameterHolder->set($name, $value);
   }
 }

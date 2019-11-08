@@ -15,9 +15,14 @@ $t = new lime_test(17);
 
 class myFilter extends sfFilter
 {
-  public function isFirstCall()
+  public function isFirstCall(): bool
   {
     return parent::isFirstCall();
+  }
+
+  function execute(sfFilterChain $chain): void
+  {
+
   }
 }
 
