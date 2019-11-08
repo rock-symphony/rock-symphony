@@ -34,7 +34,7 @@ $context = sfContextMock::mockInstance([
   'response' => 'myWebResponse',
 ]);
 
-$controller = new sfFrontWebController($context, null);
+$controller = new sfFrontWebController($context);
 
 $tests = array(
   'module/action' => array(
@@ -171,6 +171,7 @@ catch (sfParseException $e)
 // ->redirect()
 $t->diag('->redirect()');
 $controller->redirect('module/action?id=1#photos');
+/** @var \sfWebResponse $response */
 $response = $context->getResponse();
 $t->like($response->getContent(), '~http\://localhost/index.php/\?module=module&amp;action=action&amp;id=1#photos~', '->redirect() adds a refresh meta in the content');
 $t->like($response->getHttpHeader('Location'), '~http\://localhost/index.php/\?module=module&action=action&id=1#photos~', '->redirect() adds a Location HTTP header');
@@ -181,7 +182,7 @@ try
   $controller->redirect(null);
   $t->fail('->redirect() throw an InvalidArgumentException when the url argument is null');
 }
-catch (InvalidArgumentException $iae)
+catch (TypeError $err)
 {
   $t->pass('->redirect() throw an InvalidArgumentException when the url argument is null');
 }
@@ -196,7 +197,7 @@ try
   $controller->redirect('');
   $t->fail('->redirect() throw an InvalidArgumentException when the url argument is an empty string');
 }
-catch (InvalidArgumentException $iae)
+catch (InvalidArgumentException $err)
 {
   $t->pass('->redirect() throw an InvalidArgumentException when the url argument is an empty string');
 }

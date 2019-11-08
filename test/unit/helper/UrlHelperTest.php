@@ -11,28 +11,28 @@
 require_once(__DIR__ . '/../../bootstrap/unit.php');
 require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 
-class myController
+class myController extends sfFrontWebController
 {
-  public function genUrl($parameters = array(), $absolute = false)
+  public function genUrl($parameters = [], bool $absolute = false): string
   {
     $url = is_array($parameters) && isset($parameters['sf_route']) ? $parameters['sf_route'] : 'module/action';
     return ($absolute ? '/' : '').$url;
   }
 }
 
-class myRequest
+class myRequest extends sfWebRequest
 {
-  public function getRelativeUrlRoot()
+  public function getRelativeUrlRoot(): string
   {
     return '/public';
   }
 
-  public function isSecure()
+  public function isSecure(): bool
   {
     return true;
   }
 
-  public function getHost()
+  public function getHost(): string
   {
     return 'example.org';
   }

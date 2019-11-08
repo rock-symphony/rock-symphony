@@ -38,7 +38,7 @@ class myRequest extends sfRequest
 
 class myResponse extends sfWebResponse
 {
-  public function resetAssets()
+  public function resetAssets(): void
   {
     $this->javascripts = array_combine($this->positions, array_fill(0, count($this->positions), array()));
     $this->stylesheets = array_combine($this->positions, array_fill(0, count($this->positions), array()));
@@ -47,7 +47,7 @@ class myResponse extends sfWebResponse
 
 class myController extends sfFrontWebController
 {
-  public function genUrl($parameters = array(), $absolute = false)
+  public function genUrl($parameters = array(), $absolute = false): string
   {
     return ($absolute ? '/' : '').$parameters;
   }

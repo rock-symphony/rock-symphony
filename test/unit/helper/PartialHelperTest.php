@@ -12,8 +12,6 @@ require_once(__DIR__ . '/../../bootstrap/unit.php');
 require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 require_once(__DIR__ . '/../../../lib/helper/PartialHelper.php');
 
-// Fixme: make this test more beautiful and extend it
-
 $t = new lime_test(9);
 
 class MyTestPartialView extends sfPartialView
@@ -31,6 +29,8 @@ class MyTestPartialView extends sfPartialView
   {
   }
 }
+
+sfContextMock::mockInstance();
 
 $t->diag('get_partial()');
 sfConfig::set('mod_module_partial_view_class', 'MyTest');
