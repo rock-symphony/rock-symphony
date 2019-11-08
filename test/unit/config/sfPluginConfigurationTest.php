@@ -19,9 +19,9 @@ $t = new lime_test(2);
 
 class ProjectConfiguration extends sfProjectConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
-    $this->enablePlugins('sfConfigPlugin');
+    $this->enablePlugins(['sfConfigPlugin']);
   }
 }
 

@@ -11,15 +11,16 @@
 /**
  * HelperHelper.
  *
- * @package    symfony
- * @subpackage helper
+ * @param string[] $name
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
+ * @package    symfony
+ * @subpackage helper
  */
 
-function use_helper()
+function use_helper(string ...$names)
 {
   $context = sfContext::getInstance();
 
-  $context->getConfiguration()->loadHelpers(func_get_args(), $context->getModuleName());
+  $context->getConfiguration()->loadHelpers($names, $context->getModuleName());
 }

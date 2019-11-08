@@ -2,9 +2,9 @@
 
 class i18nConfiguration extends sfApplicationConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
     parent::setup();
-    $this->enablePlugins('sfI18NPlugin');
+    $this->enablePlugins(['sfI18NPlugin']);
   }
 }

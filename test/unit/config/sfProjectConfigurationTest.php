@@ -14,9 +14,9 @@ $t = new lime_test(6);
 
 class ProjectConfiguration extends sfProjectConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
-    $this->enablePlugins(array('sfConfigPlugin'));
+    $this->enablePlugins(['sfConfigPlugin']);
     $this->setPluginPath('sfConfigPlugin', $this->rootDir.'/lib/plugins/sfConfigPlugin');
   }
 }
@@ -41,9 +41,9 @@ foreach (array('setPlugins', 'disablePlugins', 'enablePlugins', 'enableAllPlugin
 
 class ProjectConfiguration2 extends sfProjectConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
-    $this->enablePlugins('sfI18NPlugin', 'sfConfigPlugin');
+    $this->enablePlugins(['sfI18NPlugin', 'sfConfigPlugin']);
   }
 }
 
@@ -55,15 +55,15 @@ $t->diag('->__construct()');
 
 class ProjectConfiguration3 extends sfProjectConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
-    $this->enablePlugins('NonExistantPlugin');
+    $this->enablePlugins(['NonExistantPlugin']);
   }
 }
 
 try
 {
-  $configuration = new ProjectConfiguration3(__DIR__.'/../../functional/fixtures');
+  $configuration = new ProjectConfiguration3(__DIR__ . '/../../functional/fixtures');
   $t->fail('->__construct() throws an exception if a non-existant plugin is enabled');
 }
 catch (Exception $e)

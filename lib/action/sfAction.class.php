@@ -292,7 +292,7 @@ abstract class sfAction extends sfComponent
    */
   public function getPartial(string $templateName, array $vars = null): string
   {
-    $this->getContext()->getConfiguration()->loadHelpers('Partial');
+    $this->getContext()->getConfiguration()->loadHelpers(['Partial']);
 
     $vars = null !== $vars ? $vars : $this->varHolder->getAll();
 
@@ -335,7 +335,7 @@ abstract class sfAction extends sfComponent
    */
   public function getComponent(string $moduleName, string $componentName, array $vars = null): string
   {
-    $this->getContext()->getConfiguration()->loadHelpers('Partial');
+    $this->getContext()->getConfiguration()->loadHelpers(['Partial']);
 
     $vars = null !== $vars ? $vars : $this->varHolder->getAll();
 

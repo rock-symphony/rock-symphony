@@ -18,7 +18,7 @@ class ProjectConfiguration extends sfProjectConfiguration
 
 class TestConfiguration extends sfApplicationConfiguration
 {
-  public function getI18NGlobalDirs()
+  public function getI18NGlobalDirs(): array
   {
     return array(__DIR__.'/fixtures');
   }
