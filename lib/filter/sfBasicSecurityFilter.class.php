@@ -4,7 +4,7 @@
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * (c) 2004-2006 Sean Kerr <sean@code-box.org>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -29,7 +29,7 @@ class sfBasicSecurityFilter extends sfFilter
    *
    * @param sfFilterChain $filterChain A sfFilterChain instance
    */
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain): void
   {
     // disable security on login and secure actions
     if (
@@ -52,7 +52,7 @@ class sfBasicSecurityFilter extends sfFilter
       {
         $this->context->getEventDispatcher()->notify(new sfEvent($this, 'application.log', array(sprintf('Action "%s/%s" requires authentication, forwarding to "%s/%s"', $this->context->getModuleName(), $this->context->getActionName(), sfConfig::get('sf_login_module'), sfConfig::get('sf_login_action')))));
       }
-     
+
       // the user is not authenticated
       $this->forwardToLoginAction();
     }
@@ -60,12 +60,12 @@ class sfBasicSecurityFilter extends sfFilter
     // the user is authenticated
     $credential = $this->getUserCredential();
     if (null !== $credential && !$this->context->getUser()->hasCredential($credential))
-    { 
+    {
       if (sfConfig::get('sf_logging_enabled'))
       {
         $this->context->getEventDispatcher()->notify(new sfEvent($this, 'application.log', array(sprintf('Action "%s/%s" requires credentials "%s", forwarding to "%s/%s"', $this->context->getModuleName(), $this->context->getActionName(), Yaml::dump($credential, 0), sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action')))));
       }
-    
+
       // the user doesn't have access
       $this->forwardToSecureAction();
     }
@@ -79,8 +79,8 @@ class sfBasicSecurityFilter extends sfFilter
    *
    * @throws sfStopException
    */
-  protected function forwardToSecureAction()
-  {    
+  protected function forwardToSecureAction(): void
+  {
     $this->context->getController()->forward(sfConfig::get('sf_secure_module'), sfConfig::get('sf_secure_action'));
 
     throw new sfStopException();
@@ -91,7 +91,7 @@ class sfBasicSecurityFilter extends sfFilter
    *
    * @throws sfStopException
    */
-  protected function forwardToLoginAction()
+  protected function forwardToLoginAction(): void
   {
     $this->context->getController()->forward(sfConfig::get('sf_login_module'), sfConfig::get('sf_login_action'));
 

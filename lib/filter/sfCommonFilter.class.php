@@ -23,7 +23,7 @@ class sfCommonFilter extends sfFilter
    *
    * @param sfFilterChain $filterChain A sfFilterChain instance
    */
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain): void
   {
     // execute next filter
     $filterChain->execute();
