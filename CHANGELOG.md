@@ -4,6 +4,12 @@ CHANGELOG
 XX/XX/XXXX: Version 6.0
 -----------------------
 
+* Enable PHP 7.4 support
+* Drop `generator.yml` functionality - ([#24](https://github.com/rock-symphony/rock-symphony/pull/24))
+* Drop view cache layer (`sfViewCacheManager`, `sfFunctionBase`) - ([#28](https://github.com/rock-symphony/rock-symphony/pull/28))
+* Drop dynamic method call functionality (`*.method_not_found` events) - ([#31](https://github.com/rock-symphony/rock-symphony/pull/31))
+* Drop `sfData` class ([#32](https://github.com/rock-symphony/rock-symphony/pull/32)) 
+
 29/05/2019: Version 5.0.5
 -------------------------
 
