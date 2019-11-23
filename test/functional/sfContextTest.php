@@ -40,7 +40,6 @@ require_once realpath(__DIR__.'/fixtures/config/ProjectConfiguration.class.php')
 $frontend_context = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('frontend', 'test', true));
 $frontend_context_prod = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('frontend', 'prod', false));
 $i18n_context = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('i18n', 'test', true));
-$cache_context = sfContext::createInstance(ProjectConfiguration::getApplicationConfiguration('cache', 'test', true));
 
 // ::getInstance()
 $t->diag('::getInstance()');
@@ -49,15 +48,14 @@ $t->isa_ok(sfContext::getInstance('frontend'), 'sfContext', '::createInstance() 
 
 $context = sfContext::getInstance('frontend');
 $context1 = sfContext::getInstance('i18n');
-$context2 = sfContext::getInstance('cache');
 $t->is(sfContext::getInstance('i18n'), $context1, '::getInstance() returns the named context if it already exists');
 
 // ::switchTo();
 $t->diag('::switchTo()');
 sfContext::switchTo('i18n');
 $t->is(sfContext::getInstance(), $context1, '::switchTo() changes the default context instance returned by ::getInstance()');
-sfContext::switchTo('cache');
-$t->is(sfContext::getInstance(), $context2, '::switchTo() changes the default context instance returned by ::getInstance()');
+sfContext::switchTo('frontend');
+$t->is(sfContext::getInstance(), $context, '::switchTo() changes the default context instance returned by ::getInstance()');
 
 // ->get() ->set() ->has()
 $t->diag('->get() ->set() ->has()');
