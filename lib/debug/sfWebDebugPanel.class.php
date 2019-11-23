@@ -18,9 +18,10 @@
  */
 abstract class sfWebDebugPanel
 {
-  protected
-    $webDebug = null,
-    $status   = sfLogger::INFO;
+  /** @var sfWebDebug */
+  protected $webDebug;
+  /** @var int */
+  protected $status = sfLogger::INFO;
 
   /**
    * Constructor.
@@ -35,10 +36,11 @@ abstract class sfWebDebugPanel
   /**
    * Gets the link URL for the link.
    *
-   * @return string The URL link
+   * @return string|null The URL link
    */
-  public function getTitleUrl()
+  public function getTitleUrl(): ?string
   {
+    return null;
   }
 
   /**
@@ -46,28 +48,28 @@ abstract class sfWebDebugPanel
    *
    * @return string The link text
    */
-  abstract public function getTitle();
+  abstract public function getTitle(): string;
 
   /**
    * Gets the title of the panel.
    *
    * @return string The panel title
    */
-  abstract public function getPanelTitle();
+  abstract public function getPanelTitle(): string;
 
   /**
    * Gets the panel HTML content.
    *
    * @return string The panel HTML content
    */
-  abstract public function getPanelContent();
+  abstract public function getPanelContent(): string;
 
   /**
    * Returns the current status.
    *
    * @return integer A {@link sfLogger} priority constant
    */
-  public function getStatus()
+  public function getStatus(): int
   {
     return $this->status;
   }
@@ -77,7 +79,7 @@ abstract class sfWebDebugPanel
    *
    * @param integer $status A {@link sfLogger} priority constant
    */
-  public function setStatus($status)
+  public function setStatus(int $status): void
   {
     $this->status = $status;
   }
@@ -90,7 +92,7 @@ abstract class sfWebDebugPanel
    *
    * @return string
    */
-  public function getToggler($element, $title = 'Toggle details')
+  public function getToggler(string $element, string $title = 'Toggle details'): string
   {
     return '<a href="#" onclick="sfWebDebugToggle(\''.$element.'\'); return false;" title="'.$title.'"><img src="'.$this->webDebug->getOption('image_root_path').'/toggle.gif" alt="'.$title.'"/></a>';
   }
@@ -102,7 +104,7 @@ abstract class sfWebDebugPanel
    *
    * @return string
    */
-  public function getToggleableDebugStack($debugStack)
+  public function getToggleableDebugStack(array $debugStack): string
   {
     static $i = 1;
 
@@ -151,7 +153,7 @@ abstract class sfWebDebugPanel
    *
    * @return string
    */
-  public function formatFileLink($file, $line = null, $text = null)
+  public function formatFileLink(string $file, int $line = null, string $text = null): string
   {
     // this method is called a lot so we avoid calling class_exists()
     if ($file && !sfToolkit::isPathAbsolute($file))
@@ -196,7 +198,7 @@ abstract class sfWebDebugPanel
    *
    * @return string $newSql The new formatted SQL string
    */
-  public function formatSql($sql)
+  public function formatSql(string $sql): string
   {
     return preg_replace('/\b(UPDATE|SET|SELECT|FROM|AS|LIMIT|ASC|COUNT|DESC|WHERE|LEFT JOIN|INNER JOIN|RIGHT JOIN|ORDER BY|GROUP BY|IN|LIKE|DISTINCT|DELETE|INSERT|INTO|VALUES)\b/', '<span class="sfWebDebugLogInfo">\\1</span>', $sql);
   }

@@ -18,18 +18,21 @@
  */
 class sfTimer
 {
-  protected
-    $startTime = null,
-    $totalTime = null,
-    $name = '',
-    $calls = 0;
+  /** @var float */
+  protected $startTime = null;
+  /** @var float */
+  protected $totalTime = null;
+  /** @var string */
+  protected $name = '';
+  /** @var int */
+  protected $calls = 0;
 
   /**
    * Creates a new sfTimer instance.
    *
    * @param string $name The name of the timer
    */
-  public function __construct($name = '')
+  public function __construct(string $name = '')
   {
     $this->name = $name;
     $this->startTimer();
@@ -38,7 +41,7 @@ class sfTimer
   /**
    * Starts the timer.
    */
-  public function startTimer()
+  public function startTimer(): void
   {
     $this->startTime = microtime(true);
   }
@@ -48,7 +51,7 @@ class sfTimer
    *
    * @return float Time spend for the last call
    */
-  public function addTime()
+  public function addTime(): float
   {
     $spend = microtime(true) - $this->startTime;
     $this->totalTime += $spend;
@@ -62,7 +65,7 @@ class sfTimer
    *
    * @return integer Number of calls
    */
-  public function getCalls()
+  public function getCalls(): int
   {
     return $this->calls;
   }
@@ -72,7 +75,7 @@ class sfTimer
    *
    * @return float Time in seconds
    */
-  public function getElapsedTime()
+  public function getElapsedTime(): float
   {
     if (null === $this->totalTime)
     {

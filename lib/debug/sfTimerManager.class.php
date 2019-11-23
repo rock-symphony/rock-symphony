@@ -32,7 +32,7 @@ class sfTimerManager
    *
    * @return sfTimer The timer instance
    */
-  public static function getTimer($name, $reset=true)
+  public static function getTimer(string $name, bool $reset = true): sfTimer
   {
     if (!isset(self::$timers[$name]))
     {
@@ -52,7 +52,7 @@ class sfTimerManager
    *
    * @return sfTimer[] An array of all sfTimer instances
    */
-  public static function getTimers()
+  public static function getTimers(): array
   {
     return self::$timers;
   }
@@ -60,7 +60,7 @@ class sfTimerManager
   /**
    * Clears all sfTimer instances stored in sfTimerManager.
    */
-  public static function clearTimers()
+  public static function clearTimers(): void
   {
     self::$timers = array();
   }
