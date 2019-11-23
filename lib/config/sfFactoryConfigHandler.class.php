@@ -31,7 +31,7 @@ class sfFactoryConfigHandler extends sfYamlConfigHandler
    * @throws <b>sfConfigurationException</b> If a requested configuration file does not exist or is not readable
    * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // parse the yaml
     $config = static::getConfiguration($configFiles);
@@ -231,7 +231,7 @@ class sfFactoryConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     $config = static::replaceConstants(static::flattenConfigurationWithEnvironment(static::parseYamls($configFiles)));
 

@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -16,24 +16,24 @@ class myConfigHandler extends sfYamlConfigHandler
 {
   public $yamlConfig = null;
 
-  public function execute($configFiles) {}
+  public function execute(array $configFiles): string {}
 
-  static public function parseYamls($configFiles)
+  static public function parseYamls(array $configFiles): array
   {
     return parent::parseYamls($configFiles);
   }
 
-  static public function parseYaml($configFile)
+  static public function parseYaml(string $configFile): array
   {
     return parent::parseYaml($configFile);
   }
 
-  public function mergeConfigValue($keyName, $category)
+  public function mergeConfigValue(string $keyName, string $category): array
   {
     return parent::mergeConfigValue($keyName, $category);
   }
 
-  public function getConfigValue($keyName, $category, $defaultValue = null)
+  public function getConfigValue(string $keyName, string $category, $defaultValue = null)
   {
     return parent::getConfigValue($keyName, $category, $defaultValue);
   }

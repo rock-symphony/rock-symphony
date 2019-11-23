@@ -18,8 +18,8 @@
  */
 class sfCacheConfigHandler extends sfYamlConfigHandler
 {
-  protected
-    $cacheConfig = array();
+  /** @var array */
+  protected $cacheConfig = array();
 
   /**
    * Executes this configuration handler.
@@ -32,7 +32,7 @@ class sfCacheConfigHandler extends sfYamlConfigHandler
    * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
    * @throws <b>sfInitializationException</b> If a cache.yml key check fails
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // parse the yaml
     $this->yamlConfig = static::getConfiguration($configFiles);
@@ -71,7 +71,7 @@ class sfCacheConfigHandler extends sfYamlConfigHandler
    *
    * @return string PHP code for the addCache statement
    */
-  protected function addCache($actionName = '')
+  protected function addCache(string $actionName = ''): string
   {
     $data = array();
 
@@ -108,7 +108,7 @@ class sfCacheConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     return static::flattenConfiguration(static::parseYamls($configFiles));
   }

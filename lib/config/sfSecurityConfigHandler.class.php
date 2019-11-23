@@ -29,7 +29,7 @@ class sfSecurityConfigHandler extends sfYamlConfigHandler
    * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
    * @throws <b>sfInitializationException</b> If a view.yml key check fails
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // parse the yaml
     $config = static::getConfiguration($configFiles);
@@ -47,7 +47,7 @@ class sfSecurityConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     $config = static::flattenConfiguration(static::parseYamls($configFiles));
 

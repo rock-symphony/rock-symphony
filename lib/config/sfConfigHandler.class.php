@@ -23,8 +23,7 @@
 abstract class sfConfigHandler
 {
   /** @var sfParameterHolder */
-  protected
-    $parameterHolder = null;
+  protected $parameterHolder = null;
 
   /**
    * Class constructor.
@@ -32,7 +31,7 @@ abstract class sfConfigHandler
    * @see initialize()
    * @param array|null $parameters
    */
-  public function __construct($parameters = null)
+  public function __construct(array $parameters = null)
   {
     $this->initialize($parameters);
   }
@@ -46,7 +45,7 @@ abstract class sfConfigHandler
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this ConfigHandler
    */
-  public function initialize($parameters = null)
+  public function initialize(array $parameters = null): void
   {
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
@@ -62,7 +61,7 @@ abstract class sfConfigHandler
    * @throws <b>sfConfigurationException</b> If a requested configuration file does not exist or is not readable
    * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
    */
-  abstract public function execute($configFiles);
+  abstract public function execute(array $configFiles): string;
 
   /**
    * Replaces constant identifiers in a value.
@@ -90,23 +89,16 @@ abstract class sfConfigHandler
   /**
    * Replaces a relative filesystem path with an absolute one.
    *
-   * @param string $path A relative filesystem path
+   * @param array|string $path A relative filesystem path
    *
    * @return string The new path
    */
-  static public function replacePath($path)
+  static public function replacePath(string $path): string
   {
-    if (is_array($path))
+    if (!sfToolkit::isPathAbsolute($path))
     {
-      array_walk_recursive($path, function(&$path) { $path = sfConfigHandler::replacePath($path); });
-    }
-    else
-    {
-      if (!sfToolkit::isPathAbsolute($path))
-      {
-        // not an absolute path so we'll prepend to it
-        $path = sfConfig::get('sf_app_dir').'/'.$path;
-      }
+      // not an absolute path so we'll prepend to it
+      return sfConfig::get('sf_app_dir').'/'.$path;
     }
 
     return $path;
@@ -117,7 +109,7 @@ abstract class sfConfigHandler
    *
    * @return sfParameterHolder A sfParameterHolder instance
    */
-  public function getParameterHolder()
+  public function getParameterHolder(): sfParameterHolder
   {
     return $this->parameterHolder;
   }
@@ -126,9 +118,10 @@ abstract class sfConfigHandler
    * Returns the configuration for the current config handler.
    *
    * @param array $configFiles An array of ordered configuration files
+   * @return array
    * @throws LogicException no matter what
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     throw new LogicException('You must call the ::getConfiguration() method on a concrete config handler class');
   }

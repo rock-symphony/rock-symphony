@@ -26,7 +26,7 @@ class sfRoutingConfigHandler extends sfYamlConfigHandler
    * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
    * @throws sfParseException         If a requested configuration file is improperly formatted
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     $options = $this->getOptions();
     unset($options['cache']);
@@ -52,13 +52,21 @@ class sfRoutingConfigHandler extends sfYamlConfigHandler
     );
   }
 
-  protected function getOptions()
+  /**
+   * @return array
+   */
+  protected function getOptions(): array
   {
     $config = sfFactoryConfigHandler::getConfiguration(sfContext::getInstance()->getConfiguration()->getConfigPaths('config/factories.yml'));
     return $config['routing']['param'];
   }
 
-  public function evaluate($configFiles)
+  /**
+   * @param array $configFiles
+   * @return \sfRoute[]
+   * @throws \ReflectionException
+   */
+  public function evaluate(array $configFiles): array
   {
     $routeDefinitions = $this->parse($configFiles);
 
@@ -72,7 +80,11 @@ class sfRoutingConfigHandler extends sfYamlConfigHandler
     return $routes;
   }
 
-  protected function parse($configFiles)
+  /**
+   * @param array $configFiles
+   * @return array[]
+   */
+  protected function parse(array $configFiles): array
   {
     // parse the yaml
     $config = static::getConfiguration($configFiles);
@@ -108,9 +120,11 @@ class sfRoutingConfigHandler extends sfYamlConfigHandler
   }
 
   /**
+   * @param array $configFiles
+   * @return array
    * @see sfConfigHandler
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     return static::parseYamls($configFiles);
   }

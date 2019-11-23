@@ -21,7 +21,7 @@ class sfViewConfigHandler extends sfYamlConfigHandler
   /**
    * Executes this configuration handler.
    *
-   * @param array $configFiles An array of absolute filesystem path to a configuration file
+   * @param string[] $configFiles An array of absolute filesystem path to a configuration file
    *
    * @return string Data to be written to a cache file
    *
@@ -29,7 +29,7 @@ class sfViewConfigHandler extends sfYamlConfigHandler
    * @throws <b>sfParseException</b> If a requested configuration file is improperly formatted
    * @throws <b>sfInitializationException</b> If a view.yml key check fails
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // parse the yaml
     $this->yamlConfig = static::getConfiguration($configFiles);
@@ -112,7 +112,7 @@ class sfViewConfigHandler extends sfYamlConfigHandler
    *
    * @return string The PHP statement
    */
-  protected function addComponentSlots($viewName = '')
+  protected function addComponentSlots(string $viewName = ''): string
   {
     $data = '';
 
@@ -138,7 +138,7 @@ class sfViewConfigHandler extends sfYamlConfigHandler
    *
    * @return string The PHP statement
    */
-  protected function addTemplate($viewName = '')
+  protected function addTemplate(string $viewName = ''): string
   {
     $data = '';
 
@@ -158,7 +158,7 @@ class sfViewConfigHandler extends sfYamlConfigHandler
    *
    * @return string The PHP statement
    */
-  protected function addLayout($viewName = '')
+  protected function addLayout(string $viewName = ''): string
   {
     // true if the user set 'has_layout' to true or set a 'layout' name for this specific action
     $hasLocalLayout = isset($this->yamlConfig[$viewName]['layout']) || (isset($this->yamlConfig[$viewName]) && array_key_exists('has_layout', $this->yamlConfig[$viewName]));
@@ -212,7 +212,7 @@ EOF;
    *
    * @return string The PHP statement
    */
-  protected function addHtmlHead($viewName = '')
+  protected function addHtmlHead(string $viewName = ''): string
   {
     $data = array();
 
@@ -236,7 +236,7 @@ EOF;
    *
    * @return string The PHP statement
    */
-  protected function addHtmlAsset($viewName = '')
+  protected function addHtmlAsset(string $viewName = ''): string
   {
     // Merge the current view's stylesheets with the app's default stylesheets
     $stylesheets = $this->mergeConfigValue('stylesheets', $viewName);
@@ -257,7 +257,8 @@ EOF;
    *
    * @return array ist of add$Type PHP statements
    */
-  private function addAssets($type, $assets){
+  private function addAssets(string $type, array $assets): array
+  {
     $tmp = array();
     foreach ((array) $assets as $asset)
     {
@@ -302,7 +303,7 @@ EOF;
    *
    * @return string The PHP statement
    */
-  protected function addEscaping($viewName = '')
+  protected function addEscaping(string $viewName = ''): string
   {
     $data = array();
 
@@ -320,12 +321,12 @@ EOF;
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     return static::mergeConfig(static::parseYamls($configFiles));
   }
 
-  static protected function mergeConfig($config)
+  static protected function mergeConfig(array $config): array
   {
     // merge javascripts and stylesheets
     $config['all']['stylesheets'] = array_merge(isset($config['default']['stylesheets']) && is_array($config['default']['stylesheets']) ? $config['default']['stylesheets'] : array(), isset($config['all']['stylesheets']) && is_array($config['all']['stylesheets']) ? $config['all']['stylesheets'] : array());
