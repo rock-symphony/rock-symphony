@@ -20,16 +20,16 @@
  */
 class sfEventDispatcher
 {
-  protected
-    $listeners = array();
+  /** @var callable[][] */
+  protected $listeners = array();
 
   /**
    * Connects a listener to a given event name.
    *
    * @param string  $name      An event name
-   * @param mixed   $listener  A PHP callable
+   * @param callable $listener  A PHP callable
    */
-  public function connect($name, $listener)
+  public function connect(string $name, callable $listener): void
   {
     if (!isset($this->listeners[$name]))
     {
@@ -47,7 +47,7 @@ class sfEventDispatcher
    *
    * @return mixed false if listener does not exist, null otherwise
    */
-  public function disconnect($name, $listener)
+  public function disconnect(string $name, callable $listener): ?bool
   {
     if (!isset($this->listeners[$name]))
     {
@@ -61,6 +61,8 @@ class sfEventDispatcher
         unset($this->listeners[$name][$i]);
       }
     }
+
+    return null;
   }
 
   /**
@@ -70,7 +72,7 @@ class sfEventDispatcher
    *
    * @return sfEvent The sfEvent instance
    */
-  public function notify(sfEvent $event)
+  public function notify(sfEvent $event): sfEvent
   {
     foreach ($this->getListeners($event->getName()) as $listener)
     {
@@ -87,7 +89,7 @@ class sfEventDispatcher
    *
    * @return sfEvent The sfEvent instance
    */
-  public function notifyUntil(sfEvent $event)
+  public function notifyUntil(sfEvent $event): sfEvent
   {
     foreach ($this->getListeners($event->getName()) as $listener)
     {
@@ -109,7 +111,7 @@ class sfEventDispatcher
    *
    * @return sfEvent The sfEvent instance
    */
-  public function filter(sfEvent $event, $value)
+  public function filter(sfEvent $event, $value): sfEvent
   {
     foreach ($this->getListeners($event->getName()) as $listener)
     {
@@ -128,24 +130,24 @@ class sfEventDispatcher
    *
    * @return Boolean true if some listeners are connected, false otherwise
    */
-  public function hasListeners($name)
+  public function hasListeners(string $name): bool
   {
     if (!isset($this->listeners[$name]))
     {
       $this->listeners[$name] = array();
     }
 
-    return (boolean) count($this->listeners[$name]);
+    return count($this->listeners[$name]) > 0;
   }
 
   /**
    * Returns all listeners associated with a given event name.
    *
-   * @param  string   $name    The event name
+   * @param  string      $name    The event name
    *
-   * @return array  An array of listeners
+   * @return callable[]  An array of listeners
    */
-  public function getListeners($name)
+  public function getListeners($name): array
   {
     if (!isset($this->listeners[$name]))
     {
