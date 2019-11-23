@@ -28,7 +28,7 @@ class sfErrorReporting
    * @param null|string|int $error_reporting_config
    * @return void
    */
-  public function set($error_reporting_config)
+  public function set($error_reporting_config): void
   {
     $error_reporting = $this->parse($error_reporting_config);
     if ($error_reporting !== null) {
@@ -40,7 +40,7 @@ class sfErrorReporting
    * @param array|null|string|int $error_reporting_config
    * @return int|null Error reporting level as INTEGER, or NULL to keep current level
    */
-  public function parse($error_reporting_config)
+  public function parse($error_reporting_config): ?int
   {
     if (is_null($error_reporting_config) || $error_reporting_config === '') {
       // NULL === Keep current error reporting
@@ -64,7 +64,7 @@ class sfErrorReporting
    * @param string $error_reporting_config
    * @return int
    */
-  private function parseString($error_reporting_config)
+  private function parseString(string $error_reporting_config): int
   {
     $level = 'E_\w+';
     $number = "\d+";
