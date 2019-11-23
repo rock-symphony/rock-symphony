@@ -23,8 +23,8 @@ abstract class sfWebController extends sfController
   /**
    * Generates an URL from an array of parameters.
    *
-   * @param mixed   $parameters An associative array of URL parameters or an internal URI as a string.
-   * @param boolean $absolute   Whether to generate an absolute URL
+   * @param array|string $parameters An associative array of URL parameters or an internal URI as a string.
+   * @param boolean      $absolute   Whether to generate an absolute URL
    *
    * @return string A URL to a symfony resource
    */
