@@ -24,7 +24,8 @@ class sfDatabaseManager
 {
   /** @var sfProjectConfiguration */
   protected $configuration = null;
-  protected $databases = array();
+  /** @var sfDatabase[] */
+  protected $databases = [];
 
   /**
    * Class constructor.
@@ -34,7 +35,7 @@ class sfDatabaseManager
    * @param sfProjectConfiguration $configuration
    * @param array                  $options
    */
-  public function __construct(sfProjectConfiguration $configuration, $options = array())
+  public function __construct(sfProjectConfiguration $configuration, array $options = [])
   {
     $this->initialize($configuration);
 
@@ -53,7 +54,7 @@ class sfDatabaseManager
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfDatabaseManager object
    */
-  public function initialize(sfProjectConfiguration $configuration)
+  public function initialize(sfProjectConfiguration $configuration): void
   {
     $this->configuration = $configuration;
 
@@ -63,7 +64,7 @@ class sfDatabaseManager
   /**
    * Loads database configuration.
    */
-  public function loadConfiguration()
+  public function loadConfiguration(): void
   {
     if ($this->configuration instanceof sfApplicationConfiguration)
     {
@@ -87,7 +88,7 @@ class sfDatabaseManager
    * @param string     $name     The database name
    * @param sfDatabase $database A sfDatabase instance
    */
-  public function setDatabase($name, sfDatabase $database)
+  public function setDatabase(string $name, sfDatabase $database): void
   {
     $this->databases[$name] = $database;
   }
@@ -97,11 +98,11 @@ class sfDatabaseManager
    *
    * @param string $name A database name
    *
-   * @return mixed A Database instance
+   * @return sfDatabase A Database instance
    *
    * @throws <b>sfDatabaseException</b> If the requested database name does not exist
    */
-  public function getDatabase($name = 'default')
+  public function getDatabase(string $name = 'default'): sfDatabase
   {
     if (isset($this->databases[$name]))
     {
@@ -115,9 +116,9 @@ class sfDatabaseManager
   /**
    * Returns the names of all database connections.
    *
-   * @return array An array containing all database connection names
+   * @return string[] An array containing all database connection names
    */
-  public function getNames()
+  public function getNames(): array
   {
     return array_keys($this->databases);
   }
@@ -129,7 +130,7 @@ class sfDatabaseManager
    *
    * @throws <b>sfDatabaseException</b> If an error occurs while shutting down this DatabaseManager
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     // loop through databases and shutdown connections
     foreach ($this->databases as $database)

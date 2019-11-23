@@ -27,7 +27,7 @@ class sfPDODatabase extends sfDatabase
    *
    * @throws <b>sfDatabaseException</b> If a connection could not be created
    */
-  public function connect()
+  public function connect(): void
   {
     if (!$dsn = $this->getParameter('dsn'))
     {
@@ -92,7 +92,7 @@ class sfPDODatabase extends sfDatabase
    *
    * @return void
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     if ($this->connection !== null)
     {

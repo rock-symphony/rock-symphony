@@ -27,7 +27,7 @@ abstract class sfDatabase
   protected $connection = null;
   /** @var resource|PDO (It's interchangeable with $connection. Can be dropped at all.) */
   protected $resource = null;
-  
+
   /**
    * Class constructor.
    *
@@ -35,7 +35,7 @@ abstract class sfDatabase
    *
    * @param array $parameters An associative array of initialization parameters
    */
-  public function __construct($parameters = array())
+  public function __construct(array $parameters = array())
   {
     $this->initialize($parameters);
   }
@@ -49,7 +49,7 @@ abstract class sfDatabase
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfDatabase object
    */
-  public function initialize($parameters = array())
+  public function initialize(array $parameters = []): void
   {
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
@@ -60,7 +60,7 @@ abstract class sfDatabase
    *
    * @throws <b>sfDatabaseException</b> If a connection could not be created
    */
-  abstract function connect();
+  abstract function connect(): void;
 
   /**
    * Retrieves the database connection associated with this sfDatabase implementation.
@@ -104,7 +104,7 @@ abstract class sfDatabase
    *
    * @return sfParameterHolder A sfParameterHolder instance
    */
-  public function getParameterHolder()
+  public function getParameterHolder(): sfParameterHolder
   {
     return $this->parameterHolder;
   }
@@ -117,13 +117,13 @@ abstract class sfDatabase
    * <code>$this->getParameterHolder()->get()</code>
    *
    * @param string $name    The key name
-   * @param string $default The default value
+   * @param mixed $default The default value
    *
-   * @return string The value associated with the key
+   * @return mixed The value associated with the key
    *
    * @see sfParameterHolder
    */
-  public function getParameter($name, $default = null)
+  public function getParameter(string $name, $default = null)
   {
     return $this->parameterHolder->get($name, $default);
   }
@@ -141,7 +141,7 @@ abstract class sfDatabase
    *
    * @see sfParameterHolder
    */
-  public function hasParameter($name)
+  public function hasParameter(string $name): bool
   {
     return $this->parameterHolder->has($name);
   }
@@ -154,11 +154,11 @@ abstract class sfDatabase
    * <code>$this->getParameterHolder()->set()</code>
    *
    * @param string $name  The key name
-   * @param string $value The value
+   * @param mixed  $value The value
    *
    * @see sfParameterHolder
    */
-  public function setParameter($name, $value)
+  public function setParameter(string $name, $value): void
   {
     $this->parameterHolder->set($name, $value);
   }
@@ -170,5 +170,5 @@ abstract class sfDatabase
    *
    * @throws <b>sfDatabaseException</b> If an error occurs while shutting down this database
    */
-  abstract function shutdown();
+  abstract function shutdown(): void;
 }

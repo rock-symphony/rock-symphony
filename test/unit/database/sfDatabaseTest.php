@@ -15,14 +15,12 @@ $t = new lime_test(10);
 
 class myDatabase extends sfDatabase
 {
-  function connect () {}
-  function shutdown () {}
+  function connect (): void {}
+  function shutdown (): void {}
 }
 
-$context = sfContextMock::mockInstance();
-
 $database = new myDatabase();
-$database->initialize($context);
+$database->initialize();
 
 // parameter holder proxy
 require_once(__DIR__ . '/../../unit/sfParameterHolderTest.class.php');
