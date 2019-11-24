@@ -29,10 +29,11 @@ abstract class sfOutputEscaper
    * The escaping method that is going to be applied to the value and its
    * children. This is actually the name of a PHP callable.
    *
-   * @var string
+   * @var callable
    */
   protected $escapingMethod;
 
+  /** @var string[] */
   static protected $safeClasses = array();
 
   /**
@@ -41,10 +42,10 @@ abstract class sfOutputEscaper
    * Since sfOutputEscaper is an abstract class, instances cannot be created
    * directly but the constructor will be inherited by sub-classes.
    *
-   * @param string $escapingMethod  Escaping method
-   * @param string $value           Escaping value
+   * @param callable $escapingMethod  Escaping method
+   * @param mixed    $value           Escaping value
    */
-  public function __construct($escapingMethod, $value)
+  public function __construct(callable $escapingMethod, $value)
   {
     $this->value          = $value;
     $this->escapingMethod = $escapingMethod;
@@ -72,14 +73,14 @@ abstract class sfOutputEscaper
    * of standard escaping methods listed in the escaping helper
    * (EscapingHelper.php).
    *
-   * @param  string $escapingMethod  The escaping method (a PHP callable) to apply to the value
-   * @param  mixed  $value           The value to escape
+   * @param  callable $escapingMethod  The escaping method (a PHP callable) to apply to the value
+   * @param  mixed    $value           The value to escape
    *
    * @return mixed Escaping value
    *
    * @throws InvalidArgumentException If the escaping fails
    */
-  public static function escape($escapingMethod, $value)
+  public static function escape(callable $escapingMethod, $value)
   {
     if (null === $value)
     {
@@ -178,7 +179,7 @@ abstract class sfOutputEscaper
    *
    * @return bool true if the class if safe, false otherwise
    */
-  static public function isClassMarkedAsSafe($class)
+  static public function isClassMarkedAsSafe(string $class): bool
   {
     if (in_array($class, self::$safeClasses))
     {
@@ -199,9 +200,9 @@ abstract class sfOutputEscaper
   /**
    * Marks an array of classes (and all its children) as being safe for output.
    *
-   * @param array $classes  An array of class names
+   * @param string[] $classes  An array of class names
    */
-  static public function markClassesAsSafe(array $classes)
+  static public function markClassesAsSafe(array $classes): void
   {
     self::$safeClasses = array_unique(array_merge(self::$safeClasses, $classes));
   }
@@ -211,7 +212,7 @@ abstract class sfOutputEscaper
    *
    * @param string $class  A class name
    */
-  static public function markClassAsSafe($class)
+  static public function markClassAsSafe(string $class): void
   {
     self::markClassesAsSafe(array($class));
   }
