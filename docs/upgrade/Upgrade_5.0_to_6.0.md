@@ -21,8 +21,10 @@ Upgrade guide 5.0 to 6.0
 
 5. Do not use `sfData` class
    - [#32](https://github.com/rock-symphony/rock-symphony/pull/32).
+   
+6. Stop using `i18n:extract`, `i18n:find` and all related code.
 
-6. Upgrade rock-symphony dependency to `6.0`
+7. Upgrade rock-symphony dependency to `6.0`
 
    ```bash
    composer require rock-symphony/rock-symphony:^6.0
