@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -34,7 +34,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while reading data from this storage
    */
-  public function read($key)
+  public function read(string $key)
   {
     return null;
   }
@@ -50,7 +50,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while removing data from this storage
    */
-  public function remove($key)
+  public function remove(string $key)
   {
     return null;
   }
@@ -65,7 +65,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while writing to this storage
    */
-  public function write($key, $data)
+  public function write(string $key, $data): void
   {
   }
 
@@ -73,13 +73,9 @@ class sfNoStorage extends sfStorage
    * Regenerates id that represents this storage.
    *
    * @param  boolean $destroy Destroy session when regenerating?
-   *
-   * @return boolean True if session regenerated, false if error
-   *
    */
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
-    return true;
   }
 
   /**
@@ -87,7 +83,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while shutting down this storage
    */
-  public function shutdown()
+  public function shutdown(): void
   {
   }
 }

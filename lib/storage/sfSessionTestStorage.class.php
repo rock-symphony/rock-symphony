@@ -18,9 +18,8 @@
  */
 class sfSessionTestStorage extends sfStorage
 {
-  protected
-    $sessionId   = null,
-    $sessionData = array();
+  protected $sessionId   = null;
+  protected $sessionData = array();
 
   /**
    * Available options:
@@ -32,7 +31,7 @@ class sfSessionTestStorage extends sfStorage
    *
    * @see sfStorage
    */
-  public function initialize($options = null)
+  public function initialize(array $options = []): void
   {
     if (!isset($options['session_path']))
     {
@@ -66,7 +65,7 @@ class sfSessionTestStorage extends sfStorage
    *
    * @return string Session id
    */
-  public function getSessionId()
+  public function getSessionId(): string
   {
     return $this->sessionId;
   }
@@ -80,7 +79,7 @@ class sfSessionTestStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function read($key)
+  public function read(string $key)
   {
     $retval = null;
 
@@ -101,7 +100,7 @@ class sfSessionTestStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function remove($key)
+  public function remove(string $key)
   {
     $retval = null;
 
@@ -123,7 +122,7 @@ class sfSessionTestStorage extends sfStorage
    * @param mixed  $data  Data associated with your key
    *
    */
-  public function write($key, $data)
+  public function write(string $key, $data): void
   {
     $this->sessionData[$key] = $data;
   }
@@ -131,7 +130,7 @@ class sfSessionTestStorage extends sfStorage
   /**
    * Clears all test sessions.
    */
-  public function clear()
+  public function clear(): void
   {
     sfToolkit::clearDirectory($this->options['session_path']);
   }
@@ -140,20 +139,16 @@ class sfSessionTestStorage extends sfStorage
    * Regenerates id that represents this storage.
    *
    * @param  boolean $destroy Destroy session when regenerating?
-   *
-   * @return boolean True if session regenerated, false if error
-   *
    */
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
-    return true;
   }
 
   /**
    * Executes the shutdown procedure.
    *
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     if ($this->sessionId)
     {

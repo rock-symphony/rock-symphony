@@ -20,8 +20,8 @@
  */
 abstract class sfStorage
 {
-  protected
-    $options = array();
+  /** @var array */
+  protected $options = array();
 
   /**
    * Class constructor.
@@ -53,7 +53,7 @@ abstract class sfStorage
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfStorage
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     $this->options = array_merge(array(
       'auto_shutdown' => true,
@@ -65,7 +65,7 @@ abstract class sfStorage
    *
    * @return array The array of options
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
@@ -81,18 +81,16 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while reading data from this storage
    */
-  abstract public function read($key);
+  abstract public function read(string $key);
 
   /**
    * Regenerates id that represents this storage.
    *
    * @param  boolean $destroy Destroy session when regenerating?
    *
-   * @return boolean True if session regenerated, false if error
-   *
    * @throws <b>sfStorageException</b> If an error occurs while regenerating this storage
    */
-  abstract public function regenerate($destroy = false);
+  abstract public function regenerate(bool $destroy = false): void;
 
   /**
    * Removes data from this storage.
@@ -105,14 +103,14 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while removing data from this storage
    */
-  abstract public function remove($key);
+  abstract public function remove(string $key);
 
   /**
    * Executes the shutdown procedure.
    *
    * @throws <b>sfStorageException</b> If an error occurs while shutting down this storage
    */
-  abstract public function shutdown();
+  abstract public function shutdown(): void;
 
   /**
    * Writes data to this storage.
@@ -124,5 +122,5 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while writing to this storage
    */
-  abstract public function write($key, $data);
+  abstract public function write(string $key, $data): void;
 }
