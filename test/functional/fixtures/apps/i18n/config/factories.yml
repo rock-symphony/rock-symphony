@@ -1,6 +1,6 @@
 all:
   user:
-    class: myCacheAppUser
+    class: sfBasicSecurityUser
 
 prod:
   logger:

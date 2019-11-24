@@ -1,14 +1,34 @@
 CHANGELOG
 =========
 
-XX/XX/XXXX: Version 6.0
+DRAFT: Version 7.0
+------------------
+
+* Require PHP 7.1+
+  - Drop PHP 5.6 support
+  - Drop PHP 7.0 support
+* Add argument & return type-hints to most of the codebase ([#33](https://github.com/rock-symphony/rock-symphony/pull/33))
+
+24/11/2019: Version 6.0.2
+-------------------------
+
+* Drop `i18n:extract` functionality ([#36](https://github.com/rock-symphony/rock-symphony/pull/36)) 
+
+23/11/2019: Version 6.0.1
+-------------------------
+
+* Drop `sfCacheConfigHandler` and `cache.yml` files support ([#35](https://github.com/rock-symphony/rock-symphony/pull/35))
+
+
+08/11/2019: Version 6.0
 -----------------------
 
 * Enable PHP 7.4 support
 * Drop `generator.yml` functionality - ([#24](https://github.com/rock-symphony/rock-symphony/pull/24))
 * Drop view cache layer (`sfViewCacheManager`, `sfFunctionBase`) - ([#28](https://github.com/rock-symphony/rock-symphony/pull/28))
+* Drop cache.yml config support (and `sfCacheConfigHandler`) - ([#35](https://github.com/rock-symphony/rock-symphony/pull/35))
 * Drop dynamic method call functionality (`*.method_not_found` events) - ([#31](https://github.com/rock-symphony/rock-symphony/pull/31))
-* Drop `sfData` class ([#32](https://github.com/rock-symphony/rock-symphony/pull/32)) 
+* Drop `sfData` class ([#32](https://github.com/rock-symphony/rock-symphony/pull/32))
 
 29/05/2019: Version 5.0.5
 -------------------------

@@ -34,9 +34,6 @@ modules/*/config/view.yml:
 modules/*/config/security.yml:
   class:    sfSecurityConfigHandler
 
-modules/*/config/cache.yml:
-  class:    sfCacheConfigHandler
-
 modules/*/config/module.yml:
   class:    sfDefineEnvironmentConfigHandler
   param:
