@@ -13,14 +13,14 @@ require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 
 $t = new lime_test(21);
 
-define('ESC_SPECIALCHARS', 'esc_specialchars');
-function esc_specialchars($value)
+define('ESC_TEST_ESCAPING', 'esc_test_escaping');
+function esc_test_escaping($value)
 {
   return "-ESCAPED-$value-ESCAPED-";
 }
 
-define('ESC_RAW', 'esc_raw');
-function esc_raw($value)
+define('ESC_TEST_RAW', 'esc_test_raw');
+function esc_test_raw($value)
 {
   return $value;
 }
@@ -44,9 +44,9 @@ $t->is($p->getAll(), [], '->initialize() initializes the parameters as an empty 
 $p->initialize($dispatcher, ['foo' => 'bar']);
 $t->is($p->get('foo'), 'bar', '->initialize() takes an array of default parameters as its second argument');
 
-$p->initialize($dispatcher, [], ['escaping_strategy' => 'on', 'escaping_method' => 'ESC_RAW']);
+$p->initialize($dispatcher, [], ['escaping_strategy' => 'on', 'escaping_method' => 'ESC_TEST_RAW']);
 $t->is($p->getEscaping(), true, '->initialize() takes an array of options as its third argument');
-$t->is($p->getEscapingMethod(), ESC_RAW, '->initialize() takes an array of options as its third argument');
+$t->is($p->getEscapingMethod(), ESC_TEST_RAW, '->initialize() takes an array of options as its third argument');
 
 // ->isEscaped()
 $t->diag('->isEscaped()');
@@ -63,8 +63,8 @@ $t->is($p->getEscaping(), true, '->setEscaping() changes the escaping strategy')
 
 // ->getEscapingMethod() ->setEscapingMethod()
 $t->diag('->getEscapingMethod() ->setEscapingMethod()');
-$p->setEscapingMethod('ESC_RAW');
-$t->is($p->getEscapingMethod(), ESC_RAW, '->setEscapingMethod() changes the escaping method');
+$p->setEscapingMethod('ESC_TEST_RAW');
+$t->is($p->getEscapingMethod(), ESC_TEST_RAW, '->setEscapingMethod() changes the escaping method');
 
 $p->setEscapingMethod('');
 $t->is($p->getEscapingMethod(), '', '->getEscapingMethod() returns an empty value if the method is empty');
@@ -90,7 +90,11 @@ try {
   $t->pass('new sfViewParameterHolder() throws an InvalidArgumentException if the escaping strategy does not exist');
 }
 
-$p = new sfViewParameterHolder(new sfEventDispatcher(), ['foo' => 'bar']);
+$p = new sfViewParameterHolder(
+  new sfEventDispatcher(),
+  ['foo' => 'bar'],
+  ['escaping_method' => 'ESC_TEST_ESCAPING']
+);
 
 $t->diag('Escaping strategy to on');
 $p->setEscaping(true);
