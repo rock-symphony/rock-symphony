@@ -16,7 +16,6 @@ require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperObjectDecorator.class
 require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperIteratorDecorator.class.php');
 require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperSafe.class.php');
 
-require_once(__DIR__.'/../../../lib/helper/EscapingHelper.php');
 require_once(__DIR__.'/../../../lib/config/sfConfig.class.php');
 
 sfConfig::set('sf_charset', 'UTF-8');

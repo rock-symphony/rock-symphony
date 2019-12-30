@@ -10,7 +10,6 @@
 
 require_once(__DIR__ . '/../../bootstrap/unit.php');
 require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
-require_once(__DIR__ . '/../../../lib/helper/EscapingHelper.php');
 
 $t = new lime_test(17);
 

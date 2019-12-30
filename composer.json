@@ -16,7 +16,10 @@
     },
     "type": "library",
     "autoload": {
-        "files": ["lib/SYMFONY_VERSION.php"],
+        "files": [
+            "lib/SYMFONY_VERSION.php",
+            "lib/escaping_functions.php"
+        ],
         "classmap": ["lib"],
         "exclude-from-classmap": [
             "/lib/command/cli.php",

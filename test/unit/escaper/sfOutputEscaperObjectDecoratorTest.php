@@ -15,7 +15,6 @@ require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperArrayDecorator.class.
 require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperObjectDecorator.class.php');
 require_once(__DIR__.'/../../../lib/escaper/sfOutputEscaperIteratorDecorator.class.php');
 
-require_once(__DIR__.'/../../../lib/helper/EscapingHelper.php');
 require_once(__DIR__.'/../../../lib/config/sfConfig.class.php');
 
 class sfException extends Exception

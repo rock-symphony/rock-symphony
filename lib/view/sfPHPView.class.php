@@ -41,7 +41,7 @@ class sfPHPView extends sfView
 
     $coreHelpersLoaded = 1;
 
-    $helpers = array_unique(array_merge(array('Helper', 'Url', 'Asset', 'Tag', 'Escaping'), sfConfig::get('sf_standard_helpers')));
+    $helpers = array_unique(array_merge(['Helper', 'Url', 'Asset', 'Tag'], sfConfig::get('sf_standard_helpers')));
 
     $this->context->getConfiguration()->loadHelpers($helpers);
   }
