@@ -187,9 +187,9 @@ class sfToolkit
   /**
    * Strip slashes recursively from array
    *
-   * @param  array $value  the value to strip
+   * @param  string|string[] $value  the value to strip
    *
-   * @return array clean value with slashes stripped
+   * @return string|string[] clean value with slashes stripped
    */
   public static function stripslashesDeep($value)
   {

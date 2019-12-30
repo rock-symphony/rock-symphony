@@ -593,7 +593,7 @@ class sfWebRequest extends sfRequest
    * @param string|null $prefix The HTTP header prefix
    * @return string The value of HTTP header
    */
-  public function getHttpHeader(string $name, ?string $prefix = 'http')
+  public function getHttpHeader(string $name, ?string $prefix = 'http'): ?string
   {
     if ($prefix)
     {
