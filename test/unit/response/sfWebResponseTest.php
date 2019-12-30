@@ -14,12 +14,12 @@ $t = new lime_test(89);
 
 class myWebResponse extends sfWebResponse
 {
-  public function getStatusText()
+  public function getStatusText(): string
   {
     return $this->statusText;
   }
 
-  public function normalizeHeaderName($name)
+  public function normalizeHeaderName(string $name): string
   {
     return parent::normalizeHeaderName($name);
   }
@@ -141,8 +141,8 @@ $response->setTitle('my title');
 $t->is($response->getTitle(), 'my title', '->setTitle() sets the title');
 $response->setTitle('fööbäär');
 $t->is($response->getTitle(), 'fööbäär', '->setTitle() will leave encoding intact');
-$response->setTitle(null);
-$t->is($response->getTitle(), '', '->setTitle() to null remove existing title');
+$response->setTitle('');
+$t->is($response->getTitle(), '', '->setTitle() to "" remove existing title');
 $response->prependTitle('my title');
 $t->is($response->getTitle(), 'my title', '->prependTitle() set title if no title has been set');
 $response->prependTitle('my subtitle');
