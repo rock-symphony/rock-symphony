@@ -24,6 +24,8 @@ sfConfig::set('sf_symfony_lib_dir', realpath($_test_dir.'/../lib'));
 require_once(__DIR__.'/../../lib/util/sfToolkit.class.php');
 sfConfig::set('sf_test_cache_dir', sys_get_temp_dir().'/sf_test_project');
 
+sfConfig::set('sf_charset', 'UTF-8');
+
 // remove all test cache
 sf_unit_test_shutdown();
 

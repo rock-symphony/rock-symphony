@@ -57,7 +57,6 @@ $t->is($i18n->getCulture(), 'fr', '->setCulture() sets the current culture');
 
 // ->__()
 $t->diag('->__()');
-sfConfig::set('sf_charset', 'UTF-8');
 $i18n = new sfI18N($configuration, $cache, array('culture' => 'fr'));
 $t->is($i18n->__('an english sentence'), 'une phrase en français', '->__() translates a string');
 class EnglishSentence

@@ -12,8 +12,6 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 
 $t = new lime_test(11);
 
-sfConfig::set('sf_charset', 'UTF-8');
-
 // esc_entities()
 $t->diag('esc_entities()');
 $t->is(esc_entities(10), 10, 'esc_entities() does not escape integers');
