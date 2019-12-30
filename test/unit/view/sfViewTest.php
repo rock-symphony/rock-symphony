@@ -15,17 +15,17 @@ $t = new lime_test(17);
 
 class myView extends sfView
 {
-  function execute() {}
-  function configure() {}
+  function execute(): void {}
+  function configure(): void {}
   function getEngine() {}
-  function render() {}
+  function render(): string {}
 }
 
 class configuredView extends myView
 {
   static public $isDecorated = false;
 
-  function initialize($context, $moduleName, $actionName, $viewName)
+  function initialize(sfContext $context, string $moduleName, string $actionName, string $viewName): void
   {
     $this->setDecorator(self::$isDecorated);
 

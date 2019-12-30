@@ -16,16 +16,16 @@ $t = new lime_test(9);
 
 class MyTestPartialView extends sfPartialView
 {
-  public function render()
+  public function render(): string
   {
     return '==RENDERED==';
   }
 
-  public function initialize($context, $moduleName, $actionName, $viewName)
+  public function initialize(sfContext $context, string $moduleName, string $actionName, string $viewName): void
   {
   }
 
-  public function setPartialVars(array $partialVars)
+  public function setPartialVars(array $partialVars): void
   {
   }
 }
