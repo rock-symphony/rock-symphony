@@ -61,7 +61,7 @@ class sfContextMock extends sfContext
         $object = new $class($this->dispatcher, $parameters);
         break;
       case 'request':
-        $object = new $class($this->dispatcher, $this->getRouting(), $parameters);
+        $object = new $class($this->dispatcher, $parameters);
         break;
       default:
         $object = new $class($this, $parameters);

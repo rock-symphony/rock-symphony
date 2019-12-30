@@ -12,7 +12,7 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 
 class myRequest extends sfRequest
 {
-  public function getEventDispatcher()
+  public function getEventDispatcher(): sfEventDispatcher
   {
     return $this->dispatcher;
   }

@@ -31,16 +31,22 @@ abstract class sfRequest implements ArrayAccess
   const OPTIONS = 'OPTIONS';
 
   /** @var sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
+
   /** @var string|null */
   protected $content = null;
+
   /** @var string */
-  protected $method = null;
-  protected $options = array();
+  protected $method;
+
+  /** @var array */
+  protected $options = [];
+
   /** @var sfParameterHolder */
-  protected $parameterHolder = null;
+  protected $parameterHolder;
+
   /** @var sfParameterHolder */
-  protected $attributeHolder = null;
+  protected $attributeHolder;
 
   /**
    * Class constructor.
@@ -52,7 +58,7 @@ abstract class sfRequest implements ArrayAccess
    * @param array             $attributes
    * @param array             $options
    */
-  public function __construct(sfEventDispatcher $dispatcher, $parameters = array(), $attributes = array(), $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = array(), array $attributes = array(), array $options = array())
   {
     $this->initialize($dispatcher, $parameters, $attributes, $options);
   }
@@ -73,7 +79,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfRequest
    */
-  public function initialize(sfEventDispatcher $dispatcher, $parameters = array(), $attributes = array(), $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
   {
     $this->dispatcher = $dispatcher;
 
@@ -99,7 +105,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return mixed The option value
    */
-  public function getOption($name)
+  public function getOption(string $name)
   {
     return isset($this->options[$name]) ? $this->options[$name] : null;
   }
@@ -109,7 +115,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return array The options.
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
@@ -123,7 +129,7 @@ abstract class sfRequest implements ArrayAccess
    *               a specified parameter doesn't exist an empty string will
    *               be returned for its value
    */
-  public function extractParameters($names)
+  public function extractParameters(array $names): array
   {
     $array = array();
 
@@ -144,7 +150,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return string The request method
    */
-  public function getMethod()
+  public function getMethod(): string
   {
     return $this->method;
   }
@@ -156,7 +162,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @throws <b>sfException</b> - If the specified request method is invalid
    */
-  public function setMethod($method)
+  public function setMethod(string $method): void
   {
     if (!in_array(strtoupper($method), array(self::GET, self::POST, self::PUT, self::PATCH, self::DELETE, self::HEAD, self::OPTIONS)))
     {
@@ -216,7 +222,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return sfParameterHolder The parameter holder
    */
-  public function getParameterHolder()
+  public function getParameterHolder(): sfParameterHolder
   {
     return $this->parameterHolder;
   }
@@ -226,7 +232,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return sfParameterHolder The attribute holder
    */
-  public function getAttributeHolder()
+  public function getAttributeHolder(): sfParameterHolder
   {
     return $this->attributeHolder;
   }
@@ -239,7 +245,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return mixed An attribute value
    */
-  public function getAttribute($name, $default = null)
+  public function getAttribute(string $name, string $default = null)
   {
     return $this->attributeHolder->get($name, $default);
   }
@@ -251,7 +257,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return bool true, if the attribute exists otherwise false
    */
-  public function hasAttribute($name)
+  public function hasAttribute(string $name): bool
   {
     return $this->attributeHolder->has($name);
   }
@@ -260,10 +266,10 @@ abstract class sfRequest implements ArrayAccess
    * Sets an attribute for the request.
    *
    * @param string $name   Attribute name
-   * @param string $value  Value for the attribute
+   * @param mixed $value  Value for the attribute
    *
    */
-  public function setAttribute($name, $value)
+  public function setAttribute(string $name, $value): void
   {
     $this->attributeHolder->set($name, $value);
   }
@@ -272,11 +278,11 @@ abstract class sfRequest implements ArrayAccess
    * Retrieves a parameter for the current request.
    *
    * @param string $name    Parameter name
-   * @param string $default Parameter default value
+   * @param mixed $default Parameter default value
    *
    * @return mixed
    */
-  public function getParameter($name, $default = null)
+  public function getParameter(string $name, $default = null)
   {
     return $this->parameterHolder->get($name, $default);
   }
@@ -288,7 +294,7 @@ abstract class sfRequest implements ArrayAccess
    *
    * @return bool true, if the parameter exists otherwise false
    */
-  public function hasParameter($name)
+  public function hasParameter(string $name): bool
   {
     return $this->parameterHolder->has($name);
   }
@@ -297,10 +303,10 @@ abstract class sfRequest implements ArrayAccess
    * Sets a parameter for the current request.
    *
    * @param string $name   Parameter name
-   * @param string $value  Parameter value
+   * @param mixed $value  Parameter value
    *
    */
-  public function setParameter($name, $value)
+  public function setParameter(string $name, $value): void
   {
     $this->parameterHolder->set($name, $value);
   }
@@ -308,7 +314,7 @@ abstract class sfRequest implements ArrayAccess
   /**
    * Returns the content of the current request.
    *
-   * @return string|Boolean The content or false if none is available
+   * @return string|false The content or false if none is available
    */
   public function getContent()
   {

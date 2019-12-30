@@ -22,22 +22,41 @@
  */
 class sfWebRequest extends sfRequest
 {
-  const
-    PORT_HTTP  = 80,
-    PORT_HTTPS = 443;
+  const PORT_HTTP  = 80;
+  const PORT_HTTPS = 443;
 
-  protected
-    $languages              = null,
-    $charsets               = null,
-    $acceptableContentTypes = null,
-    $pathInfoArray          = null,
-    $relativeUrlRoot        = null,
-    $getParameters          = null,
-    $postParameters         = null,
-    $requestParameters      = null,
-    $formats                = array(),
-    $format                 = null,
-    $fixedFileArray         = false;
+  /** @var string[]|null */
+  protected $languages = null;
+
+  /** @var string[]|null */
+  protected $charsets = null;
+
+  /** @var string[]|null */
+  protected $acceptableContentTypes = null;
+
+  /** @var array|null */
+  protected $pathInfoArray = null;
+
+  /** @var string|null */
+  protected $relativeUrlRoot = null;
+
+  /** @var array */
+  protected $getParameters;
+
+  /** @var array */
+  protected $postParameters;
+
+  /** @var array */
+  protected $requestParameters;
+
+  /** @var string[][] [ string $format => string[] $mimeTypes, ... ] */
+  protected $formats = [];
+
+  /** @var string|null */
+  protected $format = null;
+
+  /** @var array|false */
+  protected $fixedFileArray = false;
 
   /**
    * Initializes this sfRequest.
@@ -62,7 +81,7 @@ class sfWebRequest extends sfRequest
    *
    * @see sfRequest
    */
-  public function initialize(sfEventDispatcher $dispatcher, $parameters = array(), $attributes = array(), $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
   {
     $options = array_merge(array(
       'path_info_key'   => 'PATH_INFO',
@@ -173,7 +192,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string
    */
-  public function getContentType($trim = true)
+  public function getContentType(bool $trim = true): ?string
   {
     $contentType = $this->getHttpHeader('Content-Type', null);
 
@@ -190,7 +209,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string Unified resource identifier
    */
-  public function getUri()
+  public function getUri(): string
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -212,7 +231,7 @@ class sfWebRequest extends sfRequest
    *
    * @return boolean true, if is absolute uri otherwise false
    */
-  public function isAbsUri()
+  public function isAbsUri(): bool
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -224,7 +243,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string Uniform resource identifier prefix
    */
-  public function getUriPrefix()
+  public function getUriPrefix(): string
   {
     $pathArray = $this->getPathInfoArray();
     $secure = $this->isSecure();
@@ -266,7 +285,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string Path info
    */
-  public function getPathInfo()
+  public function getPathInfo(): string
   {
     $pathInfo = '';
 
@@ -316,7 +335,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string The path info prefix
    */
-  public function getPathInfoPrefix()
+  public function getPathInfoPrefix(): string
   {
     $prefix = $this->getRelativeUrlRoot();
 
@@ -334,7 +353,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array
    */
-  public function getGetParameters()
+  public function getGetParameters(): array
   {
     return $this->getParameters;
   }
@@ -344,7 +363,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array
    */
-  public function getPostParameters()
+  public function getPostParameters(): array
   {
     return $this->postParameters;
   }
@@ -354,7 +373,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array
    */
-  public function getRequestParameters()
+  public function getRequestParameters(): array
   {
     return $this->requestParameters;
   }
@@ -364,7 +383,7 @@ class sfWebRequest extends sfRequest
    *
    * @param array $parameters
    */
-  public function addRequestParameters(array $parameters)
+  public function addRequestParameters(array $parameters): void
   {
     $this->requestParameters = array_merge($this->requestParameters, $parameters);
     $this->getParameterHolder()->add($parameters);
@@ -377,7 +396,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string
    */
-  public function getReferer()
+  public function getReferer(): string
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -389,7 +408,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string
    */
-  public function getHost()
+  public function getHost(): string
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -408,7 +427,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string
    */
-  public function getScriptName()
+  public function getScriptName(): string
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -422,7 +441,7 @@ class sfWebRequest extends sfRequest
    *
    * @return bool true if the current method is the given one, false otherwise
    */
-  public function isMethod($method)
+  public function isMethod(string $method): bool
   {
     return strtoupper($method) == $this->getMethod();
   }
@@ -432,9 +451,9 @@ class sfWebRequest extends sfRequest
    *
    * @param  array  $cultures  An array of ordered cultures available
    *
-   * @return string The preferred culture
+   * @return string|null The preferred culture
    */
-  public function getPreferredCulture(array $cultures = null)
+  public function getPreferredCulture(array $cultures = null): ?string
   {
     $preferredCultures = $this->getLanguages();
 
@@ -456,9 +475,9 @@ class sfWebRequest extends sfRequest
   /**
    * Gets a list of languages acceptable by the client browser
    *
-   * @return array Languages ordered in the user browser preferences
+   * @return string[] Languages ordered in the user browser preferences
    */
-  public function getLanguages()
+  public function getLanguages(): array
   {
     if ($this->languages)
     {
@@ -470,8 +489,8 @@ class sfWebRequest extends sfRequest
       return array();
     }
 
-    $languages = $this->splitHttpAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']);
-    foreach ($languages as $lang)
+    $languages = [];
+    foreach ($this->splitHttpAcceptHeader($_SERVER['HTTP_ACCEPT_LANGUAGE']) as $lang)
     {
       if (false !== strpos($lang, '-'))
       {
@@ -502,8 +521,10 @@ class sfWebRequest extends sfRequest
         }
       }
 
-      $this->languages[] = $lang;
+      $languages[] = $lang;
     }
+
+    $this->languages = $languages;
 
     return $this->languages;
   }
@@ -513,7 +534,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array List of charsets in preferable order
    */
-  public function getCharsets()
+  public function getCharsets(): array
   {
     if ($this->charsets)
     {
@@ -535,7 +556,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array Languages ordered in the user browser preferences
    */
-  public function getAcceptableContentTypes()
+  public function getAcceptableContentTypes(): array
   {
     if ($this->acceptableContentTypes)
     {
@@ -560,7 +581,7 @@ class sfWebRequest extends sfRequest
    *
    * @return bool true if the request is an XMLHttpRequest, false otherwise
    */
-  public function isXmlHttpRequest()
+  public function isXmlHttpRequest(): bool
   {
     return ($this->getHttpHeader('X_REQUESTED_WITH') == 'XMLHttpRequest');
   }
@@ -569,10 +590,10 @@ class sfWebRequest extends sfRequest
    * Gets the value of HTTP header
    *
    * @param string $name The HTTP header name
-   * @param string $prefix The HTTP header prefix
+   * @param string|null $prefix The HTTP header prefix
    * @return string The value of HTTP header
    */
-  public function getHttpHeader($name, $prefix = 'http')
+  public function getHttpHeader(string $name, ?string $prefix = 'http')
   {
     if ($prefix)
     {
@@ -590,11 +611,11 @@ class sfWebRequest extends sfRequest
    * Gets the value of a cookie.
    *
    * @param  string $name          Cookie name
-   * @param  string $defaultValue  Default value returned when no cookie with given name is found
+   * @param  mixed $defaultValue  Default value returned when no cookie with given name is found
    *
-   * @return string The cookie value
+   * @return mixed The cookie value
    */
-  public function getCookie($name, $defaultValue = null)
+  public function getCookie(string $name, $defaultValue = null)
   {
     $retval = $defaultValue;
 
@@ -611,7 +632,7 @@ class sfWebRequest extends sfRequest
    *
    * @return boolean
    */
-  public function isSecure()
+  public function isSecure(): bool
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -629,7 +650,7 @@ class sfWebRequest extends sfRequest
    *
    * @return boolean
    */
-  protected function isForwardedSecure()
+  protected function isForwardedSecure(): bool
   {
     $pathArray = $this->getPathInfoArray();
 
@@ -641,7 +662,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string URL
    */
-  public function getRelativeUrlRoot()
+  public function getRelativeUrlRoot(): string
   {
     if (null === $this->relativeUrlRoot)
     {
@@ -659,7 +680,7 @@ class sfWebRequest extends sfRequest
    *
    * @param string $value  Value for the url
    */
-  public function setRelativeUrlRoot($value)
+  public function setRelativeUrlRoot(string $value): void
   {
     $this->relativeUrlRoot = $value;
   }
@@ -669,9 +690,9 @@ class sfWebRequest extends sfRequest
    *
    * @param string $header Header to split
    *
-   * @return array
+   * @return string[]
    */
-  public function splitHttpAcceptHeader($header)
+  public function splitHttpAcceptHeader(string $header): array
   {
     $values = array();
     $groups = array();
@@ -711,7 +732,7 @@ class sfWebRequest extends sfRequest
    *
    * @return  array Path information
    */
-  public function getPathInfoArray()
+  public function getPathInfoArray(): array
   {
     if (!$this->pathInfoArray)
     {
@@ -736,9 +757,9 @@ class sfWebRequest extends sfRequest
    *
    * @param  string $format  The format
    *
-   * @return string The associated mime type (null if not found)
+   * @return string|null The associated mime type (null if not found)
    */
-  public function getMimeType($format)
+  public function getMimeType(string $format): ?string
   {
     return isset($this->formats[$format]) ? $this->formats[$format][0] : null;
   }
@@ -748,9 +769,9 @@ class sfWebRequest extends sfRequest
    *
    * @param  string $mimeType  The associated mime type
    *
-   * @return string The format (null if not found)
+   * @return string|null The format (null if not found)
    */
-  public function getFormat($mimeType)
+  public function getFormat(string $mimeType): ?string
   {
     foreach ($this->formats as $format => $mimeTypes)
     {
@@ -769,7 +790,7 @@ class sfWebRequest extends sfRequest
    * @param string       $format     The format
    * @param string|array $mimeTypes  The associated mime types (the preferred one must be the first as it will be used as the content type)
    */
-  public function setFormat($format, $mimeTypes)
+  public function setFormat(string $format, $mimeTypes): void
   {
     $this->formats[$format] = is_array($mimeTypes) ? $mimeTypes : array($mimeTypes);
   }
@@ -777,9 +798,9 @@ class sfWebRequest extends sfRequest
   /**
    * Sets the request format.
    *
-   * @param string $format  The request format
+   * @param string|null $format  The request format
    */
-  public function setRequestFormat($format)
+  public function setRequestFormat(?string $format): void
   {
     $this->format = $format;
   }
@@ -793,9 +814,9 @@ class sfWebRequest extends sfRequest
    *  * sf_format request parameter
    *  * default format from factories
    *
-   * @return string The request format
+   * @return string|null The request format
    */
-  public function getRequestFormat()
+  public function getRequestFormat(): ?string
   {
     if (null === $this->format)
     {
@@ -811,7 +832,7 @@ class sfWebRequest extends sfRequest
    * @param  string $key  A key
    * @return array  An associative array of files
    */
-  public function getFiles($key = null)
+  public function getFiles(string $key = null): array
   {
     if (false === $this->fixedFileArray)
     {
@@ -830,7 +851,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array An array of re-ordered uploaded file information
    */
-  static public function convertFileInformation(array $taintedFiles)
+  static public function convertFileInformation(array $taintedFiles): array
   {
     $files = array();
     foreach ($taintedFiles as $key => $data)
@@ -848,9 +869,9 @@ class sfWebRequest extends sfRequest
    *
    * @return array The fixed PHP files array
    */
-  static protected function fixPhpFilesArray(array $data)
+  static protected function fixPhpFilesArray(array $data): array
   {
-    $fileKeys = array('error', 'name', 'size', 'tmp_name', 'type');
+    $fileKeys = ['error', 'name', 'size', 'tmp_name', 'type'];
     $keys = array_keys($data);
     sort($keys);
 
@@ -882,11 +903,11 @@ class sfWebRequest extends sfRequest
    * Returns the value of a GET parameter.
    *
    * @param  string $name     The GET parameter name
-   * @param  string $default  The default value
+   * @param  mixed $default  The default value
    *
-   * @return string The GET parameter value
+   * @return mixed The GET parameter value
    */
-  public function getGetParameter($name, $default = null)
+  public function getGetParameter(string $name, $default = null)
   {
     if (isset($this->getParameters[$name]))
     {
@@ -902,11 +923,11 @@ class sfWebRequest extends sfRequest
    * Returns the value of a POST parameter.
    *
    * @param  string $name     The POST parameter name
-   * @param  string $default  The default value
+   * @param  mixed $default  The default value
    *
-   * @return string The POST parameter value
+   * @return mixed The POST parameter value
    */
-  public function getPostParameter($name, $default = null)
+  public function getPostParameter(string $name, $default = null)
   {
     if (isset($this->postParameters[$name]))
     {
@@ -922,11 +943,11 @@ class sfWebRequest extends sfRequest
    * Returns the value of a parameter passed as a URL segment.
    *
    * @param  string $name     The parameter name
-   * @param  string $default  The default value
+   * @param  mixed $default  The default value
    *
-   * @return string The parameter value
+   * @return mixed The parameter value
    */
-  public function getUrlParameter($name, $default = null)
+  public function getUrlParameter(string $name, $default = null)
   {
     if (isset($this->requestParameters[$name]))
     {
@@ -943,7 +964,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string The remote IP address
    */
-  public function getRemoteAddress()
+  public function getRemoteAddress(): string
   {
     $pathInfo = $this->getPathInfoArray();
 
@@ -958,10 +979,10 @@ class sfWebRequest extends sfRequest
    * This method returns null if no proxy passed this request. Note that some proxies
    * do not use this header, and act as if they were the client.
    *
-   * @return string|null An array of IP from the client and the proxies that passed
+   * @return string[]|null An array of IP from the client and the proxies that passed
    * the request, or null if no proxy was used.
    */
-  public function getForwardedFor()
+  public function getForwardedFor(): ?array
   {
     $pathInfo = $this->getPathInfoArray();
 
@@ -980,7 +1001,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string Client IP(s)
    */
-  public function getClientIp($proxy = true)
+  public function getClientIp(bool $proxy = true): string
   {
     if ($proxy)
     {
@@ -1005,7 +1026,7 @@ class sfWebRequest extends sfRequest
    *
    * @throws <b>sfValidatorErrorSchema</b> If an error occurs while validating the CRF protection for this sfRequest
    */
-  public function checkCSRFProtection()
+  public function checkCSRFProtection(): void
   {
     $form = new BaseForm();
     $form->bind($form->isCSRFProtected() ? array($form->getCSRFFieldName() => $this->getParameter($form->getCSRFFieldName())) : array());
@@ -1023,7 +1044,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array An array of request parameters.
    */
-  protected function parseRequestParameters()
+  protected function parseRequestParameters(): array
   {
     return $this->dispatcher->filter(new sfEvent($this, 'request.filter_parameters', $this->getRequestContext()), array())->getReturnValue();
   }
@@ -1033,7 +1054,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array An array of values representing the current request
    */
-  public function getRequestContext()
+  public function getRequestContext(): array
   {
     return array(
       'path_info'   => $this->getPathInfo(),
@@ -1049,7 +1070,7 @@ class sfWebRequest extends sfRequest
   /**
    * Move symfony parameters to attributes (parameters prefixed with _sf_)
    */
-  protected function fixParameters()
+  protected function fixParameters(): void
   {
     foreach ($this->parameterHolder->getAll() as $key => $value)
     {
