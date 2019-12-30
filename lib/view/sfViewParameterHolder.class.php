@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -20,16 +20,18 @@
  */
 class sfViewParameterHolder extends sfParameterHolder
 {
-  protected
-    $dispatcher     = null,
-    $escaping       = null,
-    $escapingMethod = null;
+  /** @var \sfEventDispatcher */
+  protected $dispatcher;
 
-  /**
-   * Constructor.
-   */
-  public function __construct(sfEventDispatcher $dispatcher, $parameters = array(), $options = array())
+  /** @var bool */
+  protected $escaping;
+
+  /** @var string */
+  protected $escapingMethod;
+
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $options = [])
   {
+    parent::__construct();
     $this->initialize($dispatcher, $parameters, $options);
   }
 
@@ -45,18 +47,27 @@ class sfViewParameterHolder extends sfParameterHolder
    * # <b>escaping_strategy</b> - [off]              - The escaping strategy (on or off)
    * # <b>escaping_method</b>   - [ESC_SPECIALCHARS] - The escaping method (ESC_RAW, ESC_ENTITIES, ESC_JS, ESC_JS_NO_ENTITIES, or ESC_SPECIALCHARS)
    *
-   * @return bool true, if initialization completes successfully, otherwise false.
-   *
    * @throws sfInitializationException If an error occurs while initializing this view parameter holder.
    */
-  public function initialize(sfEventDispatcher $dispatcher, $parameters = array(), $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $options = []): void
   {
     $this->dispatcher = $dispatcher;
 
     $this->add($parameters);
 
-    $this->setEscaping(isset($options['escaping_strategy']) ? $options['escaping_strategy'] : false);
-    $this->setEscapingMethod(isset($options['escaping_method']) ? $options['escaping_method'] : 'ESC_SPECIALCHARS');
+    $escaping_strategy = isset($options['escaping_strategy']) ? $options['escaping_strategy'] : false;
+    $escaping_method = isset($options['escaping_method']) ? $options['escaping_method'] : 'ESC_SPECIALCHARS';
+
+    if (in_array($escaping_strategy, [true, 'on', 'true'], $strict = true)) {
+      $this->setEscaping(true);
+    } elseif (in_array($escaping_strategy, [false, 'off', 'false'], $strict = true)) {
+      $this->setEscaping(false);
+    } else {
+      throw new InvalidArgumentException("Invalid `escaping_strategy` option value: `{$escaping_strategy}`.");
+    }
+
+    $this->setEscaping(in_array($escaping_strategy, [true, 'on', 'true'], $strict = true));
+    $this->setEscapingMethod($escaping_method);
   }
 
   /**
@@ -64,9 +75,9 @@ class sfViewParameterHolder extends sfParameterHolder
    *
    * @return bool true if the current object acts as an escaper, false otherwise
    */
-  public function isEscaped()
+  public function isEscaped(): bool
   {
-    return in_array($this->getEscaping(), array('on', 'true', true), true);
+    return $this->getEscaping() === true;
   }
 
   /**
@@ -76,7 +87,7 @@ class sfViewParameterHolder extends sfParameterHolder
    *
    * @throws InvalidArgumentException
    */
-  public function toArray()
+  public function toArray(): array
   {
     $event = $this->dispatcher->filter(new sfEvent($this, 'template.filter_parameters'), $this->getAll());
     $parameters = $event->getReturnValue();
@@ -90,37 +101,29 @@ class sfViewParameterHolder extends sfParameterHolder
         $attributes[$key] = $value;
       }
     }
-    else if (in_array($this->getEscaping(), array('off', false), true))
+    else
     {
       $attributes = $parameters;
       $attributes['sf_data'] = sfOutputEscaper::escape(ESC_RAW, $parameters);
-    }
-    else
-    {
-      throw new InvalidArgumentException(sprintf('Unknown strategy "%s".', $this->getEscaping()));
     }
 
     return $attributes;
   }
 
   /**
-   * Gets the default escaping strategy associated with this view.
-   *
-   * The escaping strategy specifies how the variables get passed to the view.
-   *
-   * @return string the escaping strategy
+   * @return bool true if escaping is enabled, false otherwise
    */
-  public function getEscaping()
+  public function getEscaping(): bool
   {
     return $this->escaping;
   }
 
   /**
-   * Sets the escape character strategy.
+   * Enable or disable the escape character strategy.
    *
-   * @param string $escaping  Escape code
+   * @param bool $escaping
    */
-  public function setEscaping($escaping)
+  public function setEscaping(bool $escaping): void
   {
     $this->escaping = $escaping;
   }
@@ -137,19 +140,9 @@ class sfViewParameterHolder extends sfParameterHolder
    *
    * @throws InvalidArgumentException If the method does not exist
    */
-  public function getEscapingMethod()
+  public function getEscapingMethod(): string
   {
-    if (empty($this->escapingMethod))
-    {
-      return $this->escapingMethod;
-    }
-
-    if (!defined($this->escapingMethod))
-    {
-      throw new InvalidArgumentException(sprintf('The escaping method "%s" is not available.', $this->escapingMethod));
-    }
-
-    return constant($this->escapingMethod);
+    return $this->escapingMethod ? constant($this->escapingMethod) : '';
   }
 
   /**
@@ -157,15 +150,23 @@ class sfViewParameterHolder extends sfParameterHolder
    *
    * @param string $method  Method for escaping
    */
-  public function setEscapingMethod($method)
+  public function setEscapingMethod(string $method): void
   {
+    if (empty($method))
+    {
+      $this->escapingMethod = $method;
+      return;
+    }
+
+    if (!defined($method))
+    {
+      throw new InvalidArgumentException(sprintf('The escaping method "%s" is not available.', $method));
+    }
     $this->escapingMethod = $method;
   }
 
   /**
    * Serializes the current instance.
-   *
-   * @return array Objects instance
    */
   public function serialize()
   {
@@ -174,7 +175,6 @@ class sfViewParameterHolder extends sfParameterHolder
 
   /**
    * Unserializes a sfViewParameterHolder instance.
-   *
    * @param string $serialized The serialized instance data
    */
   public function unserialize($serialized)

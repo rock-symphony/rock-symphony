@@ -24,8 +24,8 @@
  */
 class sfNamespacedParameterHolder extends sfParameterHolder
 {
-  protected $default_namespace = null;
-  protected $parameters = array();
+  /** @var string */
+  protected $default_namespace;
 
   /**
    * The constructor for sfNamespacedParameterHolder.
@@ -39,9 +39,10 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @param string $namespace
    */
-  public function __construct($namespace = 'symfony/default')
+  public function __construct(string $namespace = 'symfony/default')
   {
     $this->default_namespace = $namespace;
+    parent::__construct();
   }
 
   /**
@@ -50,7 +51,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param string $namespace  Default namespace
    * @param bool   $move       Move all values of the old default namespace to the new one or not
    */
-  public function setDefaultNamespace($namespace, $move = true)
+  public function setDefaultNamespace(string $namespace, bool $move = true): void
   {
     if ($move)
     {
@@ -70,7 +71,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return string The default namespace
    */
-  public function getDefaultNamespace()
+  public function getDefaultNamespace(): string
   {
     return $this->default_namespace;
   }
@@ -78,7 +79,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   /**
    * Clear all parameters associated with this request.
    */
-  public function clear()
+  public function clear(): void
   {
     $this->parameters = null;
     $this->parameters = array();
@@ -97,7 +98,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return mixed A parameter value, if the parameter exists, otherwise null
    */
-  public function & get($name, $default = null, $ns = null)
+  public function & get(string $name, $default = null, string $ns = null)
   {
     if (!$ns)
     {
@@ -123,7 +124,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An indexed array of parameter names, if the namespace exists, otherwise null
    */
-  public function getNames($ns = null)
+  public function getNames(string $ns = null): array
   {
     if (!$ns)
     {
@@ -141,9 +142,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   /**
    * Retrieve an array of parameter namespaces.
    *
-   * @return array An indexed array of parameter namespaces
+   * @return string[] An indexed array of parameter namespaces
    */
-  public function getNamespaces()
+  public function getNamespaces(): array
   {
     return array_keys($this->parameters);
   }
@@ -160,7 +161,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An associative array of parameters
    */
-  public function & getAll($ns = null)
+  public function & getAll(string $ns = null): array
   {
     if (!$ns)
     {
@@ -185,7 +186,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return bool true, if the parameter exists, otherwise false
    */
-  public function has($name, $ns = null)
+  public function has(string $name, string $ns = null): bool
   {
     if (!$ns)
     {
@@ -202,7 +203,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return bool true, if the namespace exists, otherwise false
    */
-  public function hasNamespace($ns)
+  public function hasNamespace(string $ns): bool
   {
     return isset($this->parameters[$ns]);
   }
@@ -214,9 +215,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param  mixed  $default  A default parameter value
    * @param  string $ns       A parameter namespace
    *
-   * @return string A parameter value, if the parameter was removed, otherwise null
+   * @return mixed A parameter value, if the parameter was removed, otherwise default
    */
-  public function remove($name, $default = null, $ns = null)
+  public function remove(string $name, $default = null, string $ns = null)
   {
     if (!$ns)
     {
@@ -239,9 +240,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @param string $ns A parameter namespace.
    *
-   * @return mixed|null
+   * @return array|null
    */
-  public function & removeNamespace($ns = null)
+  public function & removeNamespace(string $ns = null): ?array
   {
     if (!$ns)
     {
@@ -268,7 +269,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed  $value  A parameter value
    * @param string $ns     A parameter namespace
    */
-  public function set($name, $value, $ns = null)
+  public function set(string $name, $value, string $ns = null): void
   {
     if (!$ns)
     {
@@ -292,7 +293,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed  $value  A reference to a parameter value
    * @param string $ns     A parameter namespace
    */
-  public function setByRef($name, & $value, $ns = null)
+  public function setByRef(string $name, & $value, string $ns = null): void
   {
     if (!$ns)
     {
@@ -316,7 +317,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array  $parameters  An associative array of parameters and their associated values
    * @param string $ns          A parameter namespace
    */
-  public function add($parameters, $ns = null)
+  public function add(?array $parameters, string $ns = null): void
   {
     if ($parameters === null) return;
 
@@ -345,7 +346,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array  $parameters  An associative array of parameters and references to their associated values
    * @param string $ns          A parameter namespace
    */
-  public function addByRef(& $parameters, $ns = null)
+  public function addByRef(array & $parameters, string $ns = null): void
   {
     if (!$ns)
     {
@@ -365,8 +366,6 @@ class sfNamespacedParameterHolder extends sfParameterHolder
 
   /**
    * Serializes the current instance.
-   *
-   * @return array Objects instance
    */
   public function serialize()
   {
