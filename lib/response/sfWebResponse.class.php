@@ -170,7 +170,7 @@ class sfWebResponse extends sfResponse
    *
    * @throws <b>sfException</b> If fails to set the cookie
    */
-  public function setCookie(string $name, string $value, string $expire = null, string $path = '/', string $domain = null, bool $secure = false, bool $httpOnly = false): void
+  public function setCookie(string $name, ?string $value, string $expire = null, string $path = '/', string $domain = null, bool $secure = false, bool $httpOnly = false): void
   {
     if ($expire !== null)
     {
