@@ -294,11 +294,11 @@ abstract class sfController
    * @param string $controllerName A component name
    * @param string $extension      Either 'action' or 'component' depending on the type of controller to look for
    *
-   * @return sfAction A controller implementation instance, if the controller exists, otherwise null
+   * @return \sfComponent|\sfAction A controller implementation instance, if the controller exists, otherwise null
    *
    * @see getComponent(), getAction()
    */
-  protected function getController(string $moduleName, string $controllerName, string $extension): sfAction
+  protected function getController(string $moduleName, string $controllerName, string $extension): sfComponent
   {
     $classSuffix = ucfirst(strtolower($extension));
     if (!isset($this->controllerClasses[$moduleName.'_'.$controllerName.'_'.$classSuffix]))
