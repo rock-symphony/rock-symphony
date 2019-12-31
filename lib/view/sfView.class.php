@@ -204,7 +204,7 @@ abstract class sfView
    *
    * @return string An absolute filesystem path to this views template directory
    */
-  public function getDirectory(): string
+  public function getDirectory(): ?string
   {
     return $this->directory;
   }
@@ -441,7 +441,7 @@ abstract class sfView
    *
    * @param string $directory  An absolute filesystem path to a template directory
    */
-  public function setDirectory(string $directory): void
+  public function setDirectory(?string $directory): void
   {
     $this->directory = $directory;
   }
