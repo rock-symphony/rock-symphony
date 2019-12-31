@@ -25,7 +25,7 @@ class sfSimpleYamlConfigHandler extends sfYamlConfigHandler
    *
    * @return string Data to be written to a cache file
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     $config = static::getConfiguration($configFiles);
 
@@ -42,7 +42,7 @@ class sfSimpleYamlConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     return static::parseYamls($configFiles);
   }

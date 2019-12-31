@@ -23,7 +23,7 @@ class sfDebug
    *
    * @return array An array of symfony information
    */
-  public static function symfonyInfoAsArray()
+  public static function symfonyInfoAsArray(): array
   {
     return array(
       'version' => SYMFONY_VERSION,
@@ -36,7 +36,7 @@ class sfDebug
    *
    * @return array An array of php information
    */
-  public static function phpInfoAsArray()
+  public static function phpInfoAsArray(): array
   {
     $values = array(
       'php'        => phpversion(),
@@ -63,7 +63,7 @@ class sfDebug
    *
    * @return array PHP globals
    */
-  public static function globalsAsArray()
+  public static function globalsAsArray(): array
   {
     $values = array();
     foreach (array('cookie', 'server', 'get', 'post', 'files', 'env', 'session') as $name)
@@ -91,7 +91,7 @@ class sfDebug
    *
    * @return array sfConfig variables
    */
-  public static function settingsAsArray()
+  public static function settingsAsArray(): array
   {
     $config = sfConfig::getAll();
 
@@ -107,7 +107,7 @@ class sfDebug
    *
    * @return array The request parameter holders
    */
-  public static function requestAsArray(sfRequest $request = null)
+  public static function requestAsArray(sfRequest $request = null): array
   {
     if (!$request)
     {
@@ -128,7 +128,7 @@ class sfDebug
    *
    * @return array The response parameters
    */
-  public static function responseAsArray(sfResponse $response = null)
+  public static function responseAsArray(sfResponse $response = null): array
   {
     if (!$response)
     {
@@ -154,7 +154,7 @@ class sfDebug
    *
    * @return array The user parameters
    */
-  public static function userAsArray(sfUser $user = null)
+  public static function userAsArray(sfUser $user = null): array
   {
     if (!$user)
     {
@@ -187,7 +187,7 @@ class sfDebug
    *
    * @return array The parameter holder as an array
    */
-  public static function flattenParameterHolder($parameterHolder, $removeObjects = false)
+  public static function flattenParameterHolder(sfParameterHolder $parameterHolder, bool $removeObjects = false): array
   {
     $values = array();
     if ($parameterHolder instanceof sfNamespacedParameterHolder)
@@ -227,7 +227,7 @@ class sfDebug
    *
    * @return array The array without objects
    */
-  public static function removeObjects($values)
+  public static function removeObjects(array $values): array
   {
     $nvalues = array();
     foreach ($values as $key => $value)
@@ -256,7 +256,7 @@ class sfDebug
    *
    * @return string
    */
-  static public function shortenFilePath($file)
+  static public function shortenFilePath(string $file): string
   {
     foreach (array('sf_root_dir', 'sf_symfony_lib_dir') as $key)
     {

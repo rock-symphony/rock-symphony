@@ -20,11 +20,11 @@
  */
 abstract class sfDatabaseSessionStorage extends sfSessionStorage
 {
-  /** @var sfDatabase */
+  /** @var PDO|mixed */
   protected $db = null;
   /** @var PDO */
   protected $con = null;
-  
+
   /**
    * Available options:
    *
@@ -41,7 +41,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @see sfSessionStorage
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     $options = array_merge(array(
       'db_id_col'   => 'sess_id',
@@ -82,7 +82,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @return boolean true, if the session was closed, otherwise false
    */
-  public function sessionClose()
+  public function sessionClose(): bool
   {
     // do nothing
     return true;
@@ -98,7 +98,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @throws <b>DatabaseException</b> If a connection with the database does not exist or cannot be created
    */
-  public function sessionOpen($path = null, $name = null)
+  public function sessionOpen(string $path = null, string $name = null): bool
   {
     // what database are we using?
     /** @var sfDatabase $database */
@@ -138,7 +138,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @throws <b>DatabaseException</b> If the session cannot be destroyed
    */
-  abstract public function sessionDestroy($id);
+  abstract public function sessionDestroy(string $id): bool;
 
   /**
    * Cleans up old sessions.
@@ -149,18 +149,18 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @throws <b>DatabaseException</b> If any old sessions cannot be cleaned
    */
-  abstract public function sessionGC($lifetime);
+  abstract public function sessionGC(int $lifetime): bool;
 
   /**
    * Reads a session.
    *
    * @param  string $id  A session ID
    *
-   * @return bool true, if the session was read, otherwise an exception is thrown
+   * @return string      The session data if the session was read or created, otherwise an exception is thrown
    *
    * @throws <b>DatabaseException</b> If the session cannot be read
    */
-  abstract public function sessionRead($id);
+  abstract public function sessionRead(string $id): string;
 
   /**
    * Writes session data.
@@ -172,7 +172,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @throws <b>DatabaseException</b> If the session data cannot be written
    */
-  abstract public function sessionWrite($id, $data);
+  abstract public function sessionWrite(string $id, string $data): bool;
 
   /**
    * Regenerates id that represents this storage.
@@ -182,7 +182,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    * @return boolean|void True if session regenerated, false if error
    *
    */
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
     if (self::$sessionIdRegenerated)
     {
@@ -196,6 +196,6 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
     $newId = session_id();
     $this->sessionRead($newId);
 
-    return $this->sessionWrite($newId, $this->sessionRead($currentId));
+    $this->sessionWrite($newId, $this->sessionRead($currentId));
   }
 }

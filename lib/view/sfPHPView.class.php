@@ -23,14 +23,14 @@ class sfPHPView extends sfView
   /**
    * Executes any presentation logic for this view.
    */
-  public function execute()
+  public function execute(): void
   {
   }
 
   /**
    * Loads core and standard helpers to be use in the template.
    */
-  protected function loadCoreAndStandardHelpers()
+  protected function loadCoreAndStandardHelpers(): void
   {
     static $coreHelpersLoaded = 0;
 
@@ -41,7 +41,7 @@ class sfPHPView extends sfView
 
     $coreHelpersLoaded = 1;
 
-    $helpers = array_unique(array_merge(array('Helper', 'Url', 'Asset', 'Tag', 'Escaping'), sfConfig::get('sf_standard_helpers')));
+    $helpers = array_unique(array_merge(['Helper', 'Url', 'Asset', 'Tag'], sfConfig::get('sf_standard_helpers')));
 
     $this->context->getConfiguration()->loadHelpers($helpers);
   }
@@ -53,7 +53,7 @@ class sfPHPView extends sfView
    *
    * @return string File content
    */
-  protected function renderFile($_sfFile)
+  protected function renderFile(string $_sfFile): string
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -101,7 +101,7 @@ class sfPHPView extends sfView
    *
    * @return void
    */
-  public function configure()
+  public function configure(): void
   {
     // store our current view
     $this->context->set('view_instance', $this);
@@ -123,7 +123,7 @@ class sfPHPView extends sfView
    *
    * @return string A decorated template
    */
-  protected function decorate($content)
+  protected function decorate(string $content): string
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -155,7 +155,7 @@ class sfPHPView extends sfView
    *
    * @return string A string representing the rendered presentation
    */
-  public function render()
+  public function render(): string
   {
     $content = null;
 

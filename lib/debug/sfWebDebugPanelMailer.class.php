@@ -33,26 +33,28 @@ class sfWebDebugPanelMailer extends sfWebDebugPanel
     $this->webDebug->getEventDispatcher()->connect('mailer.configure', array($this, 'listenForMailerConfigure'));
   }
 
-  public function getTitle()
+  public function getTitle(): string
   {
     if ($this->mailer && ($logger = $this->mailer->getLogger()) && $logger->countMessages())
     {
       return '<img src="'.$this->webDebug->getOption('image_root_path').'/email.png" alt="Emailer" /> '.$logger->countMessages();
     }
+
+    return '';
   }
 
-  public function getPanelTitle()
+  public function getPanelTitle(): string
   {
     return 'Emails';
   }
 
-  public function getPanelContent()
+  public function getPanelContent(): string
   {
     $logger = $this->mailer->getLogger();
 
     if (!$logger || !$messages = $logger->getMessages())
     {
-      return false;
+      return '';
     }
 
     $html = array();
@@ -77,7 +79,7 @@ class sfWebDebugPanelMailer extends sfWebDebugPanel
     return implode("\n", $html);
   }
 
-  protected function renderMessageInformation(Swift_Message $message)
+  protected function renderMessageInformation(Swift_Message $message): string
   {
     static $i = 0;
 
@@ -99,7 +101,7 @@ class sfWebDebugPanelMailer extends sfWebDebugPanel
    *
    * @param sfEvent $event
    */
-  public function listenForMailerConfigure(sfEvent $event)
+  public function listenForMailerConfigure(sfEvent $event): void
   {
     $this->mailer = $event->getSubject();
   }

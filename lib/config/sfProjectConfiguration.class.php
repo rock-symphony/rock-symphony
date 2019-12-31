@@ -44,7 +44,7 @@ class sfProjectConfiguration
    * @param string              $rootDir    The project root directory
    * @param sfEventDispatcher   $dispatcher The event dispatcher
    */
-  public function __construct($rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct(string $rootDir = null, sfEventDispatcher $dispatcher = null)
   {
     if (null === self::$active || $this instanceof sfApplicationConfiguration)
     {
@@ -75,14 +75,14 @@ class sfProjectConfiguration
    *
    * Override this method if you want to customize your project configuration.
    */
-  public function setup()
+  public function setup(): void
   {
   }
 
   /**
    * Loads the project's plugin configurations.
    */
-  public function loadPlugins()
+  public function loadPlugins(): void
   {
     foreach ($this->getPluginPaths() as $path)
     {
@@ -113,7 +113,7 @@ class sfProjectConfiguration
    *
    * Override this method if you want to customize plugin configurations.
    */
-  public function setupPlugins()
+  public function setupPlugins(): void
   {
   }
 
@@ -122,7 +122,7 @@ class sfProjectConfiguration
    *
    * @param string $rootDir The project root directory
    */
-  public function setRootDir($rootDir)
+  public function setRootDir(string $rootDir): void
   {
     $this->rootDir = $rootDir;
 
@@ -148,7 +148,7 @@ class sfProjectConfiguration
    *
    * @return string The project root directory
    */
-  public function getRootDir()
+  public function getRootDir(): string
   {
     return $this->rootDir;
   }
@@ -158,7 +158,7 @@ class sfProjectConfiguration
    *
    * @param string $cacheDir The absolute path to the cache dir.
    */
-  public function setCacheDir($cacheDir)
+  public function setCacheDir(string $cacheDir): void
   {
     sfConfig::set('sf_cache_dir', $cacheDir);
   }
@@ -168,7 +168,7 @@ class sfProjectConfiguration
    *
    * @param string $logDir The absolute path to the log dir.
    */
-  public function setLogDir($logDir)
+  public function setLogDir(string $logDir): void
   {
     sfConfig::set('sf_log_dir', $logDir);
   }
@@ -178,7 +178,7 @@ class sfProjectConfiguration
    *
    * @param string $webDir The absolute path to the web dir.
    */
-  public function setWebDir($webDir)
+  public function setWebDir(string $webDir): void
   {
     sfConfig::add(array(
       'sf_web_dir'         => $webDir,
@@ -191,9 +191,9 @@ class sfProjectConfiguration
    * Gets directories where model classes are stored. The order of returned paths is lowest precedence
    * to highest precedence.
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getModelDirs()
+  public function getModelDirs(): array
   {
     return array_merge(
       $this->getPluginSubPaths('/lib/model'),     // plugins
@@ -207,9 +207,9 @@ class sfProjectConfiguration
    * @param string $class  The generator class name
    * @param string $theme  The theme name
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getGeneratorTemplateDirs($class, $theme)
+  public function getGeneratorTemplateDirs(string $class, string $theme): array
   {
     return array_merge(
       array(sfConfig::get('sf_data_dir').'/generator/'.$class.'/'.$theme.'/template'), // project
@@ -225,9 +225,9 @@ class sfProjectConfiguration
    * @param string $class   The generator class name
    * @param string $theme   The theme name
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getGeneratorSkeletonDirs($class, $theme)
+  public function getGeneratorSkeletonDirs(string $class, string $theme): array
   {
     return array_merge(
       array(sfConfig::get('sf_data_dir').'/generator/'.$class.'/'.$theme.'/skeleton'), // project
@@ -248,7 +248,7 @@ class sfProjectConfiguration
    *
    * @throws sfException
    */
-  public function getGeneratorTemplate($class, $theme, $path)
+  public function getGeneratorTemplate(string $class, string $theme, string $path): string
   {
     $dirs = $this->getGeneratorTemplateDirs($class, $theme);
     foreach ($dirs as $dir)
@@ -267,9 +267,9 @@ class sfProjectConfiguration
    *
    * @param string $configPath The configuration path
    *
-   * @return array An array of paths
+   * @return string[] An array of paths
    */
-  public function getConfigPaths($configPath)
+  public function getConfigPaths(string $configPath): array
   {
     $globalConfigPath = basename(dirname($configPath)).'/'.basename($configPath);
 
@@ -313,11 +313,11 @@ class sfProjectConfiguration
   /**
    * Sets the enabled plugins.
    *
-   * @param array $plugins An array of plugin names
+   * @param string[] $plugins An array of plugin names
    *
    * @throws LogicException If plugins have already been loaded
    */
-  public function setPlugins(array $plugins)
+  public function setPlugins(array $plugins): void
   {
     if ($this->pluginsLoaded)
     {
@@ -332,42 +332,25 @@ class sfProjectConfiguration
   /**
    * Enables a plugin or a list of plugins.
    *
-   * @param array|string $plugins A plugin name or a plugin list
+   * @param string[] $plugins A plugin name or a plugin list
    */
-  public function enablePlugins($plugins)
+  public function enablePlugins(array $plugins): void
   {
-    if (!is_array($plugins))
-    {
-      if (func_num_args() > 1)
-      {
-        $plugins = func_get_args();
-      }
-      else
-      {
-        $plugins = array($plugins);
-      }
-    }
-
     $this->setPlugins(array_merge($this->plugins, $plugins));
   }
 
   /**
    * Disables a plugin.
    *
-   * @param array|string $plugins A plugin name or a plugin list
+   * @param string[] $plugins A plugin name or a plugin list
    *
    * @throws LogicException If plugins have already been loaded
    */
-  public function disablePlugins($plugins)
+  public function disablePlugins(array $plugins): void
   {
     if ($this->pluginsLoaded)
     {
       throw new LogicException('Plugins have already been loaded.');
-    }
-
-    if (!is_array($plugins))
-    {
-      $plugins = array($plugins);
     }
 
     foreach ($plugins as $plugin)
@@ -386,13 +369,13 @@ class sfProjectConfiguration
   }
 
   /**
-   * Enabled all installed plugins except the one given as argument.
+   * Enabled all installed plugins except th = array()e one given as argument.
    *
-   * @param array|string $plugins A plugin name or a plugin list
+   * @param string[] $plugins A plugin name or a plugin list
    *
    * @throws LogicException If plugins have already been loaded
    */
-  public function enableAllPluginsExcept($plugins = array())
+  public function enableAllPluginsExcept(array $plugins): void
   {
     if ($this->pluginsLoaded)
     {
@@ -409,9 +392,9 @@ class sfProjectConfiguration
   /**
    * Gets the list of enabled plugins.
    *
-   * @return array An array of enabled plugins
+   * @return string[] An array of enabled plugins
    */
-  public function getPlugins()
+  public function getPlugins(): array
   {
     return $this->plugins;
   }
@@ -421,9 +404,9 @@ class sfProjectConfiguration
    *
    * @param  string $subPath The subdirectory to look for
    *
-   * @return array The plugin paths.
+   * @return string[] The plugin paths.
    */
-  public function getPluginSubPaths($subPath = '')
+  public function getPluginSubPaths(string $subPath): array
   {
     if (array_key_exists($subPath, $this->pluginPaths))
     {
@@ -446,11 +429,11 @@ class sfProjectConfiguration
   /**
    * Gets the paths to plugins root directories, minding overloaded plugins.
    *
-   * @return array The plugin root paths.
+   * @return string[] The plugin root paths.
    *
    * @throws InvalidArgumentException If an enabled plugin does not exist
    */
-  public function getPluginPaths()
+  public function getPluginPaths(): array
   {
     if (!isset($this->pluginPaths['']))
     {
@@ -476,9 +459,9 @@ class sfProjectConfiguration
   /**
    * Returns an array of paths for all available plugins.
    *
-   * @return array
+   * @return string[]
    */
-  public function getAllPluginPaths()
+  public function getAllPluginPaths(): array
   {
     $pluginPaths = array();
 
@@ -513,7 +496,7 @@ class sfProjectConfiguration
    * @param string $plugin
    * @param string $path
    */
-  public function setPluginPath($plugin, $path)
+  public function setPluginPath(string $plugin, string $path): void
   {
     $this->overriddenPluginPaths[$plugin] = realpath($path);
   }
@@ -525,7 +508,7 @@ class sfProjectConfiguration
    *
    * @return  sfPluginConfiguration
    */
-  public function getPluginConfiguration($name)
+  public function getPluginConfiguration(string $name): sfPluginConfiguration
   {
     if (!isset($this->pluginConfigurations[$name]))
     {
@@ -540,7 +523,7 @@ class sfProjectConfiguration
    *
    * @return sfEventDispatcher A sfEventDispatcher instance
    */
-  public function getEventDispatcher()
+  public function getEventDispatcher(): sfEventDispatcher
   {
     return $this->dispatcher;
   }
@@ -550,7 +533,7 @@ class sfProjectConfiguration
    *
    * @return string The symfony lib directory
    */
-  public function getSymfonyLibDir()
+  public function getSymfonyLibDir(): string
   {
     return $this->symfonyLibDir;
   }
@@ -558,9 +541,9 @@ class sfProjectConfiguration
   /**
    * Returns the active configuration.
    *
-   * @return sfApplicationConfiguration The current sfProjectConfiguration instance
+   * @return sfProjectConfiguration|sfApplicationConfiguration The current sfProjectConfiguration instance
    */
-  static public function getActive()
+  static public function getActive(): sfProjectConfiguration
   {
     if (!static::hasActive())
     {
@@ -573,21 +556,20 @@ class sfProjectConfiguration
   /**
    * Returns true if these is an active configuration.
    *
-   * @return boolean
+   * @return bool
    */
-  static public function hasActive()
+  static public function hasActive(): bool
   {
     return null !== self::$active;
   }
 
   /**
    * Guesses the project root directory.
-   *
    * @return string The project root directory
    */
-  static public function guessRootDir()
+  static public function guessRootDir(): string
   {
-    $r = new ReflectionClass('ProjectConfiguration');
+    $r = new ReflectionClass(ProjectConfiguration::class);
 
     return realpath(dirname($r->getFileName()).'/..');
   }
@@ -603,7 +585,7 @@ class sfProjectConfiguration
    *
    * @return sfApplicationConfiguration A sfApplicationConfiguration instance
    */
-  static public function getApplicationConfiguration($application, $environment, $debug, $rootDir = null, sfEventDispatcher $dispatcher = null)
+  static public function getApplicationConfiguration(string $application, string $environment, bool $debug, string $rootDir = null, sfEventDispatcher $dispatcher = null): sfApplicationConfiguration
   {
     $class = $application.'Configuration';
 
@@ -612,7 +594,7 @@ class sfProjectConfiguration
       $rootDir = static::guessRootDir();
     }
 
-    if (!is_file($file = $rootDir.'/apps/'.$application.'/config/'.$class.'.class.php'))
+    if (!is_file($file = "{$rootDir}/apps/{$application}/config/{$class}.class.php"))
     {
       throw new InvalidArgumentException(sprintf('The application "%s" does not exist.', $application));
     }

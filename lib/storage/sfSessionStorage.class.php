@@ -25,9 +25,8 @@
  */
 class sfSessionStorage extends sfStorage
 {
-  static protected
-    $sessionIdRegenerated = false,
-    $sessionStarted       = false;
+  static protected $sessionIdRegenerated = false;
+  static protected $sessionStarted       = false;
 
   /**
    * Available options:
@@ -49,7 +48,7 @@ class sfSessionStorage extends sfStorage
    *
    * @return void
    */
-  public function initialize($options = null)
+  public function initialize(array $options = []): void
   {
     $cookieDefaults = session_get_cookie_params();
 
@@ -106,7 +105,7 @@ class sfSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function read($key)
+  public function read(string $key)
   {
     $retval = null;
 
@@ -127,7 +126,7 @@ class sfSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function remove($key)
+  public function remove(string $key)
   {
     $retval = null;
 
@@ -149,7 +148,7 @@ class sfSessionStorage extends sfStorage
    * @param mixed  $data  Data associated with your key
    *
    */
-  public function write($key, $data)
+  public function write(string $key, $data): void
   {
     $_SESSION[$key] = $data;
   }
@@ -158,11 +157,8 @@ class sfSessionStorage extends sfStorage
    * Regenerates id that represents this storage.
    *
    * @param  boolean $destroy Destroy session when regenerating?
-   *
-   * @return bool|void
-   *
    */
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
     if (self::$sessionIdRegenerated)
     {
@@ -179,7 +175,7 @@ class sfSessionStorage extends sfStorage
    * Executes the shutdown procedure.
    *
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     // don't need a shutdown procedure because read/write do it in real-time
     session_write_close();

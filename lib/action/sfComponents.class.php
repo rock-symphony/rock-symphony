@@ -25,7 +25,7 @@ abstract class sfComponents extends sfComponent
    *
    * @see sfComponent
    */
-  public function execute($request)
+  public function execute(sfRequest $request)
   {
     throw new sfInitializationException('sfComponents initialization failed.');
   }

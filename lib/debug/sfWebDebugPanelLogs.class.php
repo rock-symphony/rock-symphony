@@ -18,17 +18,17 @@
  */
 class sfWebDebugPanelLogs extends sfWebDebugPanel
 {
-  public function getTitle()
+  public function getTitle(): string
   {
     return '<img src="'.$this->webDebug->getOption('image_root_path').'/log.png" alt="Log" /> logs';
   }
 
-  public function getPanelTitle()
+  public function getPanelTitle(): string
   {
     return 'Logs';
   }
 
-  public function getPanelContent()
+  public function getPanelContent(): string
   {
     $event = $this->webDebug->getEventDispatcher()->filter(new sfEvent($this, 'debug.web.filter_logs'), $this->webDebug->getLogger()->getLogs());
     $logs = $event->getReturnValue();
@@ -89,7 +89,7 @@ class sfWebDebugPanelLogs extends sfWebDebugPanel
    *
    * @return string The formatted log lin
    */
-  protected function formatLogLine($logLine)
+  protected function formatLogLine(string $logLine): string
   {
     static $constants;
 

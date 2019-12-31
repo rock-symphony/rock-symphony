@@ -2,14 +2,14 @@
 
 class frontendConfiguration extends sfApplicationConfiguration
 {
-  public function configure()
+  public function configure(): void
   {
     $this->dispatcher->connect('view.configure_format', array($this, 'configure_format_foo'));
     $this->dispatcher->connect('request.filter_parameters', array($this, 'filter_parameters'));
     $this->dispatcher->connect('view.configure_format', array($this, 'configure_iphone_format'));
   }
 
-  public function filter_parameters(sfEvent $event, $parameters)
+  public function filter_parameters(sfEvent $event, array $parameters): array
   {
     if (false !== stripos($event->getSubject()->getHttpHeader('user-agent'), 'iPhone'))
     {
@@ -19,7 +19,7 @@ class frontendConfiguration extends sfApplicationConfiguration
     return $parameters;
   }
 
-  public function configure_iphone_format(sfEvent $event)
+  public function configure_iphone_format(sfEvent $event): void
   {
     if ('iphone' == $event['format'])
     {
@@ -29,7 +29,7 @@ class frontendConfiguration extends sfApplicationConfiguration
     }
   }
 
-  public function configure_format_foo(sfEvent $event)
+  public function configure_format_foo(sfEvent $event): void
   {
     if ('foo' != $event['format'])
     {

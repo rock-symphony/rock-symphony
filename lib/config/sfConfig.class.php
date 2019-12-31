@@ -18,8 +18,8 @@
  */
 class sfConfig
 {
-  protected static
-    $config = array();
+  /** @var array */
+  protected static $config = [];
 
   /**
    * Retrieves a config parameter.
@@ -29,7 +29,7 @@ class sfConfig
    *
    * @return mixed A config parameter value, if the config parameter exists, otherwise null
    */
-  public static function get($name, $default = null)
+  public static function get(string $name, $default = null)
   {
     return isset(self::$config[$name]) ? self::$config[$name] : $default;
   }
@@ -41,7 +41,7 @@ class sfConfig
    *
    * @return bool true, if the config parameter exists, otherwise false
    */
-  public static function has($name)
+  public static function has(string $name): bool
   {
     return array_key_exists($name, self::$config);
   }
@@ -54,7 +54,7 @@ class sfConfig
    * @param string $name  A config parameter name
    * @param mixed  $value A config parameter value
    */
-  public static function set($name, $value)
+  public static function set(string $name, $value): void
   {
     self::$config[$name] = $value;
   }
@@ -67,7 +67,7 @@ class sfConfig
    *
    * @param array $parameters An associative array of config parameters and their associated values
    */
-  public static function add($parameters = array())
+  public static function add(array $parameters = []): void
   {
     self::$config = array_merge(self::$config, $parameters);
   }
@@ -77,7 +77,7 @@ class sfConfig
    *
    * @return array An associative array of configuration parameters.
    */
-  public static function getAll()
+  public static function getAll(): array
   {
     return self::$config;
   }
@@ -85,8 +85,8 @@ class sfConfig
   /**
    * Clears all current config parameters.
    */
-  public static function clear()
+  public static function clear(): void
   {
-    self::$config = array();
+    self::$config = [];
   }
 }

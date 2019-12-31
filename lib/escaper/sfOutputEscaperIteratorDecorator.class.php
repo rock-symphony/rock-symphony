@@ -41,7 +41,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    * @param string      $escapingMethod  The escaping method to use
    * @param Traversable $value           The iterator to escape
    */
-  public function __construct($escapingMethod, Traversable $value)
+  public function __construct(string $escapingMethod, Traversable $value)
   {
     // Set the original value for __call(). Set our own iterator because passing
     // it to IteratorIterator will lose any other method calls.

@@ -40,14 +40,14 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * Constructor.
    *
    * @param string            $environment    The environment name
-   * @param Boolean           $debug          true to enable debug mode
+   * @param bool              $debug          true to enable debug mode
    * @param string            $rootDir        The project root directory
    * @param sfEventDispatcher $dispatcher     An event dispatcher
    */
-  public function __construct($environment, $debug, $rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct(string $environment, bool $debug, string $rootDir = null, sfEventDispatcher $dispatcher = null)
   {
     $this->environment = $environment;
-    $this->debug       = (boolean) $debug;
+    $this->debug       = $debug;
     $this->application = str_replace('Configuration', '', get_class($this));
 
     parent::__construct($rootDir, $dispatcher);
@@ -77,7 +77,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * Override this method if you want to customize your application configuration.
    */
-  public function configure()
+  public function configure(): void
   {
   }
 
@@ -86,11 +86,11 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * Override this method if you want to customize your application initialization.
    */
-  public function initialize()
+  public function initialize(): void
   {
   }
 
-  public function activate()
+  public function activate(): void
   {
     sfConfig::clear();
     sfConfig::add($this->config);
@@ -99,7 +99,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
   /**
    * Various initializations.
    */
-  public function initConfiguration()
+  public function initConfiguration(): void
   {
     $configCache = $this->getConfigCache();
 
@@ -156,7 +156,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
   /**
    * Initializes plugin configuration objects.
    */
-  protected function initializePlugins()
+  protected function initializePlugins(): void
   {
     foreach ($this->pluginConfigurations as $name => $configuration)
     {
@@ -176,7 +176,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return sfConfigCache A sfConfigCache instance
    */
-  public function getConfigCache()
+  public function getConfigCache(): sfConfigCache
   {
     if (null === $this->configCache)
     {
@@ -191,7 +191,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return void
    */
-  public function checkLock()
+  public function checkLock(): void
   {
     if (
       $this->hasLockFile(sfConfig::get('sf_data_dir').DIRECTORY_SEPARATOR.$this->getApplication().'_'.$this->getEnvironment().'-cli.lck', 5)
@@ -231,7 +231,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return bool true, if the lock file is present, otherwise false.
    */
-  protected function hasLockFile($lockFile, $maxLockFileLifeTime = 0)
+  protected function hasLockFile(string $lockFile, int $maxLockFileLifeTime = 0): bool
   {
     $isLocked = false;
     if (is_readable($lockFile) && ($last_access = fileatime($lockFile)))
@@ -257,7 +257,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $rootDir The project root directory
    */
-  public function setRootDir($rootDir)
+  public function setRootDir(string $rootDir): void
   {
     parent::setRootDir($rootDir);
 
@@ -276,7 +276,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $appDir The absolute path to the app dir.
    */
-  public function setAppDir($appDir)
+  public function setAppDir(string $appDir): void
   {
     sfConfig::add(array(
       'sf_app_dir' => $appDir,
@@ -291,9 +291,10 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
   }
 
   /**
+   * @param string $cacheDir
    * @see sfProjectConfiguration
    */
-  public function setCacheDir($cacheDir)
+  public function setCacheDir(string $cacheDir): void
   {
     parent::setCacheDir($cacheDir);
 
@@ -315,9 +316,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $moduleName The module name
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getControllerDirs($moduleName)
+  public function getControllerDirs(string $moduleName): array
   {
     if (!isset($this->cache['getControllerDirs'][$moduleName]))
     {
@@ -349,9 +350,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $moduleName The module name
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getLibDirs($moduleName)
+  public function getLibDirs(string $moduleName): array
   {
     $dirs = array();
 
@@ -368,9 +369,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $moduleName The module name
    *
-   * @return array An array of directories
+   * @return string[] An array of directories
    */
-  public function getTemplateDirs($moduleName)
+  public function getTemplateDirs(string $moduleName): array
   {
     $dirs = array();
 
@@ -387,9 +388,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param  string $moduleName The module name
    *
-   * @return array  An array of directories
+   * @return string[]  An array of directories
    */
-  public function getHelperDirs($moduleName = '')
+  public function getHelperDirs(string $moduleName = null): array
   {
     $dirs = array();
 
@@ -417,9 +418,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * @param string $moduleName    The module name
    * @param string $templateFile  The template file
    *
-   * @return string A template directory
+   * @return string|null A template directory
    */
-  public function getTemplateDir($moduleName, $templateFile)
+  public function getTemplateDir(string $moduleName, string $templateFile): ?string
   {
     if (!isset($this->cache['getTemplateDir'][$moduleName][$templateFile]))
     {
@@ -443,9 +444,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * @param string $moduleName    The module name
    * @param string $templateFile  The template file
    *
-   * @return string A template path
+   * @return string|null A template path
    */
-  public function getTemplatePath($moduleName, $templateFile)
+  public function getTemplatePath(string $moduleName, string $templateFile): ?string
   {
     $dir = $this->getTemplateDir($moduleName, $templateFile);
 
@@ -453,8 +454,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
   }
   /**
    * @see sfProjectConfiguration
+   * @return string[]
    */
-  public function getPluginPaths()
+  public function getPluginPaths(): array
   {
     if (!isset($this->cache['getPluginPaths']))
     {
@@ -467,9 +469,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
   /**
    * Gets the decorator directories.
    *
-   * @return array  An array of the decorator directories
+   * @return string[]  An array of the decorator directories
    */
-  public function getDecoratorDirs()
+  public function getDecoratorDirs(): array
   {
     return array(sfConfig::get('sf_app_template_dir'));
   }
@@ -481,7 +483,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return string A template directory
    */
-  public function getDecoratorDir($template)
+  public function getDecoratorDir(string $template): ?string
   {
     foreach ($this->getDecoratorDirs() as $dir)
     {
@@ -490,14 +492,15 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
         return $dir;
       }
     }
+    return null;
   }
 
   /**
    * Gets the i18n directories to use globally.
    *
-   * @return array An array of i18n directories
+   * @return string[] An array of i18n directories
    */
-  public function getI18NGlobalDirs()
+  public function getI18NGlobalDirs(): array
   {
     $dirs = array();
 
@@ -516,9 +519,9 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @param string $moduleName The module name
    *
-   * @return array An array of i18n directories
+   * @return string[] An array of i18n directories
    */
-  public function getI18NDirs($moduleName)
+  public function getI18NDirs(string $moduleName): array
   {
     $dirs = array();
 
@@ -548,7 +551,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return array An array of paths
    */
-  public function getConfigPaths($configPath)
+  public function getConfigPaths(string $configPath): array
   {
     $globalConfigPath = basename(dirname($configPath)).'/'.basename($configPath);
 
@@ -599,7 +602,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * @param array|string $helpers    An array of helpers to load
    * @param string       $moduleName A module name (optional)
    */
-  public function loadHelpers($helpers, $moduleName = '')
+  public function loadHelpers(array $helpers, string $moduleName = ''): void
   {
     foreach ((array) $helpers as $helperName)
     {
@@ -651,7 +654,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return string The application name
    */
-  public function getApplication()
+  public function getApplication(): string
   {
     return $this->application;
   }
@@ -661,7 +664,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return string The environment name
    */
-  public function getEnvironment()
+  public function getEnvironment(): string
   {
     return $this->environment;
   }
@@ -671,7 +674,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return Boolean true if the configuration has debug enabled, false otherwise
    */
-  public function isDebug()
+  public function isDebug(): bool
   {
     return $this->debug;
   }

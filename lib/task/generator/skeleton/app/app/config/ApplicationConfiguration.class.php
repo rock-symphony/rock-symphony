@@ -2,7 +2,7 @@
 
 class ##APP_NAME##Configuration extends sfApplicationConfiguration
 {
-  public function configure()
+  public function configure(): void
   {
   }
 }

@@ -44,7 +44,7 @@ abstract class sfComponent
    * @param string $moduleName
    * @param string $actionName
    */
-  public function __construct($context, $moduleName, $actionName)
+  public function __construct(sfContext $context, string $moduleName, string $actionName)
   {
     $this->initialize($context, $moduleName, $actionName);
   }
@@ -58,7 +58,7 @@ abstract class sfComponent
    *
    * @return void
    */
-  public function initialize($context, $moduleName, $actionName)
+  public function initialize(sfContext $context, string $moduleName, string $actionName): void
   {
     $this->moduleName             = $moduleName;
     $this->actionName             = $actionName;
@@ -85,14 +85,14 @@ abstract class sfComponent
    *
    * @return mixed     A string containing the view name associated with this action
    */
-  abstract function execute($request);
+  abstract function execute(sfRequest $request);
 
   /**
    * Gets the module name associated with this component.
    *
    * @return string A module name
    */
-  public function getModuleName()
+  public function getModuleName(): string
   {
     return $this->moduleName;
   }
@@ -102,7 +102,7 @@ abstract class sfComponent
    *
    * @return string An action name
    */
-  public function getActionName()
+  public function getActionName(): string
   {
     return $this->actionName;
   }
@@ -112,7 +112,7 @@ abstract class sfComponent
    *
    * @return sfContext The current sfContext instance
    */
-  public final function getContext()
+  public final function getContext(): sfContext
   {
     return $this->context;
   }
@@ -120,9 +120,9 @@ abstract class sfComponent
   /**
    * Retrieves the current service container instance.
    *
-   * @return sfServiceContainer The current sfServiceContainer instance
+   * @return sfServiceContainerInterface The current sfServiceContainer instance
    */
-  public final function getServiceContainer()
+  public final function getServiceContainer(): sfServiceContainerInterface
   {
     return $this->context->getServiceContainer();
   }
@@ -134,7 +134,7 @@ abstract class sfComponent
    *
    * @return object The service instance
    */
-  public function getService($id)
+  public function getService(string $id)
   {
     return $this->getServiceContainer()->getService($id);
   }
@@ -144,7 +144,7 @@ abstract class sfComponent
    *
    * @return sfLogger The current sfLogger instance
    */
-  public final function getLogger()
+  public final function getLogger(): sfLogger
   {
     return $this->context->getLogger();
   }
@@ -159,7 +159,7 @@ abstract class sfComponent
    *
    * @see sfLogger
    */
-  public function logMessage($message, $priority = 'info')
+  public function logMessage($message, string $priority = 'info'): void
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -176,7 +176,7 @@ abstract class sfComponent
    *
    * @return string The translated string
    */
-  public function __($string, $args = array(), $catalogue = 'messages')
+  public function __(string $string, array $args = array(), string $catalogue = 'messages'): string
   {
     return $this->context->getI18N()->__($string, $args, $catalogue);
   }
@@ -193,7 +193,7 @@ abstract class sfComponent
    *
    * @return string The request parameter value
    */
-  public function getRequestParameter($name, $default = null)
+  public function getRequestParameter(string $name, $default = null)
   {
     return $this->requestParameterHolder->get($name, $default);
   }
@@ -208,7 +208,7 @@ abstract class sfComponent
    * @param string $name The parameter name
    * @return boolean true if the request parameter exists, false otherwise
    */
-  public function hasRequestParameter($name)
+  public function hasRequestParameter(string $name): bool
   {
     return $this->requestParameterHolder->has($name);
   }
@@ -222,7 +222,7 @@ abstract class sfComponent
    *
    * @return sfRequest The current sfRequest implementation instance
    */
-  public function getRequest()
+  public function getRequest(): sfRequest
   {
     return $this->request;
   }
@@ -236,7 +236,7 @@ abstract class sfComponent
    *
    * @return sfResponse The current sfResponse implementation instance
    */
-  public function getResponse()
+  public function getResponse(): sfResponse
   {
     return $this->response;
   }
@@ -250,7 +250,7 @@ abstract class sfComponent
    *
    * @return sfController The current sfController implementation instance
    */
-  public function getController()
+  public function getController(): sfController
   {
     return $this->context->getController();
   }
@@ -268,7 +268,7 @@ abstract class sfComponent
    *
    * @return string  The URL
    */
-  public function generateUrl($route, $params = array(), $absolute = false)
+  public function generateUrl(string $route, array $params = array(), bool $absolute = false): string
   {
     return $this->context->getRouting()->generate($route, $params, $absolute);
   }
@@ -282,7 +282,7 @@ abstract class sfComponent
    *
    * @return sfUser The current sfUser implementation instance
    */
-  public function getUser()
+  public function getUser(): sfUser
   {
     return $this->context->getUser();
   }
@@ -292,7 +292,7 @@ abstract class sfComponent
    *
    * @return sfMailer A sfMailer instance
    */
-  public function getMailer()
+  public function getMailer(): sfMailer
   {
     return $this->getContext()->getMailer();
   }
@@ -308,7 +308,7 @@ abstract class sfComponent
    * @param mixed   $value The variable value
    * @param Boolean $safe  true if the value is safe for output (false by default)
    */
-  public function setVar($name, $value, $safe = false)
+  public function setVar(string $name, $value, bool $safe = false): void
   {
     $this->varHolder->set($name, $safe ? new sfOutputEscaperSafe($value) : $value);
   }
@@ -320,7 +320,7 @@ abstract class sfComponent
    *
    * @return mixed  The variable value
    */
-  public function getVar($name)
+  public function getVar(string $name)
   {
     return $this->varHolder->get($name);
   }
@@ -330,7 +330,7 @@ abstract class sfComponent
    *
    * @return sfParameterHolder The variable holder.
    */
-  public function getVarHolder()
+  public function getVarHolder(): sfParameterHolder
   {
     return $this->varHolder;
   }

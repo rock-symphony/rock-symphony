@@ -18,16 +18,18 @@
  */
 class sfWebDebugPanelSymfonyVersion extends sfWebDebugPanel
 {
-  public function getTitle()
+  public function getTitle(): string
   {
     return '<span id="sfWebDebugSymfonyVersion">'.SYMFONY_VERSION.'</span>';
   }
 
-  public function getPanelTitle()
+  public function getPanelTitle(): string
   {
+    return '';
   }
 
-  public function getPanelContent()
+  public function getPanelContent(): string
   {
+    return '';
   }
 }

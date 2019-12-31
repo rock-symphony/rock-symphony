@@ -4,7 +4,7 @@ require_once ##COMPOSER_AUTOLOAD##;
 
 class ProjectConfiguration extends sfProjectConfiguration
 {
-  public function setup()
+  public function setup(): void
   {
     // {{injection}}
   }

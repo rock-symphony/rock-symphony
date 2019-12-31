@@ -25,7 +25,7 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
    *
    * @return string Data to be written to a cache file
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     $class = sfConfig::get('sf_app').'_'.sfConfig::get('sf_environment').'ServiceContainer';
 
@@ -59,7 +59,7 @@ class sfServiceConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     $config = static::parseYamls($configFiles);
     $config = static::flattenConfigurationWithEnvironment($config);

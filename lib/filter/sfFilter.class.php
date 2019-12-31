@@ -26,8 +26,7 @@ abstract class sfFilter
   protected $context = null;
 
   /** @var bool[] */
-  public static
-    $filterCalled    = array();
+  public static $filterCalled = [];
 
   /**
    * Class constructor.
@@ -37,10 +36,12 @@ abstract class sfFilter
    * @param sfContext $context
    * @param array     $parameters
    */
-  public function __construct($context, $parameters = array())
+  public function __construct(sfContext $context, array $parameters = [])
   {
     $this->initialize($context, $parameters);
   }
+
+  abstract function execute(sfFilterChain $chain): void;
 
   /**
    * Initializes this Filter.
@@ -48,16 +49,14 @@ abstract class sfFilter
    * @param sfContext $context    The current application context
    * @param array     $parameters An associative array of initialization parameters
    *
-   * @return boolean|void true
+   * @return void
    */
-  public function initialize($context, $parameters = array())
+  public function initialize(sfContext $context, array $parameters = []): void
   {
     $this->context = $context;
 
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
-
-    return true;
   }
 
   /**
@@ -65,7 +64,7 @@ abstract class sfFilter
    *
    * @return boolean true if this is the first call to the sfFilter instance, false otherwise
    */
-  protected function isFirstCall()
+  protected function isFirstCall(): bool
   {
     $class = get_class($this);
     if (isset(self::$filterCalled[$class]))
@@ -85,7 +84,7 @@ abstract class sfFilter
    *
    * @return sfContext The current sfContext instance
    */
-  public final function getContext()
+  public final function getContext(): sfContext
   {
     return $this->context;
   }
@@ -95,7 +94,7 @@ abstract class sfFilter
    *
    * @return sfParameterHolder A sfParameterHolder instance
    */
-  public function getParameterHolder()
+  public function getParameterHolder(): sfParameterHolder
   {
     return $this->parameterHolder;
   }
@@ -108,13 +107,13 @@ abstract class sfFilter
    * <code>$this->getParameterHolder()->get()</code>
    *
    * @param string $name    The key name
-   * @param string $default The default value
+   * @param mixed  $default The default value
    *
-   * @return string The value associated with the key
+   * @return mixed The value associated with the key
    *
    * @see sfParameterHolder
    */
-  public function getParameter($name, $default = null)
+  public function getParameter(string $name, $default = null)
   {
     return $this->parameterHolder->get($name, $default);
   }
@@ -132,7 +131,7 @@ abstract class sfFilter
    *
    * @see sfParameterHolder
    */
-  public function hasParameter($name)
+  public function hasParameter(string $name): bool
   {
     return $this->parameterHolder->has($name);
   }
@@ -145,12 +144,12 @@ abstract class sfFilter
    * <code>$this->getParameterHolder()->set()</code>
    *
    * @param string $name  The key name
-   * @param string $value The value
+   * @param mixed  $value The value
    *
    * @see sfParameterHolder
    */
-  public function setParameter($name, $value)
+  public function setParameter(string $name, $value): void
   {
-    return $this->parameterHolder->set($name, $value);
+    $this->parameterHolder->set($name, $value);
   }
 }

@@ -160,7 +160,7 @@ class sfBrowser extends sfBrowserBase
 
 class sfFakeRenderingFilter extends sfFilter
 {
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain): void
   {
     $filterChain->execute();
 

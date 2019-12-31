@@ -30,7 +30,7 @@ class sfFilterConfigHandler extends sfYamlConfigHandler
    * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
    * @throws sfParseException If a requested configuration file is improperly formatted
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // parse the yaml
     $config = static::getConfiguration($configFiles);
@@ -83,6 +83,7 @@ class sfFilterConfigHandler extends sfYamlConfigHandler
       if ($condition)
       {
         // parse parameters
+        /** @var string $parameters */
         $parameters = isset($keys['param']) ? var_export($keys['param'], true) : 'null';
 
         // append new data
@@ -131,14 +132,14 @@ class sfFilterConfigHandler extends sfYamlConfigHandler
    *
    * @param string $category   The category name
    * @param string $class      The filter class name
-   * @param array  $parameters Filter default parameters
+   * @param string $parameters Filter default parameters (as php code from var_export()
    *
    * @return string The PHP statement
    */
-  protected function addFilter($category, $class, $parameters)
+  protected function addFilter(string $category, string $class, string $parameters): string
   {
     return sprintf("\nlist(\$class, \$parameters) = (array) sfConfig::get('sf_%s_filter', array('%s', %s));\n".
-                      "\$filter = new \$class(sfContext::getInstance(), \$parameters);\n".
+                      "\$filter = new \$class(sfContext::getInstance(), \$parameters ?: []);\n".
                       "\$this->register(\$filter);",
                       $category, $class, $parameters);
   }
@@ -148,11 +149,11 @@ class sfFilterConfigHandler extends sfYamlConfigHandler
    *
    * @param string $category   The category name
    * @param string $class      The filter class name
-   * @param array  $parameters Filter default parameters
+   * @param string $parameters Filter default parameters (as php code from var_export())
    *
    * @return string The PHP statement
    */
-  protected function addSecurityFilter($category, $class, $parameters)
+  protected function addSecurityFilter(string $category, string $class, string $parameters): string
   {
     return <<<EOF
 
@@ -168,7 +169,7 @@ EOF;
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     $config = static::parseYaml($configFiles[0]);
     foreach (array_slice($configFiles, 1) as $i => $configFile)

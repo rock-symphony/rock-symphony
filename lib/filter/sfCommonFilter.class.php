@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -23,7 +23,7 @@ class sfCommonFilter extends sfFilter
    *
    * @param sfFilterChain $filterChain A sfFilterChain instance
    */
-  public function execute($filterChain)
+  public function execute(sfFilterChain $filterChain): void
   {
     // execute next filter
     $filterChain->execute();
@@ -35,7 +35,7 @@ class sfCommonFilter extends sfFilter
     $content = $response->getContent();
     if (false !== ($pos = strpos($content, '</head>')))
     {
-      $this->context->getConfiguration()->loadHelpers(array('Tag', 'Asset'));
+      $this->context->getConfiguration()->loadHelpers(['Tag', 'Asset']);
       $html = '';
       if (!sfConfig::get('symfony.asset.javascripts_included', false))
       {

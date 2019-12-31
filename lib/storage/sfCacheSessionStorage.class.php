@@ -40,11 +40,9 @@ class sfCacheSessionStorage extends sfStorage
    *                        session_cookie_secure [required] send only if secure connection
    *                        session_cookie_http_only [required] accessible only via http protocol
    *
-   * @return bool true, when initialization completes successfully.
-   *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this Storage.
    */
-  public function initialize($options = array())
+  public function initialize(array $options = array()): void
   {
     // initialize parent
 
@@ -151,8 +149,6 @@ class sfCacheSessionStorage extends sfStorage
     }
     session_id($this->id);
     $this->response->addCacheControlHttpHeader('private');
-
-    return true;
   }
 
   /**
@@ -165,7 +161,7 @@ class sfCacheSessionStorage extends sfStorage
    *
    * @return void
    */
-  public function write($key, $data)
+  public function write(string $key, $data): void
   {
     $this->dataChanged = true;
 
@@ -181,7 +177,7 @@ class sfCacheSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key.
    */
-  public function read($key)
+  public function read(string $key)
   {
     $retval = null;
 
@@ -202,7 +198,7 @@ class sfCacheSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key.
    */
-  public function remove($key)
+  public function remove(string $key)
   {
     $retval = null;
 
@@ -222,11 +218,9 @@ class sfCacheSessionStorage extends sfStorage
    *
    * @param boolean $destroy Destroy session when regenerating?
    *
-   * @return boolean True if session regenerated, false if error
-   *
    * @throws <b>sfStorageException</b> If an error occurs while regenerating this storage
    */
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
     if($destroy)
     {
@@ -243,14 +237,12 @@ class sfCacheSessionStorage extends sfStorage
     $this->setSessionCookie($this->id);
 
     session_id($this->id);
-
-    return true;
   }
 
   /**
    * Expires the session storage instance.
    */
-  public function expire()
+  public function expire(): void
   {
     // destroy data and regenerate id
     $this->regenerate(true);
@@ -266,7 +258,7 @@ class sfCacheSessionStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while shutting down this storage
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     // only update cache if session has changed
     if($this->dataChanged === true)
@@ -282,7 +274,7 @@ class sfCacheSessionStorage extends sfStorage
   /**
    * @return string
    */
-  private function generateSessionId()
+  private function generateSessionId(): string
   {
     $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : 'localhost';
     $ua = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'ua';
@@ -295,7 +287,7 @@ class sfCacheSessionStorage extends sfStorage
    * @param string $session_id
    * @return void
    */
-  private function setSessionCookie($session_id)
+  private function setSessionCookie(string $session_id): void
   {
     $this->response->setCookie(
       $this->options['session_name'],

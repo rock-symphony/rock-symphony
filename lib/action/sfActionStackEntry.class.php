@@ -4,7 +4,7 @@
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
  * (c) 2004-2006 Sean Kerr <sean@code-box.org>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -20,11 +20,14 @@
  */
 class sfActionStackEntry
 {
-  protected
-    $actionInstance = null,
-    $actionName     = null,
-    $moduleName     = null,
-    $presentation   = null;
+  /** @var \sfAction */
+  protected $actionInstance = null;
+  /** @var string */
+  protected $actionName = null;
+  /** @var string */
+  protected $moduleName = null;
+  /** @var null */
+  protected $presentation = null;
 
   /**
    * Class constructor.
@@ -33,7 +36,7 @@ class sfActionStackEntry
    * @param string   $actionName     An action name
    * @param sfAction $actionInstance An sfAction implementation instance
    */
-  public function __construct($moduleName, $actionName, $actionInstance)
+  public function __construct(string $moduleName, string $actionName, sfAction $actionInstance)
   {
     $this->actionName     = $actionName;
     $this->actionInstance = $actionInstance;
@@ -55,7 +58,7 @@ class sfActionStackEntry
    *
    * @return sfAction An sfAction implementation instance
    */
-  public function getActionInstance()
+  public function getActionInstance(): sfAction
   {
     return $this->actionInstance;
   }
@@ -65,7 +68,7 @@ class sfActionStackEntry
    *
    * @return string A module name
    */
-  public function getModuleName()
+  public function getModuleName(): string
   {
     return $this->moduleName;
   }

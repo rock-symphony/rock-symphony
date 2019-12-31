@@ -20,9 +20,9 @@
 abstract class sfResponse implements Serializable
 {
   /** @var array */
-  protected $options = array();
+  protected $options = [];
   /** @var sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
   /** @var string */
   protected $content = '';
 
@@ -34,7 +34,7 @@ abstract class sfResponse implements Serializable
    * @param sfEventDispatcher $dispatcher
    * @param array             $options
    */
-  public function __construct(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->initialize($dispatcher, $options);
   }
@@ -53,7 +53,7 @@ abstract class sfResponse implements Serializable
    *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfResponse
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, array $options = []): void
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;
@@ -69,7 +69,7 @@ abstract class sfResponse implements Serializable
    *
    * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
    */
-  public function setEventDispatcher(sfEventDispatcher $dispatcher)
+  public function setEventDispatcher(sfEventDispatcher $dispatcher): void
   {
     $this->dispatcher = $dispatcher;
   }
@@ -79,7 +79,7 @@ abstract class sfResponse implements Serializable
    *
    * @param string $content
    */
-  public function setContent($content)
+  public function setContent(string $content): void
   {
     $this->content = $content;
   }
@@ -89,7 +89,7 @@ abstract class sfResponse implements Serializable
    *
    * @return string Content
    */
-  public function getContent()
+  public function getContent(): string
   {
     return $this->content;
   }
@@ -97,7 +97,7 @@ abstract class sfResponse implements Serializable
   /**
    * Outputs the response content
    */
-  public function sendContent()
+  public function sendContent(): void
   {
     $event = $this->dispatcher->filter(new sfEvent($this, 'response.filter_content'), $this->getContent());
     $content = $event->getReturnValue();
@@ -113,7 +113,7 @@ abstract class sfResponse implements Serializable
   /**
    * Sends the content.
    */
-  public function send()
+  public function send(): void
   {
     $this->sendContent();
   }
@@ -123,15 +123,13 @@ abstract class sfResponse implements Serializable
    *
    * @return array The options.
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
 
   /**
    * Serializes the current instance.
-   *
-   * @return array Objects instance
    */
   public function serialize()
   {

@@ -3,24 +3,24 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
-require_once($_test_dir.'/unit/sfContextMock.class.php');
-require_once($_test_dir.'/unit/sfNoRouting.class.php');
+require_once(__DIR__ . '/../../bootstrap/unit.php');
+require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
+require_once(__DIR__ . '/../../unit/sfNoRouting.class.php');
 
 $t = new lime_test(21);
 
 class myWebResponse extends sfWebResponse
 {
-  public function sendHttpHeaders()
+  public function sendHttpHeaders(): void
   {
   }
 
-  public function send()
+  public function send(): void
   {
   }
 }
@@ -28,13 +28,13 @@ class myWebResponse extends sfWebResponse
 $_SERVER['HTTP_HOST'] = 'localhost';
 $_SERVER['SCRIPT_NAME'] = '/index.php';
 sfConfig::set('sf_max_forwards', 10);
-$context = sfContext::getInstance(array(
-  'routing'  => 'sfNoRouting',
-  'request'  => 'sfWebRequest',
+$context = sfContextMock::mockInstance([
+  'routing' => 'sfNoRouting',
+  'request' => 'sfWebRequest',
   'response' => 'myWebResponse',
-));
+]);
 
-$controller = new sfFrontWebController($context, null);
+$controller = new sfFrontWebController($context);
 
 $tests = array(
   'module/action' => array(
@@ -171,6 +171,7 @@ catch (sfParseException $e)
 // ->redirect()
 $t->diag('->redirect()');
 $controller->redirect('module/action?id=1#photos');
+/** @var \sfWebResponse $response */
 $response = $context->getResponse();
 $t->like($response->getContent(), '~http\://localhost/index.php/\?module=module&amp;action=action&amp;id=1#photos~', '->redirect() adds a refresh meta in the content');
 $t->like($response->getHttpHeader('Location'), '~http\://localhost/index.php/\?module=module&action=action&id=1#photos~', '->redirect() adds a Location HTTP header');
@@ -181,7 +182,7 @@ try
   $controller->redirect(null);
   $t->fail('->redirect() throw an InvalidArgumentException when the url argument is null');
 }
-catch (InvalidArgumentException $iae)
+catch (TypeError $err)
 {
   $t->pass('->redirect() throw an InvalidArgumentException when the url argument is null');
 }
@@ -196,7 +197,7 @@ try
   $controller->redirect('');
   $t->fail('->redirect() throw an InvalidArgumentException when the url argument is an empty string');
 }
-catch (InvalidArgumentException $iae)
+catch (InvalidArgumentException $err)
 {
   $t->pass('->redirect() throw an InvalidArgumentException when the url argument is an empty string');
 }

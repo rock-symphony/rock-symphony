@@ -20,7 +20,7 @@ class myRequest extends sfWebRequest
   public $charsets = null;
   public $acceptableContentTypes = null;
 
-  public function initialize(sfEventDispatcher $dispatcher, $parameters = array(), $attributes = array(), $options = array())
+  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
   {
     if (isset($options['content_custom_only_for_test']))
     {
@@ -38,12 +38,12 @@ class myRequest extends sfWebRequest
     $this->resetPathInfoArray();
   }
 
-  public function setOption($key, $value)
+  public function setOption(string $key, $value): void
   {
     $this->options[$key] = $value;
   }
 
-  public function resetPathInfoArray()
+  public function resetPathInfoArray(): void
   {
     foreach (array_diff(array_keys($this->getPathInfoArray()), self::$initialPathArrayKeys) as $key)
     {

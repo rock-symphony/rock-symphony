@@ -32,7 +32,7 @@ class sfPDOSessionStorage extends sfDatabaseSessionStorage
    *
    * @throws <b>DatabaseException</b> If the session cannot be destroyed
    */
-  public function sessionDestroy($id)
+  public function sessionDestroy(string $id): bool
   {
     // get table/column
     $db_table  = $this->options['db_table'];
@@ -51,7 +51,7 @@ class sfPDOSessionStorage extends sfDatabaseSessionStorage
     {
       throw new sfDatabaseException(sprintf('PDOException was thrown when trying to manipulate session data. Message: %s', $e->getMessage()));
     }
-    
+
     return true;
   }
 
@@ -64,7 +64,7 @@ class sfPDOSessionStorage extends sfDatabaseSessionStorage
    *
    * @throws <b>DatabaseException</b> If any old sessions cannot be cleaned
    */
-  public function sessionGC($lifetime)
+  public function sessionGC(int $lifetime): bool
   {
     // get table/column
     $db_table    = $this->options['db_table'];
@@ -94,7 +94,7 @@ class sfPDOSessionStorage extends sfDatabaseSessionStorage
    *
    * @throws <b>DatabaseException</b> If the session cannot be read
    */
-  public function sessionRead($id)
+  public function sessionRead(string $id): string
   {
     // get table/columns
     $db_table    = $this->options['db_table'];
@@ -147,7 +147,7 @@ class sfPDOSessionStorage extends sfDatabaseSessionStorage
    *
    * @throws <b>DatabaseException</b> If the session data cannot be written
    */
-  public function sessionWrite($id, $data)
+  public function sessionWrite(string $id, string $data): bool
   {
     // get table/column
     $db_table    = $this->options['db_table'];

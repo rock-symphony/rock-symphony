@@ -18,12 +18,16 @@
  */
 class sfEvent implements ArrayAccess
 {
-  protected
-    $value      = null,
-    $processed  = false,
-    $subject    = null,
-    $name       = '',
-    $parameters = null;
+  /** @var mixed */
+  protected $value      = null;
+  /** @var bool */
+  protected $processed  = false;
+  /** @var mixed */
+  protected $subject;
+  /** @var string */
+  protected $name;
+  /** @var array */
+  protected $parameters;
 
   /**
    * Constructs a new sfEvent.
@@ -32,7 +36,7 @@ class sfEvent implements ArrayAccess
    * @param string  $name         The event name
    * @param array   $parameters   An array of parameters
    */
-  public function __construct($subject, $name, $parameters = array())
+  public function __construct($subject, string $name, array $parameters = array())
   {
     $this->subject = $subject;
     $this->name = $name;
@@ -55,7 +59,7 @@ class sfEvent implements ArrayAccess
    *
    * @return string The event name
    */
-  public function getName()
+  public function getName(): string
   {
     return $this->name;
   }
@@ -65,7 +69,7 @@ class sfEvent implements ArrayAccess
    *
    * @param mixed $value The return value
    */
-  public function setReturnValue($value)
+  public function setReturnValue($value): void
   {
     $this->value = $value;
   }
@@ -85,7 +89,7 @@ class sfEvent implements ArrayAccess
    *
    * @param Boolean $processed The processed flag value
    */
-  public function setProcessed($processed)
+  public function setProcessed(bool $processed): void
   {
     $this->processed = (boolean) $processed;
   }
@@ -95,7 +99,7 @@ class sfEvent implements ArrayAccess
    *
    * @return Boolean true if the event has been processed, false otherwise
    */
-  public function isProcessed()
+  public function isProcessed(): bool
   {
     return $this->processed;
   }
@@ -105,7 +109,7 @@ class sfEvent implements ArrayAccess
    *
    * @return array The event parameters
    */
-  public function getParameters()
+  public function getParameters(): array
   {
     return $this->parameters;
   }

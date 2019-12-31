@@ -20,14 +20,14 @@ class sfDefineEnvironmentConfigHandler extends sfYamlConfigHandler
   /**
    * Executes this configuration handler.
    *
-   * @param string $configFiles An absolute filesystem path to a configuration file
+   * @param string[] $configFiles An absolute filesystem path to a configuration file
    *
    * @return string Data to be written to a cache file
    *
    * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
    * @throws sfParseException If a requested configuration file is improperly formatted
    */
-  public function execute($configFiles)
+  public function execute(array $configFiles): string
   {
     // get our prefix
     $prefix = strtolower($this->getParameterHolder()->get('prefix', ''));
@@ -72,13 +72,13 @@ class sfDefineEnvironmentConfigHandler extends sfYamlConfigHandler
   /**
    * Gets values from the configuration array.
    *
-   * @param string $prefix   The prefix name
-   * @param string $category The category name
-   * @param mixed  $keys      The key/value array
+   * @param string          $prefix   The prefix name
+   * @param string          $category The category name
+   * @param mixed|string[]  $keys      The key/value array
    *
    * @return array The new key/value array
    */
-  protected function getValues($prefix, $category, $keys)
+  protected function getValues(string $prefix, string $category, $keys): array
   {
     if (!is_array($keys))
     {
@@ -106,11 +106,11 @@ class sfDefineEnvironmentConfigHandler extends sfYamlConfigHandler
    *
    * @param string $category The category name
    * @param string $key      The key name
-   * @param string $value    The value
+   * @param mixed  $value    The value
    *
-   * @return string Return the new key and value
+   * @return array Return the new key and value
    */
-  protected function fixCategoryValue($category, $key, $value)
+  protected function fixCategoryValue(string $category, string $key, $value): array
   {
     return array($category.$key, $value);
   }
@@ -123,7 +123,7 @@ class sfDefineEnvironmentConfigHandler extends sfYamlConfigHandler
    *
    * @return string The fixed category name
    */
-  protected function fixCategoryName($category, $prefix)
+  protected function fixCategoryName(string $category, string $prefix): string
   {
     // categories starting without a period will be prepended to the key
     if ($category[0] != '.')
@@ -142,7 +142,7 @@ class sfDefineEnvironmentConfigHandler extends sfYamlConfigHandler
    * @see sfConfigHandler
    * @inheritdoc
    */
-  static public function getConfiguration(array $configFiles)
+  static public function getConfiguration(array $configFiles): array
   {
     return static::replaceConstants(static::flattenConfigurationWithEnvironment(static::parseYamls($configFiles)));
   }

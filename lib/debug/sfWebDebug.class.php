@@ -18,11 +18,14 @@
  */
 class sfWebDebug
 {
-  protected
-    $dispatcher = null,
-    $logger     = null,
-    $options    = array(),
-    $panels     = array();
+  /** @var sfEventDispatcher */
+  protected $dispatcher;
+  /** @var sfVarLogger */
+  protected $logger;
+  /** @var array */
+  protected $options = array();
+  /** @var sfWebDebugPanel[] */
+  protected $panels = array();
 
   /**
    * Constructor.
@@ -60,7 +63,7 @@ class sfWebDebug
   /**
    * Configures the web debug toolbar.
    */
-  public function configure()
+  public function configure(): void
   {
     $this->setPanel('symfony_version', new sfWebDebugPanelSymfonyVersion($this));
     if (sfConfig::get('sf_logging_enabled'))
@@ -83,7 +86,7 @@ class sfWebDebug
    *
    * @return sfVarLogger The logger instance
    */
-  public function getLogger()
+  public function getLogger(): sfVarLogger
   {
     return $this->logger;
   }
@@ -93,7 +96,7 @@ class sfWebDebug
    *
    * @return sfEventDispatcher The event dispatcher
    */
-  public function getEventDispatcher()
+  public function getEventDispatcher(): sfEventDispatcher
   {
     return $this->dispatcher;
   }
@@ -101,9 +104,9 @@ class sfWebDebug
   /**
    * Gets the registered panels.
    *
-   * @return array The panels
+   * @return sfWebDebugPanel[] The panels
    */
-  public function getPanels()
+  public function getPanels(): array
   {
     return $this->panels;
   }
@@ -114,7 +117,7 @@ class sfWebDebug
    * @param string          $name  The panel name
    * @param sfWebDebugPanel $panel The panel
    */
-  public function setPanel($name, sfWebDebugPanel $panel)
+  public function setPanel(string $name, sfWebDebugPanel $panel)
   {
     $this->panels[$name] = $panel;
   }
@@ -124,7 +127,7 @@ class sfWebDebug
    *
    * @param string $name The panel name
    */
-  public function removePanel($name)
+  public function removePanel(string $name): void
   {
     unset($this->panels[$name]);
   }
@@ -137,7 +140,7 @@ class sfWebDebug
    *
    * @return mixed The option value
    */
-  public function getOption($name, $default = null)
+  public function getOption(string $name, $default = null)
   {
     return isset($this->options[$name]) ? $this->options[$name] : $default;
   }
@@ -149,7 +152,7 @@ class sfWebDebug
    *
    * @return string The content with the web debug toolbar injected
    */
-  public function injectToolbar($content)
+  public function injectToolbar(string $content): string
   {
     if (function_exists('mb_stripos'))
     {
@@ -188,7 +191,7 @@ class sfWebDebug
    *
    * @return string The web debug toolbar HTML
    */
-  public function asHtml()
+  public function asHtml(): string
   {
     $current = isset($this->options['request_parameters']['sfWebDebugPanel']) ? $this->options['request_parameters']['sfWebDebugPanel'] : null;
 
@@ -247,7 +250,7 @@ class sfWebDebug
    *
    * @return string The priority as a string
    */
-  public function getPriority($value)
+  public function getPriority(int $value): string
   {
     if ($value >= sfLogger::INFO)
     {
@@ -268,7 +271,7 @@ class sfWebDebug
    *
    * @return string The javascript code
    */
-  public function getJavascript()
+  public function getJavascript(): string
   {
     return <<<EOF
 /* <![CDATA[ */
@@ -422,7 +425,7 @@ EOF;
    *
    * @return string The stylesheet code
    */
-  public function getStylesheet()
+  public function getStylesheet(): string
   {
     return <<<EOF
 #sfWebDebug

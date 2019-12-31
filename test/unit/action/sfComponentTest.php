@@ -8,21 +8,22 @@
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
-require_once($_test_dir.'/unit/sfContextMock.class.php');
-require_once($_test_dir.'/unit/sfNoRouting.class.php');
+require_once(__DIR__ . '/../../bootstrap/unit.php');
+require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
+require_once(__DIR__ . '/../../unit/sfNoRouting.class.php');
 
 $t = new lime_test(6);
 
 class myComponent extends sfComponent
 {
-  function execute($request) {}
+  function execute(sfRequest $request) {}
 }
 
-$context = sfContext::getInstance(array(
+$context = sfContextMock::mockInstance([
   'routing' => 'sfNoRouting',
   'request' => 'sfWebRequest',
-));
+  'response' => 'sfWebResponse',
+]);
 
 // ->initialize()
 $t->diag('->initialize()');

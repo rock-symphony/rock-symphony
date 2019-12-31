@@ -20,17 +20,17 @@ use Symfony\Component\Yaml\Yaml;
  */
 class sfWebDebugPanelConfig extends sfWebDebugPanel
 {
-  public function getTitle()
+  public function getTitle(): string
   {
     return '<img src="'.$this->webDebug->getOption('image_root_path').'/config.png" alt="Config" /> config';
   }
 
-  public function getPanelTitle()
+  public function getPanelTitle(): string
   {
     return 'Configuration';
   }
 
-  public function getPanelContent()
+  public function getPanelContent(): string
   {
     $config = array(
       'debug'        => sfConfig::get('sf_debug')           ? 'on' : 'off',
@@ -66,7 +66,7 @@ class sfWebDebugPanelConfig extends sfWebDebugPanel
    *
    * @return string An HTML string
    */
-  protected function formatArrayAsHtml($id, $values)
+  protected function formatArrayAsHtml(string $id, array $values): string
   {
     $id = ucfirst(strtolower($id));
 

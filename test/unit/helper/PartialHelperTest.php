@@ -3,34 +3,34 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
-require_once($_test_dir.'/unit/sfContextMock.class.php');
-require_once(__DIR__.'/../../../lib/helper/PartialHelper.php');
-
-// Fixme: make this test more beautiful and extend it
+require_once(__DIR__ . '/../../bootstrap/unit.php');
+require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
+require_once(__DIR__ . '/../../../lib/helper/PartialHelper.php');
 
 $t = new lime_test(9);
 
 class MyTestPartialView extends sfPartialView
 {
-  public function render()
+  public function render(): string
   {
     return '==RENDERED==';
   }
 
-  public function initialize($context, $moduleName, $actionName, $viewName)
+  public function initialize(sfContext $context, string $moduleName, string $actionName, string $viewName): void
   {
   }
 
-  public function setPartialVars(array $partialVars)
+  public function setPartialVars(array $partialVars): void
   {
   }
 }
+
+sfContextMock::mockInstance();
 
 $t->diag('get_partial()');
 sfConfig::set('mod_module_partial_view_class', 'MyTest');
@@ -39,7 +39,7 @@ $t->is(get_partial('module/dummy'), '==RENDERED==', 'get_partial() uses the clas
 $t->is(get_partial('MODULE/dummy'), '==RENDERED==', 'get_partial() accepts a case-insensitive module name');
 
 // slots tests
-sfContext::getInstance()->inject('response', 'sfWebResponse');
+sfContextMock::mockInstance(['response' => 'sfWebResponse']);
 
 $t->diag('get_slot()');
 $t->is(get_slot('foo', 'baz'), 'baz', 'get_slot() retrieves default slot content');

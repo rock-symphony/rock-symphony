@@ -14,11 +14,9 @@ $t = new lime_test(50);
 
 class MySessionStorage extends sfSessionTestStorage
 {
-  public function regenerate($destroy = false)
+  public function regenerate(bool $destroy = false): void
   {
     $this->sessionId = rand(1, 9999);
-
-    return true;
   }
 }
 

@@ -3,36 +3,36 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
-require_once($_test_dir.'/unit/sfContextMock.class.php');
+require_once(__DIR__ . '/../../bootstrap/unit.php');
+require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 
-class myController
+class myController extends sfFrontWebController
 {
-  public function genUrl($parameters = array(), $absolute = false)
+  public function genUrl($parameters = [], bool $absolute = false): string
   {
     $url = is_array($parameters) && isset($parameters['sf_route']) ? $parameters['sf_route'] : 'module/action';
     return ($absolute ? '/' : '').$url;
   }
 }
 
-class myRequest
+class myRequest extends sfWebRequest
 {
-  public function getRelativeUrlRoot()
+  public function getRelativeUrlRoot(): string
   {
     return '/public';
   }
-  
-  public function isSecure()
+
+  public function isSecure(): bool
   {
     return true;
   }
 
-  public function getHost()
+  public function getHost(): string
   {
     return 'example.org';
   }
@@ -50,7 +50,7 @@ sfForm::enableCSRFProtection();
 
 $t = new lime_test(44);
 
-$context = sfContext::getInstance(array('controller' => 'myController', 'request' => 'myRequest'));
+$context = sfContextMock::mockInstance(['controller' => 'myController', 'request' => 'myRequest']);
 
 require_once(__DIR__.'/../../../lib/helper/AssetHelper.php');
 require_once(__DIR__.'/../../../lib/helper/UrlHelper.php');

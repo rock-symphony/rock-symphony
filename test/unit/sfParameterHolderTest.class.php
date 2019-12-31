@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -11,14 +11,19 @@
 // helper class to test parameter holder proxies
 class sfParameterHolderProxyTest
 {
-  protected $t = null;
+  /** @var lime_test */
+  protected $t;
 
-  public function __construct($testObject)
+  public function __construct(lime_test $testObject)
   {
     $this->t = $testObject;
   }
 
-  public function launchTests($object, $methodName = 'parameter')
+  /**
+   * @param object $object An object acting as sfParameterHolder proxy
+   * @param string $methodName
+   */
+  public function launchTests($object, string $methodName = 'parameter'): void
   {
     $t = $this->t;
 

@@ -11,8 +11,13 @@
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
 $t = new lime_test(19);
-
 $dispatcher = new sfEventDispatcher();
+
+function listen() {}
+function listenToFoo() {}
+function listenToFooBis() {}
+function listenToBar() {}
+function listenToBarBar() {}
 
 // ->connect() ->disconnect()
 $t->diag('->connect() ->disconnect()');

@@ -18,9 +18,10 @@
  */
 class sfWebDebugPanelView extends sfWebDebugPanel
 {
-  protected
-    $actions  = array(),
-    $partials = array();
+  /** @var array */
+  protected $actions  = array();
+  /** @var array */
+  protected $partials = array();
 
   /**
    * Constructor.
@@ -40,7 +41,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @param sfEvent $event
    */
-  public function listenForChangeAction(sfEvent $event)
+  public function listenForChangeAction(sfEvent $event): void
   {
     $this->actions  = array();
     $this->partials = array();
@@ -54,7 +55,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return array
    */
-  public function filterTemplateParameters(sfEvent $event, $parameters)
+  public function filterTemplateParameters(sfEvent $event, array $parameters): array
   {
     $entry = array('parameters' => $parameters);
 
@@ -77,7 +78,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string|null
    */
-  protected function getLastTemplate($class = 'sfPHPView')
+  protected function getLastTemplate(string $class = 'sfPHPView'): ?string
   {
     foreach (array_reverse($this->webDebug->getLogger()->getLogs()) as $log)
     {
@@ -90,23 +91,25 @@ class sfWebDebugPanelView extends sfWebDebugPanel
         return $match[1];
       }
     }
+    return null;
   }
 
   /**
    * @see sfWebDebugPanel
    */
-  public function getTitle()
+  public function getTitle(): string
   {
     if (count($this->actions) || count($this->partials))
     {
       return '<img src="'.$this->webDebug->getOption('image_root_path').'/view.png" alt="View Layer" /> view';
     }
+    return '';
   }
 
   /**
    * @see sfWebDebugPanel
    */
-  public function getPanelTitle()
+  public function getPanelTitle(): string
   {
     return 'View Layer';
   }
@@ -114,7 +117,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
   /**
    * @see sfWebDebugPanel
    */
-  public function getPanelContent()
+  public function getPanelContent(): string
   {
     $html = array();
 
@@ -142,7 +145,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function renderTemplateInformation($file, $parameters, $label = 'Template')
+  protected function renderTemplateInformation(string $file, array $parameters, string $label = 'Template'): string
   {
     static $i = 0;
 
@@ -180,7 +183,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function formatParameterAsHtml($name, $parameter)
+  protected function formatParameterAsHtml(string $name, $parameter): string
   {
     if (!method_exists($this, $method = 'format'.ucwords(gettype($parameter)).'AsHtml'))
     {
@@ -198,7 +201,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function formatObjectAsHtml($name, $parameter)
+  protected function formatObjectAsHtml(string $name, $parameter): string
   {
     if ($parameter instanceof sfForm)
     {
@@ -218,7 +221,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function formatFormAsHtml($name, sfForm $form)
+  protected function formatFormAsHtml(string $name, sfForm $form): string
   {
     static $i = 0;
 
@@ -253,7 +256,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function formatFormFieldSchemaAsHtml(sfFormFieldSchema $fieldSchema, $nameFormat = '%s')
+  protected function formatFormFieldSchemaAsHtml(sfFormFieldSchema $fieldSchema, string $nameFormat = '%s'): string
   {
     $html = array();
 
@@ -289,7 +292,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function getParameterDescription($name, $parameter, $nameFormat = null, $typeFormat = null)
+  protected function getParameterDescription(string $name, $parameter, string $nameFormat = null, string $typeFormat = null)
   {
     if (null === $nameFormat)
     {
@@ -311,7 +314,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function shortenTemplatePath($path)
+  protected function shortenTemplatePath(string $path): string
   {
     $path = realpath($path);
 
@@ -332,7 +335,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return array
    */
-  protected function filterCoreParameters($parameters)
+  protected function filterCoreParameters(array $parameters): array
   {
     $filtered = array();
 
@@ -350,11 +353,11 @@ class sfWebDebugPanelView extends sfWebDebugPanel
   /**
    * Returns a string representation of a value.
    *
-   * @param  string $value
+   * @param  mixed $value
    *
    * @return string
    */
-  protected function varExport($value)
+  protected function varExport($value): string
   {
     if (is_numeric($value))
     {

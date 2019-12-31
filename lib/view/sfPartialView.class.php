@@ -21,14 +21,14 @@ class sfPartialView extends sfPHPView
   /**
    * Executes any presentation logic for this view.
    */
-  public function execute()
+  public function execute(): void
   {
   }
 
   /**
    * @param array $partialVars
    */
-  public function setPartialVars(array $partialVars)
+  public function setPartialVars(array $partialVars): void
   {
     $this->getAttributeHolder()->add($partialVars);
   }
@@ -36,7 +36,7 @@ class sfPartialView extends sfPHPView
   /**
    * Configures template for this view.
    */
-  public function configure()
+  public function configure(): void
   {
     $this->setDecorator(false);
     $this->setTemplate($this->actionName.$this->getExtension());
@@ -55,7 +55,7 @@ class sfPartialView extends sfPHPView
    *
    * @return string Current template content
    */
-  public function render()
+  public function render(): string
   {
     if (sfConfig::get('sf_debug') && sfConfig::get('sf_logging_enabled'))
     {

@@ -27,11 +27,11 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
   /**
    * Parses an array of YAMLs files and merges them in one configuration array.
    *
-   * @param array $configFiles An array of configuration file paths
+   * @param string[] $configFiles An array of configuration file paths
    *
    * @return array A merged configuration array
    */
-  static public function parseYamls($configFiles)
+  static public function parseYamls(array $configFiles): array
   {
     $config = array();
     foreach ($configFiles as $configFile)
@@ -57,12 +57,12 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
    *
    * @param string $configFile An absolute filesystem path to a configuration file
    *
-   * @return string|array A parsed .yml configuration
+   * @return array A parsed .yml configuration
    *
    * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
    * @throws sfParseException If a requested configuration file is improperly formatted
    */
-  static public function parseYaml($configFile)
+  static public function parseYaml(string $configFile): array
   {
     if (!is_readable($configFile))
     {
@@ -90,7 +90,7 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
    *
    * @return array The value associated with this key name and category
    */
-  protected function mergeConfigValue($keyName, $category)
+  protected function mergeConfigValue(string $keyName, string $category): array
   {
     $values = array();
 
@@ -112,11 +112,11 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
    *
    * @param string $keyName      The key name
    * @param string $category     The category name
-   * @param string $defaultValue The default value
+   * @param mixed $defaultValue The default value
    *
-   * @return string The value associated with this key name and category
+   * @return mixed The value associated with this key name and category
    */
-  protected function getConfigValue($keyName, $category, $defaultValue = null)
+  protected function getConfigValue(string $keyName, string $category, $defaultValue = null)
   {
     if (isset($this->yamlConfig[$category][$keyName]))
     {
@@ -130,7 +130,7 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
     return $defaultValue;
   }
 
-  static public function flattenConfiguration($config)
+  static public function flattenConfiguration(array $config): array
   {
     $config['all'] = sfToolkit::arrayDeepMerge(
       isset($config['default']) && is_array($config['default']) ? $config['default'] : array(),
@@ -145,11 +145,11 @@ abstract class sfYamlConfigHandler extends sfConfigHandler
   /**
    * Merges default, all and current environment configurations.
    *
-   * @param array $config The main configuratino array
+   * @param array $config The main configuration array
    *
    * @return array The merged configuration
    */
-  static public function flattenConfigurationWithEnvironment($config)
+  static public function flattenConfigurationWithEnvironment(array $config): array
   {
     return sfToolkit::arrayDeepMerge(
       isset($config['default']) && is_array($config['default']) ? $config['default'] : array(),
