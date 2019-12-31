@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-DRAFT: Version 7.0
+31/12/2019: Version 7.0.0
 ------------------
 
 * Require PHP 7.1+
