@@ -18,7 +18,7 @@
     "autoload": {
         "files": [
             "lib/SYMFONY_VERSION.php",
-            "lib/escaping_functions.php"
+            "lib/escaper/functions.php"
         ],
         "classmap": ["lib"],
         "exclude-from-classmap": [

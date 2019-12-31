@@ -71,7 +71,7 @@ abstract class sfOutputEscaper
    *
    * The escaping method is actually the name of a PHP callable. There are a set
    * of standard escaping methods listed among the escaping functions
-   * (escaping_functions.php).
+   * (escaper/functions.php).
    *
    * @param  callable $escapingMethod  The escaping method (a PHP callable) to apply to the value
    * @param  mixed    $value           The value to escape
