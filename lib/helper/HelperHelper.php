@@ -22,5 +22,5 @@ function use_helper(string ...$names)
 {
   $context = sfContext::getInstance();
 
-  $context->getConfiguration()->loadHelpers($names, $context->getModuleName());
+  $context->getConfiguration()->loadHelpers($names, $context->getModuleName() ?: '');
 }
