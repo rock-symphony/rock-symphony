@@ -61,9 +61,6 @@ class sfProjectConfiguration
 
     $this->setRootDir($this->rootDir);
 
-    // provide forms the dispatcher
-    sfFormSymfony::setEventDispatcher($this->dispatcher);
-
     $this->setup();
 
     $this->loadPlugins();
