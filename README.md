@@ -28,7 +28,7 @@ Philosophy
 
 - [Semantic versioning](http://semver.org/)
 - Incremental BC-breaking updates that bring something new to your symfony1 project
-- PHP 7.1 compatibility
+- PHP 7.4 compatibility
 - Replace legacy sf1 parts with modern libraries reducing framework footprint to the very minimum
 
 Roadmap
