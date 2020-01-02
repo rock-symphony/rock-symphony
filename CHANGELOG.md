@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+02/01/2019: Version 7.1
+------------------
+
+* Fix PHP 7.4 support ([#38](https://github.com/rock-symphony/rock-symphony/pull/38))
+
 31/12/2019: Version 7.0.1
 ------------------
 
