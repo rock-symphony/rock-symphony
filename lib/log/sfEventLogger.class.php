@@ -32,7 +32,7 @@ class sfEventLogger extends sfLogger
   /**
    * {@inheritDoc}
    */
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     $this->dispatcher->notify(new sfEvent($this, $this->options['event_name'], array($message, 'priority' => $priority)));
   }

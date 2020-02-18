@@ -122,7 +122,7 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @return void
    */
-  public function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     if (!$this->logger)
     {

@@ -16,7 +16,7 @@ class myLogger extends sfLogger
 {
   public $log = '';
 
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     $this->log .= $message;
   }

@@ -23,6 +23,63 @@ interface sfLoggerInterface
    *
    * @param string $message   Message
    * @param int    $priority  Message priority
+   * @return void
    */
-  public function log($message, $priority = null);
+  public function log(string $message, int $priority = null): void;
+
+  /**
+   * Logs an emerg message.
+   *
+   * @param string $message Message
+   */
+  public function emerg(string $message): void;
+
+  /**
+   * Logs an alert message.
+   *
+   * @param string $message Message
+   */
+  public function alert(string $message): void;
+
+  /**
+   * Logs a critical message.
+   *
+   * @param string $message Message
+   */
+  public function crit(string $message): void;
+
+  /**
+   * Logs an error message.
+   *
+   * @param string $message Message
+   */
+  public function err(string $message): void;
+
+  /**
+   * Logs a warning message.
+   *
+   * @param string $message Message
+   */
+  public function warning(string $message): void;
+
+  /**
+   * Logs a notice message.
+   *
+   * @param string $message Message
+   */
+  public function notice(string $message): void;
+
+  /**
+   * Logs an info message.
+   *
+   * @param string $message Message
+   */
+  public function info(string $message): void;
+
+  /**
+   * Logs a debug message.
+   *
+   * @param string $message Message
+   */
+  public function debug(string $message): void;
 }

@@ -132,7 +132,7 @@ class sfVarLogger extends sfLogger
    * @param string $message   Message
    * @param int    $priority  Message priority
    */
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     // get log type in {}
     $type = 'sfOther';

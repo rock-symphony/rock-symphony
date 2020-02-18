@@ -26,7 +26,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-abstract class sfLogger implements sfLoggerInterface
+abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
 {
   public const EMERG   = 0; // System is unusable
   public const ALERT   = 1; // Immediate action required
@@ -111,7 +111,7 @@ abstract class sfLogger implements sfLoggerInterface
    * @param int    $priority  Message priority
    * @return void|bool
    */
-  public function log($message, $priority = null)
+  public function log(string $message, int $priority = null): void
   {
     $priority = $priority ?? self::INFO;
 
@@ -127,87 +127,7 @@ abstract class sfLogger implements sfLoggerInterface
    * @param string $message   Message
    * @param int    $priority  Message priority
    */
-  abstract protected function doLog($message, $priority);
-
-  /**
-   * Logs an emerg message.
-   *
-   * @param string $message Message
-   */
-  public function emerg($message)
-  {
-    $this->log($message, self::EMERG);
-  }
-
-  /**
-   * Logs an alert message.
-   *
-   * @param string $message Message
-   */
-  public function alert($message)
-  {
-    $this->log($message, self::ALERT);
-  }
-
-  /**
-   * Logs a critical message.
-   *
-   * @param string $message Message
-   */
-  public function crit($message)
-  {
-    $this->log($message, self::CRIT);
-  }
-
-  /**
-   * Logs an error message.
-   *
-   * @param string $message Message
-   */
-  public function err($message)
-  {
-    $this->log($message, self::ERR);
-  }
-
-  /**
-   * Logs a warning message.
-   *
-   * @param string $message Message
-   */
-  public function warning($message)
-  {
-    $this->log($message, self::WARNING);
-  }
-
-  /**
-   * Logs a notice message.
-   *
-   * @param string $message Message
-   */
-  public function notice($message)
-  {
-    $this->log($message, self::NOTICE);
-  }
-
-  /**
-   * Logs an info message.
-   *
-   * @param string $message Message
-   */
-  public function info($message)
-  {
-    $this->log($message, self::INFO);
-  }
-
-  /**
-   * Logs a debug message.
-   *
-   * @param string $message Message
-   */
-  public function debug($message)
-  {
-    $this->log($message, self::DEBUG);
-  }
+  abstract protected function doLog(string $message, int $priority): void;
 
   /**
    * Listens to application.log events.

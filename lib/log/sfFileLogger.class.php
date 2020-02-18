@@ -94,7 +94,7 @@ class sfFileLogger extends sfLogger
    * @param string $message   Message
    * @param int    $priority  Message priority
    */
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     flock($this->fp, LOCK_EX);
     fwrite($this->fp, strtr($this->format, array(
