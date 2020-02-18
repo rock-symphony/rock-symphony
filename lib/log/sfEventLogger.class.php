@@ -20,7 +20,7 @@ class sfEventLogger extends sfLogger
 
     if (isset($this->options['level']))
     {
-      $this->setLogLevel($this->options['level']);
+      $this->level = sfLogger::parseLogLevel($this->options['level']);
     }
 
     // Use the default "command.log" event if not overriden

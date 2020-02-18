@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(136);
+$t = new lime_test(133);
 
 class myLogger extends sfLogger
 {
@@ -20,6 +20,16 @@ class myLogger extends sfLogger
   {
     $this->log .= $message;
   }
+
+  public function getLogLevel()
+  {
+    return $this->level;
+  }
+
+  public function getOptions()
+  {
+    return $this->options;
+  }
 }
 
 class notaLogger
@@ -27,23 +37,11 @@ class notaLogger
 }
 
 $dispatcher = new sfEventDispatcher();
-$logger = new myLogger($dispatcher, array('log_dir_name' => '/tmp'));
+$logger = new myLogger($dispatcher, array('log_dir_name' => '/tmp', 'level' => sfLogger::ERR));
 
 $options = $logger->getOptions();
 $t->is($options['log_dir_name'], '/tmp', '->getOptions() returns the options for the logger instance');
-
-// ->setLogLevel() ->getLogLevel()
-$t->diag('->setLogLevel() ->getLogLevel()');
-$t->is($logger->getLogLevel(), sfLogger::INFO, '->getLogLevel() gets the current log level');
-$logger->setLogLevel(sfLogger::WARNING);
-$t->is($logger->getLogLevel(), sfLogger::WARNING, '->setLogLevel() sets the log level');
-$logger->setLogLevel('err');
-$t->is($logger->getLogLevel(), sfLogger::ERR, '->setLogLevel() accepts a class constant or a string as its argument');
-
-// ->initialize()
-$t->diag('->initialize()');
-$logger->initialize($dispatcher, array('level' => sfLogger::ERR));
-$t->is($logger->getLogLevel(), sfLogger::ERR, '->initialize() takes an array of options as its second argument');
+$t->is($logger->getLogLevel(), sfLogger::ERR, '->__construct() takes an array of options as its second argument');
 
 // ::getPriorityName()
 $t->diag('::getPriorityName()');
@@ -58,9 +56,10 @@ catch (sfException $e)
   $t->pass('::getPriorityName() throws an sfException if the priority constant does not exist');
 }
 
+$logger = new myLogger($dispatcher, ['level' => sfLogger::DEBUG]);
+
 // ->log()
 $t->diag('->log()');
-$logger->setLogLevel(sfLogger::DEBUG);
 $logger->log('message');
 $t->is($logger->log, 'message', '->log() logs a message');
 
@@ -73,9 +72,9 @@ foreach (array('emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'de
   foreach (array('emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'debug') as $logLevel)
   {
     $logLevelConstant = 'sfLogger::'.strtoupper($logLevel);
-    $logger->setLogLevel(constant($logLevelConstant));
 
-    $logger->log = '';
+    $logger = new myLogger($dispatcher, ['level' => $logLevel]);
+
     $logger->log('foo', constant($levelConstant));
 
     $t->is($logger->log, constant($logLevelConstant) >= constant($levelConstant) ? 'foo' : '', sprintf('->log() only logs if the level is >= to the defined log level (%s >= %s)', $logLevelConstant, $levelConstant));
@@ -90,14 +89,15 @@ foreach (array('emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'de
 
   foreach (array('emerg', 'alert', 'crit', 'err', 'warning', 'notice', 'info', 'debug') as $logLevel)
   {
-    $logger->setLogLevel(constant('sfLogger::'.strtoupper($logLevel)));
+    $logger  = new myLogger($dispatcher, ['level' => $logLevel]);
 
-    $logger->log = '';
-    $logger->log('foo', constant($levelConstant));
+    $log = uniqid();
+
+    $logger->log($log, constant($levelConstant));
     $log1 = $logger->log;
 
     $logger->log = '';
-    $logger->$level('foo');
+    $logger->$level($log);
     $log2 = $logger->log;
 
     $t->is($log1, $log2, sprintf('->%s($msg) is a shortcut for ->log($msg, %s)', $level, $levelConstant));
