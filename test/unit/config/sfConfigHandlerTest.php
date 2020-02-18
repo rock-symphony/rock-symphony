@@ -18,11 +18,9 @@ class myConfigHandler extends sfConfigHandler
 }
 
 $config = new myConfigHandler();
-$config->initialize();
 
 // ->initialize()
 $t->diag('->initialize()');
-$config->initialize(array('foo' => 'bar'));
 $t->is($config->getParameterHolder()->get('foo'), 'bar', '->initialize() takes an array of parameters as its first argument');
 
 // ::replaceConstants()

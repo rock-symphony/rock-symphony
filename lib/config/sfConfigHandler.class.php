@@ -28,24 +28,9 @@ abstract class sfConfigHandler
   /**
    * Class constructor.
    *
-   * @see initialize()
    * @param array|null $parameters
    */
   public function __construct(array $parameters = null)
-  {
-    $this->initialize($parameters);
-  }
-
-  /**
-   * Initializes this configuration handler.
-   *
-   * @param array $parameters An associative array of initialization parameters
-   *
-   * @return void
-   *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this ConfigHandler
-   */
-  public function initialize(array $parameters = null): void
   {
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
