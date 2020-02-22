@@ -74,16 +74,6 @@ abstract class sfFilter
   }
 
   /**
-   * Gets the parameter holder for this object.
-   *
-   * @return sfParameterHolder A sfParameterHolder instance
-   */
-  public function getParameterHolder(): sfParameterHolder
-  {
-    return $this->parameterHolder;
-  }
-
-  /**
    * Gets the parameter associated with the given key.
    *
    * This is a shortcut for:
@@ -118,22 +108,5 @@ abstract class sfFilter
   public function hasParameter(string $name): bool
   {
     return $this->parameterHolder->has($name);
-  }
-
-  /**
-   * Sets the value for the given key.
-   *
-   * This is a shortcut for:
-   *
-   * <code>$this->getParameterHolder()->set()</code>
-   *
-   * @param string $name  The key name
-   * @param mixed  $value The value
-   *
-   * @see sfParameterHolder
-   */
-  public function setParameter(string $name, $value): void
-  {
-    $this->parameterHolder->set($name, $value);
   }
 }
