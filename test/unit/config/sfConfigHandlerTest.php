@@ -14,16 +14,16 @@ $t = new lime_test(8);
 
 class myConfigHandler extends sfConfigHandler
 {
-  public function execute(array $configFiles): string {}
+  public function execute(array $configFiles): string {
+    return '';
+  }
 }
 
-$config = new myConfigHandler();
-$config->initialize();
+$config = new myConfigHandler(['foo' => 'bar']);
 
-// ->initialize()
-$t->diag('->initialize()');
-$config->initialize(array('foo' => 'bar'));
-$t->is($config->getParameterHolder()->get('foo'), 'bar', '->initialize() takes an array of parameters as its first argument');
+// ->__construct()
+$t->diag('->__construct()');
+$t->is($config->getParameterHolder()->get('foo'), 'bar', '->__construct() takes an array of parameters as its first argument');
 
 // ::replaceConstants()
 $t->diag('::replaceConstants()');

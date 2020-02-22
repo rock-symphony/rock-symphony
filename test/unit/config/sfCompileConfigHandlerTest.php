@@ -13,7 +13,6 @@ require_once(__DIR__.'/../../bootstrap/unit.php');
 $t = new lime_test(2);
 
 $handler = new sfCompileConfigHandler();
-$handler->initialize();
 
 $dir = __DIR__.DIRECTORY_SEPARATOR.'fixtures'.DIRECTORY_SEPARATOR.'sfCompileConfigHandler'.DIRECTORY_SEPARATOR;
 
