@@ -24,8 +24,6 @@ require_once(__DIR__.'/sfCacheDriverTests.class.php');
 // setup
 sfConfig::set('sf_logging_enabled', false);
 
-// ->initialize()
-$t->diag('->initialize()');
 try
 {
   $cache = new sfMemcacheCache(array('storeCacheInfo' => true));

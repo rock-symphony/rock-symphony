@@ -30,16 +30,14 @@ catch (sfInitializationException $e)
   return;
 }
 
-// ->initialize()
-$t->diag('->initialize()');
 try
 {
   $cache = new sfSQLiteCache();
-  $t->fail('->initialize() throws an sfInitializationException exception if you don\'t pass a "database" parameter');
+  $t->fail('->__construct() throws an sfInitializationException exception if you don\'t pass a "database" parameter');
 }
 catch (sfInitializationException $e)
 {
-  $t->pass('->initialize() throws an sfInitializationException exception if you don\'t pass a "database" parameter');
+  $t->pass('->__construct() throws an sfInitializationException exception if you don\'t pass a "database" parameter');
 }
 
 $test = new class extends sfCacheDriverTests

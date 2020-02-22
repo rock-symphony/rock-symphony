@@ -19,16 +19,14 @@ $temp = tempnam('/tmp/cache_dir', 'tmp');
 unlink($temp);
 mkdir($temp);
 
-// ->initialize()
-$t->diag('->initialize()');
 try
 {
   $cache = new sfFileCache();
-  $t->fail('->initialize() throws an sfInitializationException exception if you don\'t pass a "cache_dir" parameter');
+  $t->fail('->__construct() throws an sfInitializationException exception if you don\'t pass a "cache_dir" parameter');
 }
 catch (sfInitializationException $e)
 {
-  $t->pass('->initialize() throws an sfInitializationException exception if you don\'t pass a "cache_dir" parameter');
+  $t->pass('->__construct() throws an sfInitializationException exception if you don\'t pass a "cache_dir" parameter');
 }
 
 $test = new class extends sfCacheDriverTests
