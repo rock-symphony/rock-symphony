@@ -16,7 +16,7 @@ abstract class sfAbstractLogger implements sfLoggerInterface
    * @param int    $priority  Message priority
    * @return void
    */
-  abstract public function log(string $message, int $priority = null): void;
+  abstract public function log(string $message, int $priority = self::INFO): void;
 
   /**
    * Logs an emergency message.

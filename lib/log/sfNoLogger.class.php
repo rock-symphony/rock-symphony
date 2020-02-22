@@ -25,7 +25,7 @@ class sfNoLogger extends sfAbstractLogger implements sfLoggerInterface
    * @param int    $priority  Message priority
    * @return void
    */
-  public function log(string $message, int $priority = null): void
+  public function log(string $message, int $priority = self::INFO): void
   {
     // do nothing
   }

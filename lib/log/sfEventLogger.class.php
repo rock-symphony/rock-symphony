@@ -39,9 +39,8 @@ class sfEventLogger extends sfAbstractLogger implements sfLoggerInterface
   /**
    * @inheritDoc
    */
-  public function log(string $message, int $priority = null): void
+  public function log(string $message, int $priority = self::INFO): void
   {
-    $priority = $priority ?? sfLogger::INFO;
     $this->dispatcher->notify(
       new sfEvent($this, $this->options['event_name'], [$message, 'priority' => $priority])
     );

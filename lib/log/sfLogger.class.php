@@ -28,8 +28,6 @@
  */
 abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
 {
-  protected const DEFAULT_LOG_LEVEL = self::INFO;
-
   private const LEVELS = [
     self::EMERG   => 'emerg',
     self::ALERT   => 'alert',
@@ -89,10 +87,8 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    * @param int    $priority  Message priority
    * @return void|bool
    */
-  public function log(string $message, int $priority = null): void
+  public function log(string $message, int $priority = self::INFO): void
   {
-    $priority = $priority ?? self::INFO;
-
     if ($this->level >= $priority)
     {
       $this->doLog($message, $priority);
@@ -114,7 +110,7 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    */
   public function listenToLogEvent(sfEvent $event)
   {
-    $priority = isset($event['priority']) ? $event['priority'] : self::INFO;
+    $priority = $event['priority'] ??  self::INFO;
 
     $subject  = $event->getSubject();
     $subject  = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');
