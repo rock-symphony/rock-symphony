@@ -28,14 +28,7 @@
  */
 abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
 {
-  public const EMERG   = 0; // System is unusable
-  public const ALERT   = 1; // Immediate action required
-  public const CRIT    = 2; // Critical conditions
-  public const ERR     = 3; // Error conditions
-  public const WARNING = 4; // Warning conditions
-  public const NOTICE  = 5; // Normal but significant
-  public const INFO    = 6; // Informational
-  public const DEBUG   = 7; // Debug-level messages
+  protected const DEFAULT_LOG_LEVEL = self::INFO;
 
   private const LEVELS = [
     self::EMERG   => 'emerg',
