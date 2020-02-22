@@ -59,7 +59,7 @@ class sfWebRequest extends sfRequest
   protected $fixedFileArray = false;
 
   /**
-   * Initializes this sfRequest.
+   * Class constructor.
    *
    * Available options:
    *
@@ -75,13 +75,11 @@ class sfWebRequest extends sfRequest
    * @param  array             $attributes  An associative array of initialization attributes
    * @param  array             $options     An associative array of options
    *
-   * @return void
-   *
    * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfRequest
    *
    * @see sfRequest
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = [])
   {
     $options = array_merge(array(
       'path_info_key'   => 'PATH_INFO',
@@ -91,7 +89,8 @@ class sfWebRequest extends sfRequest
       'default_format'  => null, // to maintain bc
       'trust_proxy'     => true, // to maintain bc
     ), $options);
-    parent::initialize($dispatcher, $parameters, $attributes, $options);
+
+    parent::__construct($dispatcher, $parameters, $attributes, $options);
 
     // GET parameters
     $this->getParameters = $_GET;

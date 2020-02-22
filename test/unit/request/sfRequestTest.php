@@ -26,12 +26,11 @@ $t = new lime_test(39);
 
 $dispatcher = new sfEventDispatcher();
 
-// ->initialize()
-$t->diag('->initialize()');
-$request = new myRequest($dispatcher);
-$t->is($dispatcher, $request->getEventDispatcher(), '->initialize() takes a sfEventDispatcher object as its first argument');
-$request->initialize($dispatcher, array('foo' => 'bar'));
-$t->is($request->getParameter('foo'), 'bar', '->initialize() takes an array of parameters as its second argument');
+// ->__construct()
+$t->diag('->__construct()');
+$request = new myRequest($dispatcher, ['foo' => 'bar']);
+$t->is($dispatcher, $request->getEventDispatcher(), '->__construct() takes a sfEventDispatcher object as its first argument');
+$t->is($request->getParameter('foo'), 'bar', '->__construct() takes an array of parameters as its second argument');
 
 $options = $request->getOptions();
 $t->is($options['logging'], false, '->getOptions() returns options for request instance');
@@ -53,7 +52,7 @@ catch (sfException $e)
 
 // ->extractParameters()
 $t->diag('->extractParameters()');
-$request->initialize($dispatcher, array('foo' => 'foo', 'bar' => 'bar'));
+$request = new myRequest($dispatcher, ['foo' => 'foo', 'bar' => 'bar']);
 $t->is($request->extractParameters(array()), array(), '->extractParameters() returns parameters');
 $t->is($request->extractParameters(array('foo')), array('foo' => 'foo'), '->extractParameters() returns parameters for keys in its first parameter');
 $t->is($request->extractParameters(array('bar')), array('bar' => 'bar'), '->extractParameters() returns parameters for keys in its first parameter');

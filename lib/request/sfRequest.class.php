@@ -51,21 +51,6 @@ abstract class sfRequest implements ArrayAccess
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
-   * @param sfEventDispatcher $dispatcher
-   * @param array             $parameters
-   * @param array             $attributes
-   * @param array             $options
-   */
-  public function __construct(sfEventDispatcher $dispatcher, array $parameters = array(), array $attributes = array(), array $options = array())
-  {
-    $this->initialize($dispatcher, $parameters, $attributes, $options);
-  }
-
-  /**
-   * Initializes this sfRequest.
-   *
    * Available options:
    *
    *  * logging: Whether to enable logging or not (false by default)
@@ -74,15 +59,10 @@ abstract class sfRequest implements ArrayAccess
    * @param  array             $parameters  An associative array of initialization parameters
    * @param  array             $attributes  An associative array of initialization attributes
    * @param  array             $options     An associative array of options
-   *
-   * @return void
-   *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfRequest
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = [])
   {
     $this->dispatcher = $dispatcher;
-
     $this->options = $options;
 
     if (!isset($this->options['logging']))
