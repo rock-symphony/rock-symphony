@@ -23,7 +23,7 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @var array
    */
-  private $buffer = array();
+  private $buffer = [];
 
   /**
    * The logger that will the log will be forward to
@@ -40,7 +40,7 @@ class sfPsrLoggerAdapter extends sfLogger
   private $loggerServiceId = 'logger.psr';
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
@@ -50,9 +50,9 @@ class sfPsrLoggerAdapter extends sfLogger
    * @param sfEventDispatcher $dispatcher
    * @param array $options
    *
-   * @return void
+   * @throws sfInitializationException
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     if (isset($options['logger_service_id']))
     {
@@ -61,10 +61,10 @@ class sfPsrLoggerAdapter extends sfLogger
 
     if (!isset($options['auto_connect']) || $options['auto_connect'])
     {
-      $dispatcher->connect('context.load_factories', array($this, 'listenContextLoadFactoriesEvent'));
+      $dispatcher->connect('context.load_factories', [$this, 'listenContextLoadFactoriesEvent']);
     }
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**
@@ -76,9 +76,11 @@ class sfPsrLoggerAdapter extends sfLogger
    */
   public function listenContextLoadFactoriesEvent(sfEvent $event)
   {
-    $context = $event->getSubject();
     /* @var $context sfContext */
-    $this->setLogger($context->getService($this->loggerServiceId));
+    $context = $event->getSubject();
+    /** @var $logger \Psr\Log\LoggerInterface */
+    $logger = $context->getService($this->loggerServiceId);
+    $this->setLogger($logger);
     $this->dispatcher->disconnect('context.load_factories', array($this, 'listenContextLoadFactoriesEvent'));
   }
 
@@ -102,7 +104,7 @@ class sfPsrLoggerAdapter extends sfLogger
   {
     if (!$this->logger)
     {
-      $this->buffer = array();
+      $this->buffer = [];
       return;
     }
 
@@ -111,7 +113,7 @@ class sfPsrLoggerAdapter extends sfLogger
       $this->log($log['message'], $log['priority']);
     }
 
-    $this->buffer = array();
+    $this->buffer = [];
   }
 
   /**
@@ -122,7 +124,7 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @return void
    */
-  public function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     if (!$this->logger)
     {

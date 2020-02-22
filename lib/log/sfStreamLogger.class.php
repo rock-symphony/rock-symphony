@@ -19,40 +19,38 @@
 class sfStreamLogger extends sfLogger
 {
   /** @var resource */
-  protected
-    $stream = null;
+  protected $stream;
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
    * - stream: A PHP stream
    *
-   * @param  sfEventDispatcher $dispatcher A sfEventDispatcher instance
-   * @param  array             $options    An array of options.
+   * @param sfEventDispatcher $dispatcher A sfEventDispatcher instance
+   * @param array             $options    An array of options.
    *
    * @return void
    *
-   * @throws sfConfigurationException
+   * @throws sfInitializationException If an error occurs while initializing this sfLogger.
+   * @throws sfConfigurationException If invalid configuration provided.
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     if (!isset($options['stream']))
     {
       throw new sfConfigurationException('You must provide a "stream" option for this logger.');
     }
-    else
+
+    if (!is_resource($options['stream']) || 'stream' !== get_resource_type($options['stream']))
     {
-      if (is_resource($options['stream']) && 'stream' != get_resource_type($options['stream']))
-      {
-        throw new sfConfigurationException('The provided "stream" option is not a stream.');
-      }
+      throw new sfConfigurationException('The provided "stream" option is not a stream.');
     }
 
     $this->stream = $options['stream'];
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**
@@ -71,7 +69,7 @@ class sfStreamLogger extends sfLogger
    * @param string $message   Message
    * @param int    $priority  Message priority
    */
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     fwrite($this->stream, $message.PHP_EOL);
     flush();

@@ -16,27 +16,17 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfNoLogger extends sfLogger
+class sfNoLogger extends sfAbstractLogger implements sfLoggerInterface
 {
-  /**
-   * Initializes this logger.
-   *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
-   *
-   * @return void
-   */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
-  {
-  }
-
   /**
    * Logs a message.
    *
    * @param string $message   Message
    * @param int    $priority  Message priority
+   * @return void
    */
-  protected function doLog($message, $priority)
+  public function log(string $message, int $priority = self::INFO): void
   {
+    // do nothing
   }
 }

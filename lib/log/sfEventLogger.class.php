@@ -8,19 +8,26 @@
  * @subpackage log
  * @author     Jérôme Tamarelle <jtamarelle@groupe-exp.com>
  */
-class sfEventLogger extends sfLogger
+class sfEventLogger extends sfAbstractLogger implements sfLoggerInterface
 {
+  /** * @var \sfEventDispatcher */
+  protected $dispatcher;
+  /** @var array */
+  protected $options;
+  /** * @var int */
+  protected $level;
+
   /**
    * {@inheritDoc}
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;
 
     if (isset($this->options['level']))
     {
-      $this->setLogLevel($this->options['level']);
+      $this->level = sfLogger::parseLogLevel($this->options['level']);
     }
 
     // Use the default "command.log" event if not overriden
@@ -30,10 +37,12 @@ class sfEventLogger extends sfLogger
   }
 
   /**
-   * {@inheritDoc}
+   * @inheritDoc
    */
-  protected function doLog($message, $priority)
+  public function log(string $message, int $priority = self::INFO): void
   {
-    $this->dispatcher->notify(new sfEvent($this, $this->options['event_name'], array($message, 'priority' => $priority)));
+    $this->dispatcher->notify(
+      new sfEvent($this, $this->options['event_name'], [$message, 'priority' => $priority])
+    );
   }
 }

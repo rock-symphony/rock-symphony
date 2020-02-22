@@ -19,29 +19,33 @@
 class sfWebDebugLogger extends sfVarLogger
 {
   /** @var sfContext */
-  protected $context       = null;
+  protected $context;
   /** @var string */
-  protected $webDebugClass = null;
+  protected $webDebugClass;
   /** @var sfWebDebug */
-  protected $webDebug      = null;
+  protected $webDebug;
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
    *  * web_debug_class: The web debug class (sfWebDebug by default)
    *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
+   * @param sfEventDispatcher $dispatcher A sfEventDispatcher instance
+   * @param array             $options    An array of options.
    *
-   * @return void
+   * @throws sfInitializationException
    *
    * @see sfVarLogger
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    $this->context = sfContext::getInstance();
+    try {
+      $this->context = sfContext::getInstance();
+    } catch (sfException $exception) {
+      throw new sfInitializationException($exception->getMessage(), 0, $exception);
+    }
 
     $this->webDebugClass = isset($options['web_debug_class']) ? $options['web_debug_class'] : 'sfWebDebug';
 
@@ -53,7 +57,7 @@ class sfWebDebugLogger extends sfVarLogger
 
     $this->registerErrorHandler();
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**

@@ -18,11 +18,11 @@
  */
 class sfAggregateLogger extends sfLogger
 {
-  protected
-    $loggers = array();
+  /** @var sfLoggerInterface[] */
+  protected $loggers = [];
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
@@ -31,9 +31,9 @@ class sfAggregateLogger extends sfLogger
    * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
    * @param  array             $options     An array of options.
    *
-   * @return void
+   * @throws sfInitializationException If an error occurs while initializing this sfLogger.
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
 
@@ -47,7 +47,7 @@ class sfAggregateLogger extends sfLogger
       $this->addLoggers($options['loggers']);
     }
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**
@@ -91,7 +91,7 @@ class sfAggregateLogger extends sfLogger
    * @param string $message   Message
    * @param int    $priority  Message priority
    */
-  protected function doLog($message, $priority)
+  protected function doLog(string $message, int $priority): void
   {
     foreach ($this->loggers as $logger)
     {
