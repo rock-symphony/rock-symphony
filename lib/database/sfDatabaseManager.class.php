@@ -30,35 +30,19 @@ class sfDatabaseManager
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
    * @param sfProjectConfiguration $configuration
    * @param array                  $options
    */
   public function __construct(sfProjectConfiguration $configuration, array $options = [])
   {
-    $this->initialize($configuration);
+    $this->configuration = $configuration;
+
+    $this->loadConfiguration();
 
     if (!isset($options['auto_shutdown']) || $options['auto_shutdown'])
     {
       register_shutdown_function(array($this, 'shutdown'));
     }
-  }
-
-  /**
-   * Initializes this sfDatabaseManager object
-   *
-   * @param sfProjectConfiguration $configuration A sfProjectConfiguration instance
-   *
-   * @return void
-   *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfDatabaseManager object
-   */
-  public function initialize(sfProjectConfiguration $configuration): void
-  {
-    $this->configuration = $configuration;
-
-    $this->loadConfiguration();
   }
 
   /**
