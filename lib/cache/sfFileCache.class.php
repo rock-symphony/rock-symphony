@@ -25,8 +25,6 @@ class sfFileCache extends sfCache
   const EXTENSION = '.cache';
 
   /**
-   * Initializes this sfCache instance.
-   *
    * Available options:
    *
    * * cache_dir: The directory where to put cache files
@@ -36,9 +34,9 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
-    parent::initialize($options);
+    parent::__construct($options);
 
     if (!$this->getOption('cache_dir'))
     {

@@ -28,18 +28,6 @@ abstract class sfCache
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
-   * @param array $options
-   */
-  public function __construct(array $options = [])
-  {
-    $this->initialize($options);
-  }
-
-  /**
-   * Initializes this sfCache instance.
-   *
    * @param array $options An array of options.
    *
    * Available options:
@@ -52,9 +40,9 @@ abstract class sfCache
    *
    * * lifetime (optional): The default life time (default value: 86400)
    *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfCache instance.
+   * @throws sfInitializationException If an error occurs while initializing this sfCache instance.
    */
-  public function initialize(array $options = []): void
+  public function __construct(array $options = [])
   {
     $this->options = array_merge(array(
       'automatic_cleaning_factor' => 1000,

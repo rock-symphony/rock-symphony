@@ -20,8 +20,6 @@ class sfAPCuCache extends sfCache
   protected $enabled;
 
   /**
-   * Initializes this sfCache instance.
-   *
    * Available options:
    *
    * * see sfCache for options available for all drivers
@@ -29,9 +27,9 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
-    parent::initialize($options);
+    parent::__construct($options);
 
     $this->enabled = function_exists('apcu_store') && ini_get('apc.enabled');
   }

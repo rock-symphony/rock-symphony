@@ -37,6 +37,5 @@ sfConfig::set('sf_logging_enabled', false);
 // ->initialize()
 $t->diag('->initialize()');
 $cache = new sfAPCuCache();
-$cache->initialize();
 
 sfCacheDriverTests::launch($t, $cache);

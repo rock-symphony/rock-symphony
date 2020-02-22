@@ -28,8 +28,6 @@ class sfSQLiteCache extends sfCache
   protected $database = '';
 
   /**
-   * Initializes this sfCache instance.
-   *
    * Available options:
    *
    * * database: File where to put the cache database (or :memory: to store cache in memory)
@@ -39,14 +37,14 @@ class sfSQLiteCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
     if (!extension_loaded('SQLite') && !extension_loaded('pdo_SQLite'))
     {
       throw new sfConfigurationException('sfSQLiteCache class needs "sqlite" or "pdo_sqlite" extension to be loaded.');
     }
 
-    parent::initialize($options);
+    parent::__construct($options);
 
     if (!$this->getOption('database'))
     {

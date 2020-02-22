@@ -19,8 +19,6 @@
 class sfXCacheCache extends sfCache
 {
   /**
-   * Initializes this sfCache instance.
-   *
    * Available options:
    *
    * * see sfCache for options available for all drivers
@@ -28,10 +26,8 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
-    parent::initialize($options);
-
     if (!function_exists('xcache_set'))
     {
       throw new sfInitializationException('You must have XCache installed and enabled to use sfXCacheCache class.');
@@ -41,6 +37,7 @@ class sfXCacheCache extends sfCache
     {
       throw new sfInitializationException('You must set the "xcache.var_size" variable to a value greater than 0 to use sfXCacheCache class.');
     }
+    parent::__construct($options);
   }
 
  /**
