@@ -11,7 +11,7 @@
 require_once(__DIR__ . '/../../bootstrap/unit.php');
 require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 
-$t = new lime_test(16);
+$t = new lime_test(6);
 
 class myFilter extends sfFilter
 {
@@ -42,8 +42,3 @@ $t->is($filter->isFirstCall('beforeExecution'), false, '->isFirstCall() returns 
 
 $filter = new myFilter($context);
 $t->is($filter->isFirstCall('beforeExecution'), false, '->isFirstCall() returns false if this is not the first call with this argument');
-
-// parameter holder proxy
-require_once($_test_dir.'/unit/sfParameterHolderTest.class.php');
-$pht = new sfParameterHolderProxyTest($t);
-$pht->launchTests($filter, 'parameter');
