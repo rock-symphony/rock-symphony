@@ -24,12 +24,12 @@ class sfConsoleLogger extends sfStreamLogger
    * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
    * @param  array             $options     An array of options.
    *
-   * @return void
+   * @throws sfConfigurationException If invalid configuration provided.
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $options['stream'] = defined('STDOUT') ? STDOUT : fopen('php://stdout', 'w');
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 }

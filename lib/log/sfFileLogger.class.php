@@ -18,14 +18,17 @@
  */
 class sfFileLogger extends sfLogger
 {
-  protected
-    $type       = 'symfony',
-    $format     = '%time% %type% [%priority%] %message%%EOL%',
-    $timeFormat = '%b %d %H:%M:%S',
-    $fp         = null;
+  /** @var string */
+  protected $type = 'symfony';
+  /** @var string */
+  protected $format = '%time% %type% [%priority%] %message%%EOL%';
+  /** @var string */
+  protected $timeFormat = '%b %d %H:%M:%S';
+  /** @var resource */
+  protected $fp;
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
@@ -39,35 +42,23 @@ class sfFileLogger extends sfLogger
    * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
    * @param  array             $options     An array of options.
    *
-   * @return void
-   *
    * @throws sfConfigurationException
+   * @throws sfInitializationException
    * @throws sfFileException
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     if (!isset($options['file']))
     {
       throw new sfConfigurationException('You must provide a "file" parameter for this logger.');
     }
 
-    if (isset($options['format']))
-    {
-      $this->format = $options['format'];
-    }
-
-    if (isset($options['time_format']))
-    {
-      $this->timeFormat = $options['time_format'];
-    }
-
-    if (isset($options['type']))
-    {
-      $this->type = $options['type'];
-    }
+    $this->format = $options['format'] ?? $this->format;
+    $this->timeFormat = $options['time_format'] ?? $this->timeFormat;
+    $this->type = $options['type'] ?? $this->type;
 
     $dir     = dirname($options['file']);
-    $dirMode = isset($options['dir_mode']) ? $options['dir_mode'] : 0777;
+    $dirMode = $options['dir_mode'] ?? 0777;
     if (!is_dir($dir) && !@mkdir($dir, $dirMode, true) && !is_dir($dir))
     {
       throw new \RuntimeException(sprintf('Logger was not able to create a directory "%s"', $dir));
@@ -85,7 +76,7 @@ class sfFileLogger extends sfLogger
       chmod($options['file'], isset($options['file_mode']) ? $options['file_mode'] : 0666);
     }
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**

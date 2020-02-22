@@ -8,12 +8,19 @@
  * @subpackage log
  * @author     Jérôme Tamarelle <jtamarelle@groupe-exp.com>
  */
-class sfEventLogger extends sfLogger
+class sfEventLogger extends sfAbstractLogger implements sfLoggerInterface
 {
+  /** * @var \sfEventDispatcher */
+  protected $dispatcher;
+  /** @var array */
+  protected $options;
+  /** * @var int */
+  protected $level;
+
   /**
    * {@inheritDoc}
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;
@@ -30,10 +37,13 @@ class sfEventLogger extends sfLogger
   }
 
   /**
-   * {@inheritDoc}
+   * @inheritDoc
    */
-  protected function doLog(string $message, int $priority): void
+  public function log(string $message, int $priority = null): void
   {
-    $this->dispatcher->notify(new sfEvent($this, $this->options['event_name'], array($message, 'priority' => $priority)));
+    $priority = $priority ?? sfLogger::INFO;
+    $this->dispatcher->notify(
+      new sfEvent($this, $this->options['event_name'], [$message, 'priority' => $priority])
+    );
   }
 }

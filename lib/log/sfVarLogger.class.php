@@ -18,12 +18,13 @@
  */
 class sfVarLogger extends sfLogger
 {
-  protected
-    $logs          = array(),
-    $xdebugLogging = false;
+  /** @var array[] */
+  protected $logs = [];
+  /** @var bool */
+  protected $xdebugLogging = false;
 
   /**
-   * Initializes this logger.
+   * Class constructor.
    *
    * Available options:
    *
@@ -32,9 +33,9 @@ class sfVarLogger extends sfLogger
    * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
    * @param  array             $options     An array of options.
    *
-   * @return void
+   * @throws sfInitializationException
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->xdebugLogging = isset($options['xdebug_logging']) ? $options['xdebug_logging'] : false;
 
@@ -44,7 +45,7 @@ class sfVarLogger extends sfLogger
       $this->xdebugLogging = false;
     }
 
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
   }
 
   /**

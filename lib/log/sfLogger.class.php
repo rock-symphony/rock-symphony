@@ -49,32 +49,14 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
   ];
 
   /** @var sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
   /** @var array */
-  protected $options = array();
+  protected $options;
   /** @var int */
   protected $level = self::INFO;
 
   /**
    * Class constructor.
-   *
-   * @see initialize()
-   *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
-   */
-  public function __construct(sfEventDispatcher $dispatcher, $options = array())
-  {
-    $this->initialize($dispatcher, $options);
-
-    if (!isset($options['auto_shutdown']) || $options['auto_shutdown'])
-    {
-      register_shutdown_function(array($this, 'shutdown'));
-    }
-  }
-
-  /**
-   * Initializes this sfLogger instance.
    *
    * Available options:
    *
@@ -83,11 +65,9 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
    * @param  array             $options     An array of options.
    *
-   * @return void
-   *
    * @throws sfInitializationException If an error occurs while initializing this sfLogger.
    */
-  public function initialize(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;
@@ -102,6 +82,11 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
     }
 
     $dispatcher->connect('application.log', array($this, 'listenToLogEvent'));
+
+    if (!isset($options['auto_shutdown']) || $options['auto_shutdown'])
+    {
+      register_shutdown_function(array($this, 'shutdown'));
+    }
   }
 
   /**
