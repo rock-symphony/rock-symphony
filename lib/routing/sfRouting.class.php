@@ -28,15 +28,39 @@ abstract class sfRouting
   /**
    * Class constructor.
    *
-   * @see initialize()
+   * Available options:
    *
-   * @param sfEventDispatcher $dispatcher
-   * @param sfCache           $cache
-   * @param array             $options
+   *  * default_module: The default module name
+   *  * default_action: The default action name
+   *  * logging:        Whether to log or not (false by default)
+   *  * debug:          Whether to cache or not (false by default)
+   *  * context:        An array of context variables to help URL matching and generation
+   *
+   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
+   * @param sfCache           $cache       An sfCache instance
+   * @param array             $options     An associative array of initialization options.
    */
-  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
   {
-    $this->initialize($dispatcher, $cache, $options);
+    $this->dispatcher = $dispatcher;
+
+    $options['debug'] = (bool) ($options['debug'] ?? false);
+
+    // disable caching when in debug mode
+    $this->cache = $options['debug'] ? null : $cache;
+
+    $this->setDefaultParameter('module', $options['default_module'] ?? 'default');
+    $this->setDefaultParameter('action', $options['default_action'] ?? 'index');
+
+    $options['logging'] = $options['logging'] ?? false;
+    $options['context'] = $options['context'] ?? [];
+
+    $this->options = $options;
+
+    $this->dispatcher->connect('user.change_culture', [$this, 'listenToChangeCultureEvent']);
+    $this->dispatcher->connect('request.filter_parameters', [$this, 'filterParametersEvent']);
+
+    $this->loadConfiguration();
 
     if (!isset($this->options['auto_shutdown']) || $this->options['auto_shutdown'])
     {
@@ -52,51 +76,6 @@ abstract class sfRouting
   public function getCache()
   {
     return $this->cache;
-  }
-
-  /**
-   * Initializes this sfRouting instance.
-   *
-   * Available options:
-   *
-   *  * default_module: The default module name
-   *  * default_action: The default action name
-   *  * logging:        Whether to log or not (false by default)
-   *  * debug:          Whether to cache or not (false by default)
-   *  * context:        An array of context variables to help URL matching and generation
-   *
-   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
-   * @param sfCache           $cache       An sfCache instance
-   * @param array             $options     An associative array of initialization options.
-   */
-  public function initialize(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
-  {
-    $this->dispatcher = $dispatcher;
-
-    $options['debug'] = isset($options['debug']) ? (boolean) $options['debug'] : false;
-
-    // disable caching when in debug mode
-    $this->cache = $options['debug'] ? null : $cache;
-
-    $this->setDefaultParameter('module', isset($options['default_module']) ? $options['default_module'] : 'default');
-    $this->setDefaultParameter('action', isset($options['default_action']) ? $options['default_action'] : 'index');
-
-    if (!isset($options['logging']))
-    {
-      $options['logging'] = false;
-    }
-
-    if (!isset($options['context']))
-    {
-      $options['context'] = array();
-    }
-
-    $this->options = $options;
-
-    $this->dispatcher->connect('user.change_culture', array($this, 'listenToChangeCultureEvent'));
-    $this->dispatcher->connect('request.filter_parameters', array($this, 'filterParametersEvent'));
-
-    $this->loadConfiguration();
   }
 
   /**

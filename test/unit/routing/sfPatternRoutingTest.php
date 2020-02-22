@@ -14,9 +14,9 @@ $t = new lime_test(149);
 
 class sfPatternRoutingTest extends sfPatternRouting
 {
-  public function initialize(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
   {
-    parent::initialize($dispatcher, $cache, $options);
+    parent::__construct($dispatcher, $cache, $options);
 
     $this->options['context']['host'] = 'localhost';
   }
