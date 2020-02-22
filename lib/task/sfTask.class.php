@@ -33,9 +33,9 @@ abstract class sfTask
   /** @var \sfCommandOption[] */
   protected $options = array();
   /** @var \sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
   /** @var \sfFormatter */
-  protected $formatter = null;
+  protected $formatter;
 
   /**
    * Constructor.
@@ -45,21 +45,10 @@ abstract class sfTask
    */
   public function __construct(sfEventDispatcher $dispatcher, sfFormatter $formatter)
   {
-    $this->initialize($dispatcher, $formatter);
-
-    $this->configure();
-  }
-
-  /**
-   * Initializes the sfTask instance.
-   *
-   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param sfFormatter       $formatter   A sfFormatter instance
-   */
-  public function initialize(sfEventDispatcher $dispatcher, sfFormatter $formatter)
-  {
     $this->dispatcher = $dispatcher;
     $this->formatter  = $formatter;
+
+    $this->configure();
   }
 
   /**
