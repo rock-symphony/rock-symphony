@@ -45,14 +45,12 @@ class sfSessionStorage extends sfStorage
    * @param array $options An associative array of options
    *
    * @see sfStorage
-   *
-   * @return void
    */
-  public function initialize(array $options = []): void
+  public function __construct(array $options = [])
   {
     $cookieDefaults = session_get_cookie_params();
 
-    $options = array_merge(array(
+    $options = array_merge([
       'session_name'            => 'symfony',
       'session_id'              => null,
       'auto_start'              => true,
@@ -62,10 +60,10 @@ class sfSessionStorage extends sfStorage
       'session_cookie_secure'   => $cookieDefaults['secure'],
       'session_cookie_httponly' => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
       'session_cache_limiter'   => null,
-    ), $options);
+    ], $options);
 
     // initialize parent
-    parent::initialize($options);
+    parent::__construct($options);
 
     // set session name
     $sessionName = $this->options['session_name'];

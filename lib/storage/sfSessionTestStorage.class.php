@@ -18,8 +18,10 @@
  */
 class sfSessionTestStorage extends sfStorage
 {
-  protected $sessionId   = null;
-  protected $sessionData = array();
+  /** @var string */
+  protected $sessionId;
+  /** @var array */
+  protected $sessionData = [];
 
   /**
    * Available options:
@@ -31,7 +33,7 @@ class sfSessionTestStorage extends sfStorage
    *
    * @see sfStorage
    */
-  public function initialize(array $options = []): void
+  public function __construct(array $options = [])
   {
     if (!isset($options['session_path']))
     {
@@ -43,7 +45,7 @@ class sfSessionTestStorage extends sfStorage
     ), $options);
 
     // initialize parent
-    parent::initialize($options);
+    parent::__construct($options);
 
     $this->sessionId = null !== $this->options['session_id'] ? $this->options['session_id'] : (array_key_exists('session_id', $_SERVER) ? $_SERVER['session_id'] : null);
 

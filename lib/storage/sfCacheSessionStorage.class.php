@@ -13,24 +13,24 @@
 class sfCacheSessionStorage extends sfStorage
 {
   /** @var string */
-  protected $id = null;
+  protected $id;
   /** @var sfContext */
-  protected $context = null;
+  protected $context;
   /** @var sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
   /** @var sfWebRequest */
-  protected $request = null;
+  protected $request;
   /** @var sfWebResponse */
-  protected $response = null;
-  /** @var sfCache|null */
-  protected $cache = null;
+  protected $response;
+  /** @var sfCache */
+  protected $cache;
   /** @var array */
-  protected $data = array();
+  protected $data = [];
   /** @var bool */
   protected $dataChanged = false;
 
   /**
-   * Initialize this Storage.
+   * Class constructor.
    *
    * @param array $options  An associative array of initialization parameters.
    *                        session_name [required] name of session to use
@@ -40,9 +40,9 @@ class sfCacheSessionStorage extends sfStorage
    *                        session_cookie_secure [required] send only if secure connection
    *                        session_cookie_http_only [required] accessible only via http protocol
    *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this Storage.
+   * @throws sfInitializationException If an error occurs while initializing this Storage.
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
     // initialize parent
 
@@ -53,24 +53,27 @@ class sfCacheSessionStorage extends sfStorage
       $options['session_cookie_httponly'] = $options['session_cookie_http_only'];
     }
 
-    parent::initialize(array_merge(array('session_name' => 'sfproject',
-                                         'session_cookie_lifetime' => '+30 days',
-                                         'session_cookie_path' => '/',
-                                         'session_cookie_domain' => null,
-                                         'session_cookie_secure' => false,
-                                         'session_cookie_httponly' => true,
-                                         'session_cookie_secret' => 'sf$ecret'), $options));
+    parent::__construct(array_merge(
+      [
+        'session_name'            => 'sfproject',
+        'session_cookie_lifetime' => '+30 days',
+        'session_cookie_path'     => '/',
+        'session_cookie_domain'   => null,
+        'session_cookie_secure'   => false,
+        'session_cookie_httponly' => true,
+        'session_cookie_secret'   => 'sf$ecret',
+      ],
+      $options
+    ));
 
-    // create cache instance
-    if (isset($this->options['cache']) && $this->options['cache']['class'])
-    {
-      $cacheClass = $this->options['cache']['class'];
-      $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
-    }
-    else
+    if (empty($this->options['cache']['class']))
     {
       throw new InvalidArgumentException('sfCacheSessionStorage requires cache option.');
     }
+
+    // create cache instance
+    $cacheClass = $this->options['cache']['class'];
+    $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
 
     $this->context     = sfContext::getInstance();
 
@@ -83,7 +86,7 @@ class sfCacheSessionStorage extends sfStorage
     if(strpos($cookie, ':') !== false)
     {
       // split cookie data id:signature(id+secret)
-      list($id, $signature) = explode(':', $cookie, 2);
+      [$id, $signature] = explode(':', $cookie, 2);
 
       if($signature == sha1($id.':'.$this->options['session_cookie_secret']))
       {
@@ -108,7 +111,7 @@ class sfCacheSessionStorage extends sfStorage
 
       if(sfConfig::get('sf_logging_enabled'))
       {
-         $this->dispatcher->notify(new sfEvent($this, 'application.log', array('New session created')));
+        $this->dispatcher->notify(new sfEvent($this, 'application.log', ['New session created']));
       }
 
       // only send cookie when id is issued

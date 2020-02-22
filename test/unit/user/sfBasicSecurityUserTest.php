@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(50);
+$t = new lime_test(49);
 
 class MySessionStorage extends sfSessionTestStorage
 {
@@ -25,10 +25,6 @@ $sessionPath = sys_get_temp_dir().'/sessions_'.rand(11111, 99999);
 $storage = new MySessionStorage(array('session_path' => $sessionPath));
 
 $user = new sfBasicSecurityUser($dispatcher, $storage);
-
-// ->initialize()
-$t->diag('->initialize()');
-$t->todo('->initialize() times out the user if no request made for a long time');
 
 // ->getCredentials()
 $t->diag('->getCredentials()');
@@ -159,10 +155,10 @@ $t->is($user->hasCredential('superadmin'), false);
 $user->setAuthenticated(true);
 $user->shutdown();
 $user = new sfBasicSecurityUser($dispatcher, $storage, array('timeout' => 0));
-$t->is($user->isTimedOut(), true, '->initialize() times out the user if no request made for a long time');
+$t->is($user->isTimedOut(), true, 'Session times out the user if no request made for a long time');
 
 $user = new sfBasicSecurityUser($dispatcher, $storage, array('timeout' => false));
-$t->is($user->isTimedOut(), false, '->initialize() takes a timeout parameter which can be false to disable session timeout');
+$t->is($user->isTimedOut(), false, '->__construct() takes a timeout parameter which can be false to disable session timeout');
 
 // session.gc_maxlifetime
 $user = new sfBasicSecurityUser($dispatcher, $storage, ['timeout' => ini_get('session.gc_maxlifetime') - 1]);
