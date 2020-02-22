@@ -21,9 +21,9 @@
 abstract class sfFilter
 {
   /** @var sfParameterHolder */
-  protected $parameterHolder = null;
+  protected $parameterHolder;
   /** @var sfContext */
-  protected $context = null;
+  protected $context;
 
   /** @var bool[] */
   public static $filterCalled = [];
@@ -31,33 +31,17 @@ abstract class sfFilter
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
    * @param sfContext $context
    * @param array     $parameters
    */
   public function __construct(sfContext $context, array $parameters = [])
   {
-    $this->initialize($context, $parameters);
-  }
-
-  abstract function execute(sfFilterChain $chain): void;
-
-  /**
-   * Initializes this Filter.
-   *
-   * @param sfContext $context    The current application context
-   * @param array     $parameters An associative array of initialization parameters
-   *
-   * @return void
-   */
-  public function initialize(sfContext $context, array $parameters = []): void
-  {
     $this->context = $context;
-
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
   }
+
+  abstract function execute(sfFilterChain $chain): void;
 
   /**
    * Returns true if this is the first call to the sfFilter instance.
