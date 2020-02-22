@@ -16,22 +16,22 @@ $_SERVER['session_id'] = 'test';
 
 $dispatcher = new sfEventDispatcher();
 $sessionPath = sys_get_temp_dir().'/sessions_'.rand(11111, 99999);
-$storage = new sfSessionTestStorage(array('session_path' => $sessionPath));
+$storage = new sfSessionTestStorage(['session_path' => $sessionPath]);
 
 $user = new sfUser($dispatcher, $storage);
 
 // ->initialize()
-$t->diag('->initialize()');
-$t->is($user->getCulture(), 'en', '->initialize() sets the culture to "en" by default');
+$t->diag('->__construct()');
+$t->is($user->getCulture(), 'en', '->__construct() sets the culture to "en" by default');
 
 $user->setCulture(null);
 $user->initialize($dispatcher, $storage, array('default_culture' => 'de'));
 
-user_flush($dispatcher, $user, $storage);
+$user = user_flush($dispatcher, $user, $storage);
 
 $t->is($user->getCulture(), 'de', '->initialize() sets the culture to the value of default_culture if available');
 
-user_flush($dispatcher, $user, $storage);
+$user = user_flush($dispatcher, $user, $storage);
 $t->is($user->getCulture(), 'de', '->initialize() reads the culture from the session data if available');
 
 $userBis = new sfUser($dispatcher, $storage);
@@ -48,12 +48,12 @@ $user->initialize($dispatcher, $storage, array('use_flash' => true));
 $user->setFlash('foo', 'bar');
 $t->is($user->getFlash('foo'), 'bar', '->setFlash() sets a flash variable');
 $t->is($user->hasFlash('foo'), true, '->hasFlash() returns true if the flash variable exists');
-user_flush($dispatcher, $user, $storage, array('use_flash' => true));
+$user = user_flush($dispatcher, $user, $storage, ['use_flash' => true]);
 
 $userBis = new sfUser($dispatcher, $storage, array('use_flash' => true));
 $t->is($userBis->getFlash('foo'), 'bar', '->getFlash() returns a flash previously set');
 $t->is($userBis->hasFlash('foo'), true, '->hasFlash() returns true if the flash variable exists');
-user_flush($dispatcher, $user, $storage, array('use_flash' => true));
+$user = user_flush($dispatcher, $user, $storage, array('use_flash' => true));
 
 $userBis = new sfUser($dispatcher, $storage, array('use_flash' => true));
 $t->is($userBis->getFlash('foo'), null, 'Flashes are automatically removed after the next request');
@@ -83,13 +83,12 @@ $pht->launchTests($user, 'attribute');
 
 $storage->clear();
 
-function user_flush($dispatcher, $user, $storage, $options = array())
+function user_flush(sfEventDispatcher $dispatcher, sfUser $user, sfStorage $storage, array $options = []): sfUser
 {
   $user->shutdown();
   $user->initialize($dispatcher, $storage, $options);
-  $parameters = $storage->getOptions();
-  $storage->shutdown();
-  $storage->initialize($parameters);
+
+  return new sfUser($dispatcher, $storage, $options);
 }
 
 sfToolkit::clearDirectory($sessionPath);
