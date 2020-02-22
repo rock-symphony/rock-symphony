@@ -35,13 +35,12 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *   * db_time_col: The database column in which the session timestamp will be stored (sess_time by default)
    *
    * @param  array $options An associative array of options
-   * @return bool|void
    *
    * @throws sfInitializationException
    *
    * @see sfSessionStorage
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
     $options = array_merge(array(
       'db_id_col'   => 'sess_id',
@@ -53,7 +52,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
     $options['auto_start'] = false;
 
     // initialize the parent
-    parent::initialize($options);
+    parent::__construct($options);
 
     if (!isset($this->options['db_table']))
     {
@@ -66,12 +65,14 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
     }
 
     // use this object as the session handler
-    session_set_save_handler(array($this, 'sessionOpen'),
-                             array($this, 'sessionClose'),
-                             array($this, 'sessionRead'),
-                             array($this, 'sessionWrite'),
-                             array($this, 'sessionDestroy'),
-                             array($this, 'sessionGC'));
+    session_set_save_handler(
+      [$this, 'sessionOpen'],
+      [$this, 'sessionClose'],
+      [$this, 'sessionRead'],
+      [$this, 'sessionWrite'],
+      [$this, 'sessionDestroy'],
+      [$this, 'sessionGC']
+    );
 
     // start our session
     session_start();

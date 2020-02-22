@@ -38,12 +38,12 @@ abstract class sfController
   /**
    * Class constructor.
    *
-   * @see initialize()
    * @param sfContext $context A sfContext implementation instance
    */
   public function __construct(sfContext $context)
   {
-    $this->initialize($context);
+    $this->context    = $context;
+    $this->dispatcher = $context->getEventDispatcher();
   }
 
   /**
@@ -53,8 +53,7 @@ abstract class sfController
    */
   public function initialize(sfContext $context): void
   {
-    $this->context    = $context;
-    $this->dispatcher = $context->getEventDispatcher();
+
   }
 
   /**
