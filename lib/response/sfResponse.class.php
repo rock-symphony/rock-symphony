@@ -29,31 +29,14 @@ abstract class sfResponse implements Serializable
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
-   * @param sfEventDispatcher $dispatcher
-   * @param array             $options
-   */
-  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
-  {
-    $this->initialize($dispatcher, $options);
-  }
-
-  /**
-   * Initializes this sfResponse.
-   *
    * Available options:
    *
    *  * logging: Whether to enable logging or not (false by default)
    *
    * @param  sfEventDispatcher  $dispatcher  An sfEventDispatcher instance
    * @param  array              $options     An array of options
-   *
-   * @return void
-   *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfResponse
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;

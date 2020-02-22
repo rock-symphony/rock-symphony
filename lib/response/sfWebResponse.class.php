@@ -94,7 +94,7 @@ class sfWebResponse extends sfResponse
   ];
 
   /**
-   * Initializes this sfWebResponse.
+   * Class constructor.
    *
    * Available options:
    *
@@ -112,9 +112,9 @@ class sfWebResponse extends sfResponse
    *
    * @see sfResponse
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
 
     $this->javascripts = array_combine($this->positions, array_fill(0, count($this->positions), array()));
     $this->stylesheets = array_combine($this->positions, array_fill(0, count($this->positions), array()));
