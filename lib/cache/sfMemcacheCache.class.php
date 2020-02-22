@@ -39,14 +39,14 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function initialize(array $options = array()): void
+  public function __construct(array $options = [])
   {
-    parent::initialize($options);
-
     if (!class_exists('Memcache'))
     {
       throw new sfInitializationException('You must have memcache installed and enabled to use sfMemcacheCache class.');
     }
+
+    parent::__construct($options);
 
     if ($this->getOption('memcache'))
     {

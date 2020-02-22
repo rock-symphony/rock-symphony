@@ -24,8 +24,6 @@ require_once(__DIR__.'/sfCacheDriverTests.class.php');
 // setup
 sfConfig::set('sf_logging_enabled', false);
 
-// ->initialize()
-$t->diag('->initialize()');
 try
 {
   $cache = new sfMemcacheCache(array('storeCacheInfo' => true));
@@ -36,7 +34,14 @@ catch (sfInitializationException $e)
   return;
 }
 
-sfCacheDriverTests::launch($t, $cache);
+$test = new class extends sfCacheDriverTests
+{
+  public function createCache(array $options = []): sfCache
+  {
+    return new sfMemcacheCache(array_merge(['storeCacheInfo' => true], $options));
+  }
+};
+$test->launch($t);
 
 // ->remove() test for ticket #6220
 $t->diag('->remove() test for ticket #6220');

@@ -7,10 +7,14 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-class sfCacheDriverTests
+abstract class sfCacheDriverTests
 {
-  static public function launch(lime_test $t, sfCache $cache)
+  public abstract function createCache(array $options = []): sfCache;
+
+  public function launch(lime_test $t)
   {
+    $cache = $this->createCache();
+
     // ->set() ->get() ->has()
     $t->diag('->set() ->get() ->has()');
     $data = 'some random data to store in the cache system... (\'"!#/é$£)';
@@ -68,12 +72,11 @@ class sfCacheDriverTests
     $t->is($cache->has('foo'), false, '->clean() cleans all cache key if given no argument');
     $t->is($cache->has('bar'), false, '->clean() cleans all cache key if given no argument');
 
-    $cache->clean();
-    $cache->setOption('automatic_cleaning_factor', 1);
+    $cache = $this->createCache(['automatic_cleaning_factor' => 1]);
     $cache->set('foo', $data);
     $cache->set('foo', $data);
     $cache->set('foo', $data);
-    $cache->setOption('automatic_cleaning_factor', 1000);
+    $cache = $this->createCache(['automatic_cleaning_factor' => 1000]);
 
     // ->remove()
     $t->diag('->remove()');

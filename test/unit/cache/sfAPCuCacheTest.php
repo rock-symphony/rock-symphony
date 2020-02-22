@@ -34,9 +34,12 @@ require_once(__DIR__.'/sfCacheDriverTests.class.php');
 // setup
 sfConfig::set('sf_logging_enabled', false);
 
-// ->initialize()
-$t->diag('->initialize()');
-$cache = new sfAPCuCache();
-$cache->initialize();
+$test = new class extends sfCacheDriverTests
+{
+  public function createCache(array $options = []): sfCache
+  {
+    return new sfAPCuCache($options);
+  }
+};
 
-sfCacheDriverTests::launch($t, $cache);
+$test->launch($t);
