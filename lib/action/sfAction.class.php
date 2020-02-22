@@ -23,23 +23,22 @@
  */
 abstract class sfAction extends sfComponent
 {
+  /** @var array */
   protected $security = [];
 
   /**
-   * Initializes this action.
+   * Class constructor.
    *
    * @param sfContext $context    The current application context.
    * @param string    $moduleName The module name.
    * @param string    $actionName The action name.
-   *
-   * @return void
    */
-  public function initialize(sfContext $context, string $moduleName, string $actionName): void
+  public function __construct(sfContext $context, string $moduleName, string $actionName)
   {
-    parent::initialize($context, $moduleName, $actionName);
+    parent::__construct($context, $moduleName, $actionName);
 
     // include security configuration
-    if ($file = $context->getConfigCache()->checkConfig('modules/'.$this->getModuleName().'/config/security.yml', true))
+    if ($file = $context->getConfigCache()->checkConfig("modules/{$this->getModuleName()}/config/security.yml", true))
     {
       require($file);
     }

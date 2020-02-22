@@ -12,7 +12,7 @@ require_once(__DIR__ . '/../../bootstrap/unit.php');
 require_once(__DIR__ . '/../../unit/sfContextMock.class.php');
 require_once(__DIR__ . '/../../unit/sfNoRouting.class.php');
 
-$t = new lime_test(6);
+$t = new lime_test(4);
 
 class myComponent extends sfComponent
 {
@@ -25,26 +25,20 @@ $context = sfContextMock::mockInstance([
   'response' => 'sfWebResponse',
 ]);
 
-// ->initialize()
-$t->diag('->initialize()');
+// ->__construct()
+$t->diag('->__construct()');
 $component = new myComponent($context, 'module', 'action');
-$t->is($component->getContext(), $context, '->initialize() takes a sfContext object as its first argument');
-$component->initialize($context, 'module', 'action');
-$t->is($component->getContext(), $context, '->initialize() takes a sfContext object as its first argument');
 
 // ->getContext()
 $t->diag('->getContext()');
-$component->initialize($context, 'module', 'action');
 $t->is($component->getContext(), $context, '->getContext() returns the current context');
 
 // ->getRequest()
 $t->diag('->getRequest()');
-$component->initialize($context, 'module', 'action');
 $t->is($component->getRequest(), $context->getRequest(), '->getRequest() returns the current request');
 
 // ->getResponse()
 $t->diag('->getResponse()');
-$component->initialize($context, 'module', 'action');
 $t->is($component->getResponse(), $context->getResponse(), '->getResponse() returns the current response');
 
 // __set()

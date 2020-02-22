@@ -315,6 +315,8 @@ abstract class sfController
       $class = $moduleClass;
     }
 
+    /** @see \sfAction::__construct */
+    /** @see \sfComponent::__construct */
     return new $class($this->context, $moduleName, $controllerName);
   }
 
