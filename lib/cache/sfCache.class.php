@@ -187,6 +187,19 @@ abstract class sfCache
   }
 
   /**
+   * Sets an option value.
+   *
+   * @param string $name  The option name
+   * @param mixed  $value The option value
+   *
+   * @return mixed
+   */
+  public function setOption(string $name, $value): void
+  {
+    $this->options[$name] = $value;
+  }
+
+  /**
    * Converts a pattern to a regular expression.
    *
    * A pattern can use some special characters:
