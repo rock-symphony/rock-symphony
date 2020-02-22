@@ -21,9 +21,9 @@
 abstract class sfFilter
 {
   /** @var sfParameterHolder */
-  protected $parameterHolder = null;
+  protected $parameterHolder;
   /** @var sfContext */
-  protected $context = null;
+  protected $context;
 
   /** @var bool[] */
   public static $filterCalled = [];
@@ -31,33 +31,17 @@ abstract class sfFilter
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
    * @param sfContext $context
    * @param array     $parameters
    */
   public function __construct(sfContext $context, array $parameters = [])
   {
-    $this->initialize($context, $parameters);
-  }
-
-  abstract function execute(sfFilterChain $chain): void;
-
-  /**
-   * Initializes this Filter.
-   *
-   * @param sfContext $context    The current application context
-   * @param array     $parameters An associative array of initialization parameters
-   *
-   * @return void
-   */
-  public function initialize(sfContext $context, array $parameters = []): void
-  {
     $this->context = $context;
-
     $this->parameterHolder = new sfParameterHolder();
     $this->parameterHolder->add($parameters);
   }
+
+  abstract function execute(sfFilterChain $chain): void;
 
   /**
    * Returns true if this is the first call to the sfFilter instance.
@@ -87,16 +71,6 @@ abstract class sfFilter
   public final function getContext(): sfContext
   {
     return $this->context;
-  }
-
-  /**
-   * Gets the parameter holder for this object.
-   *
-   * @return sfParameterHolder A sfParameterHolder instance
-   */
-  public function getParameterHolder(): sfParameterHolder
-  {
-    return $this->parameterHolder;
   }
 
   /**
@@ -134,22 +108,5 @@ abstract class sfFilter
   public function hasParameter(string $name): bool
   {
     return $this->parameterHolder->has($name);
-  }
-
-  /**
-   * Sets the value for the given key.
-   *
-   * This is a shortcut for:
-   *
-   * <code>$this->getParameterHolder()->set()</code>
-   *
-   * @param string $name  The key name
-   * @param mixed  $value The value
-   *
-   * @see sfParameterHolder
-   */
-  public function setParameter(string $name, $value): void
-  {
-    $this->parameterHolder->set($name, $value);
   }
 }
