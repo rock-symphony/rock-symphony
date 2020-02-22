@@ -40,7 +40,6 @@ class myConfigHandler extends sfYamlConfigHandler
 }
 
 $config = new myConfigHandler();
-$config->initialize();
 
 // ->parseYamls()
 $t->diag('->parseYamls()');

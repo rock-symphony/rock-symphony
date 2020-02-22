@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -15,8 +15,7 @@ sfConfig::set('sf_symfony_lib_dir', realpath(__DIR__.'/../../../lib'));
 $t = new lime_test(1);
 
 // prefix
-$handler = new sfDefineEnvironmentConfigHandler();
-$handler->initialize(array('prefix' => 'sf_'));
+$handler = new sfDefineEnvironmentConfigHandler(['prefix' => 'sf_']);
 
 $dir = __DIR__.DIRECTORY_SEPARATOR.'fixtures'.DIRECTORY_SEPARATOR.'sfDefineEnvironmentConfigHandler'.DIRECTORY_SEPARATOR;
 
