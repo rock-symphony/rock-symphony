@@ -119,21 +119,9 @@ class sfWebResponse extends sfResponse
     $this->javascripts = array_combine($this->positions, array_fill(0, count($this->positions), array()));
     $this->stylesheets = array_combine($this->positions, array_fill(0, count($this->positions), array()));
 
-    if (!isset($this->options['charset']))
-    {
-      $this->options['charset'] = 'utf-8';
-    }
-
-    if (!isset($this->options['send_http_headers']))
-    {
-      $this->options['send_http_headers'] = true;
-    }
-
-    if (!isset($this->options['http_protocol']))
-    {
-      $this->options['http_protocol'] = 'HTTP/1.0';
-    }
-
+    $this->options['charset'] = $this->options['charset'] ?? 'utf-8';
+    $this->options['send_http_headers'] = $this->options['send_http_headers'] ?? true;
+    $this->options['http_protocol'] = $this->options['http_protocol'] ?? 'HTTP/1.0';
     $this->options['content_type'] = $this->fixContentType(isset($this->options['content_type']) ? $this->options['content_type'] : 'text/html');
   }
 

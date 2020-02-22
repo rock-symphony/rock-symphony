@@ -41,10 +41,7 @@ abstract class sfResponse implements Serializable
     $this->dispatcher = $dispatcher;
     $this->options = $options;
 
-    if (!isset($this->options['logging']))
-    {
-      $this->options['logging'] = false;
-    }
+    $this->options['logging'] = $this->options['logging'] ?? false;
   }
 
   /**
