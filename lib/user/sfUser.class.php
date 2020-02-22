@@ -31,36 +31,19 @@ class sfUser implements ArrayAccess
 
   const CULTURE_NAMESPACE = 'symfony/user/sfUser/culture';
 
-  protected $options = array();
+  /** @var array */
+  protected $options = [];
   /** @var sfNamespacedParameterHolder */
-  protected $attributeHolder = null;
+  protected $attributeHolder;
+  /** @var string|null */
   protected $culture = null;
   /** @var sfStorage */
-  protected $storage = null;
+  protected $storage;
   /** @var sfEventDispatcher */
-  protected $dispatcher = null;
+  protected $dispatcher;
 
   /**
    * Class constructor.
-   *
-   * @see initialize()
-   *
-   * @param sfEventDispatcher $dispatcher
-   * @param sfStorage         $storage
-   * @param array             $options
-   */
-  public function __construct(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
-  {
-    $this->initialize($dispatcher, $storage, $options);
-
-    if ($this->options['auto_shutdown'])
-    {
-      register_shutdown_function(array($this, 'shutdown'));
-    }
-  }
-
-  /**
-   * Initializes this sfUser.
    *
    * Available options:
    *
@@ -73,10 +56,8 @@ class sfUser implements ArrayAccess
    * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance.
    * @param sfStorage         $storage     An sfStorage instance.
    * @param array             $options     An associative array of options.
-   *
-   * @return void
    */
-  public function initialize(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, sfStorage $storage, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->storage    = $storage;
@@ -120,6 +101,11 @@ class sfUser implements ArrayAccess
       {
         $this->attributeHolder->set($name, true, 'symfony/user/sfUser/flash/remove');
       }
+    }
+
+    if ($this->options['auto_shutdown'])
+    {
+      register_shutdown_function(array($this, 'shutdown'));
     }
   }
 

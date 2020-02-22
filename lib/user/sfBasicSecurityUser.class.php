@@ -241,10 +241,10 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
    *
    * @see sfUser
    */
-  public function initialize(sfEventDispatcher $dispatcher, sfStorage $storage, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, sfStorage $storage, array $options = [])
   {
     // initialize parent
-    parent::initialize($dispatcher, $storage, $options);
+    parent::__construct($dispatcher, $storage, $options);
 
     if (!array_key_exists('timeout', $this->options))
     {
