@@ -215,13 +215,13 @@ class sfI18N
   /**
    * Gets the translation for the given string
    *
-   * @param  string $string     The string to translate
-   * @param  array  $args       An array of arguments for the translation
-   * @param  string $catalogue  The catalogue name
+   * @param  string      $string    The string to translate
+   * @param  array       $args      An array of arguments for the translation
+   * @param  string|null $catalogue The catalogue name
    *
    * @return string The translated string
    */
-  public function __(string $string, array $args = [], string $catalogue = 'messages')
+  public function __(string $string, array $args = [], ?string $catalogue = 'messages')
   {
     return $this->getMessageFormat()->format($string, $args, $catalogue);
   }
