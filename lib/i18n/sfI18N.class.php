@@ -18,27 +18,23 @@
  */
 class sfI18N
 {
-  protected
-    $configuration = null,
-    $dispatcher    = null,
-    $cache         = null,
-    $options       = array(),
-    $culture       = 'en',
-    $messageSource = null,
-    $messageFormat = null;
+  /** @var \sfApplicationConfiguration */
+  protected $configuration;
+  /** @var \sfEventDispatcher */
+  protected $dispatcher;
+  /** @var \sfCache|null */
+  protected $cache;
+  /** @var array */
+  protected $options;
+  /** @var string */
+  protected $culture = 'en';
+  /** @var \sfMessageSource|null */
+  protected $messageSource = null;
+  /** @var \sfMessageFormat|null */
+  protected $messageFormat = null;
 
   /**
    * Class constructor.
-   *
-   * @see initialize()
-   */
-  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
-  {
-    $this->initialize($configuration, $cache, $options);
-  }
-
-  /**
-   * Initializes this class.
    *
    * Available options:
    *
@@ -53,7 +49,7 @@ class sfI18N
    * @param sfCache                    $cache           A sfCache instance
    * @param array                      $options         An array of options
    */
-  public function initialize(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
+  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, array $options = [])
   {
     $this->configuration = $configuration;
     $this->dispatcher = $configuration->getEventDispatcher();
@@ -65,19 +61,19 @@ class sfI18N
       unset($options['culture']);
     }
 
-    $this->options = array_merge(array(
+    $this->options = array_merge([
       'source'              => 'XLIFF',
       'debug'               => false,
       'database'            => 'default',
       'untranslated_prefix' => '[T]',
       'untranslated_suffix' => '[/T]',
-    ), $options);
+    ], $options);
 
-    $this->dispatcher->connect('user.change_culture', array($this, 'listenToChangeCultureEvent'));
+    $this->dispatcher->connect('user.change_culture', [$this, 'listenToChangeCultureEvent']);
 
-    if($this->isMessageSourceFileBased($this->options['source']))
+    if ($this->isMessageSourceFileBased($this->options['source']))
     {
-      $this->dispatcher->connect('controller.change_action', array($this, 'listenToChangeActionEvent'));
+      $this->dispatcher->connect('controller.change_action', [$this, 'listenToChangeActionEvent']);
     }
   }
 
