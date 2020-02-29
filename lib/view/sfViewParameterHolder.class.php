@@ -29,12 +29,6 @@ class sfViewParameterHolder extends sfParameterHolder
   /** @var string */
   protected $escapingMethod;
 
-  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $options = [])
-  {
-    parent::__construct();
-    $this->initialize($dispatcher, $parameters, $options);
-  }
-
   /**
    * Initializes this view parameter holder.
    *
@@ -49,12 +43,8 @@ class sfViewParameterHolder extends sfParameterHolder
    *
    * @throws sfInitializationException If an error occurs while initializing this view parameter holder.
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $options = [])
   {
-    $this->dispatcher = $dispatcher;
-
-    $this->add($parameters);
-
     $escaping_strategy = isset($options['escaping_strategy']) ? $options['escaping_strategy'] : false;
     $escaping_method = isset($options['escaping_method']) ? $options['escaping_method'] : 'ESC_SPECIALCHARS';
 
@@ -65,6 +55,12 @@ class sfViewParameterHolder extends sfParameterHolder
     } else {
       throw new InvalidArgumentException("Invalid `escaping_strategy` option value: `{$escaping_strategy}`.");
     }
+
+    parent::__construct();
+
+    $this->dispatcher = $dispatcher;
+
+    $this->add($parameters);
 
     $this->setEscaping(in_array($escaping_strategy, [true, 'on', 'true'], $strict = true));
     $this->setEscapingMethod($escaping_method);
@@ -170,20 +166,6 @@ class sfViewParameterHolder extends sfParameterHolder
    */
   public function serialize()
   {
-    return serialize(array($this->getAll(), $this->escapingMethod, $this->escaping));
-  }
-
-  /**
-   * Unserializes a sfViewParameterHolder instance.
-   * @param string $serialized The serialized instance data
-   */
-  public function unserialize($serialized)
-  {
-    list($this->parameters, $escapingMethod, $escaping) = unserialize($serialized);
-
-    $this->initialize(sfContext::hasInstance() ? sfContext::getInstance()->getEventDispatcher() : new sfEventDispatcher());
-
-    $this->setEscapingMethod($escapingMethod);
-    $this->setEscaping($escaping);
+    throw new LogicException(get_class($this) . ' is not serializable.');
   }
 }
