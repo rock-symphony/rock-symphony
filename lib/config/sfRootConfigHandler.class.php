@@ -26,6 +26,8 @@ class sfRootConfigHandler extends sfYamlConfigHandler
    *
    * @return string Data to be written to a cache file
    *
+   * @see sfConfigCache::loadConfigHandlers()
+   *
    * @throws sfConfigurationException If a requested configuration file does not exist or is not readable
    * @throws sfParseException If a requested configuration file is improperly formatted
    */

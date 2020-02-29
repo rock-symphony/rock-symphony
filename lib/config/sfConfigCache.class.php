@@ -22,10 +22,12 @@
  */
 class sfConfigCache
 {
-  protected
-    $configuration = null,
-    $handlers      = array(),
-    $userHandlers  = array();
+  /** @var sfApplicationConfiguration */
+  protected $configuration;
+  /** @var sfConfigHandler[] */
+  protected $handlers = [];
+  /** @var sfConfigHandler[] */
+  protected $userHandlers = [];
 
   /**
    * Constructor
@@ -119,12 +121,6 @@ class sfConfigCache
    */
   protected function getHandler($name)
   {
-    if (is_array($this->handlers[$name]))
-    {
-      $class = $this->handlers[$name][0];
-      $this->handlers[$name] = new $class($this->handlers[$name][1]);
-    }
-
     return $this->handlers[$name];
   }
 
@@ -266,60 +262,18 @@ class sfConfigCache
   }
 
   /**
-   * Loads all configuration application and module level handlers.
+   * Loads all project level configuration handlers.
+   *
+   * @see sfRootConfigHandler
    *
    * @throws <b>sfConfigurationException</b> If a configuration related error occurs.
    */
   protected function loadConfigHandlers()
   {
-    // manually create our config_handlers.yml handler
+    // manually create our default config_handlers.yml handler
     $this->handlers['config_handlers.yml'] = new sfRootConfigHandler();
 
-    // application configuration handlers
-
     require $this->checkConfig('config/config_handlers.yml');
-
-    // module level configuration handlers
-
-    // checks modules directory exists
-    if (!is_readable($sf_app_module_dir = sfConfig::get('sf_app_module_dir')))
-    {
-      return;
-    }
-
-    // ignore names
-    $ignore = array('.', '..', 'CVS', '.svn');
-
-    // create a file pointer to the module dir
-    $fp = opendir($sf_app_module_dir);
-
-    // loop through the directory and grab the modules
-    while (($directory = readdir($fp)) !== false)
-    {
-      if (in_array($directory, $ignore))
-      {
-        continue;
-      }
-
-      $configPath = $sf_app_module_dir.'/'.$directory.'/config/config_handlers.yml';
-
-      if (is_readable($configPath))
-      {
-        // initialize the root configuration handler with this module name
-        $params = array('module_level' => true, 'module_name' => $directory);
-
-        $this->handlers['config_handlers.yml']->initialize($params);
-
-        // replace module dir path with a special keyword that
-        // checkConfig knows how to use
-        $configPath = 'modules/'.$directory.'/config/config_handlers.yml';
-
-        require $this->checkConfig($configPath);
-      }
-    }
-
-    // close file pointer
-    closedir($fp);
   }
 
   /**
