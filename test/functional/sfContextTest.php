@@ -16,8 +16,9 @@ $t = new lime_test(29);
 
 class myContext extends sfContext
 {
-  public function initialize(sfApplicationConfiguration $configuration): void
+  public function __construct(sfApplicationConfiguration $configuration)
   {
+    // do nothing
   }
 }
 
