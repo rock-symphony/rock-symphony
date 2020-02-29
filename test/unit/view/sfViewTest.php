@@ -25,11 +25,11 @@ class configuredView extends myView
 {
   static public $isDecorated = false;
 
-  function initialize(sfContext $context, string $moduleName, string $actionName, string $viewName): void
+  function __construct(sfContext $context, string $moduleName, string $actionName, string $viewName)
   {
     $this->setDecorator(self::$isDecorated);
 
-    parent::initialize($context, $moduleName, $actionName, $viewName);
+    parent::__construct($context, $moduleName, $actionName, $viewName);
   }
 }
 
