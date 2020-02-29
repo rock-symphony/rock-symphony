@@ -869,23 +869,6 @@ class sfWebResponse extends sfResponse
   }
 
   /**
-   * @see sfResponse
-   */
-  public function serialize()
-  {
-    return serialize(array($this->content, $this->statusCode, $this->statusText, $this->options, $this->headerOnly, $this->headers, $this->metas, $this->httpMetas, $this->stylesheets, $this->javascripts, $this->slots));
-  }
-
-  /**
-   * @see sfResponse
-   * @inheritdoc
-   */
-  public function unserialize($serialized)
-  {
-    list($this->content, $this->statusCode, $this->statusText, $this->options, $this->headerOnly, $this->headers, $this->metas, $this->httpMetas, $this->stylesheets, $this->javascripts, $this->slots) = unserialize($serialized);
-  }
-
-  /**
    * Validate a position name.
    *
    * @param  string $position
