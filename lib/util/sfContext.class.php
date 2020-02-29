@@ -59,15 +59,16 @@ class sfContext implements ArrayAccess
     }
 
     self::$current = $name;
+    self::$instances[$name] = new $class();
 
-    $instance = new $class($configuration);
-
-    if (! $instance instanceof sfContext)
+    if (!self::$instances[$name] instanceof sfContext)
     {
       throw new sfFactoryException(sprintf('Class "%s" is not of the type sfContext.', $class));
     }
 
-    return self::$instances[$name] = $instance;
+    self::$instances[$name]->initialize($configuration);
+
+    return self::$instances[$name];
   }
 
   /**
@@ -75,10 +76,10 @@ class sfContext implements ArrayAccess
    *
    * @param sfApplicationConfiguration $configuration  An sfApplicationConfiguration instance
    */
-  public function __construct(sfApplicationConfiguration $configuration)
+  public function initialize(sfApplicationConfiguration $configuration): void
   {
     $this->configuration = $configuration;
-    $this->dispatcher = $configuration->getEventDispatcher();
+    $this->dispatcher    = $configuration->getEventDispatcher();
 
     try
     {
@@ -93,8 +94,8 @@ class sfContext implements ArrayAccess
       sfException::createFromException($e)->printStackTrace();
     }
 
-    $this->dispatcher->connect('template.filter_parameters', [$this, 'filterTemplateParameters']);
-    $this->dispatcher->connect('response.fastcgi_finish_request', [$this, 'shutdownUserAndStorage']);
+    $this->dispatcher->connect('template.filter_parameters', array($this, 'filterTemplateParameters'));
+    $this->dispatcher->connect('response.fastcgi_finish_request', array($this, 'shutdownUserAndStorage'));
 
     // register our shutdown function
     register_shutdown_function(array($this, 'shutdown'));
