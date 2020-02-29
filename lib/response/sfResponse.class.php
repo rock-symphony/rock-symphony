@@ -45,16 +45,6 @@ abstract class sfResponse
   }
 
   /**
-   * Sets the event dispatcher.
-   *
-   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
-   */
-  public function setEventDispatcher(sfEventDispatcher $dispatcher): void
-  {
-    $this->dispatcher = $dispatcher;
-  }
-
-  /**
    * Sets the response content
    *
    * @param string $content
