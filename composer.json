@@ -16,6 +16,9 @@
     },
     "type": "library",
     "autoload": {
+        "psr-4": {
+            "RockSymphony\\": "src"
+        },
         "files": [
             "lib/SYMFONY_VERSION.php",
             "lib/escaper/functions.php"
