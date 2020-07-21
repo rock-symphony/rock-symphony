@@ -22,14 +22,14 @@ class sfPatternRouting extends sfRouting
 {
   /** @var null|string */
   protected $currentRouteName = null;
-  protected $currentInternalUri = array();
+  protected $currentInternalUri = [];
   /** @var sfRoute[] */
-  protected $routes = array();
-  protected $cacheData = array();
+  protected $routes = [];
+  protected $cacheData = [];
   protected $cacheChanged = false;
 
   /**
-   * Initializes this Routing.
+   * Class constructor.
    *
    * Available options:
    *
@@ -46,7 +46,7 @@ class sfPatternRouting extends sfRouting
    * @see sfRouting
    * @inheritdoc
    */
-  public function initialize(sfEventDispatcher $dispatcher, sfCache $cache = null, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
   {
     $options = array_merge(array(
       'variable_prefixes'                => array(':'),
@@ -65,7 +65,7 @@ class sfPatternRouting extends sfRouting
       $options['suffix'] = '';
     }
 
-    parent::initialize($dispatcher, $cache, $options);
+    parent::__construct($dispatcher, $cache, $options);
 
     if (null !== $this->cache && !$options['lookup_cache_dedicated_keys'] && $cacheData = $this->cache->get('symfony.routing.data'))
     {

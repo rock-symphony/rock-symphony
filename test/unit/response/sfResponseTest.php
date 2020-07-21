@@ -20,7 +20,7 @@ class fakeResponse
 {
 }
 
-$t = new lime_test(6);
+$t = new lime_test(5);
 
 $dispatcher = new sfEventDispatcher();
 
@@ -43,7 +43,3 @@ ob_start();
 $response->sendContent();
 $content = ob_get_clean();
 $t->is($content, 'test', '->sendContent() output the current response content');
-
-// ->serialize() ->unserialize()
-$t->diag('->serialize() ->unserialize()');
-$t->ok(new myResponse($dispatcher) instanceof Serializable, 'sfResponse implements the Serializable interface');

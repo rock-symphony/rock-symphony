@@ -94,7 +94,7 @@ class sfWebResponse extends sfResponse
   ];
 
   /**
-   * Initializes this sfWebResponse.
+   * Class constructor.
    *
    * Available options:
    *
@@ -112,28 +112,16 @@ class sfWebResponse extends sfResponse
    *
    * @see sfResponse
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    parent::initialize($dispatcher, $options);
+    parent::__construct($dispatcher, $options);
 
     $this->javascripts = array_combine($this->positions, array_fill(0, count($this->positions), array()));
     $this->stylesheets = array_combine($this->positions, array_fill(0, count($this->positions), array()));
 
-    if (!isset($this->options['charset']))
-    {
-      $this->options['charset'] = 'utf-8';
-    }
-
-    if (!isset($this->options['send_http_headers']))
-    {
-      $this->options['send_http_headers'] = true;
-    }
-
-    if (!isset($this->options['http_protocol']))
-    {
-      $this->options['http_protocol'] = 'HTTP/1.0';
-    }
-
+    $this->options['charset'] = $this->options['charset'] ?? 'utf-8';
+    $this->options['send_http_headers'] = $this->options['send_http_headers'] ?? true;
+    $this->options['http_protocol'] = $this->options['http_protocol'] ?? 'HTTP/1.0';
     $this->options['content_type'] = $this->fixContentType(isset($this->options['content_type']) ? $this->options['content_type'] : 'text/html');
   }
 
@@ -878,23 +866,6 @@ class sfWebResponse extends sfResponse
     }
 
     $this->slots = array_merge($this->getSlots(), $response->getSlots());
-  }
-
-  /**
-   * @see sfResponse
-   */
-  public function serialize()
-  {
-    return serialize(array($this->content, $this->statusCode, $this->statusText, $this->options, $this->headerOnly, $this->headers, $this->metas, $this->httpMetas, $this->stylesheets, $this->javascripts, $this->slots));
-  }
-
-  /**
-   * @see sfResponse
-   * @inheritdoc
-   */
-  public function unserialize($serialized)
-  {
-    list($this->content, $this->statusCode, $this->statusText, $this->options, $this->headerOnly, $this->headers, $this->metas, $this->httpMetas, $this->stylesheets, $this->javascripts, $this->slots) = unserialize($serialized);
   }
 
   /**

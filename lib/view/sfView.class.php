@@ -97,36 +97,20 @@ abstract class sfView
   protected $extension = '.php';
 
   /**
-   * @see initialize()
-   *
-   * @param \sfContext $context
-   * @param string     $moduleName
-   * @param string     $actionName
-   * @param string     $viewName
-   */
-  public function __construct(sfContext $context, string $moduleName, string $actionName, string $viewName)
-  {
-    $this->initialize($context, $moduleName, $actionName, $viewName);
-  }
-
-  /**
-   * Initializes this view.
-   *
    * @param  sfContext $context     The current application context
    * @param  string    $moduleName  The module name for this view
    * @param  string    $actionName  The action name for this view
    * @param  string    $viewName    The view name
    */
-  public function initialize(sfContext $context, string $moduleName, string $actionName, string $viewName): void
+  public function __construct(sfContext $context, string $moduleName, string $actionName, string $viewName)
   {
     $this->moduleName = $moduleName;
     $this->actionName = $actionName;
     $this->viewName   = $viewName;
-
     $this->context    = $context;
     $this->dispatcher = $context->getEventDispatcher();
 
-    sfOutputEscaper::markClassesAsSafe(array('sfForm', 'sfFormField', 'sfFormFieldSchema', 'sfModelGeneratorHelper'));
+    sfOutputEscaper::markClassesAsSafe(['sfForm', 'sfFormField', 'sfFormFieldSchema', 'sfModelGeneratorHelper']);
 
     $this->attributeHolder = $this->initializeAttributeHolder();
 
@@ -161,10 +145,10 @@ abstract class sfView
 
   protected function initializeAttributeHolder(array $attributes = []): sfViewParameterHolder
   {
-    $attributeHolder = new sfViewParameterHolder($this->dispatcher, $attributes, array(
+    $attributeHolder = new sfViewParameterHolder($this->dispatcher, $attributes, [
       'escaping_method'   => sfConfig::get('sf_escaping_method'),
       'escaping_strategy' => sfConfig::get('sf_escaping_strategy'),
-    ));
+    ]);
 
     return $attributeHolder;
   }

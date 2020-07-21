@@ -24,11 +24,7 @@ $user = new sfUser($dispatcher, $storage);
 $t->diag('->__construct()');
 $t->is($user->getCulture(), 'en', '->__construct() sets the culture to "en" by default');
 
-$user->setCulture(null);
-$user->initialize($dispatcher, $storage, array('default_culture' => 'de'));
-
-$user = user_flush($dispatcher, $user, $storage);
-
+$user = new sfUser($dispatcher, $storage, ['default_culture' => 'de']);
 $t->is($user->getCulture(), 'de', '->initialize() sets the culture to the value of default_culture if available');
 
 $user = user_flush($dispatcher, $user, $storage);
@@ -44,7 +40,7 @@ $t->is($user->getCulture(), 'fr', '->setCulture() changes the current user cultu
 
 // ->setFlash() ->getFlash() ->hasFlash()
 $t->diag('->setFlash() ->getFlash() ->hasFlash()');
-$user->initialize($dispatcher, $storage, array('use_flash' => true));
+$user = user_flush($dispatcher, $user, $storage, ['use_flash' => true]);
 $user->setFlash('foo', 'bar');
 $t->is($user->getFlash('foo'), 'bar', '->setFlash() sets a flash variable');
 $t->is($user->hasFlash('foo'), true, '->hasFlash() returns true if the flash variable exists');
@@ -86,8 +82,6 @@ $storage->clear();
 function user_flush(sfEventDispatcher $dispatcher, sfUser $user, sfStorage $storage, array $options = []): sfUser
 {
   $user->shutdown();
-  $user->initialize($dispatcher, $storage, $options);
-
   return new sfUser($dispatcher, $storage, $options);
 }
 

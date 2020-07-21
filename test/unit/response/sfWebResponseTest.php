@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(89);
+$t = new lime_test(88);
 
 class myWebResponse extends sfWebResponse
 {
@@ -310,9 +310,3 @@ $response->setContent('foo');
 ob_start();
 $response->sendContent();
 $t->is(ob_get_clean(), 'foo', '->sendContent() returns the response content if headerOnly is false');
-
-// ->serialize() ->unserialize()
-$t->diag('->serialize() ->unserialize()');
-$resp = unserialize(serialize($response));
-$resp->initialize($dispatcher);
-$t->ok($response == $resp, 'sfWebResponse implements the Serializable interface');

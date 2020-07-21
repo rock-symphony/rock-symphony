@@ -36,15 +36,15 @@ class myRequest
 $context = sfContextMock::mockInstance();
 $dispatcher = $context->getEventDispatcher();
 
-// ->initialize()
-$t->diag('->initialize()');
+// ->__construct()
+$t->diag('->__construct()');
 $p = new sfViewParameterHolder($dispatcher);
-$t->is($p->getAll(), [], '->initialize() initializes the parameters as an empty array');
+$t->is($p->getAll(), [], '->__construct() initializes the parameters as an empty array');
 
-$p->initialize($dispatcher, ['foo' => 'bar']);
+$p = new sfViewParameterHolder($dispatcher, ['foo' => 'bar']);
 $t->is($p->get('foo'), 'bar', '->initialize() takes an array of default parameters as its second argument');
 
-$p->initialize($dispatcher, [], ['escaping_strategy' => 'on', 'escaping_method' => 'ESC_TEST_RAW']);
+$p = new sfViewParameterHolder($dispatcher, [], ['escaping_strategy' => 'on', 'escaping_method' => 'ESC_TEST_RAW']);
 $t->is($p->getEscaping(), true, '->initialize() takes an array of options as its third argument');
 $t->is($p->getEscapingMethod(), ESC_TEST_RAW, '->initialize() takes an array of options as its third argument');
 
@@ -57,7 +57,7 @@ $t->is($p->isEscaped(), false, '->isEscaped() returns false if data won\'t be es
 
 // ->getEscaping() ->setEscaping()
 $t->diag('->getEscaping() ->setEscaping()');
-$p->initialize($dispatcher);
+$p = new sfViewParameterHolder($dispatcher);
 $p->setEscaping(true);
 $t->is($p->getEscaping(), true, '->setEscaping() changes the escaping strategy');
 
@@ -78,7 +78,7 @@ try {
 
 // ->toArray()
 $t->diag('->toArray()');
-$p->initialize($dispatcher, ['foo' => 'bar']);
+$p = new sfViewParameterHolder($dispatcher, ['foo' => 'bar']);
 $a = $p->toArray();
 $t->is($a['foo'], 'bar', '->toArray() returns an array representation of the parameter holder');
 
@@ -113,7 +113,13 @@ $t->is($values['foo'], 'bar', '->toArray() knows about the "off" strategy');
 $t->is($values['sf_data']['foo'], 'bar', '->toArray() knows about the "off" strategy');
 
 // ->serialize() / ->unserialize()
-$t->diag('->serialize() / ->unserialize()');
-$p->initialize($dispatcher, ['foo' => 'bar']);
-$unserialized = unserialize(serialize($p));
-$t->is($p->toArray(), $unserialized->toArray(), 'sfViewParameterHolder implements the Serializable interface');
+$t->diag('->serialize()');
+$p = new sfViewParameterHolder($dispatcher, ['foo' => 'bar']);
+try {
+  serialize($p);
+  $t->fail('sfViewParameterHolder should throw when tried to be serialized.');
+} catch (LogicException $exception) {
+
+}
+
+$t->ok(true, 'sfViewParameterHolder should throw when tried to be serialized.');

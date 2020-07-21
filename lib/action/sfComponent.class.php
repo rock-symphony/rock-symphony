@@ -19,46 +19,30 @@
 abstract class sfComponent
 {
   /** @var string */
-  protected $moduleName             = '';
+  protected $moduleName;
   /** @var string */
-  protected $actionName             = '';
+  protected $actionName;
   /** @var sfContext */
-  protected $context                = null;
+  protected $context;
   /** @var sfEventDispatcher */
-  protected $dispatcher             = null;
+  protected $dispatcher;
   /** @var sfRequest */
-  protected $request                = null;
+  protected $request;
   /** @var sfResponse */
-  protected $response               = null;
+  protected $response;
   /** @var sfParameterHolder */
-  protected $varHolder              = null;
+  protected $varHolder;
   /** @var sfParameterHolder */
-  protected $requestParameterHolder = null;
+  protected $requestParameterHolder;
 
   /**
    * Class constructor.
-   *
-   * @see initialize()
    *
    * @param sfContext $context
    * @param string $moduleName
    * @param string $actionName
    */
   public function __construct(sfContext $context, string $moduleName, string $actionName)
-  {
-    $this->initialize($context, $moduleName, $actionName);
-  }
-
-  /**
-   * Initializes this component.
-   *
-   * @param sfContext $context    The current application context.
-   * @param string    $moduleName The module name.
-   * @param string    $actionName The action name.
-   *
-   * @return void
-   */
-  public function initialize(sfContext $context, string $moduleName, string $actionName): void
   {
     $this->moduleName             = $moduleName;
     $this->actionName             = $actionName;

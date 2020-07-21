@@ -24,25 +24,13 @@ abstract class sfGenerator
   protected $generatedModuleName = '';
   protected $theme = 'default';
   protected $moduleName = '';
-  
+
   /**
    * Class constructor.
-   *
-   * @see initialize()
    *
    * @param sfGeneratorManager $generatorManager
    */
   public function __construct(sfGeneratorManager $generatorManager)
-  {
-    $this->initialize($generatorManager);
-  }
-
-  /**
-   * Initializes the current sfGenerator instance.
-   *
-   * @param sfGeneratorManager $generatorManager A sfGeneratorManager instance
-   */
-  public function initialize(sfGeneratorManager $generatorManager)
   {
     $this->generatorManager = $generatorManager;
   }

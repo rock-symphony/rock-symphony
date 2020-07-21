@@ -47,16 +47,6 @@ abstract class sfController
   }
 
   /**
-   * Initializes this controller.
-   *
-   * @param sfContext $context A sfContext implementation instance
-   */
-  public function initialize(sfContext $context): void
-  {
-
-  }
-
-  /**
    * Indicates whether or not a module has a specific component.
    *
    * @param string $moduleName    A module name
@@ -315,6 +305,8 @@ abstract class sfController
       $class = $moduleClass;
     }
 
+    /** @see \sfAction::__construct */
+    /** @see \sfComponent::__construct */
     return new $class($this->context, $moduleName, $controllerName);
   }
 

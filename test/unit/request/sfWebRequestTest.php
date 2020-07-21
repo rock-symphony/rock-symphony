@@ -20,7 +20,7 @@ class myRequest extends sfWebRequest
   public $charsets = null;
   public $acceptableContentTypes = null;
 
-  public function initialize(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = [])
   {
     if (isset($options['content_custom_only_for_test']))
     {
@@ -28,7 +28,7 @@ class myRequest extends sfWebRequest
       unset($options['content_custom_only_for_test']);
     }
 
-    parent::initialize($dispatcher, $parameters, $attributes, $options);
+    parent::__construct($dispatcher, $parameters, $attributes, $options);
 
     if (null === self::$initialPathArrayKeys)
     {

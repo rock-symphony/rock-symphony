@@ -17,7 +17,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-abstract class sfResponse implements Serializable
+abstract class sfResponse
 {
   /** @var array */
   protected $options = [];
@@ -29,49 +29,19 @@ abstract class sfResponse implements Serializable
   /**
    * Class constructor.
    *
-   * @see initialize()
-   *
-   * @param sfEventDispatcher $dispatcher
-   * @param array             $options
-   */
-  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
-  {
-    $this->initialize($dispatcher, $options);
-  }
-
-  /**
-   * Initializes this sfResponse.
-   *
    * Available options:
    *
    *  * logging: Whether to enable logging or not (false by default)
    *
    * @param  sfEventDispatcher  $dispatcher  An sfEventDispatcher instance
    * @param  array              $options     An array of options
-   *
-   * @return void
-   *
-   * @throws <b>sfInitializationException</b> If an error occurs while initializing this sfResponse
    */
-  public function initialize(sfEventDispatcher $dispatcher, array $options = []): void
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->options = $options;
 
-    if (!isset($this->options['logging']))
-    {
-      $this->options['logging'] = false;
-    }
-  }
-
-  /**
-   * Sets the event dispatcher.
-   *
-   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
-   */
-  public function setEventDispatcher(sfEventDispatcher $dispatcher): void
-  {
-    $this->dispatcher = $dispatcher;
+    $this->options['logging'] = $this->options['logging'] ?? false;
   }
 
   /**
@@ -128,24 +98,8 @@ abstract class sfResponse implements Serializable
     return $this->options;
   }
 
-  /**
-   * Serializes the current instance.
-   */
-  public function serialize()
+  public function __sleep()
   {
-    return serialize($this->content);
-  }
-
-  /**
-   * Unserializes a sfResponse instance.
-   *
-   * You need to inject a dispatcher after unserializing a sfResponse instance.
-   *
-   * @param string $serialized  A serialized sfResponse instance
-   *
-   */
-  public function unserialize($serialized)
-  {
-    $this->content = unserialize($serialized);
+    throw new LogicException(get_class($this) . ' is not serializable.');
   }
 }

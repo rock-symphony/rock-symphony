@@ -20,7 +20,6 @@ class myDatabase extends sfDatabase
 }
 
 $database = new myDatabase();
-$database->initialize();
 
 // parameter holder proxy
 require_once(__DIR__ . '/../../unit/sfParameterHolderTest.class.php');

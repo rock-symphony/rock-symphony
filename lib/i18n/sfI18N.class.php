@@ -18,27 +18,23 @@
  */
 class sfI18N
 {
-  protected
-    $configuration = null,
-    $dispatcher    = null,
-    $cache         = null,
-    $options       = array(),
-    $culture       = 'en',
-    $messageSource = null,
-    $messageFormat = null;
+  /** @var \sfApplicationConfiguration */
+  protected $configuration;
+  /** @var \sfEventDispatcher */
+  protected $dispatcher;
+  /** @var \sfCache|null */
+  protected $cache;
+  /** @var array */
+  protected $options;
+  /** @var string */
+  protected $culture = 'en';
+  /** @var \sfMessageSource|null */
+  protected $messageSource = null;
+  /** @var \sfMessageFormat|null */
+  protected $messageFormat = null;
 
   /**
    * Class constructor.
-   *
-   * @see initialize()
-   */
-  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
-  {
-    $this->initialize($configuration, $cache, $options);
-  }
-
-  /**
-   * Initializes this class.
    *
    * Available options:
    *
@@ -53,7 +49,7 @@ class sfI18N
    * @param sfCache                    $cache           A sfCache instance
    * @param array                      $options         An array of options
    */
-  public function initialize(sfApplicationConfiguration $configuration, sfCache $cache = null, $options = array())
+  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, array $options = [])
   {
     $this->configuration = $configuration;
     $this->dispatcher = $configuration->getEventDispatcher();
@@ -65,19 +61,19 @@ class sfI18N
       unset($options['culture']);
     }
 
-    $this->options = array_merge(array(
+    $this->options = array_merge([
       'source'              => 'XLIFF',
       'debug'               => false,
       'database'            => 'default',
       'untranslated_prefix' => '[T]',
       'untranslated_suffix' => '[/T]',
-    ), $options);
+    ], $options);
 
-    $this->dispatcher->connect('user.change_culture', array($this, 'listenToChangeCultureEvent'));
+    $this->dispatcher->connect('user.change_culture', [$this, 'listenToChangeCultureEvent']);
 
-    if($this->isMessageSourceFileBased($this->options['source']))
+    if ($this->isMessageSourceFileBased($this->options['source']))
     {
-      $this->dispatcher->connect('controller.change_action', array($this, 'listenToChangeActionEvent'));
+      $this->dispatcher->connect('controller.change_action', [$this, 'listenToChangeActionEvent']);
     }
   }
 
@@ -86,7 +82,7 @@ class sfI18N
    *
    * @return array The options used to initialize sfI18n
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
@@ -96,7 +92,7 @@ class sfI18N
    *
    * @return sfApplicationConfiguration An sfApplicationConfiguration instance
    */
-  public function getConfiguration()
+  public function getConfiguration(): sfApplicationConfiguration
   {
     return $this->configuration;
   }
@@ -104,10 +100,10 @@ class sfI18N
   /**
    * Sets the message source.
    *
-   * @param mixed  $dirs    An array of i18n directories if message source is a sfMessageSource_File subclass, null otherwise
+   * @param null  $dirs    An array of i18n directories if message source is a sfMessageSource_File subclass, null otherwise
    * @param string $culture The culture
    */
-  public function setMessageSource($dirs, $culture = null)
+  public function setMessageSource($dirs, string $culture = null): void
   {
     if (null === $dirs)
     {
@@ -115,7 +111,7 @@ class sfI18N
     }
     else
     {
-      $this->messageSource = sfMessageSource::factory('Aggregate', array_map(array($this, 'createMessageSource'), $dirs));
+      $this->messageSource = sfMessageSource::factory('Aggregate', array_map([$this, 'createMessageSource'], $dirs));
     }
 
     if (null !== $this->cache)
@@ -152,7 +148,7 @@ class sfI18N
    *
    * @return string The culture
    */
-  public function getCulture()
+  public function getCulture(): string
   {
     return $this->culture;
   }
@@ -162,7 +158,7 @@ class sfI18N
    *
    * @param string $culture The culture
    */
-  public function setCulture($culture)
+  public function setCulture(string $culture): void
   {
     $this->culture = $culture;
 
@@ -185,7 +181,7 @@ class sfI18N
    *
    * @return sfMessageSource A sfMessageSource object
    */
-  public function getMessageSource()
+  public function getMessageSource(): sfMessageSource
   {
     if (!isset($this->messageSource))
     {
@@ -201,7 +197,7 @@ class sfI18N
    *
    * @return sfMessageFormat A sfMessageFormat object
    */
-  public function getMessageFormat()
+  public function getMessageFormat(): sfMessageFormat
   {
     if (!isset($this->messageFormat))
     {
@@ -219,13 +215,13 @@ class sfI18N
   /**
    * Gets the translation for the given string
    *
-   * @param  string $string     The string to translate
-   * @param  array  $args       An array of arguments for the translation
-   * @param  string $catalogue  The catalogue name
+   * @param  string      $string    The string to translate
+   * @param  array       $args      An array of arguments for the translation
+   * @param  string|null $catalogue The catalogue name
    *
    * @return string The translated string
    */
-  public function __($string, $args = array(), $catalogue = 'messages')
+  public function __(string $string, array $args = [], ?string $catalogue = 'messages')
   {
     return $this->getMessageFormat()->format($string, $args, $catalogue);
   }
@@ -238,7 +234,7 @@ class sfI18N
    *
    * @return string The country name
    */
-  public function getCountry($iso, $culture = null)
+  public function getCountry(string $iso, string $culture = null): string
   {
     $c = sfCultureInfo::getInstance(null === $culture ? $this->culture : $culture);
     $countries = $c->getCountries();
@@ -253,7 +249,7 @@ class sfI18N
    *
    * @return string The culture name
    */
-  public function getNativeName($culture)
+  public function getNativeName(string $culture): string
   {
     return sfCultureInfo::getInstance($culture)->getNativeName();
   }
@@ -264,12 +260,12 @@ class sfI18N
    * @param  string  $dateTime  The formatted date with time as string
    * @param  string  $culture The culture
    *
-   * @return integer The timestamp
+   * @return int|null The timestamp
    */
-  public function getTimestampForCulture($dateTime, $culture = null)
+  public function getTimestampForCulture(string $dateTime, string $culture = null): ?int
   {
-    list($day, $month, $year) = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
-    list($hour, $minute) = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
+    [$day, $month, $year] = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
+    [$hour, $minute] = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
 
     return null === $day ? null : mktime($hour, $minute, 0, $month, $day, $year);
   }
@@ -277,12 +273,12 @@ class sfI18N
   /**
    * Returns the day, month and year from a date formatted with a given culture.
    *
-   * @param  string  $date    The formatted date as string
-   * @param  string  $culture The culture
+   * @param  string|null $date    The formatted date as string
+   * @param  string      $culture The culture
    *
-   * @return array   An array with the day, month and year
+   * @return array|null   An array with the day, month and year
    */
-  public function getDateForCulture($date, $culture = null)
+  public function getDateForCulture(?string $date, string $culture = null): ?array
   {
     if (!$date)
     {
@@ -296,15 +292,15 @@ class sfI18N
     $dateRegexp = preg_replace('/[dmy]+/i', '(\d+)', preg_quote($dateFormat));
 
     // We parse date format to see where things are (m, d, y)
-    $a = array(
+    $a = [
       'd' => strpos($dateFormat, 'd'),
       'm' => strpos($dateFormat, 'M'),
       'y' => strpos($dateFormat, 'y'),
-    );
+    ];
     $tmp = array_flip($a);
     ksort($tmp);
     $i = 0;
-    $c = array();
+    $c = [];
     foreach ($tmp as $value) $c[++$i] = $value;
     $datePositions = array_flip($c);
 
@@ -314,23 +310,21 @@ class sfI18N
       // We get matching timestamp
       return array($matches[$datePositions['d']], $matches[$datePositions['m']], $matches[$datePositions['y']]);
     }
-    else
-    {
-      return null;
-    }
+
+    return null;
   }
 
   /**
    * Returns the hour, minute from a date formatted with a given culture.
    *
-   * @param  string  $time    The formatted date as string
-   * @param  string  $culture The culture
+   * @param  string|null  $time    The formatted date as string
+   * @param  string|null  $culture The culture
    *
-   * @return array   An array with the hour and minute
+   * @return array|null   An array with the hour and minute
    */
-  public function getTimeForCulture($time, $culture = null)
+  public function getTimeForCulture(?string $time, string $culture = null): ?array
   {
-    if (!$time) return 0;
+    if (!$time) return null;
 
     $culture = null === $culture ? $this->culture : $culture;
 
@@ -341,11 +335,11 @@ class sfI18N
     $timeRegexp = preg_replace(array('/[hm]+/i', '/a/'), array('(\d+)', '(\w+)'), preg_quote($timeFormat));
 
     // We parse time format to see where things are (h, m)
-    $timePositions = array(
+    $timePositions = [
       'h' => strpos($timeFormat, 'H') !== false ? strpos($timeFormat, 'H') : strpos($timeFormat, 'h'),
       'm' => strpos($timeFormat, 'm'),
-      'a' => strpos($timeFormat, 'a')
-    );
+      'a' => strpos($timeFormat, 'a'),
+    ];
     asort($timePositions);
     $i = 0;
 
@@ -386,7 +380,7 @@ class sfI18N
       }
 
       // We get matching timestamp
-      return array($hour, $matches[$timePositions['m']]);
+      return [$hour, $matches[$timePositions['m']]];
     }
     else
     {
@@ -401,7 +395,7 @@ class sfI18N
    *
    * @return Boolean true if messages are stored in a file, false otherwise
    */
-  static public function isMessageSourceFileBased($source)
+  static public function isMessageSourceFileBased(string $source): bool
   {
     $class = 'sfMessageSource_'.$source;
 
@@ -414,7 +408,7 @@ class sfI18N
    * @param sfEvent $event  An sfEvent instance
    *
    */
-  public function listenToChangeCultureEvent(sfEvent $event)
+  public function listenToChangeCultureEvent(sfEvent $event): void
   {
     // change the message format object with the new culture
     $this->setCulture($event['culture']);
@@ -426,7 +420,7 @@ class sfI18N
    * @param sfEvent $event An sfEvent instance
    *
    */
-  public function listenToChangeActionEvent(sfEvent $event)
+  public function listenToChangeActionEvent(sfEvent $event): void
   {
     // change message source directory to our module
     $this->setMessageSource($this->configuration->getI18NDirs($event['module']));
