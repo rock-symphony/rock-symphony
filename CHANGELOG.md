@@ -1,7 +1,18 @@
 CHANGELOG
 =========
 
-02/01/2019: Version 7.1
+21/07/2020: Version 8.0
+------------------
+
+* Refactor `sfLogger` class hierarchy ([#40](https://github.com/rock-symphony/rock-symphony/pull/40))
+* Drop `initialize()` method from most of the framework classes. 
+  This makes most of implementations immutable -- once instantiated, they cannot be changed.
+   - `sfCache` class hierarchy [#41](https://github.com/rock-symphony/rock-symphony/pull/41) 
+   - `sfStorage` class hierarchy [#42](https://github.com/rock-symphony/rock-symphony/pull/42) 
+   - `sfConfigHandler` class hierarchy [#43](https://github.com/rock-symphony/rock-symphony/pull/43) 
+   - Lots of other classes [#45](https://github.com/rock-symphony/rock-symphony/pull/45)
+ 
+02/01/2020: Version 7.1
 ------------------
 
 * Fix PHP 7.4 support ([#38](https://github.com/rock-symphony/rock-symphony/pull/38))
