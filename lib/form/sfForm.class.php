@@ -104,7 +104,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
   /**
    * Configures the current form.
    */
-  public function configure()
+  public function configure(): void
   {
   }
 
@@ -117,7 +117,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @see configure()
    */
-  public function setup()
+  public function setup(): void
   {
   }
 

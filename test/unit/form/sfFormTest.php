@@ -22,7 +22,7 @@ class FormTest extends sfForm
 
 class TestForm1 extends FormTest
 {
-  public function configure()
+  public function configure(): void
   {
     $this->disableCSRFProtection();
     $this->setWidgets(array(
@@ -50,7 +50,7 @@ class TestForm1 extends FormTest
 
 class TestForm2 extends FormTest
 {
-  public function configure()
+  public function configure(): void
   {
     $this->disableCSRFProtection();
     $this->setWidgets(array(
@@ -76,7 +76,7 @@ class TestForm2 extends FormTest
 
 class TestForm3 extends FormTest
 {
-  public function configure()
+  public function configure(): void
   {
     $this->disableLocalCSRFProtection();
   }
@@ -84,7 +84,7 @@ class TestForm3 extends FormTest
 
 class TestForm4 extends FormTest
 {
-  public function configure()
+  public function configure(): void
   {
     $this->enableLocalCSRFProtection($this->getOption('csrf_secret'));
   }
@@ -92,7 +92,7 @@ class TestForm4 extends FormTest
 
 class NumericFieldsForm extends sfForm
 {
-  public function configure()
+  public function configure(): void
   {
     $this->setWidgets(array(
       '5' => new sfWidgetFormInputText(),
