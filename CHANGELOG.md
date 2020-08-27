@@ -1,6 +1,11 @@
 CHANGELOG
 =========
 
+27/08/2020: Version 9.0
+------------------
+
+* Add native `void` return type to `sfForm::configure()` and `sfForm::setup()` methods.
+
 21/07/2020: Version 8.0
 ------------------
 
