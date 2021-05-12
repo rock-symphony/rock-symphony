@@ -195,7 +195,7 @@ class sfTesterForm extends sfTester
       throw new LogicException('no form has been submitted.');
     }
 
-    print $this->tester->error('Form debug');
+    $this->tester->error('Form debug');
 
     print sprintf("Submitted values: %s\n", str_replace("\n", '', var_export($this->form->getTaintedValues(), true)));
     print sprintf("Errors: %s\n", $this->form->getErrorSchema());

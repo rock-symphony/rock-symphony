@@ -18,6 +18,7 @@
  */
 class sfTesterRequest extends sfTester
 {
+  /** @var sfWebRequest|null */
   protected $request;
 
   /**

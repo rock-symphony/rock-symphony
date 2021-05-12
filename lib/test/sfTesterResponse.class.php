@@ -18,9 +18,11 @@
  */
 class sfTesterResponse extends sfTester
 {
-
+  /** @var sfWebResponse */
   protected $response = null;
+  /** @var DOMDocument|null */
   protected $dom = null;
+  /** @var sfDomCssSelector|null */
   protected $domCssSelector = null;
 
   /**
@@ -87,7 +89,7 @@ class sfTesterResponse extends sfTester
     }
     else if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $value, $match))
     {
-      $position = isset($options['position']) ? $options['position'] : 0;
+      $position = $options['position'] ?? 0;
       if ($match[1] == '!')
       {
         $this->tester->unlike(@$values[$position], substr($value, 1), sprintf('response selector "%s" does not match regex "%s"', $selector, substr($value, 1)));
@@ -99,7 +101,7 @@ class sfTesterResponse extends sfTester
     }
     else
     {
-      $position = isset($options['position']) ? $options['position'] : 0;
+      $position = $options['position'] ?? 0;
       $this->tester->is(@$values[$position], $value, sprintf('response selector "%s" matches "%s"', $selector, $value));
     }
 
@@ -114,8 +116,8 @@ class sfTesterResponse extends sfTester
   /**
    * Checks that a form is rendered correctly.
    *
-   * @param  sfForm|string $form     A form object or the name of a form class
-   * @param  string        $selector CSS selector for the root form element for this form
+   * @param  sfForm|class-string  $form      A form object or the name of a form class
+   * @param  string               $selector  CSS selector for the root form element for this form
    *
    * @return $this
    */
@@ -262,7 +264,7 @@ class sfTesterResponse extends sfTester
    *
    * @return $this
    */
-  public function isHeader($key, $value)
+  public function isHeader(string $key, string $value): self
   {
     $headers = explode(', ', $this->response->getHttpHeader($key));
     $ok = false;
@@ -337,7 +339,7 @@ class sfTesterResponse extends sfTester
   {
     foreach ($this->response->getCookies() as $cookie)
     {
-      if ($name == $cookie->get)
+      if ($name == $cookie['name'])
       {
         if (null === $value)
         {
@@ -436,7 +438,7 @@ class sfTesterResponse extends sfTester
    */
   public function debug($realOutput = false)
   {
-    print $this->tester->error('Response debug');
+    $this->tester->error('Response debug');
 
     if (!$realOutput && null !== sfException::getLastException())
     {
