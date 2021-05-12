@@ -26,31 +26,23 @@ class sfTestBrowser extends sfTestFunctional
   /**
    * Initializes the browser tester instance.
    *
-   * @param string $hostname  Hostname to browse
-   * @param string $remote    Remote address to spook
-   * @param array  $options   Options for sfBrowser
+   * @param  string|null  $hostname  Hostname to browse
+   * @param  string|null  $remote    Remote address to spook
+   * @param  array        $options   Options for sfBrowser
    */
-  public function __construct($hostname = null, $remote = null, $options = array())
+  public function __construct(string $hostname = null, string $remote = null, array $options = [])
   {
-    if (is_object($hostname))
+    $browser = new sfBrowser($hostname, $remote, $options);
+
+    if (null === self::$test)
     {
-      // new signature
-      parent::__construct($hostname, $remote);
+      $lime = new lime_test(null, $options['output'] ?? null);
     }
     else
     {
-      $browser = new sfBrowser($hostname, $remote, $options);
-
-      if (null === self::$test)
-      {
-        $lime = new lime_test(null, isset($options['output']) ? $options['output'] : null);
-      }
-      else
-      {
-        $lime = null;
-      }
-
-      parent::__construct($browser, $lime);
+      $lime = null;
     }
+
+    parent::__construct($browser, $lime);
   }
 }

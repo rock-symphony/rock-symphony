@@ -18,28 +18,20 @@
  */
 class sfTesterForm extends sfTester
 {
-  protected
-    $form = null;
+  /** @var sfForm|null */
+  protected $form = null;
 
   /**
-   * Constructor.
-   *
-   * @param sfTestFunctionalBase $browser A browser
-   * @param lime_test            $tester  A tester object
+   * @param  sfTestFunctional  $browser  A browser
+   * @param  lime_test         $tester   A tester object
    */
-  public function __construct(sfTestFunctionalBase $browser, $tester)
+  public function __construct(sfTestFunctional $browser, lime_test $tester)
   {
     parent::__construct($browser, $tester);
 
-    $this->browser->addListener('template.filter_parameters', array($this, 'filterTemplateParameters'));
-  }
-
-  /**
-   * Prepares the tester.
-   */
-  public function prepare()
-  {
-    $this->form = null;
+    $this->browser->addListener('template.filter_parameters', function (sfEvent $event, array $parameters): array {
+      return $this->filterTemplateParameters($parameters);
+    });
   }
 
   /**
@@ -67,7 +59,7 @@ class sfTesterForm extends sfTester
    *
    * @return sfForm The current sfForm form instance
    */
-  public function getForm()
+  public function getForm(): ?sfForm
   {
     return $this->form;
   }
@@ -75,11 +67,11 @@ class sfTesterForm extends sfTester
   /**
    * Tests if the submitted form has some error.
    *
-   * @param  Boolean|integer $value Whether to check if the form has error or not, or the number of errors
+   * @param  bool|int $value Whether to check if the form has error or not, or the number of errors
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasErrors($value = true)
+  public function hasErrors($value = true): self
   {
     if (null === $this->form)
     {
@@ -105,7 +97,7 @@ class sfTesterForm extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -113,9 +105,9 @@ class sfTesterForm extends sfTester
    *
    * @param mixed $value The error message or the number of errors for the field (optional)
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasGlobalError($value = true)
+  public function hasGlobalError($value = true): self
   {
     return $this->isError(null, $value);
   }
@@ -126,9 +118,9 @@ class sfTesterForm extends sfTester
    * @param string $field The field name to check for an error (null for global errors)
    * @param mixed  $value The error message or the number of errors for the field (optional)
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isError($field, $value = true)
+  public function isError(string $field, $value = true): self
   {
     if (null === $this->form)
     {
@@ -190,7 +182,7 @@ class sfTesterForm extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -203,7 +195,7 @@ class sfTesterForm extends sfTester
       throw new LogicException('no form has been submitted.');
     }
 
-    print $this->tester->error('Form debug');
+    $this->tester->error('Form debug');
 
     print sprintf("Submitted values: %s\n", str_replace("\n", '', var_export($this->form->getTaintedValues(), true)));
     print sprintf("Errors: %s\n", $this->form->getErrorSchema());
@@ -214,12 +206,11 @@ class sfTesterForm extends sfTester
   /**
    * Listens to the template.filter_parameters event to get the submitted form object.
    *
-   * @param sfEvent $event      The event
-   * @param array   $parameters An array of parameters passed to the template
+   * @param  array  $parameters  An array of parameters passed to the template
    *
    * @return array The array of parameters passed to the template
    */
-  public function filterTemplateParameters(sfEvent $event, $parameters)
+  private function filterTemplateParameters(array $parameters): array
   {
     if (!isset($parameters['sf_type']))
     {
@@ -246,7 +237,7 @@ class sfTesterForm extends sfTester
    * @return sfFormField
    */
 
-  public function getFormField($path)
+  public function getFormField(string $path): sfFormField
   {
     if (false !== $pos = strpos($path, '['))
     {

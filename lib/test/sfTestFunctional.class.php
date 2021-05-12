@@ -21,12 +21,15 @@ class sfTestFunctional extends sfTestFunctionalBase
   /**
    * Initializes the browser tester instance.
    *
-   * @param sfBrowserBase $browser A sfBrowserBase instance
-   * @param lime_test     $lime    A lime instance
+   * @param  sfBrowser                  $browser  A sfBrowserBase instance
+   * @param  \lime_test|null                $lime     A lime instance
+   * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, $testers = array())
+  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
   {
-    $testers = array_merge(['form' => 'sfTesterForm'], $testers);
+    $testers = array_merge([
+      'form' => sfTesterForm::class,
+    ], $testers);
 
     parent::__construct($browser, $lime, $testers);
   }
@@ -38,14 +41,13 @@ class sfTestFunctional extends sfTestFunctionalBase
    * @param  string $actionName  The action name
    * @param  mixed  $position    The position in the action stack (default to the last entry)
    *
-   * @return sfTestFunctional The current sfTestFunctional instance
+   * @return $this The current sfTestFunctional instance
    */
-  public function isForwardedTo($moduleName, $actionName, $position = 'last')
+  public function isForwardedTo(string $moduleName, string $actionName, $position = 'last'): self
   {
     $actionStack = $this->browser->getContext()->getActionStack();
 
-    switch ($position)
-    {
+    switch ($position) {
       case 'first':
         $entry = $actionStack->getFirstEntry();
         break;
