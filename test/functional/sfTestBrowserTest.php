@@ -16,8 +16,9 @@ if (!include(__DIR__.'/../bootstrap/functional.php'))
 
 class TestBrowser extends sfTestBrowser
 {
-  public $events = array();
-  public function listen(sfEvent $event)
+  public $events = [];
+
+  public function listen(sfEvent $event): void
   {
     $this->events[] = $event;
   }

@@ -18,20 +18,18 @@
  */
 class sfTesterForm extends sfTester
 {
-  protected
-    $form = null;
+  /** @var sfForm|null */
+  protected $form = null;
 
   /**
-   * Constructor.
-   *
    * @param sfTestFunctionalBase $browser A browser
    * @param lime_test            $tester  A tester object
    */
-  public function __construct(sfTestFunctionalBase $browser, $tester)
+  public function __construct(sfTestFunctionalBase $browser, lime_test $tester)
   {
     parent::__construct($browser, $tester);
 
-    $this->browser->addListener('template.filter_parameters', array($this, 'filterTemplateParameters'));
+    $this->browser->addListener('template.filter_parameters', [$this, 'filterTemplateParameters']);
   }
 
   /**
@@ -67,7 +65,7 @@ class sfTesterForm extends sfTester
    *
    * @return sfForm The current sfForm form instance
    */
-  public function getForm()
+  public function getForm(): ?sfForm
   {
     return $this->form;
   }
@@ -75,7 +73,7 @@ class sfTesterForm extends sfTester
   /**
    * Tests if the submitted form has some error.
    *
-   * @param  Boolean|integer $value Whether to check if the form has error or not, or the number of errors
+   * @param  bool|int $value Whether to check if the form has error or not, or the number of errors
    *
    * @return sfTestFunctionalBase|sfTester
    */

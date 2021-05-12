@@ -18,10 +18,12 @@
  */
 abstract class sfTester
 {
-  protected
-    $inABlock = false,
-    $browser  = null,
-    $tester   = null;
+  /** @var bool */
+  protected $inABlock = false;
+  /** @var \sfTestFunctionalBase */
+  protected $browser;
+  /** @var \lime_test */
+  protected $tester;
 
   /**
    * Constructor.
@@ -29,7 +31,7 @@ abstract class sfTester
    * @param sfTestFunctionalBase $browser A browser
    * @param lime_test            $tester  A tester object
    */
-  public function __construct(sfTestFunctionalBase $browser, $tester)
+  public function __construct(sfTestFunctionalBase $browser, lime_test $tester)
   {
     $this->browser = $browser;
     $this->tester  = $tester;
@@ -81,7 +83,7 @@ abstract class sfTester
 
   public function __call($method, $arguments)
   {
-    call_user_func_array(array($this->browser, $method), $arguments);
+    call_user_func_array([$this->browser, $method], $arguments);
 
     return $this->getObjectToReturn();
   }
