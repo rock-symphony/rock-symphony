@@ -289,34 +289,19 @@ $t->is($response->clearJavascripts(), array(), '->clearJavascripts() removes all
 $t->diag('->setCookie() ->getCookies()');
 $response->setCookie('foo', 'bar');
 $t->is($response->getCookies(), [
-  'foo' => [
-    'name'    => 'foo',
-    'value'   => 'bar',
-    'options' => [
-      'expires'  => null,
-      'path'     => '/',
-      'domain'   => null,
-      'secure'   => false,
-      'httponly' => false,
-      'samesite' => 'Lax',
-    ],
-  ]
+  'foo' => sfCookie::create('foo', 'bar'),
 ], '->setCookie() adds a cookie for the response');
 
 $response->setCookie('foo', 'bar', 'next year 1 january', '/auth', 'symfony.org', true, false, 'Strict');
 $t->is($response->getCookies(), [
-  'foo' => [
-    'name'    => 'foo',
-    'value'   => 'bar',
-    'options' => [
-      'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
-      'path'     => '/auth',
-      'domain'   => 'symfony.org',
-      'secure'   => true,
-      'httponly' => false,
-      'samesite' => 'Strict',
-    ],
-  ]
+  'foo' => sfCookie::create('foo', 'bar', [
+    'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
+    'path'     => '/auth',
+    'domain'   => 'symfony.org',
+    'secure'   => true,
+    'httponly' => false,
+    'samesite' => 'Strict',
+  ]),
 ], '->setCookie() supports ordered arguments for backwards compatibility');
 
 $response->setCookie('foo', 'bar', [
@@ -327,18 +312,14 @@ $response->setCookie('foo', 'bar', [
   'samesite' => 'Strict',
 ]);
 $t->is($response->getCookies(), [
-  'foo' => [
-    'name'    => 'foo',
-    'value'   => 'bar',
-    'options' => [
-      'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
-      'path'     => '/auth',
-      'domain'   => 'symfony.org',
-      'secure'   => true,
-      'httponly' => false,
-      'samesite' => 'Strict',
-    ],
-  ]
+  'foo' => sfCookie::create('foo', 'bar', [
+    'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
+    'path'     => '/auth',
+    'domain'   => 'symfony.org',
+    'secure'   => true,
+    'httponly' => false,
+    'samesite' => 'Strict',
+  ])
 ], '->setCookie() supports options array');
 
 // ->setHeaderOnly() ->getHeaderOnly()

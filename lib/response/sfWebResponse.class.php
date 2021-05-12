@@ -26,7 +26,7 @@ class sfWebResponse extends sfResponse
   public const ALL = 'ALL';
   public const RAW = 'RAW';
 
-  /** @var array<string,array{name:string,value:string|null,options:array}> */
+  /** @var array<string,sfCookie> */
   protected $cookies = [];
   /** @var int */
   protected $statusCode = 200;
@@ -91,15 +91,6 @@ class sfWebResponse extends sfResponse
     '503' => 'Service Unavailable',
     '504' => 'Gateway Timeout',
     '505' => 'HTTP Version Not Supported',
-  ];
-
-  private const DEFAULT_COOKIE_OPTIONS = [
-    'expires'  => null,
-    'path'     => '/',
-    'domain'   => null,
-    'secure'   => false,
-    'httponly' => false,
-    'samesite' => 'Lax',
   ];
 
   /**
@@ -187,45 +178,18 @@ class sfWebResponse extends sfResponse
       // Options is a numeric array -- ordered arguments passed as before.
       // (..., string $expires = null, string $path = '/', string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
 
-      // Rebuild default options array to guarantee keys order matches previous function arguments order.
-      // We cannot rely on DEFAULT_COOKIE_OPTIONS array order, as it's too far from this code and
-      $defaultOptions = [
-        'expires'  => self::DEFAULT_COOKIE_OPTIONS['expires'],
-        'path'     => self::DEFAULT_COOKIE_OPTIONS['path'],
-        'domain'   => self::DEFAULT_COOKIE_OPTIONS['domain'],
-        'secure'   => self::DEFAULT_COOKIE_OPTIONS['secure'],
-        'httponly' => self::DEFAULT_COOKIE_OPTIONS['httponly'],
-        'samesite' => self::DEFAULT_COOKIE_OPTIONS['samesite'],
-      ];
+      // Make sure keys order matches previous function arguments order.
       $options = array_combine(
-        array_keys($defaultOptions),
-        $options + array_values($defaultOptions),
+        array_slice(['expires', 'path', 'domain', 'secure', 'httponly', 'samesite'], 0, count($options)),
+        $options,
       );
     }
-    // Otherwise Options is an empty array or an assoc array. Do nothing.
 
-    /** @var array{expires:string|int|null,path:string,domain:string|null,secure:bool,httponly:bool,samesite:string} */
-    $options = array_merge(self::DEFAULT_COOKIE_OPTIONS, $options);
-
-    if ($options['expires'] !== null)
-    {
-      if (is_numeric($options['expires']))
-      {
-        $expire = (int) $options['expires'];
-      }
-      else
-      {
-        $expire = strtotime($options['expires']);
-        if ($expire === false || $expire == -1)
-        {
-          throw new sfException('Your expire parameter is not valid.');
-        }
-      }
-
-      $options['expires'] = $expire;
+    try {
+      $this->cookies[$name] = sfCookie::create($name, $value, $options);
+    } catch (InvalidArgumentException $exception) {
+      throw new sfException($exception->getMessage());
     }
-
-    $this->cookies[$name] = ['name' => $name, 'value' => $value, 'options' => $options];
   }
 
   /**
@@ -403,11 +367,13 @@ class sfWebResponse extends sfResponse
     // cookies
     foreach ($this->cookies as $cookie)
     {
-      setrawcookie($cookie['name'], $cookie['value'], $cookie['options']);
+      setrawcookie($cookie->getName(), $cookie->getValue(), $cookie->getOptions());
 
       if ($this->options['logging'])
       {
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array(sprintf('Send cookie "%s": "%s"', $cookie['name'], $cookie['value']))));
+        $this->dispatcher->notify(
+          new sfEvent($this, 'application.log', [sprintf('Send cookie "%s": "%s"', $cookie->getName(), $cookie->getValue())]),
+        );
       }
     }
     // prevent resending the headers
@@ -848,7 +814,7 @@ class sfWebResponse extends sfResponse
   /**
    * Retrieves cookies from the current web response.
    *
-   * @return array Cookies
+   * @return \sfCookie[] Cookies
    */
   public function getCookies(): array
   {
