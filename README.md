@@ -56,7 +56,8 @@ Roadmap
 Requirements
 ------------
 
-PHP 5.6.0 and up. See prerequisites on http://symfony.com/legacy/doc/getting-started/1_4/en/02-Prerequisites
+Starting from PHP 5.6.0 and then goes up with every new major version.
+The latest v10.0 release requires PHP 7.3.
 
 Migrating to Rock Symphony
 --------------------------
@@ -84,6 +85,7 @@ It's only intended for old projects to migrate to.
    - `composer require rock-symphony/rock-symphony:^7.0`
    - `composer require rock-symphony/rock-symphony:^8.0`
    - `composer require rock-symphony/rock-symphony:^9.0`
+   - `composer require rock-symphony/rock-symphony:^10.0`
 
 
 Contributing
