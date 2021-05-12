@@ -75,12 +75,13 @@ class sfSessionStorage extends sfStorage
       session_id($sessionId);
     }
 
-    $lifetime = $this->options['session_cookie_lifetime'];
-    $path     = $this->options['session_cookie_path'];
-    $domain   = $this->options['session_cookie_domain'];
-    $secure   = $this->options['session_cookie_secure'];
-    $httpOnly = $this->options['session_cookie_httponly'];
-    session_set_cookie_params($lifetime, $path, $domain, $secure, $httpOnly);
+    session_set_cookie_params([
+      'lifetime' => $this->options['session_cookie_lifetime'],
+      'path'     => $this->options['session_cookie_path'],
+      'domain'   => $this->options['session_cookie_domain'],
+      'secure'   => $this->options['session_cookie_secure'],
+      'httponly' => $this->options['session_cookie_httponly'],
+    ]);
 
     if (null !== $this->options['session_cache_limiter'])
     {
