@@ -168,14 +168,17 @@ class sfCookie
   }
 
   /**
-   * Get options array compatible with `setcookie()` and `setrawcookie()` functions.
+   * Get cookie attributes.
+   *
+   * The returned array is 100% compatible with `setcookie()` and `setrawcookie()` functions
+   * and thus can be used as-is.
    *
    * @return array
    * @see \setrawcookie()
    *
    * @see \setcookie()
    */
-  public function getOptions(): array
+  public function getAttributes(): array
   {
     return [
       'expires'  => $this->expires ? (int)$this->expires->format('U') : null,
@@ -196,6 +199,6 @@ class sfCookie
    */
   public function toArray(): array
   {
-    return array_merge(['name' => $this->getName(), 'value' => $this->getValue()], $this->getOptions());
+    return array_merge(['name' => $this->getName(), 'value' => $this->getValue()], $this->getAttributes());
   }
 }

@@ -350,7 +350,7 @@ class sfTesterResponse extends sfTester
           $this->tester->ok($value == $cookie->getValue(), sprintf('response sets cookie "%s" to "%s"', $name, $value));
         }
 
-        $actualAttributes = $cookie->getOptions();
+        $actualAttributes = $cookie->getAttributes();
 
         foreach ($attributes as $attributeName => $attributeValue)
         {

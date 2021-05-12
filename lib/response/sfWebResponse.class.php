@@ -367,7 +367,7 @@ class sfWebResponse extends sfResponse
     // cookies
     foreach ($this->cookies as $cookie)
     {
-      setrawcookie($cookie->getName(), $cookie->getValue(), $cookie->getOptions());
+      setrawcookie($cookie->getName(), $cookie->getValue(), $cookie->getAttributes());
 
       if ($this->options['logging'])
       {
