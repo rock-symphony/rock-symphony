@@ -6,6 +6,8 @@ CHANGELOG
 
 * Add support for `SameSite` attribute to `sfWebResponse::setCookie()` method (BC break) 
   ([#47](https://github.com/rock-symphony/rock-symphony/pull/47))
+* Add support for `SameSite` attribute to `sfSessionStorage` 
+  ([#47](https://github.com/rock-symphony/rock-symphony/pull/47))
 * Add `sfCookie` class 
   ([#47](https://github.com/rock-symphony/rock-symphony/pull/47))
 * Rework a lot of tests-related code (multiple BC breaks; but only if your test suite is using symfony test classes) 
