@@ -9,6 +9,7 @@
     },
     "require-dev": {
         "ext-dom": "*",
+        "ext-json": "*",
         "ext-libxml": "*",
         "psr/log": "*",
         "nette/robot-loader": "^3.1"
