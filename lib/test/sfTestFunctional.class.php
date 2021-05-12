@@ -21,13 +21,15 @@ class sfTestFunctional extends sfTestFunctionalBase
   /**
    * Initializes the browser tester instance.
    *
-   * @param  sfBrowserBase                  $browser  A sfBrowserBase instance
+   * @param  sfBrowser                  $browser  A sfBrowserBase instance
    * @param  \lime_test|null                $lime     A lime instance
    * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, array $testers = [])
+  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
   {
-    $testers = array_merge(['form' => sfTesterForm::class], $testers);
+    $testers = array_merge([
+      'form' => sfTesterForm::class,
+    ], $testers);
 
     parent::__construct($browser, $lime, $testers);
   }

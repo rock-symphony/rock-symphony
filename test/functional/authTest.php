@@ -18,36 +18,36 @@ class sfAuthTestBrowser extends sfTestBrowser
 {
   public function checkNonAuth(): self
   {
-    return $this->
-      get('/auth/basic')->
-      with('request')->begin()->
-        isParameter('module', 'auth')->
-        isParameter('action', 'basic')->
-      end()->
-      with('response')->begin()->
-        isStatusCode(401)->
-        checkElement('#user', '')->
-        checkElement('#password', '')->
-        checkElement('#msg', 'KO')->
-      end()
-    ;
+    return $this->get('/auth/basic')
+
+      ->with('request', function (sfTesterRequest $request) {
+        $request->isParameter('module', 'auth');
+        $request->isParameter('action', 'basic');
+      })
+
+      ->with('response', function (sfTesterResponse $response) {
+        $response->isStatusCode(401);
+        $response->checkElement('#user', '');
+        $response->checkElement('#password', '');
+        $response->checkElement('#msg', 'KO');
+      });
   }
 
   public function checkAuth(): self
   {
-    return $this->
-      get('/auth/basic')->
-      with('request')->begin()->
-        isParameter('module', 'auth')->
-        isParameter('action', 'basic')->
-      end()->
-      with('response')->begin()->
-        isStatusCode(200)->
-        checkElement('#user', 'foo')->
-        checkElement('#password', 'bar')->
-        checkElement('#msg', 'OK')->
-      end()
-    ;
+    return $this->get('/auth/basic')
+
+      ->with('request', function (sfTesterRequest $request) {
+        $request->isParameter('module', 'auth');
+        $request->isParameter('action', 'basic');
+      })
+
+      ->with('response', function (sfTesterResponse $response) {
+        $response->isStatusCode(200);
+        $response->checkElement('#user', 'foo');
+        $response->checkElement('#password', 'bar');
+        $response->checkElement('#msg', 'OK');
+      });
   }
 }
 

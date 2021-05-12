@@ -17,21 +17,21 @@ if (!include(__DIR__.'/../bootstrap/functional.php'))
 $b = new sfTestBrowser();
 
 // default main page
-$b->
-  getAndCheck('default', 'index', '/')->
-  with('response')->begin()->
-    checkElement('body', '/congratulations/i')->
-    checkElement('link[href="/sf/sf_default/css/screen.css"]')->
-    checkElement('link[href="/css/main.css"]')->
-    checkElement('link[href="/css/multiple_media.css"][media="print,handheld"]')->
-    matches('#'.preg_quote('<!--[if lte IE 6]><link rel="stylesheet" type="text/css" media="screen" href="/css/ie6.css" /><![endif]-->').'#')->
-  end()
+$b->getAndCheck('default', 'index', '/')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->checkElement('body', '/congratulations/i');
+    $response->checkElement('link[href="/sf/sf_default/css/screen.css"]');
+    $response->checkElement('link[href="/css/main.css"]');
+    $response->checkElement('link[href="/css/multiple_media.css"][media="print,handheld"]');
+    $response->matches('#' . preg_quote('<!--[if lte IE 6]><link rel="stylesheet" type="text/css" media="screen" href="/css/ie6.css" /><![endif]-->') . '#');
+  })
 ;
 
 // default 404
-$b->
-  get('/nonexistant')->
-  with('response')->isStatusCode(404)
+$b->get('/nonexistant')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(404);
+  })
 ;
 /*
 $b->
@@ -41,147 +41,136 @@ $b->
 */
 
 // unexistant action
-$b->
-  get('/default/nonexistantaction')->
-  with('response')->isStatusCode(404)
+$b->get('/default/nonexistantaction')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(404);
+  })
 ;
 
 // module.yml: enabled
-$b->
-  get('/configModuleDisabled')->
-  with('request')->begin()->
-    isForwardedTo('default', 'disabled')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/module is unavailable/i')->
-    checkElement('body', '!/congratulations/i')->
-    checkElement('link[href="/sf/sf_default/css/screen.css"]')->
-  end()
+$b->get('/configModuleDisabled')
+  ->with('request', function (sfTesterRequest $request) {
+    $request->isForwardedTo('default', 'disabled');
+  })
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/module is unavailable/i');
+    $response->checkElement('body', '!/congratulations/i');
+    $response->checkElement('link[href="/sf/sf_default/css/screen.css"]');
+  })
 ;
 
 // view.yml: has_layout
-$b->
-  get('/configViewHasLayout/withoutLayout')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/no layout/i')->
-    checkElement('head title', false)->
-  end()
+$b->get('/configViewHasLayout/withoutLayout')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/no layout/i');
+    $response->checkElement('head title', false);
+  })
 ;
 
 // security.yml: is_secure
-$b->
-  get('/configSecurityIsSecure')->
-  with('request')->begin()->
-    isForwardedTo('default', 'login')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/Login Required/i')->
+$b->get('/configSecurityIsSecure')
+  ->with('request', function (sfTesterRequest $request) {
+    $request->isForwardedTo('default', 'login');
+  })
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/Login Required/i');
 
     // check that there is no double output caused by the forwarding in a filter
-    checkElement('body', 1)->
-    checkElement('link[href="/sf/sf_default/css/screen.css"]')->
-  end()
+    $response->checkElement('body', 1);
+    $response->checkElement('link[href="/sf/sf_default/css/screen.css"]');
+  })
 ;
 
 // security.yml: case sensitivity
-$b->
-  get('/configSecurityIsSecureAction/index')->
-  with('request')->begin()->
-    isForwardedTo('default', 'login')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/Login Required/i')->
-  end()
+$b->get('/configSecurityIsSecureAction/index')
+  ->with('request', function (sfTesterRequest $request) {
+    $request->isForwardedTo('default', 'login');
+  })
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/Login Required/i');
+  })
 ;
 
-$b->
-  get('/configSecurityIsSecureAction/Index')->
-  with('request')->begin()->
-    isForwardedTo('default', 'login')->
-  end()->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/Login Required/i')->
-  end()
+$b->get('/configSecurityIsSecureAction/Index')
+  ->with('request', function (sfTesterRequest $request) {
+    $request->isForwardedTo('default', 'login');
+  })
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/Login Required/i');
+  })
 ;
 
 // Max forwards
-$b->
-  get('/configSettingsMaxForwards/selfForward')->
-  with('response')->isStatusCode(500)->
-  throwsException(null, '/Too many forwards have been detected for this request/i')
-;
+$b->get('/configSettingsMaxForwards/selfForward')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(500);
+    $response->throwsException(null, '/Too many forwards have been detected for this request/i');
+  });
 
 // filters.yml: add a filter
-$b->
-  get('/configFiltersSimpleFilter')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '/in a filter/i')->
-    checkElement('body', '!/congratulation/i')->
-  end()
+$b->get('/configFiltersSimpleFilter')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '/in a filter/i');
+    $response->checkElement('body', '!/congratulation/i');
+  })
 ;
 
 // css and js inclusions
-$b->
-  get('/assetInclusion/index')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('head link[rel="stylesheet"]', false)->
-    checkElement('head script[type="text/javascript"]', false)->
-  end()
+$b->get('/assetInclusion/index')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('head link[rel="stylesheet"]', false);
+    $response->checkElement('head script[type="text/javascript"]', false);
+  })
 ;
 
 // renderText
-$b->
-  get('/renderText')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    matches('/foo/')->
-  end()
+$b->get('/renderText')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->matches('/foo/');
+  })
 ;
 
 // view.yml when changing template
-$b->
-  get('/view')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    isHeader('Content-Type', 'text/html; charset=utf-8')->
-    checkElement('head title', 'foo title')->
-  end()
+$b->get('/view')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->isHeader('Content-Type', 'text/html; charset=utf-8');
+    $response->checkElement('head title', 'foo title');
+  })
 ;
 
 // view.yml with other than default content-type
-$b->
-  get('/view/plain')->
-  with('response')->begin()->
-    isHeader('Content-Type', 'text/plain; charset=utf-8')->
-    isStatusCode(200)->
-    matches('/<head>/')->
-    matches('/plaintext/')->
-  end()
+$b->get('/view/plain')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isHeader('Content-Type', 'text/plain; charset=utf-8');
+    $response->isStatusCode(200);
+    $response->matches('/<head>/');
+    $response->matches('/plaintext/');
+  })
 ;
 
 // view.yml with other than default content-type and no layout
-$b->
-  get('/view/image')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    isHeader('Content-Type', 'image/jpg')->
-    matches('/image/')->
-  end()
+$b->get('/view/image')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->isHeader('Content-Type', 'image/jpg');
+    $response->matches('/image/');
+  })
 ;
 
 // getPresentationFor()
-$b->
-  get('/presentation')->
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('#foo', 'foo')->
-    checkElement('#foo_bis', 'foo')->
-  end()
+$b->get('/presentation')
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('#foo', 'foo');
+    $response->checkElement('#foo_bis', 'foo');
+  })
 ;

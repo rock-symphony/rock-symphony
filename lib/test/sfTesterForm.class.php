@@ -75,9 +75,9 @@ class sfTesterForm extends sfTester
    *
    * @param  bool|int $value Whether to check if the form has error or not, or the number of errors
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasErrors($value = true)
+  public function hasErrors($value = true): self
   {
     if (null === $this->form)
     {
@@ -103,7 +103,7 @@ class sfTesterForm extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -124,9 +124,9 @@ class sfTesterForm extends sfTester
    * @param string $field The field name to check for an error (null for global errors)
    * @param mixed  $value The error message or the number of errors for the field (optional)
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isError($field, $value = true)
+  public function isError(string $field, $value = true): self
   {
     if (null === $this->form)
     {
@@ -188,7 +188,7 @@ class sfTesterForm extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**

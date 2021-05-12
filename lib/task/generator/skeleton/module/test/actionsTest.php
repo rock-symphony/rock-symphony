@@ -4,16 +4,13 @@ include(__DIR__.'/../../bootstrap/functional.php');
 
 $browser = new sfTestFunctional(new sfBrowser());
 
-$browser->
-  get('/##MODULE_NAME##/index')->
-
-  with('request')->begin()->
-    isParameter('module', '##MODULE_NAME##')->
-    isParameter('action', 'index')->
-  end()->
-
-  with('response')->begin()->
-    isStatusCode(200)->
-    checkElement('body', '!/This is a temporary page/')->
-  end()
+$browser->get('/##MODULE_NAME##/index')
+  ->with('request', function (sfTesterRequest $request) {
+    $request->isParameter('module', '##MODULE_NAME##');
+    $request->isParameter('action', 'index');
+  })
+  ->with('response', function (sfTesterResponse $response) {
+    $response->isStatusCode(200);
+    $response->checkElement('body', '!/This is a temporary page/');
+  })
 ;

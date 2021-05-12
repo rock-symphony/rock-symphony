@@ -47,11 +47,11 @@ class sfTesterMailer extends sfTester
   /**
    * Tests if message was send and optional how many.
    *
-   * @param int $nb number of messages
+   * @param int|null $nb number of messages
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasSent($nb = null)
+  public function hasSent(int $nb = null): self
   {
     if (null === $nb)
     {
@@ -62,7 +62,7 @@ class sfTesterMailer extends sfTester
       $this->tester->is($this->logger->countMessages(), $nb, sprintf('mailer sent %s email(s).', $nb));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -84,9 +84,9 @@ class sfTesterMailer extends sfTester
    * @param string|array $to       the email or array(email => alias)
    * @param int          $position address position
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function withMessage($to, $position = 1)
+  public function withMessage($to, int $position = 1): self
   {
     $messageEmail = $to;
     if(is_array($to))
@@ -130,9 +130,9 @@ class sfTesterMailer extends sfTester
    *
    * @param string $value regular expression or value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function checkBody($value)
+  public function checkBody(string $value): self
   {
     if (!$this->message)
     {
@@ -190,7 +190,7 @@ class sfTesterMailer extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -199,9 +199,9 @@ class sfTesterMailer extends sfTester
    * @param string $key   entry to test
    * @param string $value regular expression or value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function checkHeader($key, $value)
+  public function checkHeader(string $key, string $value): self
   {
     if (!$this->message)
     {
@@ -270,6 +270,6 @@ class sfTesterMailer extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 }

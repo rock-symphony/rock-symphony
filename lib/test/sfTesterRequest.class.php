@@ -41,13 +41,13 @@ class sfTesterRequest extends sfTester
    * @param string $key
    * @param string $value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isParameter($key, $value)
+  public function isParameter(string $key, string $value): self
   {
     $this->tester->is($this->request->getParameter($key), $value, sprintf('request parameter "%s" is "%s"', $key, $value));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -55,13 +55,13 @@ class sfTesterRequest extends sfTester
    *
    * @param  string $format  The request format
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isFormat($format)
+  public function isFormat(string $format): self
   {
     $this->tester->is($this->request->getRequestFormat(), $format, sprintf('request format is "%s"', $format));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -69,24 +69,24 @@ class sfTesterRequest extends sfTester
    *
    * @param  string  $method  The HTTP method name
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isMethod($method)
+  public function isMethod(string $method): self
   {
     $this->tester->ok($this->request->isMethod($method), sprintf('request method is "%s"', strtoupper($method)));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
    * Checks if a cookie exists.
    *
-   * @param string  $name   The cookie name
-   * @param Boolean $exists Whether the cookie must exist or not
+   * @param  string  $name    The cookie name
+   * @param  bool    $exists  Whether the cookie must exist or not
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasCookie($name, $exists = true)
+  public function hasCookie(string $name, bool $exists = true): self
   {
     if (!array_key_exists($name, $_COOKIE))
     {
@@ -99,7 +99,7 @@ class sfTesterRequest extends sfTester
         $this->tester->pass(sprintf('cookie "%s" does not exist.', $name));
       }
 
-      return $this->getObjectToReturn();
+      return $this;
     }
 
     if ($exists)
@@ -111,7 +111,7 @@ class sfTesterRequest extends sfTester
       $this->tester->fail(sprintf('cookie "%s" does not exist.', $name));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -120,15 +120,15 @@ class sfTesterRequest extends sfTester
    * @param string $name   The cookie name
    * @param mixed  $value  The expected value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isCookie($name, $value)
+  public function isCookie(string $name, $value): self
   {
     if (!array_key_exists($name, $_COOKIE))
     {
       $this->tester->fail(sprintf('cookie "%s" does not exist.', $name));
 
-      return $this->getObjectToReturn();
+      return $this;
     }
 
     if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $value, $match))
@@ -147,6 +147,6 @@ class sfTesterRequest extends sfTester
       $this->tester->is($_COOKIE[$name], $value, sprintf('cookie "%s" content is ok', $name));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 }

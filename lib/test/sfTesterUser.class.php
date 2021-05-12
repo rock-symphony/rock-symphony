@@ -38,17 +38,17 @@ class sfTesterUser extends sfTester
   /**
    * Tests a user attribute value.
    *
-   * @param string $key
-   * @param string $value
-   * @param string $ns
+   * @param  string       $key
+   * @param  string       $value
+   * @param  string|null  $ns
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isAttribute($key, $value, $ns = null)
+  public function isAttribute(string $key, string $value, string $ns = null): self
   {
     $this->tester->is($this->user->getAttribute($key, null, $ns), $value, sprintf('user attribute "%s" is "%s"', $key, $value));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -57,13 +57,13 @@ class sfTesterUser extends sfTester
    * @param string $key
    * @param string $value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isFlash($key, $value)
+  public function isFlash(string $key, string $value): self
   {
     $this->tester->is($this->user->getFlash($key), $value, sprintf('user flash "%s" is "%s"', $key, $value));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -71,27 +71,27 @@ class sfTesterUser extends sfTester
    *
    * @param  string $culture  The user culture
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isCulture($culture)
+  public function isCulture(string $culture): self
   {
     $this->tester->is($this->user->getCulture(), $culture, sprintf('user culture is "%s"', $culture));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
    * Tests if the user is authenticated.
    *
-   * @param  Boolean $boolean Whether to check if the user is authenticated or not
+   * @param  bool  $boolean  Whether to check if the user is authenticated or not
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isAuthenticated($boolean = true)
+  public function isAuthenticated(bool $boolean = true): self
   {
     $this->tester->is($this->user->isAuthenticated(), $boolean, sprintf('user is %sauthenticated', $boolean ? '' : 'not '));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -101,12 +101,12 @@ class sfTesterUser extends sfTester
    * @param  bool  $boolean      Whether to check if the user have some credentials or not
    * @param  bool  $useAnd       specify the mode, either AND or OR
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasCredential($credentials, $boolean = true, $useAnd = true)
+  public function hasCredential($credentials, bool $boolean = true, bool $useAnd = true): self
   {
     $this->tester->is($this->user->hasCredential($credentials, $useAnd), $boolean, sprintf('user has %sthe right credentials', $boolean ? '' : 'not '));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 }

@@ -17,27 +17,25 @@ require_once(__DIR__.'/../vendor/lime/lime.php');
  * @subpackage test
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
+ *
+ * @mixin \sfBrowser
  */
 abstract class sfTestFunctionalBase
 {
-  /** @var \sfBrowserBase */
+  /** @var \sfBrowser */
   protected $browser;
   /** @var array<string,sfTester> */
   protected $testers = [];
-  /** @var sfTester|null */
-  protected $blockTester = null;
-  /** @var sfTester|null */
-  protected $currentTester = null;
 
   /** @var \lime_test|null */
   protected static $test = null;
 
   /**
-   * @param  sfBrowserBase                   $browser  A sfBrowserBase instance
-   * @param  lime_test|null                  $lime     A lime instance
+   * @param  sfBrowser                      $browser  A sfBrowserBase instance
+   * @param  lime_test|null                 $lime     A lime instance
    * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, array $testers = [])
+  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
   {
     $this->browser = $browser;
 
@@ -62,58 +60,23 @@ abstract class sfTestFunctionalBase
   }
 
   /**
-   * Returns the tester associated with the given name.
+   * Run a callback for the tester associated with the given name.
    *
-   * @param string   $name The tester name
+   * @param  string  $name  The tester name
    *
-   * @param sfTester A sfTester instance
+   * @return  $this
    */
-  public function with(string $name): sfTester
+  public function with(string $name, callable $block): self
   {
     if (!isset($this->testers[$name]))
     {
       throw new InvalidArgumentException(sprintf('The "%s" tester does not exist.', $name));
     }
 
-    if ($this->blockTester)
-    {
-      throw new LogicException(sprintf('You cannot nest tester blocks.'));
-    }
+    $tester = $this->testers[$name];
+    $tester->initialize();
 
-    $this->currentTester = $this->testers[$name];
-    $this->currentTester->initialize();
-
-    return $this->currentTester;
-  }
-
-  /**
-   * Begins a block of test for the current tester.
-   *
-   * @return sfTester The current sfTester instance
-   */
-  public function begin(): sfTester
-  {
-    if (!$this->currentTester)
-    {
-      throw new LogicException('You must call with() before beginning a tester block.');
-    }
-
-    return $this->blockTester = $this->currentTester;
-  }
-
-  /**
-   * End a block of test for the current tester.
-   *
-   * @return $this
-   */
-  public function end(): self
-  {
-    if (null === $this->blockTester)
-    {
-      throw new LogicException('There is no current tester block to end.');
-    }
-
-    $this->blockTester = null;
+    $block($tester);
 
     return $this;
   }
@@ -198,14 +161,16 @@ abstract class sfTestFunctionalBase
    */
   public function getAndCheck(string $module, string $action, ?string $url = null, int $code = 200): self
   {
-    return $this->
-      get($url ?: sprintf('/%s/%s', $module, $action))->
-      with('request')->begin()->
-        isParameter('module', $module)->
-        isParameter('action', $action)->
-      end()->
-      with('response')->isStatusCode($code)
-    ;
+    return $this->get($url ?: "/{$module}/{$action}")
+
+      ->with('request', function (sfTesterRequest $request) use ($module, $action) {
+        $request->isParameter('module', $module);
+        $request->isParameter('action', $action);
+      })
+
+      ->with('response', function (sfTesterResponse $response) use ($code) {
+        $response->isStatusCode($code);
+      });
   }
 
   /**
@@ -232,7 +197,7 @@ abstract class sfTestFunctionalBase
    *
    * @return $this The current sfTestFunctionalBase instance
    */
-  public function call(string $uri, string $method = 'get', array $parameters = array(), bool $changeStack = true): self
+  public function call(string $uri, string $method = 'get', array $parameters = [], bool $changeStack = true): self
   {
     $this->checkCurrentExceptionIsEmpty();
 
@@ -354,12 +319,14 @@ abstract class sfTestFunctionalBase
    */
   public function check(string $uri, string $text = null): self
   {
-    $this->get($uri)->with('response')->isStatusCode();
+    $this->get($uri)->with('response', function (sfTesterResponse $response) use ($text) {
+      $response->isStatusCode(200);
 
-    if ($text !== null)
-    {
-      $this->with('response')->contains($text);
-    }
+      if ($text !== null) {
+        // FIXME: Apparently `contains` method was dropped
+        $response->contains($text);
+      }
+    });
 
     return $this;
   }
@@ -478,9 +445,9 @@ abstract class sfTestFunctionalBase
   /**
    * Exception handler for the current test browser instance.
    *
-   * @param Exception $exception The exception
+   * @param Throwable $exception The exception
    */
-  function handleException(Exception $exception): void
+  function handleException(Throwable $exception): void
   {
     $this->test()->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
 
@@ -492,7 +459,6 @@ abstract class sfTestFunctionalBase
       'args'     => [],
     ]);
 
-    $traces = [];
     for ($i = 0, $count = count($traceData); $i < $count; $i++) {
       $line = $traceData[$i]['line'] ?? 'n/a';
       $file = $traceData[$i]['file'] ?? 'n/a';
@@ -503,7 +469,7 @@ abstract class sfTestFunctionalBase
         $traceData[$i]['type'] ?? '',
         $traceData[$i]['function'],
         $file,
-        $line,
+        $line
       ));
     }
 
