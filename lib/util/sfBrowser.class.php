@@ -18,10 +18,14 @@
  */
 class sfBrowser extends sfBrowserBase
 {
-  protected
-    $listeners        = array(),
-    $context          = null,
-    $currentException = null;
+  /**
+   * @var array<string,callable>
+   */
+  protected $listeners = [];
+  /**
+   * @var \sfContext|null
+   */
+  protected $context = null;
 
   /**
    * Calls a request to a uri.

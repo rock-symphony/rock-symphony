@@ -135,10 +135,21 @@ class sfDebug
       return array();
     }
 
+    $cookies = [];
+
+    if (method_exists($response, 'getCookies')) {
+      $cookies = array_map(
+        function (sfCookie $cookie): array {
+          return $cookie->toArray();
+        },
+        $response->getCookies(),
+      );
+    }
+
     return array(
       'status'      => array('code' => $response->getStatusCode(), 'text' => $response->getStatusText()),
       'options'     => $response->getOptions(),
-      'cookies'     => method_exists($response, 'getCookies')     ? $response->getCookies() : array(),
+      'cookies'     => $cookies,
       'httpHeaders' => method_exists($response, 'getHttpHeaders') ? $response->getHttpHeaders() : array(),
       'javascripts' => method_exists($response, 'getJavascripts') ? $response->getJavascripts('ALL') : array(),
       'stylesheets' => method_exists($response, 'getStylesheets') ? $response->getStylesheets('ALL') : array(),
