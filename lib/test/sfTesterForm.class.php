@@ -29,7 +29,9 @@ class sfTesterForm extends sfTester
   {
     parent::__construct($browser, $tester);
 
-    $this->browser->addListener('template.filter_parameters', [$this, 'filterTemplateParameters']);
+    $this->browser->addListener('template.filter_parameters', function (sfEvent $event, array $parameters): array {
+      return $this->filterTemplateParameters($parameters);
+    });
   }
 
   /**
@@ -103,9 +105,9 @@ class sfTesterForm extends sfTester
    *
    * @param mixed $value The error message or the number of errors for the field (optional)
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function hasGlobalError($value = true)
+  public function hasGlobalError($value = true): self
   {
     return $this->isError(null, $value);
   }
@@ -204,12 +206,11 @@ class sfTesterForm extends sfTester
   /**
    * Listens to the template.filter_parameters event to get the submitted form object.
    *
-   * @param sfEvent $event      The event
-   * @param array   $parameters An array of parameters passed to the template
+   * @param  array  $parameters  An array of parameters passed to the template
    *
    * @return array The array of parameters passed to the template
    */
-  public function filterTemplateParameters(sfEvent $event, $parameters)
+  private function filterTemplateParameters(array $parameters): array
   {
     if (!isset($parameters['sf_type']))
     {
@@ -236,7 +237,7 @@ class sfTesterForm extends sfTester
    * @return sfFormField
    */
 
-  public function getFormField($path)
+  public function getFormField(string $path): sfFormField
   {
     if (false !== $pos = strpos($path, '['))
     {
