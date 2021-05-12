@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(88);
+$t = new lime_test(92);
 
 class myWebResponse extends sfWebResponse
 {
@@ -288,7 +288,48 @@ $t->is($response->clearJavascripts(), array(), '->clearJavascripts() removes all
 // ->setCookie() ->getCookies()
 $t->diag('->setCookie() ->getCookies()');
 $response->setCookie('foo', 'bar');
-$t->is($response->getCookies(), array('foo' => array('name' => 'foo', 'value' => 'bar', 'expire' => null, 'path' => '/', 'domain' => '', 'secure' => false, 'httpOnly' => false)), '->setCookie() adds a cookie for the response');
+$t->is($response->getCookies(), [
+  'foo' => sfCookie::create('foo', 'bar'),
+], '->setCookie() adds a cookie for the response');
+
+$response->setCookie('foo', 'bar', 'next year 1 january', '/auth', 'symfony.org', true, false, 'Strict');
+$t->is($response->getCookies(), [
+  'foo' => sfCookie::create('foo', 'bar', [
+    'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
+    'path'     => '/auth',
+    'domain'   => 'symfony.org',
+    'secure'   => true,
+    'httponly' => false,
+    'samesite' => 'Strict',
+  ]),
+], '->setCookie() supports ordered arguments for backwards compatibility');
+
+$response->setCookie('foo', 'bar', [
+  'expires'  => 'next year 1 january',
+  'path'     => '/auth',
+  'domain'   => 'symfony.org',
+  'secure'   => true,
+  'samesite' => 'Strict',
+]);
+$t->is($response->getCookies(), [
+  'foo' => sfCookie::create('foo', 'bar', [
+    'expires'  => (new DateTime('next year 1 january'))->getTimestamp(),
+    'path'     => '/auth',
+    'domain'   => 'symfony.org',
+    'secure'   => true,
+    'httponly' => false,
+    'samesite' => 'Strict',
+  ])
+], '->setCookie() supports options array');
+
+$response->setCookie('foo', 'bar', $time = time() - 10);
+
+$cookie = sfCookie::create('foo', 'bar', [
+  'expires'  => $time,
+]);
+
+$t->is($response->getCookies(), ['foo' => $cookie], '->setCookie() supports options array');
+$t->is($cookie->isExpired(), true, 'sfCookie->isExpired() is true');
 
 // ->setHeaderOnly() ->getHeaderOnly()
 $t->diag('->setHeaderOnly() ->isHeaderOnly()');

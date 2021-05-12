@@ -339,7 +339,7 @@ class sfTesterResponse extends sfTester
   {
     foreach ($this->response->getCookies() as $cookie)
     {
-      if ($name == $cookie['name'])
+      if ($name == $cookie->getName())
       {
         if (null === $value)
         {
@@ -347,17 +347,23 @@ class sfTesterResponse extends sfTester
         }
         else
         {
-          $this->tester->ok($value == $cookie['value'], sprintf('response sets cookie "%s" to "%s"', $name, $value));
+          $this->tester->ok($value == $cookie->getValue(), sprintf('response sets cookie "%s" to "%s"', $name, $value));
         }
+
+        $actualAttributes = $cookie->getAttributes();
 
         foreach ($attributes as $attributeName => $attributeValue)
         {
-          if (!array_key_exists($attributeName, $cookie))
+          if (!array_key_exists($attributeName, $actualAttributes))
           {
             throw new LogicException(sprintf('The cookie attribute "%s" is not valid.', $attributeName));
           }
 
-          $this->tester->is($cookie[$attributeName], $attributeValue, sprintf('"%s" cookie "%s" attribute is "%s"', $name, $attributeName, $attributeValue));
+          $this->tester->is(
+            $actualAttributes[$attributeName],
+            $attributeValue,
+            sprintf('"%s" cookie "%s" attribute is "%s"', $name, $attributeName, $attributeValue)
+          );
         }
 
         return $this;
@@ -431,6 +437,36 @@ class sfTesterResponse extends sfTester
   }
 
   /**
+   * @param  mixed|null  $expected
+   * @return $this
+   */
+  public function isJson($expected = null): self
+  {
+    $this->isHeader('content-type', 'application/json');
+
+    $body = $this->response->getContent();
+
+    $json = json_decode($body, true);
+
+    if ($json === null) {
+      $err = json_last_error();
+      $errmsg = json_last_error_msg();
+
+      if ($err !== JSON_ERROR_NONE) {
+        $this->tester->error("Cannot decode response JSON: `{$body}`: {$errmsg} ($err).");
+
+        return $this;
+      }
+    }
+
+    if ($expected !== null) {
+      $this->tester->is($json, $expected);
+    }
+
+    return $this;
+  }
+
+  /**
    * Outputs some debug information about the current response.
    *
    * @param string $realOutput Whether to display the actual content of the response when an error occurred
@@ -457,15 +493,16 @@ class sfTesterResponse extends sfTester
 
     foreach ($this->response->getCookies() as $cookie)
     {
-      vprintf("Set-Cookie: %s=%s; %spath=%s%s%s%s\n", array(
-        $cookie['name'],
-        $cookie['value'],
-        null === $cookie['expire'] ? '' : sprintf('expires=%s; ', date('D d-M-Y H:i:s T', $cookie['expire'])),
-        $cookie['path'],
-        $cookie['domain'] ? sprintf('; domain=%s', $cookie['domain']) : '',
-        $cookie['secure'] ? '; secure' : '',
-        $cookie['httpOnly'] ? '; HttpOnly' : '',
-      ));
+      vprintf("Set-Cookie: %s=%s; %spath=%s%s%s%s\n", [
+        $cookie->getName(),
+        $cookie->getValue(),
+        $cookie->getExpires() ? sprintf('expires=%s; ', $cookie->getExpires()->format('D d-M-Y H:i:s T')) : '',
+        $cookie->getPath(),
+        $cookie->getDomain() ? sprintf('; domain=%s', $cookie->getDomain()) : '',
+        $cookie->isSecure() ? '; Secure' : '',
+        $cookie->isHttpOnly() ? '; HttpOnly' : '',
+        $cookie->getSameSite() ? "; {$cookie->getSameSite()}" : '',
+      ]);
     }
 
     echo "\n";

@@ -26,7 +26,7 @@ class sfWebResponse extends sfResponse
   public const ALL = 'ALL';
   public const RAW = 'RAW';
 
-  /** @var array */
+  /** @var array<string,sfCookie> */
   protected $cookies = [];
   /** @var int */
   protected $statusCode = 200;
@@ -148,43 +148,48 @@ class sfWebResponse extends sfResponse
   /**
    * Sets a cookie.
    *
-   * @param  string  $name      HTTP header name
-   * @param  string  $value     Value for the cookie
-   * @param  string  $expire    Cookie expiration period
-   * @param  string  $path      Path
-   * @param  string  $domain    Domain name
-   * @param  bool    $secure    If secure
-   * @param  bool    $httpOnly  If uses only HTTP
+   * @param  string       $name      HTTP header name
+   * @param  string|null  $value     Value for the cookie
+   * @param  array        $options   Cookie options
    *
-   * @throws <b>sfException</b> If fails to set the cookie
+   * Available options:
+   *
+   *  (same as PHP native `setcookie()` function)
+   *  @see https://www.php.net/manual/en/function.setcookie.php
+  *
+   *  * expire:   string|int|null  [null]   Cookie expiration period
+   *  * path:     string           ["/"]    Cookie path
+   *  * domain:   string|null      [null]   Cookie domain name
+   *  * secure    bool             [false]  If cookie is `Secure`
+   *  * httponly  bool             [false]  If cookie is `HttpOnly`
+   *  * samesite  string           ["Lax"]  Cookie `SameSite` property
+   *
+   * @throws sfException If fails to set the cookie
    */
-  public function setCookie(string $name, ?string $value, string $expire = null, string $path = '/', string $domain = null, bool $secure = false, bool $httpOnly = false): void
-  {
-    if ($expire !== null)
-    {
-      if (is_numeric($expire))
-      {
-        $expire = (int) $expire;
-      }
-      else
-      {
-        $expire = strtotime($expire);
-        if ($expire === false || $expire == -1)
-        {
-          throw new sfException('Your expire parameter is not valid.');
-        }
-      }
+  public function setCookie(
+    string $name,
+    ?string $value,
+    ...$options
+  ): void {
+    if (count($options) === 1 && isset($options[0]) && is_array($options[0])) {
+      // Options passed as an assoc array.
+      $options = $options[0];
+    } elseif (count($options) > 0 && array_keys($options) === array_keys(array_keys($options))) {
+      // Options is a numeric array -- ordered arguments passed as before.
+      // (..., string $expires = null, string $path = '/', string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
+
+      // Make sure keys order matches previous function arguments order.
+      $options = array_combine(
+        array_slice(['expires', 'path', 'domain', 'secure', 'httponly', 'samesite'], 0, count($options)),
+        $options,
+      );
     }
 
-    $this->cookies[$name] = [
-      'name'     => $name,
-      'value'    => $value,
-      'expire'   => $expire,
-      'path'     => $path,
-      'domain'   => $domain,
-      'secure'   => $secure ? true : false,
-      'httpOnly' => $httpOnly,
-    ];
+    try {
+      $this->cookies[$name] = sfCookie::create($name, $value, $options);
+    } catch (InvalidArgumentException $exception) {
+      throw new sfException($exception->getMessage());
+    }
   }
 
   /**
@@ -362,11 +367,13 @@ class sfWebResponse extends sfResponse
     // cookies
     foreach ($this->cookies as $cookie)
     {
-      setrawcookie($cookie['name'], $cookie['value'], $cookie['expire'], $cookie['path'], $cookie['domain'], $cookie['secure'], $cookie['httpOnly']);
+      setrawcookie($cookie->getName(), $cookie->getValue(), $cookie->getAttributes());
 
       if ($this->options['logging'])
       {
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array(sprintf('Send cookie "%s": "%s"', $cookie['name'], $cookie['value']))));
+        $this->dispatcher->notify(
+          new sfEvent($this, 'application.log', [sprintf('Send cookie "%s": "%s"', $cookie->getName(), $cookie->getValue())]),
+        );
       }
     }
     // prevent resending the headers
@@ -807,7 +814,7 @@ class sfWebResponse extends sfResponse
   /**
    * Retrieves cookies from the current web response.
    *
-   * @return array Cookies
+   * @return \sfCookie[] Cookies
    */
   public function getCookies(): array
   {

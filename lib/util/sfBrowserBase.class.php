@@ -20,24 +20,34 @@
  */
 abstract class sfBrowserBase
 {
-  protected
-    $hostname           = null,
-    $remote             = null,
-    $dom                = null,
-    $stack              = array(),
-    $stackPosition      = -1,
-    $cookieJar          = array(),
-    $fields             = array(),
-    $files              = array(),
-    $vars               = array(),
-    $defaultServerArray = array(),
-    $headers            = array(),
-    $currentException   = null,
-    $domCssSelector     = null;
+  /** @var string|null */
+  protected $hostname           = null;
+  /** @var string|null */
+  protected $remote             = null;
+  /** @var \DomDocument|null */
+  protected $dom                = null;
+  /** @var array[]  */
+  protected $stack              = array();
+  /** @var int */
+  protected $stackPosition      = -1;
+  /** @var \sfCookie[] */
+  protected $cookieJar          = array();
+  /** @var array */
+  protected $fields             = array();
+  /** @var array */
+  protected $files              = array();
+  /** @var array */
+  protected $vars               = array();
+  /** @var array */
+  protected $defaultServerArray = array();
+  /** @var array */
+  protected $headers            = array();
+  /** @var \Exception|null */
+  protected $currentException   = null;
+  /** @var \sfDomCssSelector|null */
+  protected $domCssSelector     = null;
 
   /**
-   * Class constructor.
-   *
    * @param string $hostname  Hostname to browse
    * @param string $remote    Remote address to spook
    * @param array  $options   Options for sfBrowser
@@ -117,17 +127,16 @@ abstract class sfBrowserBase
    *
    * @return sfBrowserBase     This sfBrowserBase instance
    */
-  public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false, $httpOnly = false)
+  public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false, $httpOnly = false, $sameSite = 'Lax')
   {
-    $this->cookieJar[$name] = array(
-      'name'     => $name,
-      'value'    => $value,
-      'expire'   => $expire,
+    $this->cookieJar[$name] = sfCookie::create($name, $value, [
+      'expires'  => $expire,
       'path'     => $path,
       'domain'   => $domain,
-      'secure'   => (Boolean) $secure,
-      'httpOnly' => $httpOnly,
-    );
+      'secure'   => (bool)$secure,
+      'httponly' => $httpOnly,
+      'samesite' => $sameSite,
+    ]);
 
     return $this;
   }
@@ -306,7 +315,7 @@ abstract class sfBrowserBase
     $cookies = $this->cookieJar;
     foreach ($cookies as $name => $cookie)
     {
-      if ($cookie['expire'] && $cookie['expire'] < time())
+      if ($cookie->isExpired())
       {
         unset($this->cookieJar[$name]);
       }
@@ -316,7 +325,7 @@ abstract class sfBrowserBase
     $_COOKIE = array();
     foreach ($this->cookieJar as $name => $cookie)
     {
-      $_COOKIE[$name] = $cookie['value'];
+      $_COOKIE[$name] = $cookie->getValue();
     }
 
     $this->doCall();
@@ -324,10 +333,10 @@ abstract class sfBrowserBase
     $response = $this->getResponse();
 
     // save cookies
-    foreach ($response->getCookies() as $name => $cookie)
+    foreach ($response->getCookies() as $cookie)
     {
       // FIXME: deal with path, secure, ...
-      $this->cookieJar[$name] = $cookie;
+      $this->cookieJar[$cookie->getName()] = $cookie;
     }
 
     // support for the ETag header
