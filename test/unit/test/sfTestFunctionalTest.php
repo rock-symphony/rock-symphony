@@ -37,6 +37,8 @@ class mockTestFunctional extends sfTestFunctional
   public function call(string $uri, string $method = 'get', array $parameters = [], bool $changeStack = true): sfTestFunctionalBase
   {
     $this->called[] = func_get_args();
+
+    return $this;
   }
 }
 
