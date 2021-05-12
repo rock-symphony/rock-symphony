@@ -17,101 +17,66 @@ require_once(__DIR__.'/../vendor/lime/lime.php');
  * @subpackage test
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
+ *
+ * @mixin \sfBrowser
  */
 abstract class sfTestFunctionalBase
 {
-  protected
-    $testers       = array(),
-    $blockTester   = null,
-    $currentTester = null,
-    $browser       = null;
+  /** @var \sfBrowser */
+  protected $browser;
+  /** @var array<string,sfTester> */
+  protected $testers = [];
 
-  protected static
-    $test = null;
+  /** @var \lime_test|null */
+  protected static $test = null;
 
   /**
-   * Initializes the browser tester instance.
-   *
-   * @param sfBrowserBase $browser A sfBrowserBase instance
-   * @param lime_test     $lime    A lime instance
+   * @param  sfBrowser                      $browser  A sfBrowserBase instance
+   * @param  lime_test|null                 $lime     A lime instance
+   * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowserBase $browser, lime_test $lime = null, $testers = array())
+  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
   {
     $this->browser = $browser;
 
     if (null === self::$test)
     {
-      self::$test = null !== $lime ? $lime : new lime_test();
+      self::$test = $lime ?: new lime_test();
     }
 
-    $this->setTesters(array_merge(array(
-      'request'  => 'sfTesterRequest',
-      'response' => 'sfTesterResponse',
-      'user'     => 'sfTesterUser',
-      'mailer'   => 'sfTesterMailer',
-    ), $testers));
+    $this->setTesters(array_merge([
+      'request'  => sfTesterRequest::class,
+      'response' => sfTesterResponse::class,
+      'user'     => sfTesterUser::class,
+      'mailer'   => sfTesterMailer::class,
+    ], $testers));
 
     // register our shutdown function
-    register_shutdown_function(array($this, 'shutdown'));
+    register_shutdown_function([$this, 'shutdown']);
 
     // register our error/exception handlers
-    set_error_handler(array($this, 'handlePhpError'));
-    set_exception_handler(array($this, 'handleException'));
+    set_error_handler([$this, 'handlePhpError']);
+    set_exception_handler([$this, 'handleException']);
   }
 
   /**
-   * Returns the tester associated with the given name.
+   * Run a callback for the tester associated with the given name.
    *
-   * @param string   $name The tester name
+   * @param  string  $name  The tester name
    *
-   * @param sfTester A sfTester instance
+   * @return  $this
    */
-  public function with($name)
+  public function with(string $name, callable $block): self
   {
     if (!isset($this->testers[$name]))
     {
       throw new InvalidArgumentException(sprintf('The "%s" tester does not exist.', $name));
     }
 
-    if ($this->blockTester)
-    {
-      throw new LogicException(sprintf('You cannot nest tester blocks.'));
-    }
+    $tester = $this->testers[$name];
+    $tester->initialize();
 
-    $this->currentTester = $this->testers[$name];
-    $this->currentTester->initialize();
-
-    return $this->currentTester;
-  }
-
-  /**
-   * Begins a block of test for the current tester.
-   *
-   * @return sfTester The current sfTester instance
-   */
-  public function begin()
-  {
-    if (!$this->currentTester)
-    {
-      throw new LogicException(sprintf('You must call with() before beginning a tester block.'));
-    }
-
-    return $this->blockTester = $this->currentTester;
-  }
-
-  /**
-   * End a block of test for the current tester.
-   *
-   * @return sfTestFunctionalBase
-   */
-  public function end()
-  {
-    if (null === $this->blockTester)
-    {
-      throw new LogicException(sprintf('There is no current tester block to end.'));
-    }
-
-    $this->blockTester = null;
+    $block($tester);
 
     return $this;
   }
@@ -119,9 +84,9 @@ abstract class sfTestFunctionalBase
   /**
    * Sets the testers.
    *
-   * @param array $testers An array of named testers
+   * @param array<string,string|\sfTester> $testers An array of named testers
    */
-  public function setTesters($testers)
+  public function setTesters(array $testers): void
   {
     foreach ($testers as $name => $tester)
     {
@@ -135,7 +100,7 @@ abstract class sfTestFunctionalBase
    * @param string          $name   The tester name
    * @param sfTester|string $tester A sfTester instance or a tester class name
    */
-  public function setTester($name, $tester)
+  public function setTester(string $name, $tester): void
   {
     if (is_string($tester))
     {
@@ -155,7 +120,7 @@ abstract class sfTestFunctionalBase
    *
    * @return void
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     $this->checkCurrentExceptionIsEmpty();
   }
@@ -165,7 +130,7 @@ abstract class sfTestFunctionalBase
    *
    * @return lime_test The lime_test instance
    */
-  public function test()
+  public function test(): lime_test
   {
     return self::$test;
   }
@@ -179,7 +144,7 @@ abstract class sfTestFunctionalBase
    *
    * @return sfTestFunctionalBase
    */
-  public function get($uri, $parameters = array(), $changeStack = true)
+  public function get(string $uri, array $parameters = [], bool $changeStack = true): self
   {
     return $this->call($uri, 'get', $parameters, $changeStack);
   }
@@ -187,23 +152,25 @@ abstract class sfTestFunctionalBase
   /**
    * Retrieves and checks an action.
    *
-   * @param  string $module  Module name
-   * @param  string $action  Action name
-   * @param  string $url     Url
-   * @param  string $code    The expected return status code
+   * @param  string       $module  Module name
+   * @param  string       $action  Action name
+   * @param  string|null  $url     Url
+   * @param  int          $code    The expected return status code
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function getAndCheck($module, $action, $url = null, $code = 200)
+  public function getAndCheck(string $module, string $action, ?string $url = null, int $code = 200): self
   {
-    return $this->
-      get(null !== $url ? $url : sprintf('/%s/%s', $module, $action))->
-      with('request')->begin()->
-        isParameter('module', $module)->
-        isParameter('action', $action)->
-      end()->
-      with('response')->isStatusCode($code)
-    ;
+    return $this->get($url ?: "/{$module}/{$action}")
+
+      ->with('request', function (sfTesterRequest $request) use ($module, $action) {
+        $request->isParameter('module', $module);
+        $request->isParameter('action', $action);
+      })
+
+      ->with('response', function (sfTesterResponse $response) use ($code) {
+        $response->isStatusCode($code);
+      });
   }
 
   /**
@@ -213,9 +180,9 @@ abstract class sfTestFunctionalBase
    * @param array  $parameters  The Request parameters
    * @param bool   $changeStack  Change the browser history stack?
    *
-   * @return sfTestFunctionalBase
+   * @return $this
    */
-  public function post($uri, $parameters = array(), $changeStack = true)
+  public function post(string $uri, array $parameters = [], bool $changeStack = true): self
   {
     return $this->call($uri, 'post', $parameters, $changeStack);
   }
@@ -228,20 +195,15 @@ abstract class sfTestFunctionalBase
    * @param  array  $parameters   Additional parameters
    * @param  bool   $changeStack  If set to false ActionStack is not changed
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function call($uri, $method = 'get', $parameters = array(), $changeStack = true)
+  public function call(string $uri, string $method = 'get', array $parameters = [], bool $changeStack = true): self
   {
     $this->checkCurrentExceptionIsEmpty();
 
     $uri = $this->browser->fixUri($uri);
 
     $this->test()->comment(sprintf('%s %s', strtolower($method), $uri));
-
-    foreach ($this->testers as $tester)
-    {
-      $tester->prepare();
-    }
 
     $this->browser->call($uri, $method, $parameters, $changeStack);
 
@@ -253,9 +215,9 @@ abstract class sfTestFunctionalBase
    *
    * @param string  $name       The checkbox or radiobutton id, name or text
    *
-   * @return sfTestFunctionalBase
+   * @return $this
    */
-  public function deselect($name)
+  public function deselect(string $name): self
   {
     $this->browser->doSelect($name, false);
 
@@ -267,9 +229,9 @@ abstract class sfTestFunctionalBase
    *
    * @param string  $name       The checkbox or radiobutton id, name or text
    *
-   * @return sfTestFunctionalBase
+   * @return $this
    */
-  public function select($name)
+  public function select(string $name): self
   {
     $this->browser->doSelect($name, true);
 
@@ -283,23 +245,17 @@ abstract class sfTestFunctionalBase
    * @param array   $arguments  The arguments to pass to the link
    * @param array   $options    An array of options
    *
-   * @return sfTestFunctionalBase
+   * @return $this
    */
-  public function click($name, $arguments = array(), $options = array())
+  public function click(string $name, array $arguments = [], array $options = []): self
   {
-    if ($name instanceof DOMElement)
-    {
-      list($uri, $method, $parameters) = $this->doClickElement($name, $arguments, $options);
-    }
-    else
-    {
-      try
-      {
-        list($uri, $method, $parameters) = $this->doClick($name, $arguments, $options);
-      }
-      catch (InvalidArgumentException $e)
-      {
-        list($uri, $method, $parameters) = $this->doClickCssSelector($name, $arguments, $options);
+    if ($name instanceof DOMElement) {
+      [$uri, $method, $parameters] = $this->doClickElement($name, $arguments, $options);
+    } else {
+      try {
+        [$uri, $method, $parameters] = $this->doClick($name, $arguments, $options);
+      } catch (InvalidArgumentException $e) {
+        [$uri, $method, $parameters] = $this->doClickCssSelector($name, $arguments, $options);
       }
     }
 
@@ -309,9 +265,9 @@ abstract class sfTestFunctionalBase
   /**
    * Simulates the browser back button.
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function back()
+  public function back(): self
   {
     $this->test()->comment('back');
 
@@ -323,9 +279,9 @@ abstract class sfTestFunctionalBase
   /**
    * Simulates the browser forward button.
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function forward()
+  public function forward(): self
   {
     $this->test()->comment('forward');
 
@@ -339,9 +295,9 @@ abstract class sfTestFunctionalBase
    *
    * @param string $message A message
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function info($message)
+  public function info(string $message): self
   {
     $this->test()->info($message);
 
@@ -351,19 +307,15 @@ abstract class sfTestFunctionalBase
   /**
    * Checks that the current response contains a given text.
    *
-   * @param  string $uri   Uniform resource identifier
-   * @param  string $text  Text in the response
+   * @param  string  $uri  Uniform resource identifier
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function check($uri, $text = null)
+  public function check(string $uri): self
   {
-    $this->get($uri)->with('response')->isStatusCode();
-
-    if ($text !== null)
-    {
-      $this->with('response')->contains($text);
-    }
+    $this->get($uri)->with('response', function (sfTesterResponse $response) {
+      $response->isStatusCode(200);
+    });
 
     return $this;
   }
@@ -371,12 +323,12 @@ abstract class sfTestFunctionalBase
   /**
    * Tests if an exception is thrown by the latest request.
    *
-   * @param  string $class    Class name
-   * @param  string $message  Message name
+   * @param  string|null  $class    Class name
+   * @param  string|null  $message  Message name
    *
-   * @return sfTestFunctionalBase The current sfTestFunctionalBase instance
+   * @return $this The current sfTestFunctionalBase instance
    */
-  public function throwsException($class = null, $message = null)
+  public function throwsException(string $class = null, string $message = null): self
   {
     $e = $this->browser->getCurrentException();
 
@@ -418,11 +370,16 @@ abstract class sfTestFunctionalBase
    *
    * @return  bool
    */
-  public function checkCurrentExceptionIsEmpty()
+  public function checkCurrentExceptionIsEmpty(): bool
   {
-    if (false === ($empty = $this->browser->checkCurrentExceptionIsEmpty()))
-    {
-      $this->test()->fail(sprintf('last request threw an uncaught exception "%s: %s"', get_class($this->browser->getCurrentException()), $this->browser->getCurrentException()->getMessage()));
+    $empty = $this->browser->checkCurrentExceptionIsEmpty();
+
+    if (false === $empty) {
+      $this->test()->fail(sprintf(
+        'last request threw an uncaught exception "%s: %s"',
+        get_class($this->browser->getCurrentException()),
+        $this->browser->getCurrentException()->getMessage()
+      ));
     }
 
     return $empty;
@@ -430,7 +387,7 @@ abstract class sfTestFunctionalBase
 
   public function __call($method, $arguments)
   {
-    $retval = call_user_func_array(array($this->browser, $method), $arguments);
+    $retval = call_user_func_array([$this->browser, $method], $arguments);
 
     // fix the fluent interface
     return $retval === $this->browser ? $this : $retval;
@@ -457,19 +414,18 @@ abstract class sfTestFunctionalBase
       case E_WARNING:
         $msg = sprintf($msg, 'warning');
         throw new RuntimeException($msg);
-        break;
+
       case E_NOTICE:
         $msg = sprintf($msg, 'notice');
         throw new RuntimeException($msg);
-        break;
+
       case E_STRICT:
         $msg = sprintf($msg, 'strict');
         throw new RuntimeException($msg);
-        break;
+
       case E_RECOVERABLE_ERROR:
         $msg = sprintf($msg, 'catchable');
         throw new RuntimeException($msg);
-        break;
     }
 
     return false;
@@ -478,30 +434,28 @@ abstract class sfTestFunctionalBase
   /**
    * Exception handler for the current test browser instance.
    *
-   * @param Exception $exception The exception
+   * @param Throwable $exception The exception
    */
-  function handleException($exception)
+  function handleException(Throwable $exception): void
   {
     $this->test()->error(sprintf('%s: %s', get_class($exception), $exception->getMessage()));
 
     $traceData = $exception->getTrace();
-    array_unshift($traceData, array(
+    array_unshift($traceData, [
       'function' => '',
-      'file'     => $exception->getFile() != null ? $exception->getFile() : 'n/a',
-      'line'     => $exception->getLine() != null ? $exception->getLine() : 'n/a',
-      'args'     => array(),
-    ));
+      'file'     => $exception->getFile() ?: 'n/a',
+      'line'     => $exception->getLine() ?: 'n/a',
+      'args'     => [],
+    ]);
 
-    $traces = array();
-    $lineFormat = '  at %s%s%s() in %s line %s';
-    for ($i = 0, $count = count($traceData); $i < $count; $i++)
-    {
-      $line = isset($traceData[$i]['line']) ? $traceData[$i]['line'] : 'n/a';
-      $file = isset($traceData[$i]['file']) ? $traceData[$i]['file'] : 'n/a';
-      $args = isset($traceData[$i]['args']) ? $traceData[$i]['args'] : array();
-      $this->test()->error(sprintf($lineFormat,
-        (isset($traceData[$i]['class']) ? $traceData[$i]['class'] : ''),
-        (isset($traceData[$i]['type']) ? $traceData[$i]['type'] : ''),
+    for ($i = 0, $count = count($traceData); $i < $count; $i++) {
+      $line = $traceData[$i]['line'] ?? 'n/a';
+      $file = $traceData[$i]['file'] ?? 'n/a';
+      $args = $traceData[$i]['args'] ?? [];
+      $this->test()->error(sprintf(
+        '  at %s%s%s() in %s line %s',
+        $traceData[$i]['class'] ?? '',
+        $traceData[$i]['type'] ?? '',
         $traceData[$i]['function'],
         $file,
         $line

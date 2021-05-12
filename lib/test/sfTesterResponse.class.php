@@ -18,17 +18,12 @@
  */
 class sfTesterResponse extends sfTester
 {
-  protected
-    $response       = null,
-    $dom            = null,
-    $domCssSelector = null;
-
-  /**
-   * Prepares the tester.
-   */
-  public function prepare()
-  {
-  }
+  /** @var sfWebResponse */
+  protected $response = null;
+  /** @var DOMDocument|null */
+  protected $dom = null;
+  /** @var sfDomCssSelector|null */
+  protected $domCssSelector = null;
 
   /**
    * Initializes the tester.
@@ -62,9 +57,9 @@ class sfTesterResponse extends sfTester
    * @param  mixed  $value     Flag for the selector
    * @param  array  $options   Options for the current test
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function checkElement($selector, $value = true, $options = array())
+  public function checkElement(string $selector, $value = true, array $options = []): self
   {
     if (null === $this->dom)
     {
@@ -94,7 +89,7 @@ class sfTesterResponse extends sfTester
     }
     else if (preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $value, $match))
     {
-      $position = isset($options['position']) ? $options['position'] : 0;
+      $position = $options['position'] ?? 0;
       if ($match[1] == '!')
       {
         $this->tester->unlike(@$values[$position], substr($value, 1), sprintf('response selector "%s" does not match regex "%s"', $selector, substr($value, 1)));
@@ -106,7 +101,7 @@ class sfTesterResponse extends sfTester
     }
     else
     {
-      $position = isset($options['position']) ? $options['position'] : 0;
+      $position = $options['position'] ?? 0;
       $this->tester->is(@$values[$position], $value, sprintf('response selector "%s" matches "%s"', $selector, $value));
     }
 
@@ -115,18 +110,18 @@ class sfTesterResponse extends sfTester
       $this->tester->is(count($values), $options['count'], sprintf('response selector "%s" matches "%s" times', $selector, $options['count']));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
    * Checks that a form is rendered correctly.
-   * 
-   * @param  sfForm|string $form     A form object or the name of a form class
-   * @param  string        $selector CSS selector for the root form element for this form
-   * 
-   * @return sfTestFunctionalBase|sfTester
+   *
+   * @param  sfForm|class-string  $form      A form object or the name of a form class
+   * @param  string               $selector  CSS selector for the root form element for this form
+   *
+   * @return $this
    */
-  public function checkForm($form, $selector = 'form')
+  public function checkForm($form, string $selector = 'form'): self
   {
     if (!$form instanceof sfForm)
     {
@@ -158,7 +153,7 @@ class sfTesterResponse extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -167,7 +162,7 @@ class sfTesterResponse extends sfTester
    * @param mixed $checkDTD Either true to validate against the response DTD or
    *                        provide the path to a *.xsd, *.rng or *.rnc schema
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    *
    * @throws LogicException If the response is neither XML nor (X)HTML
    */
@@ -258,7 +253,7 @@ class sfTesterResponse extends sfTester
       throw new LogicException(sprintf('Unable to validate responses of content type "%s"', $this->response->getContentType()));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -267,9 +262,9 @@ class sfTesterResponse extends sfTester
    * @param  string $key
    * @param  string $value
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isHeader($key, $value)
+  public function isHeader(string $key, string $value): self
   {
     $headers = explode(', ', $this->response->getHttpHeader($key));
     $ok = false;
@@ -328,19 +323,19 @@ class sfTesterResponse extends sfTester
       }
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
    * Tests if a cookie was set.
-   * 
-   * @param  string $name
-   * @param  string $value
-   * @param  array  $attributes Other cookie attributes to check (expires, path, domain, etc)
-   * 
-   * @return sfTestFunctionalBase|sfTester
+   *
+   * @param  string               $name
+   * @param  string|null          $value
+   * @param  array<string,mixed>  $attributes  Other cookie attributes to check (expires, path, domain, etc)
+   *
+   * @return $this
    */
-  public function setsCookie($name, $value = null, $attributes = array())
+  public function setsCookie(string $name, string $value = null, array $attributes = []): self
   {
     foreach ($this->response->getCookies() as $cookie)
     {
@@ -365,13 +360,13 @@ class sfTesterResponse extends sfTester
           $this->tester->is($cookie[$attributeName], $attributeValue, sprintf('"%s" cookie "%s" attribute is "%s"', $name, $attributeName, $attributeValue));
         }
 
-        return $this->getObjectToReturn();
+        return $this;
       }
     }
 
     $this->tester->fail(sprintf('response sets cookie "%s"', $name));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -379,9 +374,9 @@ class sfTesterResponse extends sfTester
    *
    * @param string Regex
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function matches($regex)
+  public function matches(string $regex): self
   {
     if (!preg_match('/^(!)?([^a-zA-Z0-9\\\\]).+?\\2[ims]?$/', $regex, $match))
     {
@@ -397,21 +392,21 @@ class sfTesterResponse extends sfTester
       $this->tester->like($this->response->getContent(), $regex, sprintf('response content matches regex "%s"', $regex));
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
    * Tests the status code.
    *
-   * @param string $statusCode Status code to check, default 200
+   * @param  int  $statusCode  Status code to check.
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isStatusCode($statusCode = 200)
+  public function isStatusCode(int $statusCode): self
   {
     $this->tester->is($this->response->getStatusCode(), $statusCode, sprintf('status code is "%s"', $statusCode));
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -419,9 +414,9 @@ class sfTesterResponse extends sfTester
    *
    * @param  bool $boolean  Flag for redirection mode
    *
-   * @return sfTestFunctionalBase|sfTester
+   * @return $this
    */
-  public function isRedirected($boolean = true)
+  public function isRedirected(bool $boolean = true): self
   {
     if ($location = $this->response->getHttpHeader('location'))
     {
@@ -432,7 +427,7 @@ class sfTesterResponse extends sfTester
       $boolean ? $this->tester->fail('page redirected') : $this->tester->pass('page not redirected');
     }
 
-    return $this->getObjectToReturn();
+    return $this;
   }
 
   /**
@@ -443,7 +438,7 @@ class sfTesterResponse extends sfTester
    */
   public function debug($realOutput = false)
   {
-    print $this->tester->error('Response debug');
+    $this->tester->error('Response debug');
 
     if (!$realOutput && null !== sfException::getLastException())
     {
