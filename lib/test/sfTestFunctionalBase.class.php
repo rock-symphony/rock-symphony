@@ -312,20 +312,14 @@ abstract class sfTestFunctionalBase
   /**
    * Checks that the current response contains a given text.
    *
-   * @param  string       $uri   Uniform resource identifier
-   * @param  string|null  $text  Text in the response
+   * @param  string  $uri  Uniform resource identifier
    *
    * @return $this The current sfTestFunctionalBase instance
    */
-  public function check(string $uri, string $text = null): self
+  public function check(string $uri): self
   {
-    $this->get($uri)->with('response', function (sfTesterResponse $response) use ($text) {
+    $this->get($uri)->with('response', function (sfTesterResponse $response) {
       $response->isStatusCode(200);
-
-      if ($text !== null) {
-        // FIXME: Apparently `contains` method was dropped
-        $response->contains($text);
-      }
     });
 
     return $this;
