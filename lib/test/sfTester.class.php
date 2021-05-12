@@ -42,8 +42,9 @@ abstract class sfTester
 
   public function __call($method, $arguments)
   {
-    call_user_func_array([$this->browser, $method], $arguments);
+    $retval = call_user_func_array([$this->browser, $method], $arguments);
 
-    return $this;
+    // proxy fluent interface
+    return $retval === $this->browser ? $this : $retval;
   }
 }

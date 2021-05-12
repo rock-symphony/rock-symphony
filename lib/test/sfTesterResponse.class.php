@@ -437,6 +437,36 @@ class sfTesterResponse extends sfTester
   }
 
   /**
+   * @param  mixed|null  $expected
+   * @return $this
+   */
+  public function isJson($expected = null): self
+  {
+    $this->isHeader('content-type', 'application/json');
+
+    $body = $this->response->getContent();
+
+    $json = json_decode($body, true);
+
+    if ($json === null) {
+      $err = json_last_error();
+      $errmsg = json_last_error_msg();
+
+      if ($err !== JSON_ERROR_NONE) {
+        $this->tester->error("Cannot decode response JSON: `{$body}`: {$errmsg} ($err).");
+
+        return $this;
+      }
+    }
+
+    if ($expected !== null) {
+      $this->tester->is($json, $expected);
+    }
+
+    return $this;
+  }
+
+  /**
    * Outputs some debug information about the current response.
    *
    * @param string $realOutput Whether to display the actual content of the response when an error occurred

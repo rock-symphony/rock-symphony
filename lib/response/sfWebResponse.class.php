@@ -174,7 +174,7 @@ class sfWebResponse extends sfResponse
     if (count($options) === 1 && isset($options[0]) && is_array($options[0])) {
       // Options passed as an assoc array.
       $options = $options[0];
-    } elseif (count($options) > 1 && array_keys($options) === array_keys(array_keys($options))) {
+    } elseif (count($options) > 0 && array_keys($options) === array_keys(array_keys($options))) {
       // Options is a numeric array -- ordered arguments passed as before.
       // (..., string $expires = null, string $path = '/', string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
 

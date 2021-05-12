@@ -25,7 +25,7 @@ class TestBrowser extends sfTestBrowser
 }
 
 $b = new TestBrowser();
-$b->addListener('context.load_factories', array($b, 'listen'));
+$b->addListener('context.load_factories', [$b, 'listen']);
 
 // listeners
 $b->get('/');
@@ -152,7 +152,7 @@ $b->get('/cookie')
     $request->isCookie('foo', '!/z/');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', 'bar.foo-');
+    $response->isJson(['foo' => 'bar', 'bar' => 'foo']);
   });
 
 $b->get('/cookie')
@@ -163,7 +163,7 @@ $b->get('/cookie')
     $request->isCookie('foo', '!/z/');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', 'bar.foo-');
+    $response->isJson(['foo' => 'bar', 'bar' => 'foo']);
   });
 
 $b->removeCookie('foo');
@@ -174,7 +174,7 @@ $b->get('/cookie')
     $request->hasCookie('bar');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', '.foo-');
+    $response->isJson(['bar' => 'foo']);
   });
 
 $b->clearCookies();
@@ -185,7 +185,7 @@ $b->get('/cookie')
     $request->hasCookie('bar', false);
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', '.-');
+    $response->isJson([]);
   })
 ;
 
@@ -202,7 +202,7 @@ $b->get('/cookie')
     $request->isCookie('foo', '!/z/');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', 'bar.foo-barfoo');
+    $response->isJson(['foo' => 'bar', 'bar' => 'foo', 'foobar' => 'barfoo']);
   });
 
 $b->get('/cookie')
@@ -213,7 +213,7 @@ $b->get('/cookie')
     $request->isCookie('foo', '!/z/');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', 'bar.foo-barfoo');
+    $response->isJson(['foo' => 'bar', 'bar' => 'foo', 'foobar' => 'barfoo']);
   });
 
 $b->removeCookie('foo');
@@ -224,10 +224,10 @@ $b->get('/cookie')
     $request->hasCookie('bar');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', '.foo-barfoo');
+    $response->isJson(['bar' => 'foo', 'foobar' => 'barfoo']);
   });
 
-$b->get('/cookie/removeCookie');
+$b->get('/cookie/removeCookie?cookie=foobar');
 
 $b->get('/cookie')
   ->with('request', function (sfTesterRequest $request) {
@@ -235,7 +235,7 @@ $b->get('/cookie')
     $request->hasCookie('bar');
   })
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', '.foo-');
+    $response->isJson(['bar' => 'foo']);
   });
 
 $b->get('/cookie/setCookie');
@@ -249,7 +249,7 @@ $b->get('/cookie')
   })
 
   ->with('response', function (sfTesterResponse $response) {
-    $response->checkElement('p', '.-');
+    $response->isJson([]);
   });
 
 $b->get('/browser')

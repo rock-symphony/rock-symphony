@@ -1,30 +1,33 @@
 <?php
 
-/**
- * cookie actions.
- *
- * @package    project
- * @subpackage cookie
- * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
- * @version    SVN: $Id$
- */
-class cookieActions extends sfActions
+final class cookieActions extends sfActions
 {
-  public function executeIndex($request)
+  public function executeIndex(sfWebRequest $request)
   {
-    return $this->renderText('<p>'.$request->getCookie('foo').'.'.$request->getCookie('bar').'-'.$request->getCookie('foobar').'</p>');
+    $cookies = [
+      'foo'    => $request->getCookie('foo'),
+      'bar'    => $request->getCookie('bar'),
+      'foobar' => $request->getCookie('foobar'),
+    ];
+
+    // Remove nulls
+    $cookies = array_filter($cookies, function ($value) {
+      return $value !== null;
+    });
+
+    return $this->renderJson((object) $cookies);
   }
 
-  public function executeSetCookie($request)
+  public function executeSetCookie(sfWebRequest $request)
   {
     $this->getResponse()->setCookie('foobar', 'barfoo');
 
     return sfView::NONE;
   }
 
-  public function executeRemoveCookie($request)
+  public function executeRemoveCookie(sfWebRequest $request)
   {
-    $this->getResponse()->setCookie('foobar', 'foofoobar', time() - 10);
+    $this->getResponse()->setCookie($request->getParameter('cookie'), 'whatever', time() - 10);
 
     return sfView::NONE;
   }

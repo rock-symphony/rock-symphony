@@ -10,7 +10,7 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(90);
+$t = new lime_test(92);
 
 class myWebResponse extends sfWebResponse
 {
@@ -321,6 +321,15 @@ $t->is($response->getCookies(), [
     'samesite' => 'Strict',
   ])
 ], '->setCookie() supports options array');
+
+$response->setCookie('foo', 'bar', $time = time() - 10);
+
+$cookie = sfCookie::create('foo', 'bar', [
+  'expires'  => $time,
+]);
+
+$t->is($response->getCookies(), ['foo' => $cookie], '->setCookie() supports options array');
+$t->is($cookie->isExpired(), true, 'sfCookie->isExpired() is true');
 
 // ->setHeaderOnly() ->getHeaderOnly()
 $t->diag('->setHeaderOnly() ->isHeaderOnly()');
