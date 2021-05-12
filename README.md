@@ -5,7 +5,7 @@
 </p>
 
 
-[![Build Status](https://travis-ci.org/rock-symphony/rock-symphony.svg?branch=master)](https://travis-ci.org/rock-symphony/rock-symphony)
+![Build Status][https://github.com/rock-symphony/rock-symphony/actions/workflows/test.yml/badge.svg]
 
 
 RockSymphony Framework
