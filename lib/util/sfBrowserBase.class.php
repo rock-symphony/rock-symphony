@@ -333,10 +333,10 @@ abstract class sfBrowserBase
     $response = $this->getResponse();
 
     // save cookies
-    foreach ($response->getCookies() as $name => $cookie)
+    foreach ($response->getCookies() as $cookie)
     {
       // FIXME: deal with path, secure, ...
-      $this->cookieJar[$name] = $cookie;
+      $this->cookieJar[$cookie->getName()] = $cookie;
     }
 
     // support for the ETag header
