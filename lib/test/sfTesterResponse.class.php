@@ -24,13 +24,6 @@ class sfTesterResponse extends sfTester
   protected $domCssSelector = null;
 
   /**
-   * Prepares the tester.
-   */
-  public function prepare()
-  {
-  }
-
-  /**
    * Initializes the tester.
    */
   public function initialize()

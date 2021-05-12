@@ -23,13 +23,6 @@ class sfTesterMailer extends sfTester
     $message = null;
 
   /**
-   * Prepares the tester.
-   */
-  public function prepare()
-  {
-  }
-
-  /**
    * Initializes the tester.
    */
   public function initialize()

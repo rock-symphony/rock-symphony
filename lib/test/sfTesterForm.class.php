@@ -22,22 +22,14 @@ class sfTesterForm extends sfTester
   protected $form = null;
 
   /**
-   * @param sfTestFunctionalBase $browser A browser
-   * @param lime_test            $tester  A tester object
+   * @param  sfTestFunctional  $browser  A browser
+   * @param  lime_test         $tester   A tester object
    */
-  public function __construct(sfTestFunctionalBase $browser, lime_test $tester)
+  public function __construct(sfTestFunctional $browser, lime_test $tester)
   {
     parent::__construct($browser, $tester);
 
     $this->browser->addListener('template.filter_parameters', [$this, 'filterTemplateParameters']);
-  }
-
-  /**
-   * Prepares the tester.
-   */
-  public function prepare()
-  {
-    $this->form = null;
   }
 
   /**
