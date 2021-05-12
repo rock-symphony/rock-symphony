@@ -398,11 +398,11 @@ class sfTesterResponse extends sfTester
   /**
    * Tests the status code.
    *
-   * @param  int  $statusCode  Status code to check, default 200
+   * @param  int  $statusCode  Status code to check.
    *
    * @return $this
    */
-  public function isStatusCode(int $statusCode = 200): self
+  public function isStatusCode(int $statusCode): self
   {
     $this->tester->is($this->response->getStatusCode(), $statusCode, sprintf('status code is "%s"', $statusCode));
 
