@@ -155,11 +155,20 @@ class sfWebResponse extends sfResponse
    * @param  string  $domain    Domain name
    * @param  bool    $secure    If secure
    * @param  bool    $httpOnly  If uses only HTTP
+   * @param  string  $sameSite  SameSite property
    *
-   * @throws <b>sfException</b> If fails to set the cookie
+   * @throws sfException If fails to set the cookie
    */
-  public function setCookie(string $name, ?string $value, string $expire = null, string $path = '/', string $domain = null, bool $secure = false, bool $httpOnly = false): void
-  {
+  public function setCookie(
+    string $name,
+    ?string $value,
+    string $expire = null,
+    string $path = '/',
+    string $domain = null,
+    bool $secure = false,
+    bool $httpOnly = false,
+    string $sameSite = null
+  ): void {
     if ($expire !== null)
     {
       if (is_numeric($expire))
@@ -182,8 +191,9 @@ class sfWebResponse extends sfResponse
       'expire'   => $expire,
       'path'     => $path,
       'domain'   => $domain,
-      'secure'   => $secure ? true : false,
+      'secure'   => $secure,
       'httpOnly' => $httpOnly,
+      'sameSite' => $sameSite ?? 'Lax',
     ];
   }
 
@@ -368,6 +378,7 @@ class sfWebResponse extends sfResponse
         'domain'   => $cookie['domain'],
         'secure'   => $cookie['secure'],
         'httponly' => $cookie['httpOnly'],
+        'samesite' => $cookie['sameSite'],
       ]);
 
       if ($this->options['logging'])
