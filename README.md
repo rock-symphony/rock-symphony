@@ -5,7 +5,7 @@
 </p>
 
 
-![Build Status][https://github.com/rock-symphony/rock-symphony/actions/workflows/test.yml/badge.svg]
+![Build Status](https://github.com/rock-symphony/rock-symphony/actions/workflows/test.yml/badge.svg)
 
 
 RockSymphony Framework
