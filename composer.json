@@ -3,7 +3,7 @@
     "description": "Fork of symfony 1.4 with dic, form enhancements, latest swiftmailer and better performance",
     "license": "MIT",
     "require": {
-        "php": ">=7.1,<7.5",
+        "php": ">=7.3,<7.5",
         "swiftmailer/swiftmailer": "~5.2",
         "symfony/yaml": "^3.4|^4.0|^5.0"
     },
