@@ -2,4 +2,4 @@
 /**
 * The current symfony version.
 */
-define('SYMFONY_VERSION', '5.0.5');
+define('SYMFONY_VERSION', '10.0.0');

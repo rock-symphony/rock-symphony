@@ -1,6 +1,16 @@
 CHANGELOG
 =========
 
+12/05/2021: Version 10.0
+------------------
+
+* Add support for `SameSite` attribute to `sfWebResponse::setCookie()` method (BC break) 
+  ([#47](https://github.com/rock-symphony/rock-symphony/pull/47))
+* Add `sfCookie` class 
+  ([#47](https://github.com/rock-symphony/rock-symphony/pull/47))
+* Rework a lot of tests-related code (multiple BC breaks; but only if your test suite is using symfony test classes) 
+  ([#49](https://github.com/rock-symphony/rock-symphony/pull/49))
+
 27/08/2020: Version 9.0
 ------------------
 
