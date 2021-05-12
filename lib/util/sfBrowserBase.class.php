@@ -117,17 +117,20 @@ abstract class sfBrowserBase
    *
    * @return sfBrowserBase     This sfBrowserBase instance
    */
-  public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false, $httpOnly = false)
+  public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false, $httpOnly = false, $sameSite = 'Lax')
   {
-    $this->cookieJar[$name] = array(
-      'name'     => $name,
-      'value'    => $value,
-      'expire'   => $expire,
-      'path'     => $path,
-      'domain'   => $domain,
-      'secure'   => (Boolean) $secure,
-      'httpOnly' => $httpOnly,
-    );
+    $this->cookieJar[$name] = [
+      'name'    => $name,
+      'value'   => $value,
+      'options' => [
+        'expires'  => $expire,
+        'path'     => $path,
+        'domain'   => $domain,
+        'secure'   => (bool)$secure,
+        'httponly' => $httpOnly,
+        'samesite' => $sameSite,
+      ],
+    ];
 
     return $this;
   }
@@ -306,7 +309,7 @@ abstract class sfBrowserBase
     $cookies = $this->cookieJar;
     foreach ($cookies as $name => $cookie)
     {
-      if ($cookie['expire'] && $cookie['expire'] < time())
+      if ($cookie['options']['expires'] && $cookie['options']['expires'] < time())
       {
         unset($this->cookieJar[$name]);
       }
