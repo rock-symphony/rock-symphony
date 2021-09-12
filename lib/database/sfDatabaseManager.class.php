@@ -22,16 +22,19 @@
  */
 class sfDatabaseManager
 {
-  /** @var sfProjectConfiguration */
-  protected $configuration = null;
   /** @var sfDatabase[] */
-  protected $databases = [];
+  protected array $databases = [];
+  /** @var PDO[] */
+  protected array $pdoConnections = [];
+  
+  protected ?sfProjectConfiguration $configuration = null;
+  protected ?string $defaultDatabaseName = null;
 
   /**
    * Class constructor.
    *
    * @param sfProjectConfiguration $configuration
-   * @param array                  $options
+   * @param array $options
    */
   public function __construct(sfProjectConfiguration $configuration, array $options = [])
   {
@@ -39,10 +42,25 @@ class sfDatabaseManager
 
     $this->loadConfiguration();
 
-    if (!isset($options['auto_shutdown']) || $options['auto_shutdown'])
-    {
+    $this->setDefaultDatabaseName(sfConfig::get('sf_default_database'));
+
+    if (!isset($options['auto_shutdown']) || $options['auto_shutdown']) {
       register_shutdown_function(array($this, 'shutdown'));
     }
+  }
+
+  public function setDefaultDatabaseName($name): void
+  {
+    if (!in_array($name, $this->getNames())) {
+      throw new RuntimeException('Default database does not exist.');
+    }
+
+    $this->defaultDatabaseName = $name;
+  }
+
+  public function getDefaultDatabaseName(): string
+  {
+    return $this->defaultDatabaseName;
   }
 
   /**
@@ -50,18 +68,14 @@ class sfDatabaseManager
    */
   public function loadConfiguration(): void
   {
-    if ($this->configuration instanceof sfApplicationConfiguration)
-    {
+    if ($this->configuration instanceof sfApplicationConfiguration) {
       $databases = include($this->configuration->getConfigCache()->checkConfig('config/databases.yml'));
-    }
-    else
-    {
+    } else {
       $configHandler = new sfDatabaseConfigHandler();
-      $databases = $configHandler->evaluate(array($this->configuration->getRootDir().'/config/databases.yml'));
+      $databases = $configHandler->evaluate(array($this->configuration->getRootDir() . '/config/databases.yml'));
     }
 
-    foreach ($databases as $name => $database)
-    {
+    foreach ($databases as $name => $database) {
       $this->setDatabase($name, $database);
     }
   }
@@ -69,7 +83,7 @@ class sfDatabaseManager
   /**
    * Sets a database connection.
    *
-   * @param string     $name     The database name
+   * @param string $name The database name
    * @param sfDatabase $database A sfDatabase instance
    */
   public function setDatabase(string $name, sfDatabase $database): void
@@ -88,13 +102,27 @@ class sfDatabaseManager
    */
   public function getDatabase(string $name = 'default'): sfDatabase
   {
-    if (isset($this->databases[$name]))
-    {
+    if (isset($this->databases[$name])) {
       return $this->databases[$name];
     }
 
     // nonexistent database name
     throw new sfDatabaseException(sprintf('Database "%s" does not exist.', $name));
+  }
+
+  public function getDatabases(): array
+  {
+    return $this->databases;
+  }
+
+  public function getDefaultDatabase(): sfDatabase
+  {
+    return $this->getDatabase($this->getDefaultDatabaseName());
+  }
+
+  public function databaseExists(string $name): bool
+  {
+    return in_array($name, $this->getNames());
   }
 
   /**
@@ -107,6 +135,88 @@ class sfDatabaseManager
     return array_keys($this->databases);
   }
 
+  public function getPdoConnection(string $datasource): PDO
+  {
+    if (!isset($this->pdoConnections[$datasource])) {
+      $this->pdoConnections[$datasource] = Propel::initConnection(
+        $this->getPdoConnectionParams($datasource),
+        $datasource
+      );
+    }
+
+    return $this->pdoConnections[$datasource];
+  }
+
+  public function getPdoConnectionParams(string $datasource): array
+  {
+    $database = $this->getDatabase($datasource);
+
+    return [
+      'adapter' => $database->getParameter('phptype'),
+      'dsn' => str_replace("@DB@", $datasource, $database->getParameter('dsn')),
+      'user' => $database->getParameter('username'),
+      'password' => $database->getParameter('password'),
+      'settings' => array(
+        'queries' => $database->getParameter('queries'),
+        'charset' => array(
+          'value' => $database->getParameter('encoding'),
+        ),
+      ),
+    ];
+  }
+
+  public function getAllPdoConnectionsParams(): array
+  {
+    $connectionParams = [];
+
+    foreach ($this->getNames() as $datasource) {
+      $connectionParams[$datasource] = $this->getPdoConnectionParams($datasource);
+    }
+
+    return $connectionParams;
+  }
+
+  public function getPdoConnectionParam(string $datasource, string $param)
+  {
+    return $this->getPdoConnectionParams()[$param];
+  }
+
+  public function getPhingPropertiesForConnection(string $connection): array
+  {
+    $database = $this->getDatabase($connection);
+
+    return [
+      'propel.database'          => $database->getParameter('phptype'),
+      'propel.database.driver'   => $database->getParameter('phptype'),
+      'propel.database.url'      => $database->getParameter('dsn'),
+      'propel.database.user'     => $database->getParameter('username'),
+      'propel.database.password' => $database->getParameter('password'),
+      'propel.database.encoding' => $database->getParameter('encoding'),
+    ];
+  }
+
+  public function getPlatform(string $datasource)
+  {
+    $database = $this->getDatabase($datasource);
+    $adapter = $database->getParameter('phptype');
+    $adapterClass = ucfirst($adapter) . 'Platform';
+
+    return new $adapterClass();
+  }
+
+  public function getSchemaParser(string $datasource, GeneratorConfig $generatorConfig)
+  {
+    $database = $this->getDatabase($datasource);
+    $adapter = $database->getParameter('phptype');
+
+    $parserClass = ucfirst($adapter) . 'SchemaParser';
+    /** @var SchemaParser $parser */
+    $parser = new $parserClass();
+    $parser->setConnection($this->getPdoConnection($datasource));
+    $parser->setGeneratorConfig($generatorConfig);
+    return $parser;
+  }
+
   /**
    * Executes the shutdown procedure
    *
@@ -117,8 +227,7 @@ class sfDatabaseManager
   public function shutdown(): void
   {
     // loop through databases and shutdown connections
-    foreach ($this->databases as $database)
-    {
+    foreach ($this->databases as $database) {
       $database->shutdown();
     }
   }
