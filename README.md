@@ -57,7 +57,7 @@ Requirements
 ------------
 
 Starting from PHP 5.6.0 and then goes up with every new major version.
-The latest v10.0 release requires PHP 7.3.
+The latest v11.0 release requires PHP 7.4.
 
 Migrating to Rock Symphony
 --------------------------
