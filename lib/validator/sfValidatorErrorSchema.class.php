@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, Iterator, Countable
+class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, IteratorAggregate, Countable
 {
   protected
     $errors       = array(),
@@ -182,53 +182,11 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
   }
 
   /**
-   * Reset the error array to the beginning (implements the Iterator interface).
+   * @return Traversable<sfValidatorError>
    */
-  public function rewind()
+  public function getIterator(): Traversable
   {
-    reset($this->errors);
-
-    $this->count = count($this->errors);
-  }
-
-  /**
-   * Get the key associated with the current error (implements the Iterator interface).
-   *
-   * @return string The key
-   */
-  public function key()
-  {
-    return key($this->errors);
-  }
-
-  /**
-   * Returns the current error (implements the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  public function current()
-  {
-    return current($this->errors);
-  }
-
-  /**
-   * Moves to the next error (implements the Iterator interface).
-   */
-  public function next()
-  {
-    next($this->errors);
-
-    --$this->count;
-  }
-
-  /**
-   * Returns true if the current error is valid (implements the Iterator interface).
-   *
-   * @return boolean The validity of the current element; true if it is valid
-   */
-  public function valid()
-  {
-    return $this->count > 0;
+    yield from $this->errors;
   }
 
   /**
