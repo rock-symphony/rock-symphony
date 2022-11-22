@@ -41,21 +41,11 @@ $event->setProcessed(false);
 $t->is($event->isProcessed(), false, '->setProcessed() changes the processed status');
 
 // ArrayAccess interface
-$t->diag('ArrayAccess interface');
-$t->is($event['foo'], 'bar', 'sfEvent implements the ArrayAccess interface');
-$event['foo'] = 'foo';
-$t->is($event['foo'], 'foo', 'sfEvent implements the ArrayAccess interface');
+$t->diag('->getParameter()');
+$t->is($event->getParameter('foo'), 'bar', '->getParameter() returns parameter value');
+$t->is($event->getParameter('non-foo'), null, '->getParameter() returns null if parameter is not set');
+$t->is($event->getParameter('non-foo', 'bar'), 'bar', '->getParameter() returns the fallback value if parameter is not set, and fallback is given');
 
-try
-{
-  $event['foobar'];
-  $t->fail('::offsetGet() throws an InvalidArgumentException exception when the parameter does not exist');
-}
-catch (InvalidArgumentException $e)
-{
-  $t->pass('::offsetGet() throws an InvalidArgumentException exception when the parameter does not exist');
-}
-
-$t->ok(isset($event['foo']), 'sfEvent implements the ArrayAccess interface');
-unset($event['foo']);
-$t->ok(!isset($event['foo']), 'sfEvent implements the ArrayAccess interface');
+$t->diag('->hasParameter()');
+$t->ok($event->hasParameter('foo'), '->hasParameter() returns true if the parameter is set for the event');
+$t->ok(!$event->hasParameter('bar'), '->hasParameter() returns false if the parameter is not set for the event');

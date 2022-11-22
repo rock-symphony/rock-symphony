@@ -16,31 +16,27 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfEvent.class.php 8698 2008-04-30 16:35:28Z fabien $
  */
-class sfEvent implements ArrayAccess
+class sfEvent
 {
   /** @var mixed */
-  protected $value      = null;
-  /** @var bool */
-  protected $processed  = false;
-  /** @var mixed */
   protected $subject;
-  /** @var string */
-  protected $name;
-  /** @var array */
-  protected $parameters;
+  protected string $name;
+  protected array $parameters;
+  /** @var mixed */
+  protected $value = null;
+  protected bool $processed = false;
 
   /**
    * Constructs a new sfEvent.
    *
-   * @param mixed   $subject      The subject
-   * @param string  $name         The event name
-   * @param array   $parameters   An array of parameters
+   * @param mixed   $subject    The subject
+   * @param string  $name       The event name
+   * @param array   $parameters An array of parameters
    */
-  public function __construct($subject, string $name, array $parameters = array())
+  public function __construct($subject, string $name, array $parameters = [])
   {
     $this->subject = $subject;
     $this->name = $name;
-
     $this->parameters = $parameters;
   }
 
@@ -67,7 +63,7 @@ class sfEvent implements ArrayAccess
   /**
    * Sets the return value for this event.
    *
-   * @param mixed $value The return value
+   * @param mixed  $value The return value
    */
   public function setReturnValue($value): void
   {
@@ -87,11 +83,11 @@ class sfEvent implements ArrayAccess
   /**
    * Sets the processed flag.
    *
-   * @param Boolean $processed The processed flag value
+   * @param Boolean  $processed The processed flag value
    */
   public function setProcessed(bool $processed): void
   {
-    $this->processed = (boolean) $processed;
+    $this->processed = $processed;
   }
 
   /**
@@ -115,52 +111,26 @@ class sfEvent implements ArrayAccess
   }
 
   /**
-   * Returns true if the parameter exists (implements the ArrayAccess interface).
+   * Checks if the given parameter is set for the event instance.
    *
-   * @param  string  $name  The parameter name
-   *
-   * @return Boolean true if the parameter exists, false otherwise
+   * @param string  $name The parameter name
+   * @return bool
    */
-  public function offsetExists($name)
+  public function hasParameter(string $name): bool
   {
     return array_key_exists($name, $this->parameters);
   }
 
   /**
-   * Returns a parameter value (implements the ArrayAccess interface).
+   * Returns the given event parameter value, falling back to the default, if not present.
    *
-   * @param  string  $name  The parameter name
+   * @param string  $name    The parameter name
+   * @param mixed   $default Fallback value
    *
-   * @return mixed  The parameter value
+   * @return mixed
    */
-  public function offsetGet($name)
+  public function getParameter(string $name, $default = null)
   {
-    if (!array_key_exists($name, $this->parameters))
-    {
-      throw new InvalidArgumentException(sprintf('The event "%s" has no "%s" parameter.', $this->name, $name));
-    }
-
-    return $this->parameters[$name];
-  }
-
-  /**
-   * Sets a parameter (implements the ArrayAccess interface).
-   *
-   * @param string  $name   The parameter name
-   * @param mixed   $value  The parameter value
-   */
-  public function offsetSet($name, $value)
-  {
-    $this->parameters[$name] = $value;
-  }
-
-  /**
-   * Removes a parameter (implements the ArrayAccess interface).
-   *
-   * @param string $name    The parameter name
-   */
-  public function offsetUnset($name)
-  {
-    unset($this->parameters[$name]);
+    return $this->parameters[$name] ?? $default;
   }
 }
