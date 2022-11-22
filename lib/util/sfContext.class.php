@@ -567,34 +567,6 @@ class sfContext
   }
 
   /**
-   * The method name will be parsed to magically handle getMyFactory() and setMyFactory() methods.
-   *
-   * @param  string $method     The method name
-   * @param  array  $arguments  The method arguments
-   *
-   * @return mixed The returned value of the called method
-   *
-   * @throws <b>sfException</b> if call fails
-   */
-  public function __call($method, $arguments)
-  {
-    $verb = substr($method, 0, 3); // get | set
-    $factory = strtolower(substr($method, 3)); // factory name
-
-    if ('get' == $verb && $this->has($factory))
-    {
-      return $this->factories[$factory];
-    }
-    else if ('set' == $verb && isset($arguments[0]))
-    {
-      $this->set($factory, $arguments[0]);
-      return null;
-    }
-
-    throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
-  }
-
-  /**
    * Execute the shutdown procedure.
    *
    * @return void
