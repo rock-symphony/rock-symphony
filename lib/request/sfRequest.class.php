@@ -22,31 +22,30 @@
  */
 abstract class sfRequest implements ArrayAccess
 {
-  const GET    = 'GET';
-  const POST   = 'POST';
-  const PUT    = 'PUT';
-  const PATCH  = 'PATCH';
-  const DELETE = 'DELETE';
-  const HEAD   = 'HEAD';
-  const OPTIONS = 'OPTIONS';
+  public const GET    = 'GET';
+  public const POST   = 'POST';
+  public const PUT    = 'PUT';
+  public const PATCH  = 'PATCH';
+  public const DELETE = 'DELETE';
+  public const HEAD   = 'HEAD';
+  public const OPTIONS = 'OPTIONS';
 
-  /** @var sfEventDispatcher */
-  protected $dispatcher;
+  public const METHODS = [
+    self::GET,
+    self::POST,
+    self::PUT,
+    self::PATCH,
+    self::DELETE,
+    self::HEAD,
+    self::OPTIONS
+  ];
 
-  /** @var string|null */
-  protected $content = null;
-
-  /** @var string */
-  protected $method;
-
-  /** @var array */
-  protected $options = [];
-
-  /** @var sfParameterHolder */
-  protected $parameterHolder;
-
-  /** @var sfParameterHolder */
-  protected $attributeHolder;
+  protected sfEventDispatcher $dispatcher;
+  protected ?string $content = null;
+  protected ?string $method = null;
+  protected array $options = [];
+  protected sfParameterHolder $parameterHolder;
+  protected sfParameterHolder $attributeHolder;
 
   /**
    * Class constructor.
@@ -79,7 +78,7 @@ abstract class sfRequest implements ArrayAccess
   }
 
   /**
-   * Return an option value or null if option does not exists
+   * Return an option value or null if option does not exist
    *
    * @param string $name The option name.
    *
@@ -87,7 +86,7 @@ abstract class sfRequest implements ArrayAccess
    */
   public function getOption(string $name)
   {
-    return isset($this->options[$name]) ? $this->options[$name] : null;
+    return $this->options[$name] ?? null;
   }
 
   /**
@@ -144,8 +143,7 @@ abstract class sfRequest implements ArrayAccess
    */
   public function setMethod(string $method): void
   {
-    if (!in_array(strtoupper($method), array(self::GET, self::POST, self::PUT, self::PATCH, self::DELETE, self::HEAD, self::OPTIONS)))
-    {
+    if (!in_array(strtoupper($method), self::METHODS)) {
       throw new sfException(sprintf('Invalid request method: %s.', $method));
     }
 
