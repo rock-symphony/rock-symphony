@@ -21,16 +21,17 @@
  * @author     Sean Kerr <sean@code-box.org>
  * @version    SVN: $Id$
  */
-class sfParameterHolder implements Serializable
+class sfParameterHolder
 {
-  /** @var mixed[] */
-  protected $parameters = [];
+  /** @var array<string, mixed> */
+  protected array $parameters = [];
 
   /**
    * The constructor for sfParameterHolder.
    */
-  public function __construct()
+  public function __construct(array $parameters = [])
   {
+    $this->parameters = $parameters;
   }
 
   /**
@@ -38,7 +39,7 @@ class sfParameterHolder implements Serializable
    */
   public function clear(): void
   {
-    $this->parameters = array();
+    $this->parameters = [];
   }
 
   /**
@@ -66,7 +67,7 @@ class sfParameterHolder implements Serializable
   /**
    * Retrieves an array of parameter names.
    *
-   * @return array An indexed array of parameter names
+   * @return string[] An indexed array of parameter names
    */
   public function getNames(): array
   {
@@ -76,7 +77,7 @@ class sfParameterHolder implements Serializable
   /**
    * Retrieves an array of parameters.
    *
-   * @return array An associative array of parameters
+   * @return array<string, mixed> An associative array of parameters
    */
   public function & getAll(): array
   {
@@ -84,7 +85,7 @@ class sfParameterHolder implements Serializable
   }
 
   /**
-   * Indicates whether or not a parameter exists.
+   * Indicates whether a parameter exists.
    *
    * @param  string $name  A parameter name
    *
@@ -150,13 +151,8 @@ class sfParameterHolder implements Serializable
    *
    * @param array $parameters  An associative array of parameters and their associated values
    */
-  public function add(?array $parameters): void
+  public function add(array $parameters): void
   {
-    if (null === $parameters)
-    {
-      return;
-    }
-
     foreach ($parameters as $key => $value)
     {
       $this->parameters[$key] = $value;
@@ -181,21 +177,19 @@ class sfParameterHolder implements Serializable
 
   /**
    * Serializes the current instance.
-   *
-   * @return string
    */
-  public function serialize()
+  public function __serialize(): array
   {
-    return serialize($this->parameters);
+    return ['parameters' => $this->parameters];
   }
 
   /**
    * Unserializes a sfParameterHolder instance.
    *
-   * @param string $serialized  A serialized sfParameterHolder instance
+   * @param array $serialized  A serialized sfParameterHolder instance
    */
-  public function unserialize($serialized)
+  public function __unserialize(array $serialized)
   {
-    $this->parameters = unserialize($serialized);
+    $this->parameters = $serialized['parameters'] ?? [];
   }
 }
