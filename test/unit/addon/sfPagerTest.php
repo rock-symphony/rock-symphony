@@ -26,7 +26,8 @@ $pager = new myPager("fooClass");
 
 // #8021
 // ->rewind()
-$t->diag('->rewind()');
+$t->diag('Iterable interface');
+
 $countRuns = 0;
 foreach ($pager as $item)
 {
@@ -35,7 +36,6 @@ foreach ($pager as $item)
 $t->is($countRuns, $pager->count(), 'iterating first time will invoke on all items');
 
 $countRuns = 0;
-$pager->rewind();
 foreach ($pager as $item)
 {
   $countRuns++;
