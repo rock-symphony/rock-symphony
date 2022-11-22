@@ -16,12 +16,12 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Countable
+class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggregate, Countable
 {
-  protected
-    $count      = 0,
-    $fieldNames = array(),
-    $fields     = array();
+  /** @var list<string> */
+  protected array $fieldNames = [];
+  /** @var array */
+  protected array $fields = [];
 
   /**
    * Constructor.
@@ -67,7 +67,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    */
   public function getHiddenFields($recursive = true)
   {
-    $fields = array();
+    $fields = [];
 
     foreach ($this as $name => $field)
     {
@@ -161,52 +161,11 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
     throw new LogicException('Cannot remove form fields (read-only).');
   }
 
-  /**
-   * Resets the field names array to the beginning (implements the Iterator interface).
-   */
-  public function rewind()
+  public function getIterator()
   {
-    reset($this->fieldNames);
-    $this->count = count($this->fieldNames);
-  }
-
-  /**
-   * Gets the key associated with the current form field (implements the Iterator interface).
-   *
-   * @return string The key
-   */
-  public function key()
-  {
-    return current($this->fieldNames);
-  }
-
-  /**
-   * Returns the current form field (implements the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  public function current()
-  {
-    return $this[current($this->fieldNames)];
-  }
-
-  /**
-   * Moves to the next form field (implements the Iterator interface).
-   */
-  public function next()
-  {
-    next($this->fieldNames);
-    --$this->count;
-  }
-
-  /**
-   * Returns true if the current form field is valid (implements the Iterator interface).
-   *
-   * @return boolean The validity of the current element; true if it is valid
-   */
-  public function valid()
-  {
-    return $this->count > 0;
+    foreach ($this->fieldNames as $name) {
+      yield $name => $this->offsetGet($name);
+    }
   }
 
   /**
