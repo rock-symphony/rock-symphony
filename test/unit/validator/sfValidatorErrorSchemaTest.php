@@ -173,17 +173,17 @@ catch (LogicException $e)
   $t->pass('"sfValidatorErrorSchema" implements the ArrayAccess interface');
 }
 
-// implements Serializable
-$t->diag('implements Serializable');
+// is serializable
+$t->diag('is serializable');
 
-class NotSerializable implements Serializable
+class NotSerializable
 {
-  public function serialize()
+  public function __serialize()
   {
     throw new Exception('Not serializable');
   }
 
-  public function unserialize($serialized)
+  public function __unserialize()
   {
     throw new Exception('Not serializable');
   }
@@ -199,18 +199,18 @@ $a = new NotSerializable();
 try
 {
   $serialized = will_crash($a);
-  $t->pass('"sfValidatorErrorSchema" implements Serializable');
+  $t->pass('"sfValidatorErrorSchema" is serializable');
 }
 catch (Exception $e)
 {
-  $t->fail('"sfValidatorErrorSchema" implements Serializable');
+  $t->fail('"sfValidatorErrorSchema" is serializable');
 }
 
 $e = new sfValidatorErrorSchema($v1);
 $e1 = unserialize($serialized);
-$t->is($e1->getMessage(), $e->getMessage(), '"sfValidatorErrorSchema" implements Serializable');
-$t->is($e1->getCode(), $e->getCode(), '"sfValidatorErrorSchema" implements Serializable');
-$t->is(get_class($e1->getValidator()), get_class($e->getValidator()), '"sfValidatorErrorSchema" implements Serializable');
-$t->is($e1->getArguments(), $e->getArguments(), '"sfValidatorErrorSchema" implements Serializable');
-$t->is($e1->getNamedErrors(), $e->getNamedErrors(), '"sfValidatorErrorSchema" implements Serializable');
-$t->is($e1->getGlobalErrors(), $e->getGlobalErrors(), '"sfValidatorErrorSchema" implements Serializable');
+$t->is($e1->getMessage(), $e->getMessage(), '"sfValidatorErrorSchema" is serializable');
+$t->is($e1->getCode(), $e->getCode(), '"sfValidatorErrorSchema" is serializable');
+$t->is(get_class($e1->getValidator()), get_class($e->getValidator()), '"sfValidatorErrorSchema" is serializable');
+$t->is($e1->getArguments(), $e->getArguments(), '"sfValidatorErrorSchema" is serializable');
+$t->is($e1->getNamedErrors(), $e->getNamedErrors(), '"sfValidatorErrorSchema" is serializable');
+$t->is($e1->getGlobalErrors(), $e->getGlobalErrors(), '"sfValidatorErrorSchema" is serializable');
