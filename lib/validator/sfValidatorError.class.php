@@ -62,7 +62,7 @@ class sfValidatorError extends Exception
    */
   public function getValue()
   {
-    return isset($this->arguments['value']) ? $this->arguments['value'] : null;
+    return $this->arguments['value'] ?? null;
   }
 
   /**
@@ -70,7 +70,7 @@ class sfValidatorError extends Exception
    *
    * @return sfValidatorBase A sfValidatorBase instance
    */
-  public function getValidator()
+  public function getValidator(): sfValidatorBase
   {
     return $this->validator;
   }
@@ -82,7 +82,7 @@ class sfValidatorError extends Exception
    *
    * @see getMessageFormat()
    */
-  public function getArguments($raw = false)
+  public function getArguments(bool $raw = false): array
   {
     if ($raw)
     {
@@ -116,7 +116,7 @@ class sfValidatorError extends Exception
    *
    * @return string The message format
    */
-  public function getMessageFormat()
+  public function getMessageFormat(): string
   {
     $messageFormat = $this->validator->getMessage($this->code);
     if (!$messageFormat)

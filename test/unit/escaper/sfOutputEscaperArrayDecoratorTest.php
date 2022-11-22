@@ -10,9 +10,14 @@
 
 require_once(__DIR__.'/../../bootstrap/unit.php');
 
-$t = new lime_test(11);
+$t = new lime_test(10);
 
-$a = array('<strong>escaped!</strong>', 1, null, array(2, '<strong>escaped!</strong>'));
+$a = [
+  '<strong>escaped!</strong>',
+  1,
+  null,
+  [2, '<strong>escaped!</strong>'],
+];
 $escaped = sfOutputEscaper::escape('esc_entities', $a);
 
 // ->getRaw()
@@ -49,7 +54,7 @@ catch (sfException $e)
 }
 
 // Iterator interface
-$t->diag('Iterator interface');
+$t->diag('Iterable interface');
 foreach ($escaped as $key => $value)
 {
   switch ($key)
@@ -69,9 +74,3 @@ foreach ($escaped as $key => $value)
       $t->fail('The escaped object behaves like an array');
   }
 }
-
-// ->valid()
-$t->diag('->valid()');
-
-$escaped = sfOutputEscaper::escape('esc_entities', array(1, 2, 3));
-$t->is($escaped->valid(), true, '->valid() returns true if called before iteration');

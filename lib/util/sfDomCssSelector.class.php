@@ -21,23 +21,21 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfDomCssSelector implements Countable, Iterator
+class sfDomCssSelector implements Countable, IteratorAggregate
 {
-  public $nodes = array();
-
-  private $count;
+  public array $nodes = [];
 
   public function __construct($nodes)
   {
     if (!is_array($nodes))
     {
-      $nodes = array($nodes);
+      $nodes = [$nodes];
     }
 
     $this->nodes = $nodes;
   }
 
-  public function getNodes()
+  public function getNodes(): array
   {
     return $this->nodes;
   }
@@ -363,7 +361,7 @@ class sfDomCssSelector implements Countable, Iterator
 
     foreach ($tokens as &$token)
     {
-      list($token['name'], $token['selector']) = $this->tokenize_selector_name($token['name']);
+      [$token['name'], $token['selector']] = $this->tokenize_selector_name($token['name']);
     }
 
     return $tokens;
@@ -561,57 +559,11 @@ class sfDomCssSelector implements Countable, Iterator
   }
 
   /**
-   * Reset the array to the beginning (as required for the Iterator interface).
+   * @return Traversable<>
    */
-  public function rewind()
+  public function getIterator(): Traversable
   {
-    reset($this->nodes);
-
-    $this->count = count($this->nodes);
-  }
-
-  /**
-   * Get the key associated with the current value (as required by the Iterator interface).
-   *
-   * @return string The key
-   */
-  public function key()
-  {
-    return key($this->nodes);
-  }
-
-  /**
-   * Escapes and return the current value (as required by the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  public function current()
-  {
-    return current($this->nodes);
-  }
-
-  /**
-   * Moves to the next element (as required by the Iterator interface).
-   */
-  public function next()
-  {
-    next($this->nodes);
-
-    $this->count --;
-  }
-
-  /**
-   * Returns true if the current element is valid (as required by the Iterator interface).
-   *
-   * The current element will not be valid if {@link next()} has fallen off the
-   * end of the array or if there are no elements in the array and {@link
-   * rewind()} was called.
-   *
-   * @return bool The validity of the current element; true if it is valid
-   */
-  public function valid()
-  {
-    return $this->count > 0;
+    yield from $this->nodes;
   }
 
   /**

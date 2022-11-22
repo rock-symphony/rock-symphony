@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-abstract class sfPager implements Iterator, Countable
+abstract class sfPager implements IteratorAggregate, Countable
 {
   /** @var int */
   protected $page = 1;
@@ -44,10 +44,7 @@ abstract class sfPager implements Iterator, Countable
   protected $maxRecordLimit = false;
 
   // used by iterator interface
-  /** @var array|null */
-  protected $results = null;
-  /** @var int */
-  protected $resultsCounter = 0;
+  protected ?array $results = null;
 
   /**
    * Constructor.
@@ -511,109 +508,14 @@ abstract class sfPager implements Iterator, Countable
 
   /**
    * Returns true if the properties used for iteration have been initialized.
-   *
-   * @return bool
    */
-  protected function isIteratorInitialized(): bool
+  public function getIterator(): Traversable
   {
-    return null !== $this->results;
-  }
-
-  /**
-   * Loads data into properties used for iteration.
-   */
-  protected function initializeIterator(): void
-  {
-    $this->results = $this->getResults();
-    $this->resultsCounter = count($this->results);
-  }
-
-  /**
-   * Empties properties used for iteration.
-   */
-  protected function resetIterator(): void
-  {
-    $this->results = null;
-    $this->resultsCounter = 0;
-  }
-
-  /**
-   * Returns the current result.
-   *
-   * @see Iterator
-   */
-  public function current()
-  {
-    if (!$this->isIteratorInitialized())
-    {
-      $this->initializeIterator();
+    if ($this->results === null) {
+      $this->results = $this->getResults();
     }
 
-    return current($this->results);
-  }
-
-  /**
-   * Returns the current key.
-   *
-   * @see Iterator
-   */
-  public function key()
-  {
-    if (!$this->isIteratorInitialized())
-    {
-      $this->initializeIterator();
-    }
-
-    return key($this->results);
-  }
-
-  /**
-   * Advances the internal pointer and returns the current result.
-   *
-   * @see Iterator
-   */
-  public function next()
-  {
-    if (!$this->isIteratorInitialized())
-    {
-      $this->initializeIterator();
-    }
-
-    --$this->resultsCounter;
-
-    return next($this->results);
-  }
-
-  /**
-   * Resets the internal pointer and returns the current result.
-   *
-   * @see Iterator
-   */
-  public function rewind()
-  {
-    if (!$this->isIteratorInitialized())
-    {
-      $this->initializeIterator();
-    }
-
-    $this->resultsCounter = count($this->results);
-
-    return reset($this->results);
-  }
-
-  /**
-   * Returns true if pointer is within bounds.
-   *
-   * @see Iterator
-   */
-  public function valid()
-  {
-    if (!$this->isIteratorInitialized())
-    {
-      $this->initializeIterator();
-    }
-
-    return $this->resultsCounter > 0;
+    yield from $this->results;
   }
 
   /**
@@ -621,7 +523,7 @@ abstract class sfPager implements Iterator, Countable
    *
    * @see Countable
    */
-  public function count()
+  public function count(): int
   {
     return $this->getNbResults();
   }
