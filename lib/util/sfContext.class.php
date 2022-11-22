@@ -20,7 +20,7 @@
  * @author     Sean Kerr <sean@code-box.org>
  * @version    SVN: $Id$
  */
-class sfContext implements ArrayAccess
+class sfContext
 {
   protected sfEventDispatcher $dispatcher;
   protected sfApplicationConfiguration $configuration;
@@ -489,51 +489,6 @@ class sfContext implements ArrayAccess
   public function getConfigCache(): sfConfigCache
   {
     return $this->configuration->getConfigCache();
-  }
-
-  /**
-   * Returns true if the context object exists (implements the ArrayAccess interface).
-   *
-   * @param  string $name The name of the context object
-   *
-   * @return Boolean true if the context object exists, false otherwise
-   */
-  public function offsetExists($name)
-  {
-    return $this->has($name);
-  }
-
-  /**
-   * Returns the context object associated with the name (implements the ArrayAccess interface).
-   *
-   * @param  string $name  The offset of the value to get
-   *
-   * @return mixed The context object if exists, null otherwise
-   */
-  public function offsetGet($name)
-  {
-    return $this->get($name);
-  }
-
-  /**
-   * Sets the context object associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset Service name
-   * @param mixed  $value Service
-   */
-  public function offsetSet($offset, $value)
-  {
-    $this->set($offset, $value);
-  }
-
-  /**
-   * Unsets the context object associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The parameter name
-   */
-  public function offsetUnset($offset)
-  {
-    unset($this->factories[$offset]);
   }
 
   /**

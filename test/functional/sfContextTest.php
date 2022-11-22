@@ -12,7 +12,7 @@ $app = 'frontend';
 require_once(__DIR__.'/../bootstrap/unit.php');
 require_once(__DIR__.'/../bootstrap/functional.php');
 
-$t = new lime_test(29);
+$t = new lime_test(24);
 
 class myContext extends sfContext
 {
@@ -73,18 +73,6 @@ catch (sfException $e)
 {
   $t->pass('->get() throws an sfException if no object is stored for the given name');
 }
-
-$context['foo'] = $frontend_context;
-$t->diag('Array access for context objects');
-$t->is(isset($context['foo']), true, '->offsetExists() returns true if context object exists');
-$t->is(isset($context['foo2']), false, '->offsetExists() returns false if context object does not exist');
-$t->isa_ok($context['foo'], 'sfContext', '->offsetGet() returns attribute by name');
-
-$context['foo2'] = $i18n_context;
-$t->isa_ok($context['foo2'], 'sfContext', '->offsetSet() sets object by name');
-
-unset($context['foo2']);
-$t->is(isset($context['foo2']), false, '->offsetUnset() unsets object by name');
 
 $t->diag('->__call()');
 
