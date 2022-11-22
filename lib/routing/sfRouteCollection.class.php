@@ -16,12 +16,16 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfRouteCollection implements Iterator
+class sfRouteCollection implements IteratorAggregate
 {
-  protected
-    $count   = 0,
-    $options = array(),
-    $routes  = array();
+  /**
+   * @var array<string,mixed>
+   */
+  protected array $options = [];
+  /**
+   * @var sfRoute[]
+   */
+  protected array $routes = [];
 
   /**
    * Constructor.
@@ -30,7 +34,7 @@ class sfRouteCollection implements Iterator
    */
   public function __construct(array $options)
   {
-    if (!isset($options['name']))
+    if (empty($options['name']))
     {
       throw new InvalidArgumentException('You must pass a "name" option to sfRouteCollection');
     }
@@ -41,9 +45,9 @@ class sfRouteCollection implements Iterator
   /**
    * Returns the routes.
    *
-   * @return array The routes
+   * @return sfRoute[] The routes
    */
-  public function getRoutes()
+  public function getRoutes(): array
   {
     return $this->routes;
   }
@@ -53,58 +57,13 @@ class sfRouteCollection implements Iterator
    *
    * @return array The options
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
 
-  /**
-   * Reset the error array to the beginning (implements the Iterator interface).
-   */
-  public function rewind()
+  public function getIterator(): Traversable
   {
-    reset($this->routes);
-
-    $this->count = count($this->routes);
-  }
-
-  /**
-   * Get the name of the current route (implements the Iterator interface).
-   *
-   * @return string The key
-   */
-  public function key()
-  {
-    return key($this->routes);
-  }
-
-  /**
-   * Returns the current route (implements the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  public function current()
-  {
-    return current($this->routes);
-  }
-
-  /**
-   * Moves to the next route (implements the Iterator interface).
-   */
-  public function next()
-  {
-    next($this->routes);
-
-    --$this->count;
-  }
-
-  /**
-   * Returns true if the current route is valid (implements the Iterator interface).
-   *
-   * @return boolean The validity of the current route; true if it is valid
-   */
-  public function valid()
-  {
-    return $this->count > 0;
+    yield from $this->routes;
   }
 }
