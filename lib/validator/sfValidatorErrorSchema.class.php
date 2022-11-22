@@ -271,19 +271,27 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @return string The instance as a serialized string
    */
-  public function serialize()
+  public function __serialize(): array
   {
-    return serialize([$this->validator, $this->arguments, $this->code, $this->message, $this->errors, $this->globalErrors, $this->namedErrors]);
+    return array_merge(parent::__serialize(), [
+      'errors'       => $this->errors,
+      'globalErrors' => $this->globalErrors,
+      'namedErrors'  => $this->namedErrors,
+    ]);
   }
 
   /**
    * Unserializes a sfValidatorError instance.
    *
-   * @param string $serialized  A serialized sfValidatorError instance
+   * @param array $serialized  Serialized sfValidatorError instance data
    *
    */
-  public function unserialize($serialized)
+  public function __unserialize(array $serialized)
   {
-    [$this->validator, $this->arguments, $this->code, $this->message, $this->errors, $this->globalErrors, $this->namedErrors] = unserialize($serialized);
+    parent::__unserialize($serialized);
+
+    $this->errors = $serialized['errors'];
+    $this->globalErrors = $serialized['globalErrors'];
+    $this->namedErrors = $serialized['namedErrors'];
   }
 }
