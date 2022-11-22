@@ -16,11 +16,10 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfValidatorError extends Exception implements Serializable
+class sfValidatorError extends Exception
 {
-  protected
-    $validator = null,
-    $arguments = array();
+  protected sfValidatorBase $validator;
+  protected array $arguments = [];
 
   /**
    * Constructor.
@@ -29,10 +28,12 @@ class sfValidatorError extends Exception implements Serializable
    * @param string          $code       The error code
    * @param array           $arguments  An array of named arguments needed to render the error message
    */
-  public function __construct(sfValidatorBase $validator, $code, $arguments = array())
+  public function __construct(sfValidatorBase $validator, string $code, array $arguments = [])
   {
     $this->validator = $validator;
     $this->arguments = $arguments;
+
+    parent::__construct();
 
     // override default exception message and code
     $this->code = $code;
@@ -109,7 +110,7 @@ class sfValidatorError extends Exception implements Serializable
    * error messages:
    *
    * $i18n->__($error->getMessageFormat(), $error->getArguments());
-   * 
+   *
    * If no message format has been set in the validator, the exception standard
    * message is returned.
    *
@@ -136,21 +137,29 @@ class sfValidatorError extends Exception implements Serializable
    * the trace can contain a PDO instance which is not serializable, serializing won't
    * work when using PDO.
    *
-   * @return string The instance as a serialized string
+   * @return array The instance data prepared for serialization
    */
-  public function serialize()
+  public function __serialize()
   {
-    return serialize(array($this->validator, $this->arguments, $this->code, $this->message));
+    return [
+      'validator' => $this->validator,
+      'arguments' => $this->arguments,
+      'code'      => $this->code,
+      'message'   => $this->message,
+    ];
   }
 
   /**
    * Unserializes a sfValidatorError instance.
    *
-   * @param string $serialized  A serialized sfValidatorError instance
+   * @param array $serialized  A serialized instance data
    *
    */
-  public function unserialize($serialized)
+  public function __unserialize(array $serialized)
   {
-    list($this->validator, $this->arguments, $this->code, $this->message) = unserialize($serialized);
+    $this->validator = $serialized['validator'];
+    $this->arguments = $serialized['arguments'];
+    $this->code = $serialized['code'];
+    $this->message = $serialized['message'];
   }
 }
