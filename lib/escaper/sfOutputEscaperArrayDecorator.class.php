@@ -111,7 +111,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return mixed The value
    */
-  public function getRaw(string $key)
+  public function getRaw($key)
   {
     return $this->value[$key];
   }
