@@ -22,25 +22,20 @@
  * @author     Sean Kerr <sean@code-box.org>
  * @version    SVN: $Id$
  */
-class sfUser implements ArrayAccess
+class sfUser
 {
   /**
    * The namespace under which attributes will be stored.
    */
-  const ATTRIBUTE_NAMESPACE = 'symfony/user/sfUser/attributes';
+  public const ATTRIBUTE_NAMESPACE = 'symfony/user/sfUser/attributes';
+  public const CULTURE_NAMESPACE = 'symfony/user/sfUser/culture';
 
-  const CULTURE_NAMESPACE = 'symfony/user/sfUser/culture';
-
-  /** @var array */
-  protected $options = [];
-  /** @var sfNamespacedParameterHolder */
-  protected $attributeHolder;
-  /** @var string|null */
-  protected $culture = null;
-  /** @var sfStorage */
-  protected $storage;
-  /** @var sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+  protected sfStorage $storage;
+  /** @var array<string,mixed> */
+  protected array $options = [];
+  protected sfNamespacedParameterHolder $attributeHolder;
+  protected ?string $culture = null;
 
   /**
    * Class constructor.
@@ -53,22 +48,22 @@ class sfUser implements ArrayAccess
    *  * use_flash:       Whether to enable flash usage (false by default)
    *  * logging:         Whether to enable logging (false by default)
    *
-   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance.
-   * @param sfStorage         $storage     An sfStorage instance.
-   * @param array             $options     An associative array of options.
+   * @param sfEventDispatcher    $dispatcher An sfEventDispatcher instance.
+   * @param sfStorage            $storage    An sfStorage instance.
+   * @param array<string,mixed>  $options    An associative array of options.
    */
   public function __construct(sfEventDispatcher $dispatcher, sfStorage $storage, array $options = [])
   {
     $this->dispatcher = $dispatcher;
     $this->storage    = $storage;
 
-    $this->options = array_merge(array(
+    $this->options = array_merge([
       'auto_shutdown'   => true,
       'culture'         => null,
       'default_culture' => 'en',
       'use_flash'       => false,
       'logging'         => false,
-    ), $options);
+    ], $options);
 
     $this->attributeHolder = new sfNamespacedParameterHolder(self::ATTRIBUTE_NAMESPACE);
 
@@ -114,7 +109,7 @@ class sfUser implements ArrayAccess
    *
    * @return array The options used to initialize sfUser
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
@@ -124,13 +119,13 @@ class sfUser implements ArrayAccess
    *
    * @param string $culture
    */
-  public function setCulture($culture)
+  public function setCulture(string $culture)
   {
-    if ($this->culture != $culture)
+    if ($this->culture !== $culture)
     {
       $this->culture = $culture;
 
-      $this->dispatcher->notify(new sfEvent($this, 'user.change_culture', array('culture' => $culture)));
+      $this->dispatcher->notify(new sfEvent($this, 'user.change_culture', ['culture' => $culture]));
     }
   }
 
@@ -141,7 +136,7 @@ class sfUser implements ArrayAccess
    * @param  string $value    The value of the flash variable
    * @param  bool   $persist  true if the flash have to persist for the following request (true by default)
    */
-  public function setFlash($name, $value, $persist = true)
+  public function setFlash(string $name, $value, $persist = true)
   {
     if (!$this->options['use_flash'])
     {
@@ -169,7 +164,7 @@ class sfUser implements ArrayAccess
    *
    * @return mixed The value of the flash variable
    */
-  public function getFlash($name, $default = null)
+  public function getFlash(string $name, $default = null)
   {
     if (!$this->options['use_flash'])
     {
@@ -186,7 +181,7 @@ class sfUser implements ArrayAccess
    *
    * @return bool true if the variable exists, false otherwise
    */
-  public function hasFlash($name)
+  public function hasFlash(string $name): bool
   {
     if (!$this->options['use_flash'])
     {
@@ -199,82 +194,37 @@ class sfUser implements ArrayAccess
   /**
    * Gets culture.
    *
-   * @return string
+   * @return string|null
    */
-  public function getCulture()
+  public function getCulture(): ?string
   {
     return $this->culture;
   }
 
-  /**
-   * Returns true if the user attribute exists (implements the ArrayAccess interface).
-   *
-   * @param  string $name The name of the user attribute
-   *
-   * @return Boolean true if the user attribute exists, false otherwise
-   */
-  public function offsetExists($name)
-  {
-    return $this->hasAttribute($name);
-  }
-
-  /**
-   * Returns the user attribute associated with the name (implements the ArrayAccess interface).
-   *
-   * @param  string $name  The offset of the value to get
-   *
-   * @return mixed The user attribute if exists, null otherwise
-   */
-  public function offsetGet($name)
-  {
-    return $this->getAttribute($name, false);
-  }
-
-  /**
-   * Sets the user attribute associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The parameter name
-   * @param string $value The parameter value
-   */
-  public function offsetSet($offset, $value)
-  {
-    $this->setAttribute($offset, $value);
-  }
-
-  /**
-   * Unsets the user attribute associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The parameter name
-   */
-  public function offsetUnset($offset)
-  {
-    $this->getAttributeHolder()->remove($offset);
-  }
-
-  public function getAttributeHolder()
+  public function getAttributeHolder(): sfNamespacedParameterHolder
   {
     return $this->attributeHolder;
   }
 
-  public function getAttribute($name, $default = null, $ns = null)
+  public function getAttribute(string $name, $default = null, string $ns = null)
   {
     return $this->attributeHolder->get($name, $default, $ns);
   }
 
-  public function hasAttribute($name, $ns = null)
+  public function hasAttribute(string $name, string $ns = null)
   {
     return $this->attributeHolder->has($name, $ns);
   }
 
-  public function setAttribute($name, $value, $ns = null)
+  public function setAttribute(string $name, $value, string $ns = null)
   {
-    return $this->attributeHolder->set($name, $value, $ns);
+    $this->attributeHolder->set($name, $value, $ns);
   }
 
   /**
    * Executes the shutdown procedure.
    */
-  public function shutdown()
+  public function shutdown(): void
   {
     // remove flash that are tagged to be removed
     if ($this->options['use_flash'] && $names = $this->attributeHolder->getNames('symfony/user/sfUser/flash/remove'))
