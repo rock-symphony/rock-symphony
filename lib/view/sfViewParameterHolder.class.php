@@ -20,14 +20,9 @@
  */
 class sfViewParameterHolder extends sfParameterHolder
 {
-  /** @var \sfEventDispatcher */
-  protected $dispatcher;
-
-  /** @var bool */
-  protected $escaping;
-
-  /** @var string */
-  protected $escapingMethod;
+  protected sfEventDispatcher $dispatcher;
+  protected bool $escaping;
+  protected string $escapingMethod;
 
   /**
    * Initializes this view parameter holder.
@@ -45,8 +40,8 @@ class sfViewParameterHolder extends sfParameterHolder
    */
   public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $options = [])
   {
-    $escaping_strategy = isset($options['escaping_strategy']) ? $options['escaping_strategy'] : false;
-    $escaping_method = isset($options['escaping_method']) ? $options['escaping_method'] : 'ESC_SPECIALCHARS';
+    $escaping_strategy = $options['escaping_strategy'] ?? false;
+    $escaping_method = $options['escaping_method'] ?? 'ESC_SPECIALCHARS';
 
     if (in_array($escaping_strategy, [true, 'on', 'true'], $strict = true)) {
       $this->setEscaping(true);
@@ -56,11 +51,9 @@ class sfViewParameterHolder extends sfParameterHolder
       throw new InvalidArgumentException("Invalid `escaping_strategy` option value: `{$escaping_strategy}`.");
     }
 
-    parent::__construct();
+    parent::__construct($parameters);
 
     $this->dispatcher = $dispatcher;
-
-    $this->add($parameters);
 
     $this->setEscaping(in_array($escaping_strategy, [true, 'on', 'true'], $strict = true));
     $this->setEscapingMethod($escaping_method);

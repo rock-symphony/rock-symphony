@@ -70,11 +70,8 @@ abstract class sfRequest
     }
 
     // initialize parameter and attribute holders
-    $this->parameterHolder = new sfParameterHolder();
-    $this->attributeHolder = new sfParameterHolder();
-
-    $this->parameterHolder->add($parameters);
-    $this->attributeHolder->add($attributes);
+    $this->parameterHolder = new sfParameterHolder($parameters);
+    $this->attributeHolder = new sfParameterHolder($attributes);
   }
 
   /**
