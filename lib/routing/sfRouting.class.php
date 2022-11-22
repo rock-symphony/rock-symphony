@@ -219,7 +219,7 @@ abstract class sfRouting
   public function listenToChangeCultureEvent(sfEvent $event)
   {
     // change the culture in the routing default parameters
-    $this->setDefaultParameter('sf_culture', $event['culture']);
+    $this->setDefaultParameter('sf_culture', $event->getParameter('culture'));
   }
 
   /**
@@ -236,12 +236,14 @@ abstract class sfRouting
 
     $this->options['context'] = $context;
 
-    if (false === $params = $this->parse($event['path_info']))
+    $parsed = $this->parse($event->getParameter('path_info'));
+
+    if ($parsed === false)
     {
       return $parameters;
     }
 
-    return array_merge($parameters, $params);
+    return array_merge($parameters, $parsed);
   }
 
   protected function fixGeneratedUrl($url, $absolute = false)

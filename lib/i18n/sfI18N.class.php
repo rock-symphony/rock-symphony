@@ -411,7 +411,7 @@ class sfI18N
   public function listenToChangeCultureEvent(sfEvent $event): void
   {
     // change the message format object with the new culture
-    $this->setCulture($event['culture']);
+    $this->setCulture($event->getParameter('culture'));
   }
 
   /**
@@ -423,7 +423,7 @@ class sfI18N
   public function listenToChangeActionEvent(sfEvent $event): void
   {
     // change message source directory to our module
-    $this->setMessageSource($this->configuration->getI18NDirs($event['module']));
+    $this->setMessageSource($this->configuration->getI18NDirs($event->getParameter('module')));
   }
 
 }
