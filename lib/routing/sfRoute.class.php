@@ -235,7 +235,9 @@ class sfRoute
     {
       // replace variables
       $variables = $this->variables;
-      uasort($variables, array('sfRoute', 'generateCompareVarsByStrlen'));
+
+      uasort($variables, fn ($a, $b) => strlen($b) <=> strlen($a));
+
       foreach ($variables as $variable => $value)
       {
         $url = str_replace($value, urlencode($tparams[$variable]), $url);
@@ -260,11 +262,6 @@ class sfRoute
     }
 
     return $url;
-  }
-
-  static private function generateCompareVarsByStrlen($a, $b)
-  {
-    return strlen($a) < strlen($b);
   }
 
   /**
