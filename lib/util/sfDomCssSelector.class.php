@@ -571,7 +571,7 @@ class sfDomCssSelector implements Countable, IteratorAggregate
    *
    * @param integer The number of matching nodes
    */
-  public function count()
+  public function count(): int
   {
     return count($this->nodes);
   }
