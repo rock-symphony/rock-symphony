@@ -30,7 +30,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
     parent::__construct($escapingMethod, $value);
   }
 
-  public function getIterator()
+  public function getIterator(): Traversable
   {
     foreach ($this->value as $key => $value) {
       yield $key => sfOutputEscaper::escape($this->escapingMethod, $value);
@@ -44,7 +44,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return bool true if the offset isset; false otherwise
    */
-  public function offsetExists($offset)
+  public function offsetExists($offset): bool
   {
     return isset($this->value[$offset]);
   }
@@ -56,6 +56,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return mixed The escaped value
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($offset)
   {
     return sfOutputEscaper::escape($this->escapingMethod, $this->value[$offset]);
@@ -73,6 +74,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @throws sfException
    */
+  #[\ReturnTypeWillChange]
   public function offsetSet($offset, $value)
   {
     throw new sfException('Cannot set values.');
@@ -89,7 +91,8 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @throws sfException
    */
-  public function offsetUnset($offset)
+  #[\ReturnTypeWillChange]
+  public function offsetUnset($offset): void
   {
     throw new sfException('Cannot unset values.');
   }
@@ -99,7 +102,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return int The size of the array
    */
-  public function count()
+  public function count(): int
   {
     return count($this->value);
   }
