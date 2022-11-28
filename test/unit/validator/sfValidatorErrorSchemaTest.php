@@ -183,7 +183,7 @@ class NotSerializable
     throw new Exception('Not serializable');
   }
 
-  public function __unserialize()
+  public function __unserialize($data)
   {
     throw new Exception('Not serializable');
   }
