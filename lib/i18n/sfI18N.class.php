@@ -267,7 +267,7 @@ class sfI18N
     [$day, $month, $year] = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
     [$hour, $minute] = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
 
-    return null === $day ? null : mktime($hour, $minute, 0, $month, $day, $year);
+    return null === $day ? null : mktime($hour ?: 0, $minute ?: 0, 0, $month, $day, $year);
   }
 
   /**
@@ -332,7 +332,7 @@ class sfI18N
     $timeFormat = $timeFormatInfo->getShortTimePattern();
 
     // We construct the regexp based on time format
-    $timeRegexp = preg_replace(array('/[hm]+/i', '/a/'), array('(\d+)', '(\w+)'), preg_quote($timeFormat));
+    $timeRegexp = preg_replace(['/[hm]+/i', '/a/'], ['(\d+)', '(\w+)'], preg_quote($timeFormat));
 
     // We parse time format to see where things are (h, m)
     $timePositions = [
