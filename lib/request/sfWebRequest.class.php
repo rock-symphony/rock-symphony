@@ -213,11 +213,11 @@ class sfWebRequest extends sfRequest
     // for IIS with rewrite module (IIFR, ISAPI Rewrite, ...)
     if ('HTTP_X_REWRITE_URL' == $this->getOption('path_info_key'))
     {
-      $uri = isset($pathArray['HTTP_X_REWRITE_URL']) ? $pathArray['HTTP_X_REWRITE_URL'] : '';
+      $uri = $pathArray['HTTP_X_REWRITE_URL'] ?? '';
     }
     else
     {
-      $uri = isset($pathArray['REQUEST_URI']) ? $pathArray['REQUEST_URI'] : '';
+      $uri = $pathArray['REQUEST_URI'] ?? '';
     }
 
     return $this->isAbsUri() ? $uri : $this->getUriPrefix().$uri;
@@ -232,7 +232,7 @@ class sfWebRequest extends sfRequest
   {
     $pathArray = $this->getPathInfoArray();
 
-    return isset($pathArray['REQUEST_URI']) ? 0 === strpos($pathArray['REQUEST_URI'], 'http') : false;
+    return 0 === strpos($pathArray['REQUEST_URI'] ?? '', 'http');
   }
 
   /**
@@ -294,7 +294,7 @@ class sfWebRequest extends sfRequest
     {
       if (isset($pathArray['REQUEST_URI']))
       {
-        $qs = isset($pathArray['QUERY_STRING']) ? $pathArray['QUERY_STRING'] : '';
+        $qs = $pathArray['QUERY_STRING'] ?? '';
         $script_name = $this->getScriptName();
         $uri_prefix = $this->isAbsUri() ? $this->getUriPrefix() : '';
         $pathInfo = preg_replace('/^'.preg_quote($uri_prefix, '/').'/','',$pathArray['REQUEST_URI']);
@@ -663,10 +663,8 @@ class sfWebRequest extends sfRequest
   {
     if (null === $this->relativeUrlRoot)
     {
-      if (!($this->relativeUrlRoot = $this->getOption('relative_url_root')))
-      {
-        $this->relativeUrlRoot = preg_replace('#/[^/]+\.php5?$#', '', $this->getScriptName());
-      }
+      $this->relativeUrlRoot = $this->getOption('relative_url_root')
+        ?: preg_replace('#/[^/]+\.php5?$#', '', $this->getScriptName());
     }
 
     return $this->relativeUrlRoot;
