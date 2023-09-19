@@ -15,6 +15,9 @@
  * @subpackage routing
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
+ *
+ * @property $firstOptional int
+ * @property $segments array
  */
 class sfRoute
 {
@@ -34,9 +37,7 @@ class sfRoute
     $defaults          = array(),
     $requirements      = array(),
     $tokens            = array(),
-    $customToken       = false,
-    $firstOptional     = 0,
-    $segments          = [];
+    $customToken       = false;
 
   /**
    * Constructor.
@@ -784,9 +785,6 @@ class sfRoute
   {
     foreach ($this->defaults as $key => $value)
     {
-        if (is_null($value)) {
-            continue;
-        }
       if (ctype_digit($key))
       {
         $this->defaults[$value] = true;
