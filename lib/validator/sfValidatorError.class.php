@@ -34,6 +34,8 @@ class sfValidatorError extends Exception
     $this->validator = $validator;
     $this->arguments = $arguments;
 
+    parent::__construct();
+
     // override default exception message and code
     $this->code = $code;
 
