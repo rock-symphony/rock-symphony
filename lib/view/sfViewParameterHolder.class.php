@@ -164,7 +164,7 @@ class sfViewParameterHolder extends sfParameterHolder
   /**
    * Serializes the current instance.
    */
-  public function serialize()
+  public function __serialize(): array
   {
     throw new LogicException(get_class($this) . ' is not serializable.');
   }
