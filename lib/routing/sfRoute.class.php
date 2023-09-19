@@ -19,6 +19,7 @@
  * @property $firstOptional int
  * @property $segments array
  */
+#[AllowDynamicProperties]
 class sfRoute
 {
   protected
