@@ -847,6 +847,8 @@ class sfRoute
 
   public function __serialize(): array
   {
+      $this->compile();
+
       return [
           // 'defaultParameters' => $this->defaultParameters, // sfPatternRouting will always re-set defaultParameters, so no need to serialize them
           'tokens'         => $this->tokens,
