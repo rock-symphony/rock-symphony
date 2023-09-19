@@ -61,7 +61,7 @@ $t->diag('option: format');
 unlink($file);
 $logger = new TestLogger($dispatcher, array('file' => $file));
 $logger->log('foo');
-$t->is(file_get_contents($file), strftime($logger->getTimeFormat()).' symfony [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
+$t->is(file_get_contents($file), date($logger->getTimeFormat()).' symfony [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
 
 unlink($file);
 $logger = new TestLogger($dispatcher, array('file' => $file, 'format' => '%message%'));
@@ -73,14 +73,14 @@ $t->diag('option: time_format');
 unlink($file);
 $logger = new TestLogger($dispatcher, array('file' => $file, 'time_format' => '%Y %m %d'));
 $logger->log('foo');
-$t->is(file_get_contents($file), strftime($logger->getTimeFormat()).' symfony [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
+$t->is(file_get_contents($file), date($logger->getTimeFormat()).' symfony [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
 
 // option: type
 $t->diag('option: type');
 unlink($file);
 $logger = new TestLogger($dispatcher, array('file' => $file, 'type' => 'foo'));
 $logger->log('foo');
-$t->is(file_get_contents($file), strftime($logger->getTimeFormat()).' foo [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
+$t->is(file_get_contents($file), date($logger->getTimeFormat()).' foo [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
 
 // ->shutdown()
 $t->diag('->shutdown()');
