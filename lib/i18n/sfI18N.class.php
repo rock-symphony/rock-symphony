@@ -267,7 +267,7 @@ class sfI18N
     [$day, $month, $year] = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
     [$hour, $minute] = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
 
-    return null === $day ? null : mktime($hour, $minute, 0, $month, $day, $year);
+    return null === $day ? null : mktime($hour ?: 0, $minute ?: 0, 0, $month, $day, $year);
   }
 
   /**
