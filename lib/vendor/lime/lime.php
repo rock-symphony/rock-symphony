@@ -565,7 +565,7 @@ class lime_test
     return array($traces[$last]['file'], $traces[$last]['line']);
   }
 
-  public function handle_error($code, $message, $file, $line)
+  public function handle_error($code, $message, $file, $line, $context = [])
   {
     if (!$this->options['error_reporting'] || ($code & error_reporting()) == 0)
     {
