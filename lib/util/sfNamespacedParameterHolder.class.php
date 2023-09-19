@@ -369,10 +369,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    */
   public function __serialize(): array
   {
-    return [
+    return array_merge(parent::__serialize(), [
         'default_namespace' => $this->default_namespace,
-        'parameters' => $this->parameters,
-    ];
+    ]);
   }
 
   /**
@@ -380,7 +379,8 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    */
   public function __unserialize(array $data): void
   {
+    parent::__unserialize($data);
+
     $this->default_namespace = $data['default_namespace'];
-    $this->parameters = $data['parameters'];
   }
 }

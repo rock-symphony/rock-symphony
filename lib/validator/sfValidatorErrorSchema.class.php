@@ -305,15 +305,11 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    */
   public function __serialize(): array
   {
-    return [
-        'validator' => $this->validator,
-        'arguments' => $this->arguments,
-        'code' => $this->code,
-        'message' => $this->message,
+    return array_merge(parent::__serialize(), [
         'errors' => $this->errors,
         'globalErrors' => $this->globalErrors,
         'namedErrors' => $this->namedErrors,
-    ];
+    ]);
   }
 
   /**
@@ -321,10 +317,8 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    */
   public function __unserialize(array $data): void
   {
-    $this->validator = $data['validator'];
-    $this->arguments = $data['arguments'];
-    $this->code = $data['code'];
-    $this->message = $data['message'];
+    parent::__unserialize($data);
+
     $this->errors = $data['errors'];
     $this->globalErrors = $data['globalErrors'];
     $this->namedErrors = $data['namedErrors'];
