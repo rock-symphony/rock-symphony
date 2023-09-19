@@ -1077,7 +1077,8 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @return sfFormField|sfFormFieldSchema A form field instance
    */
-  public function offsetGet($name): mixed
+  #[\ReturnTypeWillChange]
+  public function offsetGet($name)
   {
     if (!isset($this->formFields[$name]))
     {

@@ -115,7 +115,8 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return mixed The escaped value
    */
-  public function offsetGet($offset): mixed
+  #[\ReturnTypeWillChange]
+  public function offsetGet($offset)
   {
     return sfOutputEscaper::escape($this->escapingMethod, $this->value[$offset]);
   }

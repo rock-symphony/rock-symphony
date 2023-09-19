@@ -516,7 +516,8 @@ class sfContext implements ArrayAccess
    *
    * @return mixed The context object if exists, null otherwise
    */
-  public function offsetGet($name): mixed
+  #[\ReturnTypeWillChange]
+  public function offsetGet($name)
   {
     return $this->get($name);
   }
