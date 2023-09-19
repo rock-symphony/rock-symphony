@@ -70,6 +70,7 @@ class FooCountable implements Countable
 $t->diag('implements Countable');
 $foo = sfOutputEscaper::escape('esc_entities', new Foo());
 $fooc = sfOutputEscaper::escape('esc_entities', new FooCountable());
+$t->is(count($foo), 1, '->count() returns 1 if the embedded object does not implement the Countable interface');
 $t->is(count($fooc), 2, '->count() returns the count() for the embedded object');
 
 // ->__isset()

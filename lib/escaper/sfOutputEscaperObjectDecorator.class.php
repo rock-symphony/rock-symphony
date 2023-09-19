@@ -117,6 +117,6 @@ class sfOutputEscaperObjectDecorator extends sfOutputEscaperGetterDecorator impl
    */
   public function count()
   {
-    return count($this->value);
+    return is_countable($this->value) ? count($this->value) : 1;
   }
 }
