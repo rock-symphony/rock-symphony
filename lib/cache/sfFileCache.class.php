@@ -256,7 +256,7 @@ class sfFileCache extends sfCache
         fseek($fp, 0, SEEK_END);
         $length = ftell($fp) - 24;
         fseek($fp, 24);
-        $data[self::READ_DATA] = @fread($fp, $length);
+        $data[self::READ_DATA] = $length ? @fread($fp, $length) : '';
       }
     }
     else
