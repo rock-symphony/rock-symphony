@@ -294,7 +294,7 @@ class sfRoute
         case 'variable':
           if (!$optional || !isset($this->defaults[$token[3]]) || $parameters[$token[3]] != $this->defaults[$token[3]])
           {
-            $url[] = urlencode($parameters[$token[3]] ?: '');
+            $url[] = urlencode($parameters[$token[3]] ?? '');
             $optional = false;
           }
           break;
@@ -798,7 +798,7 @@ class sfRoute
       }
       else
       {
-        $this->defaults[$key] = urldecode($value ?: '');
+        $this->defaults[$key] = urldecode($value ?? '');
       }
     }
   }
