@@ -49,7 +49,7 @@ class sfNoRouting extends sfRouting
       unset($parameters['action']);
     }
 
-    $parameters = http_build_query($parameters, null, '&');
+    $parameters = http_build_query($parameters, '', '&');
 
     return $this->fixGeneratedUrl('/'.($parameters ? '?'.$parameters : ''), $absolute);
   }

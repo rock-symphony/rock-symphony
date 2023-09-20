@@ -16,6 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id: sfServiceContainerBuilder.php 269 2009-03-26 20:39:16Z fabien $
  */
+#[AllowDynamicProperties]
 class sfServiceContainerBuilder extends sfServiceContainer
 {
   protected

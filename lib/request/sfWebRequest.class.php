@@ -195,7 +195,7 @@ class sfWebRequest extends sfRequest
   {
     $contentType = $this->getHttpHeader('Content-Type', null);
 
-    if ($trim && false !== $pos = strpos($contentType, ';'))
+    if ($trim && false !== $pos = strpos($contentType ?: '', ';'))
     {
       $contentType = substr($contentType, 0, $pos);
     }
