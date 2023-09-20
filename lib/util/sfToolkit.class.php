@@ -282,7 +282,7 @@ class sfToolkit
       \s*(?:
         (?=\w+\s*=) | \s*$  # followed by another key= or the end of the string
       )
-    /x', $string, $matches, PREG_SET_ORDER);
+    /x', $string ?: '', $matches, PREG_SET_ORDER);
 
     $attributes = array();
     foreach ($matches as $val)
