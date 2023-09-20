@@ -1229,7 +1229,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
   /**
    * Resets the field names array to the beginning (implements the Iterator interface).
    */
-  public function rewind()
+  public function rewind(): void
   {
     $this->fieldNames = $this->widgetSchema->getPositions();
 
@@ -1252,6 +1252,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
    *
    * @return mixed The escaped value
    */
+  #[\ReturnTypeWillChange]
   public function current()
   {
     return $this[current($this->fieldNames)];
@@ -1260,7 +1261,7 @@ class sfForm implements ArrayAccess, Iterator, Countable
   /**
    * Moves to the next form field (implements the Iterator interface).
    */
-  public function next()
+  public function next(): void
   {
     next($this->fieldNames);
     --$this->count;

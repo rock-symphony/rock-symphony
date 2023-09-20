@@ -265,7 +265,13 @@ class sfRoute
 
   static private function generateCompareVarsByStrlen($a, $b)
   {
-    return strlen($a) < strlen($b);
+    if (strlen($a) < strlen($b)) {
+        return -1;
+    }
+    if (strlen($a) > strlen($b)) {
+        return 1;
+    }
+    return 0;
   }
 
   /**
@@ -821,7 +827,7 @@ class sfRoute
 
   protected function fixSuffix()
   {
-    $length = strlen($this->pattern);
+    $length = strlen($this->pattern ?? '');
 
     if ($length > 0 && '/' == $this->pattern[$length - 1])
     {
@@ -834,7 +840,7 @@ class sfRoute
       $this->suffix = '';
       $this->pattern = substr($this->pattern, 0, $length - 1);
     }
-    else if (preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
+    else if (! empty($this->pattern) && preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
     {
       // specific suffix for this route
       // a . with a variable after or some chars without any separators

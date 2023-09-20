@@ -168,7 +168,7 @@ class sfPatternRouting extends sfRouting
     $route = $this->routes[$name];
 
     if (is_string($route))
-    {
+    {var_dump($route);
       $this->routes[$name] = $route = unserialize($route);
       $route->setDefaultParameters($this->defaultParameters);
     }
