@@ -293,31 +293,6 @@ class lime_test
   }
 
   /**
-   * Compares two arguments with an operator
-   *
-   * @param mixed  $exp1    left value
-   * @param string $op      operator
-   * @param mixed  $exp2    right value
-   * @param string $message display output message when the test passes
-   *
-   * @return boolean
-   */
-  public function cmp_ok($exp1, $op, $exp2, $message = '')
-  {
-    $php = sprintf("\$result = \$exp1 $op \$exp2;");
-    // under some unknown conditions the sprintf() call causes a segmentation fault
-    // when placed directly in the eval() call
-    eval($php);
-
-    if (!$this->ok($result, $message))
-    {
-      $this->set_last_test_errors(array(sprintf("      %s", str_replace("\n", '', var_export($exp1, true))), sprintf("          %s", $op), sprintf("      %s", str_replace("\n", '', var_export($exp2, true)))));
-    }
-
-    return $result;
-  }
-
-  /**
    * Checks the availability of a method for an object or a class
    *
    * @param mixed        $object  an object instance or a class name
