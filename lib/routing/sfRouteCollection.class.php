@@ -73,7 +73,7 @@ class sfRouteCollection implements Iterator
    *
    * @return string The key
    */
-  public function key()
+  public function key(): string
   {
     return key($this->routes);
   }
@@ -103,7 +103,7 @@ class sfRouteCollection implements Iterator
    *
    * @return boolean The validity of the current route; true if it is valid
    */
-  public function valid()
+  public function valid(): bool
   {
     return $this->count > 0;
   }

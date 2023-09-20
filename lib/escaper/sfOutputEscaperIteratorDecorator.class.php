@@ -58,7 +58,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    */
   public function rewind()
   {
-    return $this->iterator->rewind();
+    $this->iterator->rewind();
   }
 
   /**
@@ -76,7 +76,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @return string Iterator key
    */
-  public function key()
+  public function key(): string
   {
     return $this->iterator->key();
   }
@@ -88,7 +88,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    */
   public function next()
   {
-    return $this->iterator->next();
+    $this->iterator->next();
   }
 
   /**
@@ -97,7 +97,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @return bool true if the current element is valid; false otherwise
    */
-  public function valid()
+  public function valid(): bool
   {
     return $this->iterator->valid();
   }
