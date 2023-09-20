@@ -71,7 +71,7 @@ $t->is(file_get_contents($file), 'foo', '->initialize() can take a format option
 // option: time_format
 $t->diag('option: time_format');
 unlink($file);
-$logger = new TestLogger($dispatcher, array('file' => $file, 'time_format' => '%Y %m %d'));
+$logger = new TestLogger($dispatcher, array('file' => $file, 'time_format' => 'Y m d'));
 $logger->log('foo');
 $t->is(file_get_contents($file), date($logger->getTimeFormat()).' symfony [*6*] foo'.PHP_EOL, '->initialize() can take a format option');
 
