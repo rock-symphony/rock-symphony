@@ -218,7 +218,7 @@ class sfDateFormat
   {
     $date = $this->getDate($time, $inputPattern);
 
-    if (is_null($pattern))
+    if (null === $pattern)
     {
       $pattern = 'F';
     }
@@ -239,7 +239,8 @@ class sfDateFormat
       }
       else
       {
-        $function = ucfirst($this->getFunctionName($pattern) ?? '');
+        $functionName = $this->getFunctionName($pattern);
+        $function = $functionName ? ucfirst($this->getFunctionName($pattern)) : null;
         if ($function != null)
         {
           $fName = 'get'.$function;

@@ -292,9 +292,9 @@ class sfRoute
       switch ($token[0])
       {
         case 'variable':
-          if (!$optional || !isset($this->defaults[$token[3]]) || $parameters[$token[3]] != $this->defaults[$token[3]])
+          if (isset($parameters[$token[3]]) && !$optional || !isset($this->defaults[$token[3]]) || $parameters[$token[3]] != $this->defaults[$token[3]])
           {
-            $url[] = urlencode($parameters[$token[3]] ?? '');
+            $url[] = urlencode($parameters[$token[3]]);
             $optional = false;
           }
           break;
@@ -796,9 +796,9 @@ class sfRoute
       {
         $this->defaults[$value] = true;
       }
-      else
+      elseif (! is_null($value))
       {
-        $this->defaults[$key] = urldecode($value ?? '');
+        $this->defaults[$key] = urldecode($value);
       }
     }
   }
@@ -840,7 +840,7 @@ class sfRoute
       $this->suffix = '';
       $this->pattern = substr($this->pattern, 0, $length - 1);
     }
-    else if (! empty($this->pattern) && preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
+    else if (! is_null($this->pattern) && preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
     {
       // specific suffix for this route
       // a . with a variable after or some chars without any separators

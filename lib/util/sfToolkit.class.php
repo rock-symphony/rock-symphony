@@ -271,7 +271,7 @@ class sfToolkit
    *
    * @return array
    */
-  public static function stringToArray($string)
+  public static function stringToArray(string $string): array
   {
     preg_match_all('/
       \s*((?:\w+-)*\w+)     # key                               \\1
@@ -282,7 +282,7 @@ class sfToolkit
       \s*(?:
         (?=\w+\s*=) | \s*$  # followed by another key= or the end of the string
       )
-    /x', $string ?? '', $matches, PREG_SET_ORDER);
+    /x', $string, $matches, PREG_SET_ORDER);
 
     $attributes = array();
     foreach ($matches as $val)

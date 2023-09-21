@@ -66,12 +66,13 @@ class sfWidgetFormTime extends sfWidgetForm
   {
     // convert value to an array
     $default = array('hour' => null, 'minute' => null, 'second' => null);
-    if (is_array($value))
+
+    if (is_null($value)) {
+      $value = $default;
+    }
+    elseif (is_array($value))
     {
       $value = array_merge($default, $value);
-    }
-    elseif (is_null($value)) {
-        $value = $default;
     }
     else
     {
