@@ -240,7 +240,7 @@ class sfDateFormat
       else
       {
         $functionName = $this->getFunctionName($pattern);
-        $function = $functionName ? ucfirst($this->getFunctionName($pattern)) : null;
+        $function = $functionName ? ucfirst($functionName) : null;
         if ($function != null)
         {
           $fName = 'get'.$function;
