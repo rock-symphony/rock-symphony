@@ -267,12 +267,16 @@ class sfToolkit
   /**
    * Converts string to array
    *
-   * @param  string $string  the value to convert to array
+   * @param string $string $string  the value to convert to array
    *
    * @return array
    */
-  public static function stringToArray(string $string): array
+  public static function stringToArray($string)
   {
+    if (is_null($string)) {
+      return [];
+    }
+
     preg_match_all('/
       \s*((?:\w+-)*\w+)     # key                               \\1
       \s*=\s*               # =
