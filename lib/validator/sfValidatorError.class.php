@@ -98,7 +98,7 @@ class sfValidatorError extends Exception
         continue;
       }
 
-      $arguments["%$key%"] = htmlspecialchars($value, ENT_QUOTES, sfValidatorBase::getCharset());
+      $arguments["%$key%"] = htmlspecialchars($value ?? '', ENT_QUOTES, sfValidatorBase::getCharset());
     }
 
     return $arguments;
