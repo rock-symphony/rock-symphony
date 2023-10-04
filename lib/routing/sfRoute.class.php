@@ -265,13 +265,7 @@ class sfRoute
 
   static private function generateCompareVarsByStrlen($a, $b)
   {
-    if (strlen($a) < strlen($b)) {
-        return 1;
-    }
-    if (strlen($a) > strlen($b)) {
-        return -1;
-    }
-    return 0;
+    return strlen($a) <=> strlen($b);
   }
 
   /**
