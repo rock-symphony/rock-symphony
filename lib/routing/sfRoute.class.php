@@ -19,7 +19,8 @@
  * @property $firstOptional int
  * @property $segments array
  */
-class sfRoute implements Serializable
+#[AllowDynamicProperties]
+class sfRoute
 {
   protected
     $isBound           = false,
@@ -264,7 +265,7 @@ class sfRoute implements Serializable
 
   static private function generateCompareVarsByStrlen($a, $b)
   {
-    return strlen($a) < strlen($b);
+    return strlen($b) <=> strlen($a);
   }
 
   /**
@@ -285,7 +286,7 @@ class sfRoute implements Serializable
       switch ($token[0])
       {
         case 'variable':
-          if (!$optional || !isset($this->defaults[$token[3]]) || $parameters[$token[3]] != $this->defaults[$token[3]])
+          if (isset($parameters[$token[3]]) && !$optional || !isset($this->defaults[$token[3]]) || $parameters[$token[3]] != $this->defaults[$token[3]])
           {
             $url[] = urlencode($parameters[$token[3]]);
             $optional = false;
@@ -791,7 +792,7 @@ class sfRoute implements Serializable
       }
       else
       {
-        $this->defaults[$key] = urldecode($value);
+        $this->defaults[$key] = urldecode($value ?? '');
       }
     }
   }
@@ -820,7 +821,7 @@ class sfRoute implements Serializable
 
   protected function fixSuffix()
   {
-    $length = strlen($this->pattern);
+    $length = strlen($this->pattern ?? '');
 
     if ($length > 0 && '/' == $this->pattern[$length - 1])
     {
@@ -833,7 +834,7 @@ class sfRoute implements Serializable
       $this->suffix = '';
       $this->pattern = substr($this->pattern, 0, $length - 1);
     }
-    else if (preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
+    else if (! is_null($this->pattern) && preg_match('#\.(?:'.$this->options['variable_prefix_regex'].$this->options['variable_regex'].'|'.$this->options['variable_content_regex'].')$#i', $this->pattern))
     {
       // specific suffix for this route
       // a . with a variable after or some chars without any separators
@@ -845,17 +846,40 @@ class sfRoute implements Serializable
     }
   }
 
-  public function serialize()
+  public function __serialize(): array
   {
-    // always serialize compiled routes
-    $this->compile();
-    // sfPatternRouting will always re-set defaultParameters, so no need to serialize them
-    return serialize(array($this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken));
+      $this->compile();
+
+      return [
+          // 'defaultParameters' => $this->defaultParameters, // sfPatternRouting will always re-set defaultParameters, so no need to serialize them
+          'tokens'         => $this->tokens,
+          'defaultOptions' => $this->defaultOptions,
+          'options'        => $this->options,
+          'pattern'        => $this->pattern,
+          'staticPrefix'   => $this->staticPrefix,
+          'regex'          => $this->regex,
+          'variables'      => $this->variables,
+          'defaults'       => $this->defaults,
+          'requirements'   => $this->requirements,
+          'suffix'         => $this->suffix,
+          'customToken'    => $this->customToken,
+      ];
   }
 
-  public function unserialize($data)
+  public function __unserialize(array $data): void
   {
-    list($this->tokens, $this->defaultOptions, $this->options, $this->pattern, $this->staticPrefix, $this->regex, $this->variables, $this->defaults, $this->requirements, $this->suffix, $this->customToken) = unserialize($data);
-    $this->compiled = true;
+      $this->tokens = $data['tokens'];
+      $this->defaultOptions = $data['defaultOptions'];
+      $this->options = $data['options'];
+      $this->pattern = $data['pattern'];
+      $this->staticPrefix = $data['staticPrefix'];
+      $this->regex = $data['regex'];
+      $this->variables = $data['variables'];
+      $this->defaults = $data['defaults'];
+      $this->requirements = $data['requirements'];
+      $this->suffix = $data['suffix'];
+      $this->customToken = $data['customToken'];
+
+      $this->compiled = true;
   }
 }

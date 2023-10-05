@@ -24,7 +24,9 @@ class sfPatternRoutingTest extends sfPatternRouting
   public function parse($url)
   {
     $parameters = parent::parse($url);
-    unset($parameters['_sf_route']);
+    if (isset($parameters['_sf_route'])) {
+        unset($parameters['_sf_route']);
+    }
 
     return $parameters;
   }

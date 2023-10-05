@@ -106,7 +106,7 @@ $v = new testValidatorFile();
 $t->is($v->guessFromFileBinary($tmpDir.'/test.txt'), 'text/plain', '->guessFromFileBinary() guesses the type of a given file');
 $t->is($v->guessFromFileBinary($tmpDir.'/foo.txt'), null, '->guessFromFileBinary() returns null if the file type is not guessable');
 $t->ok(
-  in_array($v->guessFromFileBinary('/bin/ls'), ['application/x-executable', 'application/x-pie-executable', 'application/octet-stream', 'application/x-sharedlib']),
+  in_array($v->guessFromFileBinary('/bin/ls'), ['application/x-executable', 'application/x-pie-executable', 'application/octet-stream', 'application/x-sharedlib', 'application/x-mach-binary']),
   '->guessFromFileBinary() returns correct type if file is guessable'
 );
 

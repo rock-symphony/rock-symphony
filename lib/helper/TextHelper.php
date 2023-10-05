@@ -54,7 +54,7 @@ function truncate_text($text, $length = 30, $truncate_string = '...', $truncate_
     {
       $length_min = null !== $length_max && (0 == $length_max || $length_max > $length) ? $length : null;
 
-      preg_match($truncate_pattern, $text, $matches, PREG_OFFSET_CAPTURE, $length_min);
+      preg_match($truncate_pattern, $text, $matches, PREG_OFFSET_CAPTURE, $length_min ?? 0);
 
       if ($matches)
       {

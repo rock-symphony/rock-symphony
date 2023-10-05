@@ -506,17 +506,15 @@ class sfCultureInfo
    * Gets the culture name in English.
    * Returns <code>array('Language','Country');</code>
    * 'Country' is omitted if the culture is neutral.
-   *
-   * @return array array with language and country as elements.
    */
-  public function getEnglishName()
+  public function getEnglishName(): string
   {
     $lang = substr($this->culture, 0, 2);
     $reg = substr($this->culture, 3, 2);
     $culture = $this->getInvariantCulture();
 
     $language = $culture->findInfo("Languages/{$lang}");
-    if (count($language) == 0)
+    if (empty($language))
     {
       return $this->culture;
     }

@@ -16,7 +16,7 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfValidatorError extends Exception implements Serializable
+class sfValidatorError extends Exception
 {
   protected
     $validator = null,
@@ -33,6 +33,8 @@ class sfValidatorError extends Exception implements Serializable
   {
     $this->validator = $validator;
     $this->arguments = $arguments;
+
+    parent::__construct();
 
     // override default exception message and code
     $this->code = $code;
@@ -96,7 +98,7 @@ class sfValidatorError extends Exception implements Serializable
         continue;
       }
 
-      $arguments["%$key%"] = htmlspecialchars($value, ENT_QUOTES, sfValidatorBase::getCharset());
+      $arguments["%$key%"] = htmlspecialchars($value ?? '', ENT_QUOTES, sfValidatorBase::getCharset());
     }
 
     return $arguments;
@@ -135,22 +137,26 @@ class sfValidatorError extends Exception implements Serializable
    * The default serialization process serializes the exception trace, and because
    * the trace can contain a PDO instance which is not serializable, serializing won't
    * work when using PDO.
-   *
-   * @return string The instance as a serialized string
    */
-  public function serialize()
+  public function __serialize(): array
   {
-    return serialize(array($this->validator, $this->arguments, $this->code, $this->message));
+      return [
+          'validator' => $this->validator,
+          'arguments' => $this->arguments,
+          'code'      => $this->code,
+          'message'   => $this->message,
+      ];
   }
 
   /**
    * Unserializes a sfValidatorError instance.
    *
-   * @param string $serialized  A serialized sfValidatorError instance
-   *
    */
-  public function unserialize($serialized)
+  public function __unserialize(array $data): void
   {
-    list($this->validator, $this->arguments, $this->code, $this->message) = unserialize($serialized);
+    $this->validator = $data['validator'];
+    $this->arguments = $data['arguments'];
+    $this->code = $data['code'];
+    $this->message = $data['message'];
   }
 }

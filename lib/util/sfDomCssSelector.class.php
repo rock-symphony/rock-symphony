@@ -563,7 +563,7 @@ class sfDomCssSelector implements Countable, Iterator
   /**
    * Reset the array to the beginning (as required for the Iterator interface).
    */
-  public function rewind()
+  public function rewind(): void
   {
     reset($this->nodes);
 
@@ -575,7 +575,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return string The key
    */
-  public function key()
+  public function key(): string
   {
     return key($this->nodes);
   }
@@ -585,6 +585,7 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return mixed The escaped value
    */
+  #[\ReturnTypeWillChange]
   public function current()
   {
     return current($this->nodes);
@@ -593,7 +594,7 @@ class sfDomCssSelector implements Countable, Iterator
   /**
    * Moves to the next element (as required by the Iterator interface).
    */
-  public function next()
+  public function next(): void
   {
     next($this->nodes);
 
@@ -609,17 +610,15 @@ class sfDomCssSelector implements Countable, Iterator
    *
    * @return bool The validity of the current element; true if it is valid
    */
-  public function valid()
+  public function valid(): bool
   {
     return $this->count > 0;
   }
 
   /**
    * Returns the number of matching nodes (implements Countable).
-   *
-   * @param integer The number of matching nodes
    */
-  public function count()
+  public function count(): int
   {
     return count($this->nodes);
   }

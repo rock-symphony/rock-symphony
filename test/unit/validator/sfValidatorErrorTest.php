@@ -54,14 +54,14 @@ $t->diag('implements Serializable');
 // we test with non serializable objects
 // to ensure that the errors are always serializable
 // even if you use PDO as a session handler
-class NotSerializable implements Serializable
+class NotSerializable
 {
-  public function serialize()
+  public function __serialize(): array
   {
     throw new Exception('Not serializable');
   }
 
-  public function unserialize($serialized)
+  public function __unserialize(array $data): void
   {
     throw new Exception('Not serializable');
   }

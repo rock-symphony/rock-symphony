@@ -81,7 +81,7 @@ class sfTesterResponse extends sfTester
     }
     else if (true === $value)
     {
-      $this->tester->cmp_ok(count($values), '>', 0, sprintf('response selector "%s" exists', $selector));
+      $this->tester->isnt(count($values), 0, sprintf('response selector "%s" exists', $selector));
     }
     else if (is_int($value))
     {
