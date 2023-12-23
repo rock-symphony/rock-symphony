@@ -56,12 +56,12 @@ $t->diag('is serializable');
 // even if you use PDO as a session handler
 class NotSerializable
 {
-  public function __serialize()
+  public function __serialize(): array
   {
     throw new Exception('Not serializable');
   }
 
-  public function __unserialize($data)
+  public function __unserialize(array $data): void
   {
     throw new Exception('Not serializable');
   }

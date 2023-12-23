@@ -39,8 +39,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    */
   public function __construct(sfValidatorBase $validator, array $errors = [])
   {
-    $this->validator = $validator;
-    $this->arguments = [];
+    parent::__construct($validator, '');
 
     // override default exception message and code
     $this->code    = '';
@@ -205,7 +204,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @return bool true if the error exists, false otherwise
    */
-  public function offsetExists($name)
+  public function offsetExists($name): bool
   {
     return isset($this->errors[$name]);
   }
@@ -217,6 +216,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @return sfValidatorError A sfValidatorError instance
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($name)
   {
     return $this->errors[$name] ?? null;
@@ -230,7 +230,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @throws LogicException
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset, $value): void
   {
     throw new LogicException('Unable update an error.');
   }
@@ -240,7 +240,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @param string $offset  (ignored)
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
   }
 
@@ -268,8 +268,6 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
 
   /**
    * Serializes the current instance.
-   *
-   * @return string The instance as a serialized string
    */
   public function __serialize(): array
   {

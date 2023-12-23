@@ -220,7 +220,7 @@ class sfClassManipulator
         $line .= $token;
       }
 
-      $lines = preg_split('/(\r?\n)/', $line, null, PREG_SPLIT_DELIM_CAPTURE);
+      $lines = preg_split('/(\r?\n)/', $line, -1, PREG_SPLIT_DELIM_CAPTURE);
       if (count($lines) > 1 || $break)
       {
         $line = $break ? '' : array_pop($lines);

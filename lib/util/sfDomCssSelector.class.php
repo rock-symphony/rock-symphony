@@ -559,7 +559,7 @@ class sfDomCssSelector implements Countable, IteratorAggregate
   }
 
   /**
-   * @return Traversable<>
+   * @return Traversable
    */
   public function getIterator(): Traversable
   {
@@ -568,8 +568,6 @@ class sfDomCssSelector implements Countable, IteratorAggregate
 
   /**
    * Returns the number of matching nodes (implements Countable).
-   *
-   * @param integer The number of matching nodes
    */
   public function count(): int
   {

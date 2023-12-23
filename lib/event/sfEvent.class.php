@@ -83,7 +83,7 @@ class sfEvent
   /**
    * Sets the processed flag.
    *
-   * @param Boolean  $processed The processed flag value
+   * @param boolean $processed The processed flag value
    */
   public function setProcessed(bool $processed): void
   {

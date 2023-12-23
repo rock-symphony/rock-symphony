@@ -52,7 +52,7 @@ class sf_test_project
     ob_start();
     passthru(sprintf('%s "%s" %s 2>&1', $this->php_cli, $symfony, $cmd), $return);
     $content = ob_get_clean();
-    $this->t->cmp_ok($return, '==', $awaited_return, sprintf('"symfony %s" returns awaited value (%d)', $cmd, $awaited_return));
+    $this->t->is($return, $awaited_return, sprintf('"symfony %s" returns awaited value (%d)', $cmd, $awaited_return));
 
     return $content;
   }

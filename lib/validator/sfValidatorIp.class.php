@@ -101,7 +101,7 @@ class sfValidatorIp extends sfValidatorString
         break;
     }
 
-    if (!filter_var($value, FILTER_VALIDATE_IP, $flag))
+    if (!filter_var($value, FILTER_VALIDATE_IP, $flag ?? 0))
     {
       throw new sfValidatorError($this, 'invalid', array('value' => $value));
     }

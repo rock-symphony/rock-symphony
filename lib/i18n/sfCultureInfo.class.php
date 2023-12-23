@@ -507,7 +507,7 @@ class sfCultureInfo
    *
    * @return string
    */
-  public function getEnglishName()
+  public function getEnglishName(): string
   {
     $lang = substr($this->culture, 0, 2);
     $reg = substr($this->culture, 3, 2);

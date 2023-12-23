@@ -91,7 +91,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @return Boolean true if the widget exists, false otherwise
    */
-  public function offsetExists($name)
+  public function offsetExists($name): bool
   {
     return isset($this->widget[$name]);
   }
@@ -103,6 +103,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @return sfFormField A form field instance
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($name)
   {
     if (!isset($this->fields[$name]))
@@ -144,7 +145,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @throws LogicException
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset, $value): void
   {
     throw new LogicException('Cannot update form fields (read-only).');
   }
@@ -156,7 +157,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @throws LogicException
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
     throw new LogicException('Cannot remove form fields (read-only).');
   }
@@ -173,7 +174,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @return integer The number of embedded form fields
    */
-  public function count()
+  public function count(): int
   {
     return count($this->fieldNames);
   }

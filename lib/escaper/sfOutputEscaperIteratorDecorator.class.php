@@ -56,7 +56,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @return bool true if the offset isset; false otherwise
    */
-  public function offsetExists($offset)
+  public function offsetExists($offset): bool
   {
     return isset($this->value[$offset]);
   }
@@ -68,6 +68,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @return mixed The escaped value
    */
+  #[\ReturnTypeWillChange]
   public function offsetGet($offset)
   {
     return sfOutputEscaper::escape($this->escapingMethod, $this->value[$offset]);
@@ -85,7 +86,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @throws sfException
    */
-  public function offsetSet($offset, $value)
+  public function offsetSet($offset, $value): void
   {
     throw new sfException('Cannot set values.');
   }
@@ -101,7 +102,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @throws sfException
    */
-  public function offsetUnset($offset)
+  public function offsetUnset($offset): void
   {
     throw new sfException('Cannot unset values.');
   }
