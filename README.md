@@ -28,7 +28,6 @@ Philosophy
 
 - [Semantic versioning](http://semver.org/)
 - Incremental BC-breaking updates that bring something new to your symfony1 project
-- PHP 7.4 compatibility
 - Replace legacy sf1 parts with modern libraries reducing framework footprint to the very minimum
 
 Roadmap
@@ -57,7 +56,7 @@ Requirements
 ------------
 
 Starting from PHP 5.6.0 and then goes up with every new major version.
-The latest v10.0 release requires PHP 7.3.
+The latest v11.0 release requires PHP 7.4.
 
 Migrating to Rock Symphony
 --------------------------
@@ -86,6 +85,7 @@ It's only intended for old projects to migrate to.
    - `composer require rock-symphony/rock-symphony:^8.0`
    - `composer require rock-symphony/rock-symphony:^9.0`
    - `composer require rock-symphony/rock-symphony:^10.0`
+   - `composer require rock-symphony/rock-symphony:^11.0`
 
 
 Contributing
