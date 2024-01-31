@@ -11,7 +11,7 @@ class frontendConfiguration extends sfApplicationConfiguration
 
   public function filter_parameters(sfEvent $event, array $parameters): array
   {
-    if (false !== stripos($event->getSubject()->getHttpHeader('user-agent') ?? '', 'iPhone'))
+    if (stripos($event->getSubject()->getHttpHeader('user-agent') ?? '', 'iPhone') !== false)
     {
       $event->getSubject()->setRequestFormat('iphone');
     }
@@ -21,9 +21,9 @@ class frontendConfiguration extends sfApplicationConfiguration
 
   public function configure_iphone_format(sfEvent $event): void
   {
-    if ('iphone' == $event['format'])
+    if ($event->getParameter('format') === 'iphone')
     {
-      $event['response']->addStylesheet('iphone.css');
+      $event->getParameter('response')->addStylesheet('iphone.css');
 
       $event->getSubject()->setDecorator(true);
     }
@@ -31,12 +31,12 @@ class frontendConfiguration extends sfApplicationConfiguration
 
   public function configure_format_foo(sfEvent $event): void
   {
-    if ('foo' != $event['format'])
+    if ($event->getParameter('format') !== 'foo')
     {
       return;
     }
 
-    $event['response']->setHttpHeader('x-foo', 'true');
+    $event->getParameter('response')->setHttpHeader('x-foo', 'true');
     $event->getSubject()->setExtension('.php');
   }
 }

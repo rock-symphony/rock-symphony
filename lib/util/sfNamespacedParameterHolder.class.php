@@ -24,8 +24,7 @@
  */
 class sfNamespacedParameterHolder extends sfParameterHolder
 {
-  /** @var string */
-  protected $default_namespace;
+  protected string $default_namespace;
 
   /**
    * The constructor for sfNamespacedParameterHolder.
@@ -77,24 +76,15 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   }
 
   /**
-   * Clear all parameters associated with this request.
-   */
-  public function clear(): void
-  {
-    $this->parameters = null;
-    $this->parameters = array();
-  }
-
-  /**
    * Retrieve a parameter with an optionally specified namespace.
    *
    * An isolated namespace may be identified by providing a value for the third
    * argument.  If not specified, the default namespace 'symfony/default' is
    * used.
    *
-   * @param string $name     A parameter name
-   * @param mixed  $default  A default parameter value
-   * @param string $ns       A parameter namespace
+   * @param string       $name    A parameter name
+   * @param mixed        $default A default parameter value
+   * @param string|null  $ns      A parameter namespace
    *
    * @return mixed A parameter value, if the parameter exists, otherwise null
    */
@@ -120,7 +110,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   /**
    * Retrieve an array of parameter names from an optionally specified namespace.
    *
-   * @param  string $ns  A parameter namespace.
+   * @param  string|null $ns  A parameter namespace.
    *
    * @return array An indexed array of parameter names, if the namespace exists, otherwise null
    */
@@ -157,7 +147,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * namespace is passed as an argument, only the parameters of the
    * specified namespace are returned.
    *
-   * @param  string $ns  A parameter namespace
+   * @param  string|null $ns  A parameter namespace
    *
    * @return array An associative array of parameters
    */
@@ -168,7 +158,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
       $ns = $this->default_namespace;
     }
 
-    $parameters = array();
+    $parameters = [];
 
     if (isset($this->parameters[$ns]))
     {
@@ -179,10 +169,10 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   }
 
   /**
-   * Indicates whether or not a parameter exists.
+   * Indicates whether a parameter exists.
    *
-   * @param  string $name  A parameter name
-   * @param  string $ns    A parameter namespace
+   * @param string       $name A parameter name
+   * @param string|null  $ns   A parameter namespace
    *
    * @return bool true, if the parameter exists, otherwise false
    */
@@ -197,7 +187,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   }
 
   /**
-   * Indicates whether or not A parameter namespace exists.
+   * Indicates whether A parameter namespace exists.
    *
    * @param  string $ns  A parameter namespace
    *
@@ -211,9 +201,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   /**
    * Remove a parameter.
    *
-   * @param  string $name     A parameter name
-   * @param  mixed  $default  A default parameter value
-   * @param  string $ns       A parameter namespace
+   * @param string       $name    A parameter name
+   * @param mixed        $default A default parameter value
+   * @param string|null  $ns      A parameter namespace
    *
    * @return mixed A parameter value, if the parameter was removed, otherwise default
    */
@@ -238,7 +228,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   /**
    * Remove A parameter namespace and all of its associated parameters.
    *
-   * @param string $ns A parameter namespace.
+   * @param string|null  $ns A parameter namespace.
    *
    * @return array|null
    */
@@ -265,9 +255,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * If a parameter with the name already exists the value will be overridden.
    *
-   * @param string $name   A parameter name
-   * @param mixed  $value  A parameter value
-   * @param string $ns     A parameter namespace
+   * @param string       $name  A parameter name
+   * @param mixed        $value A parameter value
+   * @param string|null  $ns    A parameter namespace
    */
   public function set(string $name, $value, string $ns = null): void
   {
@@ -289,9 +279,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * If a parameter with the name already exists the value will be overridden.
    *
-   * @param string $name   A parameter name
-   * @param mixed  $value  A reference to a parameter value
-   * @param string $ns     A parameter namespace
+   * @param string       $name  A parameter name
+   * @param mixed        $value A reference to a parameter value
+   * @param string|null  $ns    A parameter namespace
    */
   public function setByRef(string $name, & $value, string $ns = null): void
   {
@@ -314,13 +304,11 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * If an existing parameter name matches any of the keys in the supplied
    * array, the associated value will be overridden.
    *
-   * @param array  $parameters  An associative array of parameters and their associated values
-   * @param string $ns          A parameter namespace
+   * @param array        $parameters An associative array of parameters and their associated values
+   * @param string|null  $ns         A parameter namespace
    */
-  public function add(?array $parameters, string $ns = null): void
+  public function add(array $parameters, string $ns = null): void
   {
-    if ($parameters === null) return;
-
     if (!$ns)
     {
       $ns = $this->default_namespace;
@@ -328,7 +316,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
 
     if (!isset($this->parameters[$ns]))
     {
-      $this->parameters[$ns] = array();
+      $this->parameters[$ns] = [];
     }
 
     foreach ($parameters as $key => $value)
@@ -343,8 +331,8 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * If an existing parameter name matches any of the keys in the supplied
    * array, the associated value will be overridden.
    *
-   * @param array  $parameters  An associative array of parameters and references to their associated values
-   * @param string $ns          A parameter namespace
+   * @param array        $parameters An associative array of parameters and references to their associated values
+   * @param string|null  $ns         A parameter namespace
    */
   public function addByRef(array & $parameters, string $ns = null): void
   {
@@ -370,17 +358,19 @@ class sfNamespacedParameterHolder extends sfParameterHolder
   public function __serialize(): array
   {
     return array_merge(parent::__serialize(), [
-        'default_namespace' => $this->default_namespace,
+      'default_namespace' => $this->default_namespace,
     ]);
   }
 
   /**
    * Unserializes a sfNamespacedParameterHolder instance.
+   *
+   * @param array $serialized  A serialized sfNamespacedParameterHolder instance
    */
-  public function __unserialize(array $data): void
+  public function __unserialize(array $serialized)
   {
-    parent::__unserialize($data);
+    parent::__unserialize($serialized);
 
-    $this->default_namespace = $data['default_namespace'];
+    $this->default_namespace = $serialized['default_namespace'];
   }
 }

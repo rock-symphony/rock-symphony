@@ -70,7 +70,7 @@ $pht->launchTests($view, 'parameter');
 function configure_format(sfEvent $event)
 {
   $event->getSubject()->setDecorator(true);
-  $event['response']->setContentType('application/javascript');
+  $event->getParameter('response')->setContentType('application/javascript');
 
   return true;
 }

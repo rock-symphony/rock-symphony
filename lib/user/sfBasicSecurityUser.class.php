@@ -233,11 +233,11 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
    * Available options:
    *
    *  * timeout: Timeout to automatically log out the user in seconds (1800 by default)
-   *             Set to false to disable
+   *             Set to `false` to disable
    *
-   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance.
-   * @param sfStorage         $storage     An sfStorage instance.
-   * @param array             $options     An associative array of options.
+   * @param sfEventDispatcher    $dispatcher An sfEventDispatcher instance.
+   * @param sfStorage            $storage    An sfStorage instance.
+   * @param array<string,mixed>  $options    An associative array of options.
    *
    * @see sfUser
    */
@@ -288,7 +288,7 @@ class sfBasicSecurityUser extends sfUser implements sfSecurityUser
     $this->lastRequest = time();
   }
 
-  public function shutdown()
+  public function shutdown(): void
   {
     // write the last request time to the storage
     $this->storage->write(self::LAST_REQUEST_NAMESPACE, $this->lastRequest);

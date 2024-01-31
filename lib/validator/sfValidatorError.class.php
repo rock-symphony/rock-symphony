@@ -18,9 +18,8 @@
  */
 class sfValidatorError extends Exception
 {
-  protected
-    $validator = null,
-    $arguments = array();
+  protected sfValidatorBase $validator;
+  protected array $arguments = [];
 
   /**
    * Constructor.
@@ -29,7 +28,7 @@ class sfValidatorError extends Exception
    * @param string          $code       The error code
    * @param array           $arguments  An array of named arguments needed to render the error message
    */
-  public function __construct(sfValidatorBase $validator, $code, $arguments = array())
+  public function __construct(sfValidatorBase $validator, string $code, array $arguments = [])
   {
     $this->validator = $validator;
     $this->arguments = $arguments;
@@ -63,7 +62,7 @@ class sfValidatorError extends Exception
    */
   public function getValue()
   {
-    return isset($this->arguments['value']) ? $this->arguments['value'] : null;
+    return $this->arguments['value'] ?? null;
   }
 
   /**
@@ -71,7 +70,7 @@ class sfValidatorError extends Exception
    *
    * @return sfValidatorBase A sfValidatorBase instance
    */
-  public function getValidator()
+  public function getValidator(): sfValidatorBase
   {
     return $this->validator;
   }
@@ -83,7 +82,7 @@ class sfValidatorError extends Exception
    *
    * @see getMessageFormat()
    */
-  public function getArguments($raw = false)
+  public function getArguments(bool $raw = false): array
   {
     if ($raw)
     {
@@ -111,13 +110,13 @@ class sfValidatorError extends Exception
    * error messages:
    *
    * $i18n->__($error->getMessageFormat(), $error->getArguments());
-   * 
+   *
    * If no message format has been set in the validator, the exception standard
    * message is returned.
    *
    * @return string The message format
    */
-  public function getMessageFormat()
+  public function getMessageFormat(): string
   {
     $messageFormat = $this->validator->getMessage($this->code);
     if (!$messageFormat)
@@ -137,26 +136,30 @@ class sfValidatorError extends Exception
    * The default serialization process serializes the exception trace, and because
    * the trace can contain a PDO instance which is not serializable, serializing won't
    * work when using PDO.
+   *
+   * @return array The instance data prepared for serialization
    */
-  public function __serialize(): array
+  public function __serialize()
   {
-      return [
-          'validator' => $this->validator,
-          'arguments' => $this->arguments,
-          'code'      => $this->code,
-          'message'   => $this->message,
-      ];
+    return [
+      'validator' => $this->validator,
+      'arguments' => $this->arguments,
+      'code'      => $this->code,
+      'message'   => $this->message,
+    ];
   }
 
   /**
    * Unserializes a sfValidatorError instance.
    *
+   * @param array $serialized  A serialized instance data
+   *
    */
-  public function __unserialize(array $data): void
+  public function __unserialize(array $serialized)
   {
-    $this->validator = $data['validator'];
-    $this->arguments = $data['arguments'];
-    $this->code = $data['code'];
-    $this->message = $data['message'];
+    $this->validator = $serialized['validator'];
+    $this->arguments = $serialized['arguments'];
+    $this->code = $serialized['code'];
+    $this->message = $serialized['message'];
   }
 }

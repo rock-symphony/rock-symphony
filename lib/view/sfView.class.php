@@ -114,8 +114,9 @@ abstract class sfView
 
     $this->attributeHolder = $this->initializeAttributeHolder();
 
-    $this->parameterHolder = new sfParameterHolder();
-    $this->parameterHolder->add(sfConfig::get('mod_'.strtolower($moduleName).'_view_param', array()));
+    $this->parameterHolder = new sfParameterHolder(
+      sfConfig::get('mod_' . strtolower($moduleName) . '_view_param') ?? [],
+    );
 
     $request = $context->getRequest();
 
@@ -461,9 +462,9 @@ abstract class sfView
    *
    * @param  string $name  The component slot name
    *
-   * @return array The component slot
+   * @return array|null The component slot
    */
-  public function getComponentSlot(string $name): array
+  public function getComponentSlot(string $name): ?array
   {
     if (isset($this->componentSlots[$name]) && $this->componentSlots[$name]['module_name'] && $this->componentSlots[$name]['component_name'])
     {
@@ -477,7 +478,7 @@ abstract class sfView
    * Sets the template for this view.
    *
    * If the template path is relative, it will be based on the currently
-   * executing module's template sub-directory.
+   * executing module's template subdirectory.
    *
    * @param string $template  An absolute or relative filesystem path to a template
    */

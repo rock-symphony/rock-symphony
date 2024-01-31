@@ -48,10 +48,10 @@ $t->is($e->getCode(), 'max_length', '->getCode() returns the error code');
 $t->diag('__toString()');
 $t->is($e->__toString(), $e->getMessage(), '->__toString() returns the error message string');
 
-// implements Serializable
-$t->diag('implements Serializable');
+// is serializable
+$t->diag('is serializable');
 
-// we test with non serializable objects
+// we test with non-serializable objects
 // to ensure that the errors are always serializable
 // even if you use PDO as a session handler
 class NotSerializable
@@ -77,15 +77,15 @@ $a = new NotSerializable();
 try
 {
   $serialized = will_crash($a);
-  $t->pass('sfValidatorError implements Serializable');
+  $t->pass('sfValidatorError is serializable');
 }
 catch (Exception $e)
 {
-  $t->fail('sfValidatorError implements Serializable');
+  $t->fail('sfValidatorError is serializable');
 }
 
 $e1 = unserialize($serialized);
-$t->is($e1->getMessage(), $e->getMessage(), 'sfValidatorError implements Serializable');
-$t->is($e1->getCode(), $e->getCode(), 'sfValidatorError implements Serializable');
-$t->is(get_class($e1->getValidator()), get_class($e->getValidator()), 'sfValidatorError implements Serializable');
-$t->is($e1->getArguments(), $e->getArguments(), 'sfValidatorError implements Serializable');
+$t->is($e1->getMessage(), $e->getMessage(), 'sfValidatorError is serializable');
+$t->is($e1->getCode(), $e->getCode(), 'sfValidatorError is serializable');
+$t->is(get_class($e1->getValidator()), get_class($e->getValidator()), 'sfValidatorError is serializable');
+$t->is($e1->getArguments(), $e->getArguments(), 'sfValidatorError is serializable');
