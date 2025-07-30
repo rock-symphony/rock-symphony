@@ -21,23 +21,24 @@
  */
 class sfRoute
 {
-  protected
-    $isBound           = false,
-    $context           = null,
-    $parameters        = null,
-    $suffix            = null,
-    $defaultParameters = array(),
-    $defaultOptions    = array(),
-    $compiled          = false,
-    $options           = array(),
-    $pattern           = null,
-    $staticPrefix      = null,
-    $regex             = null,
-    $variables         = array(),
-    $defaults          = array(),
-    $requirements      = array(),
-    $tokens            = array(),
-    $customToken       = false;
+  protected $isBound           = false;
+  protected $context           = null;
+  protected $parameters        = null;
+  protected $suffix            = null;
+  protected $defaultParameters = [];
+  protected $defaultOptions    = [];
+  protected $compiled          = false;
+  protected $options           = [];
+  protected $pattern           = null;
+  protected $staticPrefix      = null;
+  protected $regex             = null;
+  protected $variables         = [];
+  protected $defaults          = [];
+  protected $requirements      = [];
+  protected $tokens            = [];
+  protected $customToken       = false;
+  protected $firstOptional     = 0;
+  protected $segments          = [];
 
   /**
    * Constructor.
