@@ -38,6 +38,9 @@ Roadmap
 - ✓ ~~composer support~~
 - ✓ ~~Drop sfCoreAutoload~~
 - ✓ ~~Replace sfYaml with Symfony\Yaml~~
+- ✓ ~~Drop ArrayAccess~~
+- ✓ ~~Drop Iterator implementation in favor of IteratorAggregate~~
+- Properties, arguments and return types everywhere 
 - Fix sfApplicationConfiguration / ProjectConfiguration
 - Replace sfLogger with PSR Logger
 - Descent service container, services auto-injection
@@ -50,7 +53,7 @@ Roadmap
 - symfony/console
 - Replace services.yml with pure-PHP services.php 
 - Drop module-level .yml configurations support
-- Symfony2-like Bundles instead of plugins
+- Symfony2-like Bundles or Laravel-like ServiceProviders instead of plugins
 
 Requirements
 ------------
