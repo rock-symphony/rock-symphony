@@ -1076,23 +1076,22 @@ class sfForm implements ArrayAccess, IteratorAggregate, Countable
    *
    * @return sfFormField|sfFormFieldSchema A form field instance
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
+  public function offsetGet(mixed $offset): mixed
   {
-    if (!isset($this->formFields[$name]))
+    if (!isset($this->formFields[$offset]))
     {
-      if (!$widget = $this->widgetSchema[$name])
+      if (!$widget = $this->widgetSchema[$offset])
       {
-        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $name));
+        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $offset));
       }
 
       if ($this->isBound)
       {
-        $value = $this->taintedValues[$name] ?? null;
+        $value = $this->taintedValues[$offset] ?? null;
       }
-      else if (isset($this->defaults[$name]))
+      else if (isset($this->defaults[$offset]))
       {
-        $value = $this->defaults[$name];
+        $value = $this->defaults[$offset];
       }
       else
       {
@@ -1101,10 +1100,10 @@ class sfForm implements ArrayAccess, IteratorAggregate, Countable
 
       $class = $widget instanceof sfWidgetFormSchema ? 'sfFormFieldSchema' : 'sfFormField';
 
-      $this->formFields[$name] = new $class($widget, $this->getFormFieldSchema(), $name, $value, $this->errorSchema[$name]);
+      $this->formFields[$offset] = new $class($widget, $this->getFormFieldSchema(), $offset, $value, $this->errorSchema[$offset]);
     }
 
-    return $this->formFields[$name];
+    return $this->formFields[$offset];
   }
 
   /**

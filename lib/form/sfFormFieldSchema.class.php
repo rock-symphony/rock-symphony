@@ -103,17 +103,16 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    *
    * @return sfFormField A form field instance
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
+  public function offsetGet(mixed $offset = ''): mixed
   {
-    if (!isset($this->fields[$name]))
+    if (!isset($this->fields[$offset]))
     {
-      if (null === $widget = $this->widget[$name])
+      if (null === $widget = $this->widget[$offset])
       {
-        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $name));
+        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $offset));
       }
 
-      $error = isset($this->error[$name]) ? $this->error[$name] : null;
+      $error = isset($this->error[$offset]) ? $this->error[$offset] : null;
 
       if ($widget instanceof sfWidgetFormSchema)
       {
@@ -131,10 +130,10 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
         $class = 'sfFormField';
       }
 
-      $this->fields[$name] = new $class($widget, $this, $name, isset($this->value[$name]) ? $this->value[$name] : null, $error);
+      $this->fields[$offset] = new $class($widget, $this, $offset, isset($this->value[$offset]) ? $this->value[$offset] : null, $error);
     }
 
-    return $this->fields[$name];
+    return $this->fields[$offset];
   }
 
   /**

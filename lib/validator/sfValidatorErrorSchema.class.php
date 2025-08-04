@@ -216,10 +216,9 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @return sfValidatorError A sfValidatorError instance
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
+  public function offsetGet(mixed $offset = ''): mixed
   {
-    return $this->errors[$name] ?? null;
+    return $this->errors[$offset] ?? null;
   }
 
   /**
