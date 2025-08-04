@@ -18,7 +18,6 @@
  *
  * @property sfApplicationConfiguration $configuration
  */
-#[AllowDynamicProperties]
 abstract class sfCommandApplicationTask extends sfTask
 {
   /** @var sfSymfonyCommandApplication */
