@@ -26,15 +26,8 @@
  * @author     Mike Squire <mike@somosis.co.uk>
  * @version    SVN: $Id$
  */
-class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator implements Iterator, ArrayAccess
+class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator implements IteratorAggregate, ArrayAccess
 {
-  /**
-   * The iterator to be used.
-   *
-   * @var IteratorIterator
-   */
-  private $iterator;
-
   /**
    * Constructs a new escaping iteratoror using the escaping method and value supplied.
    *
@@ -47,60 +40,13 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
     // it to IteratorIterator will lose any other method calls.
 
     parent::__construct($escapingMethod, $value);
-
-    $this->iterator = new IteratorIterator($value);
   }
 
-  /**
-   * Resets the iterator (as required by the Iterator interface).
-   *
-   * @return void
-   */
-  public function rewind(): void
+  public function getIterator(): Traversable
   {
-    $this->iterator->rewind();
-  }
-
-  /**
-   * Escapes and gets the current element (as required by the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  #[\ReturnTypeWillChange]
-  public function current()
-  {
-    return sfOutputEscaper::escape($this->escapingMethod, $this->iterator->current());
-  }
-
-  /**
-   * Gets the current key (as required by the Iterator interface).
-   *
-   * @return string Iterator key
-   */
-  public function key(): string
-  {
-    return $this->iterator->key();
-  }
-
-  /**
-   * Moves to the next element in the iterator (as required by the Iterator interface).
-   *
-   * @return void
-   */
-  public function next(): void
-  {
-    $this->iterator->next();
-  }
-
-  /**
-   * Returns whether the current element is valid or not (as required by the
-   * Iterator interface).
-   *
-   * @return bool true if the current element is valid; false otherwise
-   */
-  public function valid(): bool
-  {
-    return $this->iterator->valid();
+    foreach ($this->value as $key => $value) {
+      yield $key => sfOutputEscaper::escape($this->escapingMethod, $value);
+    }
   }
 
   /**
@@ -122,8 +68,7 @@ class sfOutputEscaperIteratorDecorator extends sfOutputEscaperObjectDecorator im
    *
    * @return mixed The escaped value
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($offset)
+  public function offsetGet(mixed $offset = ''): mixed
   {
     return sfOutputEscaper::escape($this->escapingMethod, $this->value[$offset]);
   }

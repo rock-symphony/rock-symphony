@@ -37,8 +37,7 @@ abstract class sfDatabase
    */
   public function __construct(array $parameters = [])
   {
-    $this->parameterHolder = new sfParameterHolder();
-    $this->parameterHolder->add($parameters);
+    $this->parameterHolder = new sfParameterHolder($parameters);
   }
 
   /**

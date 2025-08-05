@@ -37,8 +37,7 @@ abstract class sfFilter
   public function __construct(sfContext $context, array $parameters = [])
   {
     $this->context = $context;
-    $this->parameterHolder = new sfParameterHolder();
-    $this->parameterHolder->add($parameters);
+    $this->parameterHolder = new sfParameterHolder($parameters);
   }
 
   abstract function execute(sfFilterChain $chain): void;

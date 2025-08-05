@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-require_once(__DIR__.'/../../bootstrap/unit.php');
+require_once __DIR__ . '/../../bootstrap/unit.php';
 
 class myRequest extends sfRequest
 {
@@ -22,7 +22,7 @@ class fakeRequest
 {
 }
 
-$t = new lime_test(39);
+$t = new lime_test(33);
 
 $dispatcher = new sfEventDispatcher();
 
@@ -53,26 +53,13 @@ catch (sfException $e)
 // ->extractParameters()
 $t->diag('->extractParameters()');
 $request = new myRequest($dispatcher, ['foo' => 'foo', 'bar' => 'bar']);
-$t->is($request->extractParameters(array()), array(), '->extractParameters() returns parameters');
-$t->is($request->extractParameters(array('foo')), array('foo' => 'foo'), '->extractParameters() returns parameters for keys in its first parameter');
-$t->is($request->extractParameters(array('bar')), array('bar' => 'bar'), '->extractParameters() returns parameters for keys in its first parameter');
-
-// array access for request parameters
-$t->diag('Array access for request parameters');
-$t->is(isset($request['foo']), true, '->offsetExists() returns true if request parameter exists');
-$t->is(isset($request['foo2']), false, '->offsetExists() returns false if request parameter does not exist');
-$t->is($request['foo3'], false, '->offsetGet() returns false if parameter does not exist');
-$t->is($request['foo'], 'foo', '->offsetGet() returns parameter by name');
-
-$request['foo2'] = 'foo2';
-$t->is($request['foo2'], 'foo2', '->offsetSet() sets parameter by name');
-
-unset($request['foo2']);
-$t->is(isset($request['foo2']), false, '->offsetUnset() unsets parameter by name');
+$t->is($request->extractParameters([]), [], '->extractParameters() returns parameters');
+$t->is($request->extractParameters(['foo']), ['foo' => 'foo'], '->extractParameters() returns parameters for keys in its first parameter');
+$t->is($request->extractParameters(['bar']), ['bar' => 'bar'], '->extractParameters() returns parameters for keys in its first parameter');
 
 // ->getOption()
 $t->diag('->getOption()');
-$request = new myRequest($dispatcher, array(), array(), array('val_1' => 'value', 'val_2' => false));
+$request = new myRequest($dispatcher, [], [], ['val_1' => 'value', 'val_2' => false]);
 $t->is($request->getOption('val_1'), 'value', '->getOption() returns the option value if exists');
 $t->is($request->getOption('val_2'), false, '->getOption() returns the option value if exists');
 $t->is($request->getOption('none'), null, '->getOption() returns the option value if not exists');
@@ -87,7 +74,7 @@ $t->ok($request->getAttributeHolder() !== $requestClone->getAttributeHolder(), '
 $request = new myRequest($dispatcher);
 
 // parameter holder proxy
-require_once($_test_dir.'/unit/sfParameterHolderTest.class.php');
+require_once __DIR__ . '/../../unit/sfParameterHolderTest.class.php';
 $pht = new sfParameterHolderProxyTest($t);
 $pht->launchTests($request, 'parameter');
 

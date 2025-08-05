@@ -17,85 +17,24 @@
  * @author     Mike Squire <mike@somosis.co.uk>
  * @version    SVN: $Id$
  */
-class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator implements Iterator, ArrayAccess, Countable
+class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator implements IteratorAggregate, ArrayAccess, Countable
 {
-  /**
-   * Used by the iterator to know if the current element is valid.
-   *
-   * @var int
-   */
-  private $count;
-
   /**
    * Constructor.
    *
    * @see sfOutputEscaper
    * @inheritdoc
    */
-  public function __construct(callable $escapingMethod, $value)
+  public function __construct(callable $escapingMethod, array $value)
   {
     parent::__construct($escapingMethod, $value);
-
-    $this->count = count($this->value);
   }
 
-  /**
-   * Reset the array to the beginning (as required for the Iterator interface).
-   */
-  public function rewind(): void
+  public function getIterator(): Traversable
   {
-    reset($this->value);
-
-    $this->count = count($this->value);
-  }
-
-  /**
-   * Get the key associated with the current value (as required by the Iterator interface).
-   *
-   * @return string The key
-   */
-  #[\ReturnTypeWillChange]
-  public function key()
-  {
-    return key($this->value);
-  }
-
-  /**
-   * Escapes and return the current value (as required by the Iterator interface).
-   *
-   * This escapes the value using {@link sfOutputEscaper::escape()} with
-   * whatever escaping method is set for this instance.
-   *
-   * @return mixed The escaped value
-   */
-  #[\ReturnTypeWillChange]
-  public function current()
-  {
-    return sfOutputEscaper::escape($this->escapingMethod, current($this->value));
-  }
-
-  /**
-   * Moves to the next element (as required by the Iterator interface).
-   */
-  public function next(): void
-  {
-    next($this->value);
-
-    $this->count--;
-  }
-
-  /**
-   * Returns true if the current element is valid (as required by the Iterator interface).
-   *
-   * The current element will not be valid if {@link next()} has fallen off the
-   * end of the array or if there are no elements in the array and {@link
-   * rewind()} was called.
-   *
-   * @return bool The validity of the current element; true if it is valid
-   */
-  public function valid(): bool
-  {
-    return $this->count > 0;
+    foreach ($this->value as $key => $value) {
+      yield $key => sfOutputEscaper::escape($this->escapingMethod, $value);
+    }
   }
 
   /**
@@ -117,8 +56,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @return mixed The escaped value
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($offset)
+  public function offsetGet(mixed $offset = ''): mixed
   {
     return sfOutputEscaper::escape($this->escapingMethod, $this->value[$offset]);
   }
@@ -135,7 +73,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @throws sfException
    */
-  public function offsetSet($offset, $value): void
+  public function offsetSet(mixed $offset = '', mixed $value = ''): void
   {
     throw new sfException('Cannot set values.');
   }
@@ -151,7 +89,7 @@ class sfOutputEscaperArrayDecorator extends sfOutputEscaperGetterDecorator imple
    *
    * @throws sfException
    */
-  public function offsetUnset($offset): void
+  public function offsetUnset(mixed $offset = ''): void
   {
     throw new sfException('Cannot unset values.');
   }

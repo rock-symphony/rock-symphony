@@ -16,12 +16,12 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Countable
+class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggregate, Countable
 {
-  protected
-    $count      = 0,
-    $fieldNames = array(),
-    $fields     = array();
+  /** @var list<string> */
+  protected array $fieldNames = [];
+  /** @var array */
+  protected array $fields = [];
 
   /**
    * Constructor.
@@ -67,7 +67,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    */
   public function getHiddenFields($recursive = true)
   {
-    $fields = array();
+    $fields = [];
 
     foreach ($this as $name => $field)
     {
@@ -103,17 +103,16 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
    *
    * @return sfFormField A form field instance
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
+  public function offsetGet(mixed $offset = ''): mixed
   {
-    if (!isset($this->fields[$name]))
+    if (!isset($this->fields[$offset]))
     {
-      if (null === $widget = $this->widget[$name])
+      if (null === $widget = $this->widget[$offset])
       {
-        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $name));
+        throw new InvalidArgumentException(sprintf('Widget "%s" does not exist.', $offset));
       }
 
-      $error = isset($this->error[$name]) ? $this->error[$name] : null;
+      $error = isset($this->error[$offset]) ? $this->error[$offset] : null;
 
       if ($widget instanceof sfWidgetFormSchema)
       {
@@ -131,10 +130,10 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
         $class = 'sfFormField';
       }
 
-      $this->fields[$name] = new $class($widget, $this, $name, isset($this->value[$name]) ? $this->value[$name] : null, $error);
+      $this->fields[$offset] = new $class($widget, $this, $offset, isset($this->value[$offset]) ? $this->value[$offset] : null, $error);
     }
 
-    return $this->fields[$name];
+    return $this->fields[$offset];
   }
 
   /**
@@ -162,53 +161,11 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, Iterator, Co
     throw new LogicException('Cannot remove form fields (read-only).');
   }
 
-  /**
-   * Resets the field names array to the beginning (implements the Iterator interface).
-   */
-  public function rewind(): void
+  public function getIterator()
   {
-    reset($this->fieldNames);
-    $this->count = count($this->fieldNames);
-  }
-
-  /**
-   * Gets the key associated with the current form field (implements the Iterator interface).
-   *
-   * @return string The key
-   */
-  public function key(): string
-  {
-    return current($this->fieldNames);
-  }
-
-  /**
-   * Returns the current form field (implements the Iterator interface).
-   *
-   * @return mixed The escaped value
-   */
-  #[\ReturnTypeWillChange]
-  public function current()
-  {
-    return $this[current($this->fieldNames)];
-  }
-
-  /**
-   * Moves to the next form field (implements the Iterator interface).
-   */
-  public function next(): void
-  {
-    next($this->fieldNames);
-    --$this->count;
-  }
-
-  /**
-   * Returns true if the current form field is valid (implements the Iterator interface).
-   *
-   * @return boolean The validity of the current element; true if it is valid
-   */
-  public function valid(): bool
-  {
-    return $this->count > 0;
+    foreach ($this->fieldNames as $name) {
+      yield $name => $this->offsetGet($name);
+    }
   }
 
   /**

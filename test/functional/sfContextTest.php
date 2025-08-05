@@ -12,7 +12,7 @@ $app = 'frontend';
 require_once(__DIR__.'/../bootstrap/unit.php');
 require_once(__DIR__.'/../bootstrap/functional.php');
 
-$t = new lime_test(29);
+$t = new lime_test(21);
 
 class myContext extends sfContext
 {
@@ -72,34 +72,6 @@ try
 catch (sfException $e)
 {
   $t->pass('->get() throws an sfException if no object is stored for the given name');
-}
-
-$context['foo'] = $frontend_context;
-$t->diag('Array access for context objects');
-$t->is(isset($context['foo']), true, '->offsetExists() returns true if context object exists');
-$t->is(isset($context['foo2']), false, '->offsetExists() returns false if context object does not exist');
-$t->isa_ok($context['foo'], 'sfContext', '->offsetGet() returns attribute by name');
-
-$context['foo2'] = $i18n_context;
-$t->isa_ok($context['foo2'], 'sfContext', '->offsetSet() sets object by name');
-
-unset($context['foo2']);
-$t->is(isset($context['foo2']), false, '->offsetUnset() unsets object by name');
-
-$t->diag('->__call()');
-
-$context->setFoo4($i18n_context);
-$t->is($context->has('foo4'), true, '->__call() sets context objects by name using setName()');
-$t->isa_ok($context->getFoo4(), 'sfContext', '->__call() returns context objects by name using getName()');
-
-try
-{
-  $context->unknown();
-  $t->fail('->__call() throws an sfException if factory / method does not exist');
-}
-catch (sfException $e)
-{
-  $t->pass('->__call() throws an sfException if factory / method does not exist');
 }
 
 $t->diag('->getServiceContainer() test');

@@ -355,10 +355,9 @@ class sfWidgetFormSchemaDecorator extends sfWidgetFormSchema
    * @see sfWidgetFormSchema
    * @inheritdoc
    */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
+  public function offsetGet(mixed $offset = ''): mixed
   {
-    return $this->widget[$name];
+    return $this->widget[$offset];
   }
 
   /**

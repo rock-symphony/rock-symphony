@@ -19,26 +19,26 @@
  * @property $firstOptional int
  * @property $segments array
  */
-#[AllowDynamicProperties]
 class sfRoute
 {
-  protected
-    $isBound           = false,
-    $context           = null,
-    $parameters        = null,
-    $suffix            = null,
-    $defaultParameters = array(),
-    $defaultOptions    = array(),
-    $compiled          = false,
-    $options           = array(),
-    $pattern           = null,
-    $staticPrefix      = null,
-    $regex             = null,
-    $variables         = array(),
-    $defaults          = array(),
-    $requirements      = array(),
-    $tokens            = array(),
-    $customToken       = false;
+  protected $isBound           = false;
+  protected $context           = null;
+  protected $parameters        = null;
+  protected $suffix            = null;
+  protected $defaultParameters = [];
+  protected $defaultOptions    = [];
+  protected $compiled          = false;
+  protected $options           = [];
+  protected $pattern           = null;
+  protected $staticPrefix      = null;
+  protected $regex             = null;
+  protected $variables         = [];
+  protected $defaults          = [];
+  protected $requirements      = [];
+  protected $tokens            = [];
+  protected $customToken       = false;
+  protected $firstOptional     = 0;
+  protected $segments          = [];
 
   /**
    * Constructor.
@@ -236,7 +236,9 @@ class sfRoute
     {
       // replace variables
       $variables = $this->variables;
-      uasort($variables, array('sfRoute', 'generateCompareVarsByStrlen'));
+
+      uasort($variables, fn ($a, $b) => strlen($b) <=> strlen($a));
+
       foreach ($variables as $variable => $value)
       {
         $url = str_replace($value, urlencode($tparams[$variable]), $url);
@@ -261,11 +263,6 @@ class sfRoute
     }
 
     return $url;
-  }
-
-  static private function generateCompareVarsByStrlen($a, $b)
-  {
-    return strlen($b) <=> strlen($a);
   }
 
   /**
@@ -848,38 +845,39 @@ class sfRoute
 
   public function __serialize(): array
   {
-      $this->compile();
 
-      return [
-          // 'defaultParameters' => $this->defaultParameters, // sfPatternRouting will always re-set defaultParameters, so no need to serialize them
-          'tokens'         => $this->tokens,
-          'defaultOptions' => $this->defaultOptions,
-          'options'        => $this->options,
-          'pattern'        => $this->pattern,
-          'staticPrefix'   => $this->staticPrefix,
-          'regex'          => $this->regex,
-          'variables'      => $this->variables,
-          'defaults'       => $this->defaults,
-          'requirements'   => $this->requirements,
-          'suffix'         => $this->suffix,
-          'customToken'    => $this->customToken,
-      ];
+    $this->compile();
+
+    return [
+      // 'defaultParameters' => $this->defaultParameters, // sfPatternRouting will always re-set defaultParameters, so no need to serialize them
+      'tokens'         => $this->tokens,
+      'defaultOptions' => $this->defaultOptions,
+      'options'        => $this->options,
+      'pattern'        => $this->pattern,
+      'staticPrefix'   => $this->staticPrefix,
+      'regex'          => $this->regex,
+      'variables'      => $this->variables,
+      'defaults'       => $this->defaults,
+      'requirements'   => $this->requirements,
+      'suffix'         => $this->suffix,
+      'customToken'    => $this->customToken,
+    ];
   }
 
-  public function __unserialize(array $data): void
+  public function __unserialize(array $serialized)
   {
-      $this->tokens = $data['tokens'];
-      $this->defaultOptions = $data['defaultOptions'];
-      $this->options = $data['options'];
-      $this->pattern = $data['pattern'];
-      $this->staticPrefix = $data['staticPrefix'];
-      $this->regex = $data['regex'];
-      $this->variables = $data['variables'];
-      $this->defaults = $data['defaults'];
-      $this->requirements = $data['requirements'];
-      $this->suffix = $data['suffix'];
-      $this->customToken = $data['customToken'];
+    $this->tokens = $serialized['tokens'];
+    $this->defaultOptions = $serialized['defaultOptions'];
+    $this->options = $serialized['options'];
+    $this->pattern = $serialized['pattern'];
+    $this->staticPrefix = $serialized['staticPrefix'];
+    $this->regex = $serialized['regex'];
+    $this->variables = $serialized['variables'];
+    $this->defaults = $serialized['defaults'];
+    $this->requirements = $serialized['requirements'];
+    $this->suffix = $serialized['suffix'];
+    $this->customToken = $serialized['customToken'];
 
-      $this->compiled = true;
+    $this->compiled = true;
   }
 }

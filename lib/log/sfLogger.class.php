@@ -110,7 +110,7 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    */
   public function listenToLogEvent(sfEvent $event)
   {
-    $priority = $event['priority'] ??  self::INFO;
+    $priority = $event->getParameter('priority') ??  self::INFO;
 
     $subject  = $event->getSubject();
     $subject  = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');

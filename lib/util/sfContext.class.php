@@ -20,32 +20,26 @@
  * @author     Sean Kerr <sean@code-box.org>
  * @version    SVN: $Id$
  */
-class sfContext implements ArrayAccess
+class sfContext
 {
-  /** @var sfEventDispatcher */
-  protected $dispatcher = null;
-  /** @var sfApplicationConfiguration */
-  protected $configuration = null;
-  /** @var array */
-  protected $mailerConfiguration = [];
-  /** @var array */
-  protected $serviceContainerConfiguration = [];
-  /** @var array */
-  protected $factories = [];
-  /** @var bool */
-  protected $hasShutdownUserAndStorage = false;
+  protected sfEventDispatcher $dispatcher;
+  protected sfApplicationConfiguration $configuration;
+  protected array $mailerConfiguration = [];
+  protected array $serviceContainerConfiguration = [];
+  protected array $factories = [];
+  protected bool $hasShutdownUserAndStorage = false;
 
-  /** @var \sfContext[] */
-  protected static $instances = [];
+  /** @var array<string,sfContext> */
+  protected static array $instances = [];
   /** @var string */
-  protected static $current = 'default';
+  protected static string $current = 'default';
 
   /**
    * Creates a new context instance.
    *
-   * @param  sfApplicationConfiguration $configuration  An sfApplicationConfiguration instance
-   * @param  string                     $name           A name for this context (application name by default)
-   * @param string                      $class          The context class to use (sfContext by default)
+   * @param sfApplicationConfiguration  $configuration An sfApplicationConfiguration instance
+   * @param string|null                 $name          A name for this context (application name by default)
+   * @param class-string                $class         The context class to use (sfContext by default)
    *
    * @return sfContext An sfContext instance
    *
@@ -94,11 +88,11 @@ class sfContext implements ArrayAccess
       sfException::createFromException($e)->printStackTrace();
     }
 
-    $this->dispatcher->connect('template.filter_parameters', array($this, 'filterTemplateParameters'));
-    $this->dispatcher->connect('response.fastcgi_finish_request', array($this, 'shutdownUserAndStorage'));
+    $this->dispatcher->connect('template.filter_parameters', [$this, 'filterTemplateParameters']);
+    $this->dispatcher->connect('response.fastcgi_finish_request', [$this, 'shutdownUserAndStorage']);
 
     // register our shutdown function
-    register_shutdown_function(array($this, 'shutdown'));
+    register_shutdown_function([$this, 'shutdown']);
   }
 
   /**
@@ -256,7 +250,7 @@ class sfContext implements ArrayAccess
    */
   public function getController(): ?sfFrontWebController
   {
-    return isset($this->factories['controller']) ? $this->factories['controller'] : null;
+    return $this->factories['controller'] ?? null;
   }
 
   /**
@@ -293,7 +287,7 @@ class sfContext implements ArrayAccess
   {
     if (!isset($this->factories['logger']))
     {
-      $this->factories['logger'] = new sfNoLogger($this->dispatcher);
+      $this->factories['logger'] = new sfNoLogger();
     }
 
     return $this->factories['logger'];
@@ -330,7 +324,7 @@ class sfContext implements ArrayAccess
    */
   public function getDatabaseManager(): ?sfDatabaseManager
   {
-    return isset($this->factories['databaseManager']) ? $this->factories['databaseManager'] : null;
+    return $this->factories['databaseManager'] ?? null;
   }
 
   /**
@@ -374,7 +368,7 @@ class sfContext implements ArrayAccess
    */
   public function getRequest(): ?sfRequest
   {
-    return isset($this->factories['request']) ? $this->factories['request'] : null;
+    return $this->factories['request'] ?? null;
   }
 
   /**
@@ -384,7 +378,7 @@ class sfContext implements ArrayAccess
    */
   public function getResponse(): ?sfResponse
   {
-    return isset($this->factories['response']) ? $this->factories['response'] : null;
+    return $this->factories['response'] ?? null;
   }
 
   /**
@@ -406,7 +400,7 @@ class sfContext implements ArrayAccess
    */
   public function getStorage(): ?sfStorage
   {
-    return isset($this->factories['storage']) ? $this->factories['storage'] : null;
+    return $this->factories['storage'] ?? null;
   }
 
   /**
@@ -433,7 +427,7 @@ class sfContext implements ArrayAccess
    */
   public function getRouting(): ?sfRouting
   {
-    return isset($this->factories['routing']) ? $this->factories['routing'] : null;
+    return $this->factories['routing'] ?? null;
   }
 
   /**
@@ -443,7 +437,7 @@ class sfContext implements ArrayAccess
    */
   public function getUser(): ?sfUser
   {
-    return isset($this->factories['user']) ? $this->factories['user'] : null;
+    return $this->factories['user'] ?? null;
   }
 
   /**
@@ -495,52 +489,6 @@ class sfContext implements ArrayAccess
   public function getConfigCache(): sfConfigCache
   {
     return $this->configuration->getConfigCache();
-  }
-
-  /**
-   * Returns true if the context object exists (implements the ArrayAccess interface).
-   *
-   * @param  string $name The name of the context object
-   *
-   * @return Boolean true if the context object exists, false otherwise
-   */
-  public function offsetExists($name): bool
-  {
-    return $this->has($name);
-  }
-
-  /**
-   * Returns the context object associated with the name (implements the ArrayAccess interface).
-   *
-   * @param  string $name  The offset of the value to get
-   *
-   * @return mixed The context object if exists, null otherwise
-   */
-  #[\ReturnTypeWillChange]
-  public function offsetGet($name)
-  {
-    return $this->get($name);
-  }
-
-  /**
-   * Sets the context object associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset Service name
-   * @param mixed  $value Service
-   */
-  public function offsetSet($offset, $value): void
-  {
-    $this->set($offset, $value);
-  }
-
-  /**
-   * Unsets the context object associated with the offset (implements the ArrayAccess interface).
-   *
-   * @param string $offset The parameter name
-   */
-  public function offsetUnset($offset): void
-  {
-    unset($this->factories[$offset]);
   }
 
   /**
@@ -616,34 +564,6 @@ class sfContext implements ArrayAccess
 
       $this->hasShutdownUserAndStorage = true;
     }
-  }
-
-  /**
-   * The method name will be parsed to magically handle getMyFactory() and setMyFactory() methods.
-   *
-   * @param  string $method     The method name
-   * @param  array  $arguments  The method arguments
-   *
-   * @return mixed The returned value of the called method
-   *
-   * @throws <b>sfException</b> if call fails
-   */
-  public function __call($method, $arguments)
-  {
-    $verb = substr($method, 0, 3); // get | set
-    $factory = strtolower(substr($method, 3)); // factory name
-
-    if ('get' == $verb && $this->has($factory))
-    {
-      return $this->factories[$factory];
-    }
-    else if ('set' == $verb && isset($arguments[0]))
-    {
-      $this->set($factory, $arguments[0]);
-      return null;
-    }
-
-    throw new sfException(sprintf('Call to undefined method %s::%s.', get_class($this), $method));
   }
 
   /**
