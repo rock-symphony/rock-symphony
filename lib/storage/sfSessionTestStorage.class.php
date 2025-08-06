@@ -18,10 +18,11 @@
  */
 class sfSessionTestStorage extends sfStorage
 {
-  /** @var string */
-  protected $sessionId;
+  /** @var string|null */
+  protected string | null $sessionId;
+
   /** @var array */
-  protected $sessionData = [];
+  protected array $sessionData = [];
 
   /**
    * Available options:
@@ -35,30 +36,27 @@ class sfSessionTestStorage extends sfStorage
    */
   public function __construct(array $options = [])
   {
-    if (!isset($options['session_path']))
-    {
+    if ( ! isset($options['session_path'])) {
       throw new InvalidArgumentException('The "session_path" option is mandatory for the sfSessionTestStorage class.');
     }
 
-    $options = array_merge(array(
-      'session_id'   => null,
-    ), $options);
+    $options = array_merge([
+      'session_id' => null,
+    ], $options);
 
     // initialize parent
     parent::__construct($options);
 
-    $this->sessionId = null !== $this->options['session_id'] ? $this->options['session_id'] : (array_key_exists('session_id', $_SERVER) ? $_SERVER['session_id'] : null);
+    $sessionId = $this->options['session_id'] ?? $_SERVER['session_id'] ?? null;
 
-    if ($this->sessionId)
-    {
+    if ($sessionId) {
       // we read session data from temp file
-      $file = $this->options['session_path'].DIRECTORY_SEPARATOR.$this->sessionId.'.session';
-      $this->sessionData = is_file($file) ? unserialize(file_get_contents($file)) : array();
-    }
-    else
-    {
+      $file              = $this->options['session_path'] . DIRECTORY_SEPARATOR . $sessionId . '.session';
+      $this->sessionData = is_file($file) ? unserialize(file_get_contents($file)) : [];
+      $this->sessionId   = $sessionId;
+    } else {
       $this->sessionId   = md5(uniqid(mt_rand(), true));
-      $this->sessionData = array();
+      $this->sessionData = [];
     }
   }
 
@@ -77,20 +75,13 @@ class sfSessionTestStorage extends sfStorage
    *
    * The preferred format for a key is directory style so naming conflicts can be avoided.
    *
-   * @param  string $key  A unique key identifying your data
+   * @param string $key  A unique key identifying your data
    *
    * @return mixed Data associated with the key
    */
-  public function read(string $key)
+  public function read(string $key): mixed
   {
-    $retval = null;
-
-    if (isset($this->sessionData[$key]))
-    {
-      $retval = $this->sessionData[$key];
-    }
-
-    return $retval;
+    return $this->sessionData[$key] ?? null;
   }
 
   /**
@@ -98,21 +89,21 @@ class sfSessionTestStorage extends sfStorage
    *
    * The preferred format for a key is directory style so naming conflicts can be avoided.
    *
-   * @param  string $key  A unique key identifying your data
+   * @param string $key  A unique key identifying your data
    *
    * @return mixed Data associated with the key
    */
-  public function remove(string $key)
+  public function remove(string $key): mixed
   {
-    $retval = null;
+    if (isset($this->sessionData[$key])) {
+      $value = $this->sessionData[$key];
 
-    if (isset($this->sessionData[$key]))
-    {
-      $retval = $this->sessionData[$key];
       unset($this->sessionData[$key]);
+
+      return $value;
     }
 
-    return $retval;
+    return null;
   }
 
   /**
@@ -124,7 +115,7 @@ class sfSessionTestStorage extends sfStorage
    * @param mixed  $data  Data associated with your key
    *
    */
-  public function write(string $key, $data): void
+  public function write(string $key, mixed $data): void
   {
     $this->sessionData[$key] = $data;
   }
@@ -140,7 +131,7 @@ class sfSessionTestStorage extends sfStorage
   /**
    * Regenerates id that represents this storage.
    *
-   * @param  boolean $destroy Destroy session when regenerating?
+   * @param boolean $destroy  Destroy session when regenerating?
    */
   public function regenerate(bool $destroy = false): void
   {
@@ -152,18 +143,16 @@ class sfSessionTestStorage extends sfStorage
    */
   public function shutdown(): void
   {
-    if ($this->sessionId)
-    {
+    if ($this->sessionId) {
       $current_umask = umask(0000);
       $sessionsDir   = $this->options['session_path'];
-      if (!is_dir($sessionsDir) && !@mkdir($sessionsDir, 0777, true) && !is_dir($sessionsDir))
-      {
+      if ( ! is_dir($sessionsDir) && ! @mkdir($sessionsDir, 0777, true) && ! is_dir($sessionsDir)) {
         throw new \RuntimeException(sprintf('Logger was not able to create a directory "%s"', $sessionsDir));
       }
       umask($current_umask);
-      file_put_contents($sessionsDir.DIRECTORY_SEPARATOR.$this->sessionId.'.session', serialize($this->sessionData));
+      file_put_contents($sessionsDir . DIRECTORY_SEPARATOR . $this->sessionId . '.session', serialize($this->sessionData));
       $this->sessionId   = '';
-      $this->sessionData = array();
+      $this->sessionData = [];
     }
   }
 }

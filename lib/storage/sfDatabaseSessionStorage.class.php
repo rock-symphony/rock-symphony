@@ -34,7 +34,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *   * db_data_col: The database column in which the session data will be stored (sess_data by default)
    *   * db_time_col: The database column in which the session timestamp will be stored (sess_time by default)
    *
-   * @param  array $options An associative array of options
+   * @param array $options  An associative array of options
    *
    * @throws sfInitializationException
    *
@@ -42,11 +42,11 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    */
   public function __construct(array $options = [])
   {
-    $options = array_merge(array(
+    $options = array_merge([
       'db_id_col'   => 'sess_id',
       'db_data_col' => 'sess_data',
       'db_time_col' => 'sess_time',
-    ), $options);
+    ], $options);
 
     // disable auto_start
     $options['auto_start'] = false;
@@ -54,13 +54,11 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
     // initialize the parent
     parent::__construct($options);
 
-    if (!isset($this->options['db_table']))
-    {
+    if ( ! isset($this->options['db_table'])) {
       throw new sfInitializationException('You must provide a "db_table" option to sfDatabaseSessionStorage.');
     }
 
-    if (!isset($this->options['database']))
-    {
+    if ( ! isset($this->options['database'])) {
       throw new sfInitializationException('You must provide a "database" option to sfDatabaseSessionStorage.');
     }
 
@@ -92,8 +90,8 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Opens a session.
    *
-   * @param  string $path  (ignored)
-   * @param  string $name  (ignored)
+   * @param string $path  (ignored)
+   * @param string $name  (ignored)
    *
    * @return boolean true, if the session was opened, otherwise an exception is thrown
    *
@@ -107,23 +105,17 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
 
     // get the database and connection
     $databaseClass = get_class($database);
-    if ($databaseClass == 'sfPropelDatabase')
-    {
+    if ($databaseClass == 'sfPropelDatabase') {
       $this->db = Propel::getConnection($database->getParameter('name'));
-    }
-    elseif($databaseClass == 'sfDoctrineDatabase')
-    {
+    } elseif ($databaseClass == 'sfDoctrineDatabase') {
       $this->db = $database->getConnection();
-    }
-    else
-    {
+    } else {
       $this->db = $database->getResource();
     }
 
     $this->con = $database->getConnection();
 
-    if (null === $this->db && null === $this->con)
-    {
+    if (null === $this->db && null === $this->con) {
       throw new sfDatabaseException('Database connection does not exist. Unable to open session.');
     }
 
@@ -133,7 +125,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Destroys a session.
    *
-   * @param  string $id  A session ID
+   * @param string $id  A session ID
    *
    * @return bool true, if the session was destroyed, otherwise an exception is thrown
    *
@@ -144,7 +136,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Cleans up old sessions.
    *
-   * @param  int $lifetime  The lifetime of a session
+   * @param int $lifetime  The lifetime of a session
    *
    * @return bool true, if old sessions have been cleaned, otherwise an exception is thrown
    *
@@ -155,7 +147,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Reads a session.
    *
-   * @param  string $id  A session ID
+   * @param string $id  A session ID
    *
    * @return string      The session data if the session was read or created, otherwise an exception is thrown
    *
@@ -166,8 +158,8 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Writes session data.
    *
-   * @param  string $id    A session ID
-   * @param  string $data  A serialized chunk of session data
+   * @param string $id    A session ID
+   * @param string $data  A serialized chunk of session data
    *
    * @return bool true, if the session was written, otherwise an exception is thrown
    *
@@ -178,15 +170,14 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
   /**
    * Regenerates id that represents this storage.
    *
-   * @param  boolean $destroy Destroy session when regenerating?
+   * @param boolean $destroy  Destroy session when regenerating?
    *
    * @return boolean|void True if session regenerated, false if error
    *
    */
   public function regenerate(bool $destroy = false): void
   {
-    if (self::$sessionIdRegenerated)
-    {
+    if (self::$sessionIdRegenerated) {
       return;
     }
 
