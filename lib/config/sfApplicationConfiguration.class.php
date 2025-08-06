@@ -152,14 +152,8 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    */
   protected function initializePlugins(): void
   {
-    foreach ($this->pluginConfigurations as $name => $configuration) {
-      if (
-        false === $configuration->initialize()
-        &&
-        is_readable($config = $configuration->getRootDir() . '/config/config.php')
-      ) {
-        require $config;
-      }
+    foreach ($this->pluginConfigurations as $configuration) {
+      $configuration->initialize();
     }
   }
 
