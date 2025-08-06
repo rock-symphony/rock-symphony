@@ -199,10 +199,10 @@ class sfWebResponse extends sfResponse
    * @param string $name  HTTP status text
    *
    */
-  public function setStatusCode(string $code, string $name = null): void
+  public function setStatusCode(string $code, string | null $name = null): void
   {
     $this->statusCode = $code;
-    $this->statusText = null !== $name ? $name : self::$statusTexts[$code];
+    $this->statusText = $name ?? self::$statusTexts[$code];
   }
 
   /**
@@ -271,7 +271,7 @@ class sfWebResponse extends sfResponse
    *
    * @return string|null
    */
-  public function getHttpHeader(string $name, string $default = null): ?string
+  public function getHttpHeader(string $name, string | null $default = null): string | null
   {
     $name = $this->normalizeHeaderName($name);
 
@@ -475,26 +475,23 @@ class sfWebResponse extends sfResponse
    * Adds an control cache http header.
    *
    * @param string $name   HTTP header
-   * @param string $value  Value for the http header
+   * @param string|null $value  Value for the http header
    */
-  public function addCacheControlHttpHeader(string $name, string $value = null): void
+  public function addCacheControlHttpHeader(string $name, string | null $value = null): void
   {
-    $cacheControl = $this->getHttpHeader('Cache-Control');
-    $currentHeaders = array();
-    if ($cacheControl)
-    {
-      foreach (preg_split('/\s*,\s*/', $cacheControl) as $tmp)
-      {
-        $tmp = explode('=', $tmp);
+    $cacheControl   = $this->getHttpHeader('Cache-Control');
+    $currentHeaders = [];
+    if ($cacheControl) {
+      foreach (preg_split('/\s*,\s*/', $cacheControl) as $tmp) {
+        $tmp                     = explode('=', $tmp);
         $currentHeaders[$tmp[0]] = $tmp[1] ?? null;
       }
     }
     $currentHeaders[str_replace('_', '-', strtolower($name))] = $value;
 
-    $headers = array();
-    foreach ($currentHeaders as $key => $value)
-    {
-      $headers[] = $key.(null !== $value ? '='.$value : '');
+    $headers = [];
+    foreach ($currentHeaders as $key => $value) {
+      $headers[] = $key . (null !== $value ? '=' . $value : '');
     }
 
     $this->setHttpHeader('Cache-Control', implode(', ', $headers));

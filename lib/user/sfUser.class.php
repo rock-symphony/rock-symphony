@@ -206,17 +206,17 @@ class sfUser
     return $this->attributeHolder;
   }
 
-  public function getAttribute(string $name, $default = null, string $ns = null)
+  public function getAttribute(string $name, mixed $default = null, string | null  $ns = null)
   {
     return $this->attributeHolder->get($name, $default, $ns);
   }
 
-  public function hasAttribute(string $name, string $ns = null)
+  public function hasAttribute(string $name, string | null $ns = null)
   {
     return $this->attributeHolder->has($name, $ns);
   }
 
-  public function setAttribute(string $name, $value, string $ns = null)
+  public function setAttribute(string $name, mixed $value, string | null $ns = null)
   {
     $this->attributeHolder->set($name, $value, $ns);
   }

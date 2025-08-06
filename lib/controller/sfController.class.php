@@ -357,7 +357,7 @@ abstract class sfController
    * @throws Exception
    * @throws sfException
    */
-  public function getPresentationFor(string $module, string $action, string $viewName = null): string
+  public function getPresentationFor(string $module, string $action, string | null $viewName = null): string
   {
     if (sfConfig::get('sf_logging_enabled')) {
       $this->dispatcher->notify(new sfEvent($this, 'application.log', [sprintf('Get presentation for action "%s/%s" (view class: "%s")', $module, $action, $viewName)]));

@@ -446,21 +446,19 @@ class sfWebRequest extends sfRequest
   /**
    * Returns the preferred culture for the current request.
    *
-   * @param  array  $cultures  An array of ordered cultures available
+   * @param string[]|null $cultures  An array of ordered cultures available
    *
    * @return string|null The preferred culture
    */
-  public function getPreferredCulture(array $cultures = null): ?string
+  public function getPreferredCulture(array | null $cultures = null): ?string
   {
     $preferredCultures = $this->getLanguages();
 
-    if (null === $cultures)
-    {
+    if (null === $cultures) {
       return $preferredCultures[0] ?? null;
     }
 
-    if (!$preferredCultures)
-    {
+    if ( ! $preferredCultures) {
       return $cultures[0];
     }
 
@@ -828,10 +826,9 @@ class sfWebRequest extends sfRequest
    *
    * @return array  An associative array of files
    */
-  public function getFiles(string $key = null): array
+  public function getFiles(string | null $key = null): array
   {
-    if (null === $this->fixedFileArray)
-    {
+    if (null === $this->fixedFileArray) {
       $this->fixedFileArray = self::convertFileInformation($_FILES);
     }
 

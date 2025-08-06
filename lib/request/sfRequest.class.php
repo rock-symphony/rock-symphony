@@ -170,12 +170,12 @@ abstract class sfRequest
   /**
    * Retrieves an attribute from the current request.
    *
-   * @param  string $name     Attribute name
-   * @param  string $default  Default attribute value
+   * @param string     $name     Attribute name
+   * @param mixed|null $default  Default attribute value
    *
    * @return mixed An attribute value
    */
-  public function getAttribute(string $name, string $default = null)
+  public function getAttribute(string $name, mixed $default = null): mixed
   {
     return $this->attributeHolder->get($name, $default);
   }
