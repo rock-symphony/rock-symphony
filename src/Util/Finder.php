@@ -161,7 +161,11 @@ final class Finder
 
         $this->finder->ignoreUnreadableDirs(true);
 
-        foreach ($this->finder->in($directory) as $file) {
+        $directories = is_array($directory) ? $directory : [$directory];
+
+        $directories = array_filter($directories, 'is_dir');
+
+        foreach ($this->finder->in($directories) as $file) {
             $files[] = $this->relative ? $file->getRelativePathname() : $file->getPathname();
         }
 
