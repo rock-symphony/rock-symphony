@@ -18,20 +18,18 @@
  */
 class sfOutputEscaperSafe extends ArrayIterator
 {
-  protected
-    $value = null;
+  protected mixed $value = null;
 
   /**
    * Constructor.
    *
    * @param mixed $value  The value to mark as safe
    */
-  public function __construct($value)
+  public function __construct(mixed $value)
   {
     $this->value = $value;
 
-    if (is_array($value) || is_object($value))
-    {
+    if (is_array($value) || is_object($value)) {
       parent::__construct($value);
     }
   }
