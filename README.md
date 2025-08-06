@@ -43,7 +43,7 @@ Roadmap
 - Properties, arguments and return types everywhere 
 - Fix sfApplicationConfiguration / ProjectConfiguration
 - Replace sfLogger with PSR Logger
-- Descent service container, services auto-injection
+- Decent service container, services auto-injection
 - CommandBus + JobQueue
 - Logging with Logger object (not via sfEventDispatcher)
 - Drop sfContext

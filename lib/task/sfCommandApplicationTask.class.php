@@ -20,24 +20,27 @@
  */
 abstract class sfCommandApplicationTask extends sfTask
 {
-  /** @var sfSymfonyCommandApplication */
-  protected $commandApplication;
+  /** @var sfSymfonyCommandApplication|null */
+  protected sfCommandApplication | null $commandApplication = null;
 
-  /** @var sfMailer */
-  private $mailer;
-  /** @var sfRouting */
-  private $routing;
-  /** @var sfServiceContainer */
-  private $serviceContainer;
+  /** @var sfMailer|null */
+  private sfMailer | null $mailer = null;
+
+  /** @var sfRouting|null */
+  private sfRouting | null $routing = null;
+
+  /** @var sfServiceContainer|null */
+  private sfServiceContainer | null $serviceContainer = null;
+
   /** @var array|null */
-  private $factoryConfiguration;
+  private array | null $factoryConfiguration = null;
 
   /**
    * Sets the command application instance for this task.
    *
-   * @param sfCommandApplication $commandApplication A sfCommandApplication instance
+   * @param sfCommandApplication|null $commandApplication  A sfCommandApplication instance
    */
-  public function setCommandApplication(sfCommandApplication $commandApplication = null)
+  public function setCommandApplication(sfCommandApplication | null $commandApplication): void
   {
     $this->commandApplication = $commandApplication;
   }
@@ -46,10 +49,9 @@ abstract class sfCommandApplicationTask extends sfTask
    * @see sfTask
    * @inheritdoc
    */
-  public function log($messages)
+  public function log(array | string $messages): void
   {
-    if (null === $this->commandApplication || $this->commandApplication->isVerbose())
-    {
+    if (null === $this->commandApplication || $this->commandApplication->isVerbose()) {
       parent::log($messages);
     }
   }
@@ -58,10 +60,9 @@ abstract class sfCommandApplicationTask extends sfTask
    * @see sfTask
    * @inheritdoc
    */
-  public function logSection($section, $message, $size = null, $style = 'INFO')
+  public function logSection(string $section, string $message, int | null $size = null, string $style = 'INFO'): void
   {
-    if (null === $this->commandApplication || $this->commandApplication->isVerbose())
-    {
+    if (null === $this->commandApplication || $this->commandApplication->isVerbose()) {
       parent::logSection($section, $message, $size, $style);
     }
   }
@@ -69,23 +70,21 @@ abstract class sfCommandApplicationTask extends sfTask
   /**
    * Creates a new task object.
    *
-   * @param  string $name The name of the task
+   * @param string $name  The name of the task
    *
    * @return sfTask
    *
    * @throws LogicException If the current task has no command application
    */
-  protected function createTask($name)
+  protected function createTask(string $name): sfTask
   {
-    if (null === $this->commandApplication)
-    {
+    if (null === $this->commandApplication) {
       throw new LogicException('Unable to create a task as no command application is associated with this task yet.');
     }
 
     $task = $this->commandApplication->getTaskToExecute($name);
 
-    if ($task instanceof sfCommandApplicationTask)
-    {
+    if ($task instanceof sfCommandApplicationTask) {
       $task->setCommandApplication($this->commandApplication);
     }
 
@@ -95,15 +94,15 @@ abstract class sfCommandApplicationTask extends sfTask
   /**
    * Executes another task in the context of the current one.
    *
-   * @param  string  $name      The name of the task to execute
-   * @param  array   $arguments An array of arguments to pass to the task
-   * @param  array   $options   An array of options to pass to the task
+   * @param string $name       The name of the task to execute
+   * @param array  $arguments  An array of arguments to pass to the task
+   * @param array  $options    An array of options to pass to the task
    *
-   * @return Boolean The returned value of the task run() method
+   * @return int The returned value of the task run() method
    *
    * @see createTask()
    */
-  protected function runTask($name, $arguments = array(), $options = array())
+  protected function runTask(string $name, array $arguments = [], array $options = []): int
   {
     return $this->createTask($name)->run($arguments, $options);
   }
@@ -118,10 +117,9 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return sfMailer A sfMailer instance
    */
-  protected function getMailer()
+  protected function getMailer(): sfMailer
   {
-    if (null === $this->mailer)
-    {
+    if (null === $this->mailer) {
       $this->mailer = $this->initializeMailer();
     }
 
@@ -133,7 +131,7 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return sfMailer A sfMailer instance
    */
-  protected function initializeMailer()
+  protected function initializeMailer(): sfMailer
   {
     $config = $this->getFactoryConfiguration();
 
@@ -150,10 +148,9 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return sfRouting A sfRouting instance
    */
-  protected function getRouting()
+  protected function getRouting(): sfRouting
   {
-    if (null === $this->routing)
-    {
+    if (null === $this->routing) {
       $this->routing = $this->initializeRouting();
     }
 
@@ -165,13 +162,13 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return sfRouting A sfRouting instance
    */
-  protected function initializeRouting()
+  protected function initializeRouting(): sfRouting
   {
     $config = $this->getFactoryConfiguration();
-    $params = array_merge($config['routing']['param'], array('load_configuration' => false, 'logging' => false));
+    $params = array_merge($config['routing']['param'], ['load_configuration' => false, 'logging' => false]);
 
     $handler = new sfRoutingConfigHandler();
-    $routes = $handler->evaluate($this->configuration->getConfigPaths('config/routing.yml'));
+    $routes  = $handler->evaluate($this->configuration->getConfigPaths('config/routing.yml'));
 
     /** @var sfRouting $routing */
     $routing = new $config['routing']['class']($this->dispatcher, null, $params);
@@ -192,16 +189,17 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return sfServiceContainer An application service container
    */
-  protected function getServiceContainer()
+  protected function getServiceContainer(): sfServiceContainer
   {
-    if (null === $this->serviceContainer)
-    {
+    if (null === $this->serviceContainer) {
       $class = require $this->configuration->getConfigCache()->checkConfig('config/services.yml', true);
 
-      $this->serviceContainer = new $class();
-      $this->serviceContainer->setService('sf_event_dispatcher', $this->dispatcher);
-      $this->serviceContainer->setService('sf_formatter', $this->formatter);
-      $this->serviceContainer->setService('sf_routing', $this->getRouting());
+      $container = new $class();
+      $container->setService('sf_event_dispatcher', $this->dispatcher);
+      $container->setService('sf_formatter', $this->formatter);
+      $container->setService('sf_routing', $this->getRouting());
+
+      $this->serviceContainer = $container;
     }
 
     return $this->serviceContainer;
@@ -210,11 +208,11 @@ abstract class sfCommandApplicationTask extends sfTask
   /**
    * Retrieves a service from the service container.
    *
-   * @param  string $id The service identifier
+   * @param string $id  The service identifier
    *
-   * @return object The service instance
+   * @return mixed The service instance
    */
-  public function getService($id)
+  public function getService(string $id): mixed
   {
     return $this->getServiceContainer()->getService($id);
   }
@@ -224,10 +222,9 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @return array
    */
-  protected function getFactoryConfiguration()
+  protected function getFactoryConfiguration(): array
   {
-    if (null === $this->factoryConfiguration)
-    {
+    if (null === $this->factoryConfiguration) {
       $this->factoryConfiguration = sfFactoryConfigHandler::getConfiguration($this->configuration->getConfigPaths('config/factories.yml'));
     }
 

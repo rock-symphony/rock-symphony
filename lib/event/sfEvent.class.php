@@ -19,11 +19,16 @@
 class sfEvent
 {
   /** @var mixed */
-  protected $subject;
+  protected mixed $subject;
+
   protected string $name;
+
+  /** @var array<string,mixed> */
   protected array $parameters;
+
   /** @var mixed */
-  protected $value = null;
+  protected mixed $value = null;
+
   protected bool $processed = false;
 
   /**
@@ -33,7 +38,7 @@ class sfEvent
    * @param string  $name       The event name
    * @param array   $parameters An array of parameters
    */
-  public function __construct($subject, string $name, array $parameters = [])
+  public function __construct(mixed $subject, string $name, array $parameters = [])
   {
     $this->subject = $subject;
     $this->name = $name;
@@ -45,7 +50,7 @@ class sfEvent
    *
    * @return mixed The subject
    */
-  public function getSubject()
+  public function getSubject(): mixed
   {
     return $this->subject;
   }
@@ -65,7 +70,7 @@ class sfEvent
    *
    * @param mixed  $value The return value
    */
-  public function setReturnValue($value): void
+  public function setReturnValue(mixed $value): void
   {
     $this->value = $value;
   }
@@ -75,7 +80,7 @@ class sfEvent
    *
    * @return mixed The return value
    */
-  public function getReturnValue()
+  public function getReturnValue(): mixed
   {
     return $this->value;
   }
@@ -93,7 +98,7 @@ class sfEvent
   /**
    * Returns whether the event has been processed by a listener or not.
    *
-   * @return Boolean true if the event has been processed, false otherwise
+   * @return bool true if the event has been processed, false otherwise
    */
   public function isProcessed(): bool
   {
@@ -129,7 +134,7 @@ class sfEvent
    *
    * @return mixed
    */
-  public function getParameter(string $name, $default = null)
+  public function getParameter(string $name, mixed $default = null): mixed
   {
     return $this->parameters[$name] ?? $default;
   }

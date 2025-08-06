@@ -18,17 +18,23 @@
  */
 abstract class sfValidation extends sfBaseTask
 {
-  protected
-    $task = null;
+  protected $task = null;
 
   /**
    * Validates the current project.
+   *
+   * @return string[] Files to be upgraded.
    */
-  abstract public function validate();
+  abstract public function validate(): array;
 
-  abstract public function getHeader();
+  abstract public function getHeader(): string;
 
-  public function execute($arguments = array(), $options = array())
+  /**
+   * @return string[]|string
+   */
+  abstract public function getExplanation(): array | string;
+
+  public function execute(array $arguments = [], array $options = []): int
   {
     throw new sfException('You can\'t execute this task.');
   }
@@ -36,19 +42,21 @@ abstract class sfValidation extends sfBaseTask
   /**
    * Returns a finder that exclude upgrade scripts from being upgraded!
    *
-   * @param  string $type String directory or file or any (for both file and directory)
+   * @param string $type  String directory or file or any (for both file and directory)
    *
    * @return sfFinder A sfFinder instance
    */
-  protected function getFinder($type)
+  protected function getFinder(string $type): sfFinder
   {
     return sfFinder::type($type)->prune('symfony')->discard('symfony');
   }
 
   /**
    * Returns all project directories where you can put PHP classes.
+   *
+   * @return string[]
    */
-  protected function getProjectClassDirectories()
+  protected function getProjectClassDirectories(): array
   {
     return array_merge(
       $this->getProjectLibDirectories(),
@@ -58,48 +66,56 @@ abstract class sfValidation extends sfBaseTask
 
   /**
    * Returns all project directories where you can put templates.
+   *
+   * @return string[]
    */
-  protected function getProjectTemplateDirectories()
+  protected function getProjectTemplateDirectories(): array
   {
     return array_merge(
-      glob(sfConfig::get('sf_apps_dir').'/*/modules/*/templates'),
-      glob(sfConfig::get('sf_apps_dir').'/*/templates')
+      glob(sfConfig::get('sf_apps_dir') . '/*/modules/*/templates'),
+      glob(sfConfig::get('sf_apps_dir') . '/*/templates')
     );
   }
 
   /**
    * Returns all project directories where you can put actions and components.
+   *
+   * @return string[]
    */
-  protected function getProjectActionDirectories()
+  protected function getProjectActionDirectories(): array
   {
-    return glob(sfConfig::get('sf_apps_dir').'/*/modules/*/actions');
+    return glob(sfConfig::get('sf_apps_dir') . '/*/modules/*/actions');
   }
 
   /**
    * Returns all project lib directories.
-   * 
-   * @param string $subdirectory A subdirectory within lib (i.e. "/form")
+   *
+   * @param string|null $subdirectory  A subdirectory within lib (i.e. "/form")
+   *
+   * @return string[]
    */
-  protected function getProjectLibDirectories($subdirectory = null)
+  protected function getProjectLibDirectories(string | null $subdirectory = null): array
   {
     return array_merge(
-      glob(sfConfig::get('sf_apps_dir').'/*/modules/*/lib'.$subdirectory),
-      glob(sfConfig::get('sf_apps_dir').'/*/lib'.$subdirectory),
-      array(
-        sfConfig::get('sf_apps_dir').'/lib'.$subdirectory,
-        sfConfig::get('sf_lib_dir').$subdirectory,
-      )
+      glob(sfConfig::get('sf_apps_dir') . '/*/modules/*/lib' . $subdirectory),
+      glob(sfConfig::get('sf_apps_dir') . '/*/lib' . $subdirectory),
+      [
+        sfConfig::get('sf_apps_dir') . '/lib' . $subdirectory,
+        sfConfig::get('sf_lib_dir') . $subdirectory,
+      ]
     );
   }
 
   /**
    * Returns all project config directories.
+   *
+   * @return string[]
    */
-  protected function getProjectConfigDirectories()
+  protected function getProjectConfigDirectories(): array
   {
     return array_merge(
-      glob(sfConfig::get('sf_apps_dir').'/*/modules/*/config'),
-      glob(sfConfig::get('sf_apps_dir').'/*/config'),
+      glob(sfConfig::get('sf_apps_dir') . '/*/modules/*/config'),
+      glob(sfConfig::get('sf_apps_dir') . '/*/config'),
       glob(sfConfig::get('sf_config_dir'))
     );
   }
@@ -107,9 +123,9 @@ abstract class sfValidation extends sfBaseTask
   /**
    * Returns all application names.
    *
-   * @return array An array of application names
+   * @return string[] An array of application names
    */
-  protected function getApplications()
+  protected function getApplications(): array
   {
     return sfFinder::type('dir')->maxdepth(0)->relative()->in(sfConfig::get('sf_apps_dir'));
   }

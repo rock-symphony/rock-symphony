@@ -40,11 +40,13 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
   ];
 
   /** @var sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+
   /** @var array */
-  protected $options;
+  protected array $options;
+
   /** @var int */
-  protected $level = self::INFO;
+  protected int $level = self::INFO;
 
   /**
    * Class constructor.
@@ -53,18 +55,17 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    *
    * - level: The log level.
    *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param array             $options     An array of options.
    *
    * @throws sfInitializationException If an error occurs while initializing this sfLogger.
    */
   public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
     $this->dispatcher = $dispatcher;
-    $this->options = $options;
+    $this->options    = $options;
 
-    if (isset($this->options['level']))
-    {
+    if (isset($this->options['level'])) {
       try {
         $this->level = self::parseLogLevel($this->options['level']);
       } catch (sfException $exception) {
@@ -72,11 +73,10 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
       }
     }
 
-    $dispatcher->connect('application.log', array($this, 'listenToLogEvent'));
+    $dispatcher->connect('application.log', [$this, 'listenToLogEvent']);
 
-    if (!isset($options['auto_shutdown']) || $options['auto_shutdown'])
-    {
-      register_shutdown_function(array($this, 'shutdown'));
+    if ( ! isset($options['auto_shutdown']) || $options['auto_shutdown']) {
+      register_shutdown_function([$this, 'shutdown']);
     }
   }
 
@@ -85,12 +85,11 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    *
    * @param string $message   Message
    * @param int    $priority  Message priority
-   * @return void|bool
+   * @return void
    */
   public function log(string $message, int $priority = self::INFO): void
   {
-    if ($this->level >= $priority)
-    {
+    if ($this->level >= $priority) {
       $this->doLog($message, $priority);
     }
   }
@@ -106,18 +105,16 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
   /**
    * Listens to application.log events.
    *
-   * @param sfEvent $event An sfEvent instance
+   * @param sfEvent $event  An sfEvent instance
    */
-  public function listenToLogEvent(sfEvent $event)
+  public function listenToLogEvent(sfEvent $event): void
   {
-    $priority = $event->getParameter('priority') ??  self::INFO;
+    $priority = $event->getParameter('priority') ?? self::INFO;
 
-    $subject  = $event->getSubject();
-    $subject  = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');
-    foreach ($event->getParameters() as $key => $message)
-    {
-      if ('priority' === $key)
-      {
+    $subject = $event->getSubject();
+    $subject = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');
+    foreach ($event->getParameters() as $key => $message) {
+      if ('priority' === $key) {
         continue;
       }
 
@@ -130,20 +127,20 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
    *
    * Cleans up the current logger instance.
    */
-  public function shutdown()
+  public function shutdown(): void
   {
   }
 
   /**
    * Coverts a given priority name, or level, to a known log level.
    *
-   * @param  int|string $priority Priority name or log level
+   * @param int|string $priority  Priority name or log level
    *
    * @return int        The priority constant value
    *
    * @throws sfException if the priority level does not exist
    */
-  static public function parseLogLevel($priority): int
+  static public function parseLogLevel(int | string $priority): int
   {
     foreach (self::LEVELS as $level => $name) {
       if ($level === $priority || $name === $priority) {
@@ -156,16 +153,15 @@ abstract class sfLogger extends sfAbstractLogger implements sfLoggerInterface
   /**
    * Returns the priority name given a priority class constant
    *
-   * @param  integer $priority A priority class constant
+   * @param integer $priority  A priority class constant
    *
    * @return string  The priority name
    *
    * @throws sfException if the priority level does not exist
    */
-  static public function getPriorityName($priority)
+  static public function getPriorityName(int $priority): string
   {
-    if (!isset(self::LEVELS[$priority]))
-    {
+    if ( ! isset(self::LEVELS[$priority])) {
       throw new sfException(sprintf('The priority level "%s" does not exist.', $priority));
     }
 

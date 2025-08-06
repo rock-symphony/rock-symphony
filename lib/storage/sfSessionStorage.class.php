@@ -25,8 +25,8 @@
  */
 class sfSessionStorage extends sfStorage
 {
-  static protected $sessionIdRegenerated = false;
-  static protected $sessionStarted       = false;
+  static protected bool $sessionIdRegenerated = false;
+  static protected bool $sessionStarted       = false;
 
   /**
    * Available options:
@@ -107,16 +107,9 @@ class sfSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function read(string $key)
+  public function read(string $key): mixed
   {
-    $retval = null;
-
-    if (isset($_SESSION[$key]))
-    {
-      $retval = $_SESSION[$key];
-    }
-
-    return $retval;
+    return $_SESSION[$key] ?? null;
   }
 
   /**
@@ -128,17 +121,17 @@ class sfSessionStorage extends sfStorage
    *
    * @return mixed Data associated with the key
    */
-  public function remove(string $key)
+  public function remove(string $key): mixed
   {
-    $retval = null;
+    if (isset($_SESSION[$key])) {
+      $value = $_SESSION[$key];
 
-    if (isset($_SESSION[$key]))
-    {
-      $retval = $_SESSION[$key];
       unset($_SESSION[$key]);
+
+      return $value;
     }
 
-    return $retval;
+    return null;
   }
 
   /**
@@ -150,7 +143,7 @@ class sfSessionStorage extends sfStorage
    * @param mixed  $data  Data associated with your key
    *
    */
-  public function write(string $key, $data): void
+  public function write(string $key, mixed $data): void
   {
     $_SESSION[$key] = $data;
   }
@@ -162,8 +155,7 @@ class sfSessionStorage extends sfStorage
    */
   public function regenerate(bool $destroy = false): void
   {
-    if (self::$sessionIdRegenerated)
-    {
+    if (self::$sessionIdRegenerated) {
       return;
     }
 

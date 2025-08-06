@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -21,53 +21,52 @@ class sfConfigureAuthorTask extends sfBaseTask
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addArguments(array(
+    $this->addArguments([
       new sfCommandArgument('author', sfCommandArgument::REQUIRED, 'The project author'),
-    ));
+    ]);
 
     $this->namespace = 'configure';
-    $this->name = 'author';
+    $this->name      = 'author';
 
     $this->briefDescription = 'Configure project author';
 
     $this->detailedDescription = <<<EOF
-The [configure:author|INFO] task configures the author for a project:
+      The [configure:author|INFO] task configures the author for a project:
 
-  [./symfony configure:author "Fabien Potencier <fabien.potencier@symfony-project.com>"|INFO]
+        [./symfony configure:author "Fabien Potencier <fabien.potencier@symfony-project.com>"|INFO]
 
-The author is used by the generates to pre-configure the PHPDoc header for each generated file.
+      The author is used by the generates to pre-configure the PHPDoc header for each generated file.
 
-The value is stored in [config/properties.ini].
-EOF;
+      The value is stored in [config/properties.ini].
+      EOF;
   }
 
   /**
    * @see sfTask
    */
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    $file = sfConfig::get('sf_config_dir').'/properties.ini';
+    $file    = sfConfig::get('sf_config_dir') . '/properties.ini';
     $content = parse_ini_file($file, true);
 
-    if (!isset($content['symfony']))
-    {
-      $content['symfony'] = array();
+    if ( ! isset($content['symfony'])) {
+      $content['symfony'] = [];
     }
 
     $content['symfony']['author'] = $arguments['author'];
 
     $ini = '';
-    foreach ($content as $section => $values)
-    {
+    foreach ($content as $section => $values) {
       $ini .= sprintf("[%s]\n", $section);
-      foreach ($values as $key => $value)
-      {
+      foreach ($values as $key => $value) {
         $ini .= sprintf("  %s=%s\n", $key, $value);
       }
     }
 
     file_put_contents($file, $ini);
+
+    return 0;
   }
 }

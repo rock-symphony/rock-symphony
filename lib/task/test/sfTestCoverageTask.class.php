@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -21,88 +21,90 @@ class sfTestCoverageTask extends sfBaseTask
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addArguments(array(
+    $this->addArguments([
       new sfCommandArgument('test_name', sfCommandArgument::REQUIRED, 'A test file name or a test directory'),
       new sfCommandArgument('lib_name', sfCommandArgument::REQUIRED, 'A lib file name or a lib directory for wich you want to know the coverage'),
-    ));
+    ]);
 
-    $this->addOptions(array(
+    $this->addOptions([
       new sfCommandOption('detailed', null, sfCommandOption::PARAMETER_NONE, 'Output detailed information'),
-    ));
+    ]);
 
-    $this->namespace = 'test';
-    $this->name = 'coverage';
+    $this->namespace        = 'test';
+    $this->name             = 'coverage';
     $this->briefDescription = 'Outputs test code coverage';
 
     $this->detailedDescription = <<<EOF
-The [test:coverage|INFO] task outputs the code coverage
-given a test file or test directory
-and a lib file or lib directory for which you want code
-coverage:
+      The [test:coverage|INFO] task outputs the code coverage
+      given a test file or test directory
+      and a lib file or lib directory for which you want code
+      coverage:
 
-  [./symfony test:coverage test/unit/model lib/model|INFO]
+        [./symfony test:coverage test/unit/model lib/model|INFO]
 
-To output the lines not covered, pass the [--detailed|INFO] option:
+      To output the lines not covered, pass the [--detailed|INFO] option:
 
-  [./symfony test:coverage --detailed test/unit/model lib/model|INFO]
-EOF;
+        [./symfony test:coverage --detailed test/unit/model lib/model|INFO]
+      EOF;
   }
 
   /**
    * @see sfTask
    */
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    require_once sfConfig::get('sf_symfony_lib_dir').'/vendor/lime/lime.php';
+    require_once sfConfig::get('sf_symfony_lib_dir') . '/vendor/lime/lime.php';
 
-    $coverage = $this->getCoverage($this->getTestHarness(array('force_colors' => isset($options['color']) && $options['color'])), $options['detailed']);
+    $coverage = $this->getCoverage($this->getTestHarness(['force_colors' => isset($options['color']) && $options['color']]), $options['detailed']);
 
-    $testFiles = $this->getFiles(sfConfig::get('sf_root_dir').'/'.$arguments['test_name']);
-    $max = count($testFiles);
-    foreach ($testFiles as $i => $file)
-    {
+    $testFiles = $this->getFiles(sfConfig::get('sf_root_dir') . '/' . $arguments['test_name']);
+    $max       = count($testFiles);
+    foreach ($testFiles as $i => $file) {
       $this->logSection('coverage', sprintf('running %s (%d/%d)', $file, $i + 1, $max));
       $coverage->process($file);
     }
 
-    $coveredFiles = $this->getFiles(sfConfig::get('sf_root_dir').'/'.$arguments['lib_name']);
+    $coveredFiles = $this->getFiles(sfConfig::get('sf_root_dir') . '/' . $arguments['lib_name']);
     $coverage->output($coveredFiles);
+
+    return 0;
   }
 
-  protected function getTestHarness($harnessOptions = array())
+  protected function getTestHarness(array $harnessOptions = []): sfLimeHarness
   {
-    require_once __DIR__.'/sfLimeHarness.class.php';
+    require_once __DIR__ . '/sfLimeHarness.class.php';
 
     $harness = new sfLimeHarness($harnessOptions);
-    $harness->addPlugins(array_map(array($this->configuration, 'getPluginConfiguration'), $this->configuration->getPlugins()));
+    $harness->addPlugins(array_map([$this->configuration, 'getPluginConfiguration'], $this->configuration->getPlugins()));
     $harness->base_dir = sfConfig::get('sf_root_dir');
 
     return $harness;
   }
 
-  protected function getCoverage(lime_harness $harness, $detailed = false)
+  protected function getCoverage(lime_harness $harness, bool $detailed = false): lime_coverage
   {
-    $coverage = new lime_coverage($harness);
-    $coverage->verbose = $detailed;
+    $coverage           = new lime_coverage($harness);
+    $coverage->verbose  = $detailed;
     $coverage->base_dir = sfConfig::get('sf_root_dir');
 
     return $coverage;
   }
 
-  protected function getFiles($directory)
+  /**
+   * @param string[]|string $directory
+   * @return string[]
+   *
+   * @throws sfCommandException
+   */
+  protected function getFiles(array | string $directory): array
   {
-    if (is_dir($directory))
-    {
+    if (is_dir($directory)) {
       return sfFinder::type('file')->name('*.php')->in($directory);
-    }
-    else if (file_exists($directory))
-    {
-      return array($directory);
-    }
-    else
-    {
+    } elseif (file_exists($directory)) {
+      return [$directory];
+    } else {
       throw new sfCommandException(sprintf('File or directory "%s" does not exist.', $directory));
     }
   }

@@ -18,85 +18,80 @@
  */
 class sfCacheClearTask extends sfBaseTask
 {
-  protected
-    $config = null;
+  protected array $config = [];
 
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addOptions(array(
+    $this->addOptions([
       new sfCommandOption('app', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', null),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_OPTIONAL, 'The environment', null),
       new sfCommandOption('type', null, sfCommandOption::PARAMETER_OPTIONAL, 'The type', 'all'),
-    ));
+    ]);
 
-    $this->aliases = array('cc');
-    $this->namespace = 'cache';
-    $this->name = 'clear';
+    $this->aliases          = ['cc'];
+    $this->namespace        = 'cache';
+    $this->name             = 'clear';
     $this->briefDescription = 'Clears the cache';
 
     $this->detailedDescription = <<<EOF
-The [cache:clear|INFO] task clears the symfony cache.
+      The [cache:clear|INFO] task clears the symfony cache.
 
-By default, it removes the cache for all available types, all applications,
-and all environments.
+      By default, it removes the cache for all available types, all applications,
+      and all environments.
 
-You can restrict by type, application, or environment:
+      You can restrict by type, application, or environment:
 
-For example, to clear the [frontend|COMMENT] application cache:
+      For example, to clear the [frontend|COMMENT] application cache:
 
-  [./symfony cache:clear --app=frontend|INFO]
+        [./symfony cache:clear --app=frontend|INFO]
 
-To clear the cache for the [prod|COMMENT] environment for the [frontend|COMMENT] application:
+      To clear the cache for the [prod|COMMENT] environment for the [frontend|COMMENT] application:
 
-  [./symfony cache:clear --app=frontend --env=prod|INFO]
+        [./symfony cache:clear --app=frontend --env=prod|INFO]
 
-To clear the cache for all [prod|COMMENT] environments:
+      To clear the cache for all [prod|COMMENT] environments:
 
-  [./symfony cache:clear --env=prod|INFO]
+        [./symfony cache:clear --env=prod|INFO]
 
-To clear the [config|COMMENT] cache for all [prod|COMMENT] environments:
+      To clear the [config|COMMENT] cache for all [prod|COMMENT] environments:
 
-  [./symfony cache:clear --type=config --env=prod|INFO]
+        [./symfony cache:clear --type=config --env=prod|INFO]
 
-The built-in types are: [config|COMMENT], [i18n|COMMENT], [routing|COMMENT], [module|COMMENT]
-and [template|COMMENT].
+      The built-in types are: [config|COMMENT], [i18n|COMMENT], [routing|COMMENT], [module|COMMENT]
+      and [template|COMMENT].
 
-EOF;
+      EOF;
   }
 
   /**
    * @see sfTask
    */
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    if (!sfConfig::get('sf_cache_dir') || !is_dir(sfConfig::get('sf_cache_dir')))
-    {
+    if ( ! sfConfig::get('sf_cache_dir') || ! is_dir(sfConfig::get('sf_cache_dir'))) {
       throw new sfException(sprintf('Cache directory "%s" does not exist.', sfConfig::get('sf_cache_dir')));
     }
 
     // finder to find directories (1 level) in a directory
-    $dirFinder = sfFinder::type('dir')->discard('.*')->maxdepth(0)->relative();
+    $finder = sfFinder::type('dir')->discard('.*')->maxdepth(0)->relative();
 
     // iterate through applications
-    $apps = null === $options['app'] ? $dirFinder->in(sfConfig::get('sf_apps_dir')) : array($options['app']);
-    foreach ($apps as $app)
-    {
+    $apps = null === $options['app'] ? $finder->in(sfConfig::get('sf_apps_dir')) : [$options['app']];
+
+    foreach ($apps as $app) {
       $this->checkAppExists($app);
 
-      if (!is_dir(sfConfig::get('sf_cache_dir').'/'.$app))
-      {
+      if ( ! is_dir(sfConfig::get('sf_cache_dir') . '/' . $app)) {
         continue;
       }
 
       // iterate through environments
-      $envs = null === $options['env'] ? $dirFinder->in(sfConfig::get('sf_cache_dir').'/'.$app) : array($options['env']);
-      foreach ($envs as $env)
-      {
-        if (!is_dir(sfConfig::get('sf_cache_dir').'/'.$app.'/'.$env))
-        {
+      $envs = null === $options['env'] ? $finder->in(sfConfig::get('sf_cache_dir') . '/' . $app) : [$options['env']];
+      foreach ($envs as $env) {
+        if ( ! is_dir(sfConfig::get('sf_cache_dir') . '/' . $app . '/' . $env)) {
           continue;
         }
 
@@ -106,16 +101,21 @@ EOF;
 
         $this->lock($app, $env);
 
-        $event = $appConfiguration->getEventDispatcher()->notifyUntil(new sfEvent($this, 'task.cache.clear', array('app' => $appConfiguration, 'env' => $env, 'type' => $options['type'])));
-        if (!$event->isProcessed())
-        {
-          // default cleaning process
-          $method = $this->getClearCacheMethod($options['type']);
-          if (!method_exists($this, $method))
-          {
-            throw new InvalidArgumentException(sprintf('Do not know how to remove cache for type "%s".', $options['type']));
-          }
-          $this->$method($appConfiguration);
+        $event = $appConfiguration->getEventDispatcher()->notifyUntil(
+          new sfEvent($this, 'task.cache.clear', ['app' => $appConfiguration, 'env' => $env, 'type' => $options['type']])
+        );
+
+        if ( ! $event->isProcessed()) {
+          match (strtolower($options['type'])) {
+            'all'     => $this->clearAllCache($appConfiguration),
+            'config'  => $this->clearConfigCache($appConfiguration),
+            'module'  => $this->clearModuleCache($appConfiguration),
+            'i18n'    => $this->clearI18NCache($appConfiguration),
+            'routing' => $this->clearRoutingCache($appConfiguration),
+            default   => throw new InvalidArgumentException(
+              sprintf('Do not know how to remove cache for type "%s".', $options['type']),
+            ),
+          };
         }
 
         $this->unlock($app, $env);
@@ -123,18 +123,14 @@ EOF;
     }
 
     // clear global cache
-    if (null === $options['app'] && 'all' == $options['type'])
-    {
+    if (null === $options['app'] && 'all' == $options['type']) {
       $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in(sfConfig::get('sf_cache_dir')));
     }
+
+    return 0;
   }
 
-  protected function getClearCacheMethod($type)
-  {
-    return sprintf('clear%sCache', ucfirst($type));
-  }
-
-  protected function clearAllCache(sfApplicationConfiguration $appConfiguration)
+  protected function clearAllCache(sfApplicationConfiguration $appConfiguration): void
   {
     $this->clearI18NCache($appConfiguration);
     $this->clearRoutingCache($appConfiguration);
@@ -142,96 +138,83 @@ EOF;
     $this->clearConfigCache($appConfiguration);
   }
 
-  protected function clearConfigCache(sfApplicationConfiguration $appConfiguration)
+  protected function clearConfigCache(sfApplicationConfiguration $appConfiguration): void
   {
-    $subDir = sfConfig::get('sf_cache_dir').'/'.$appConfiguration->getApplication().'/'.$appConfiguration->getEnvironment().'/config';
+    $subDir = sfConfig::get('sf_cache_dir') . '/' . $appConfiguration->getApplication() . '/' . $appConfiguration->getEnvironment() . '/config';
 
-    if (is_dir($subDir))
-    {
+    if (is_dir($subDir)) {
       // remove cache files
       $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in($subDir));
     }
   }
 
-  protected function clearI18NCache(sfApplicationConfiguration $appConfiguration)
+  protected function clearI18NCache(sfApplicationConfiguration $appConfiguration): void
   {
     $config = $this->getFactoriesConfiguration($appConfiguration);
 
-    if (isset($config['i18n']['param']['cache']))
-    {
+    if (isset($config['i18n']['param']['cache'])) {
       $this->cleanCacheFromFactoryConfig($config['i18n']['param']['cache']);
     }
   }
 
-  protected function clearRoutingCache(sfApplicationConfiguration $appConfiguration)
+  protected function clearRoutingCache(sfApplicationConfiguration $appConfiguration): void
   {
     $config = $this->getFactoriesConfiguration($appConfiguration);
 
-    if (isset($config['routing']['param']['cache']))
-    {
+    if (isset($config['routing']['param']['cache'])) {
       $this->cleanCacheFromFactoryConfig($config['routing']['param']['cache']);
     }
   }
 
-  protected function clearModuleCache(sfApplicationConfiguration $appConfiguration)
+  protected function clearModuleCache(sfApplicationConfiguration $appConfiguration): void
   {
-    $subDir = sfConfig::get('sf_cache_dir').'/'.$appConfiguration->getApplication().'/'.$appConfiguration->getEnvironment().'/modules';
+    $subDir = sfConfig::get('sf_cache_dir') . '/' . $appConfiguration->getApplication() . '/' . $appConfiguration->getEnvironment() . '/modules';
 
-    if (is_dir($subDir))
-    {
+    if (is_dir($subDir)) {
       // remove cache files
       $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in($subDir));
     }
   }
 
-  public function getFactoriesConfiguration(sfApplicationConfiguration $appConfiguration)
+  public function getFactoriesConfiguration(sfApplicationConfiguration $appConfiguration): array
   {
     $app = $appConfiguration->getApplication();
     $env = $appConfiguration->getEnvironment();
 
-    if (!isset($this->config[$app]))
-    {
-      $this->config[$app] = array();
+    if ( ! isset($this->config[$app])) {
+      $this->config[$app] = [];
     }
 
-    if (!isset($this->config[$app][$env]))
-    {
+    if ( ! isset($this->config[$app][$env])) {
       $this->config[$app][$env] = sfFactoryConfigHandler::getConfiguration($appConfiguration->getConfigPaths('config/factories.yml'));
     }
 
-    return $this->config[$app][$env] ;
+    return $this->config[$app][$env];
   }
 
-  public function cleanCacheFromFactoryConfig($class, $parameters = array())
+  public function cleanCacheFromFactoryConfig(array | string $class, array $parameters = []): void
   {
-    if ($class)
-    {
+    if ($class) {
       // the standard array with ['class'] and ['param'] can be passed as well
-      if (is_array($class))
-      {
-        if (!isset($class['class']))
-        {
+      if (is_array($class)) {
+        if ( ! isset($class['class'])) {
           return;
         }
-        if (isset($class['param']))
-        {
+        if (isset($class['param'])) {
           $parameters = $class['param'];
         }
         $class = $class['class'];
       }
-      try
-      {
+      try {
         $cache = new $class($parameters);
         $cache->clean();
-      }
-      catch (Exception $e)
-      {
+      } catch (Exception $e) {
         $this->logSection('error', $e->getMessage(), 255, 'ERROR');
       }
     }
   }
 
-  protected function lock($app, $env)
+  protected function lock(string $app, string $env): void
   {
     // create a lock file
     $this->getFilesystem()->touch($this->getLockFile($app, $env));
@@ -240,14 +223,14 @@ EOF;
     $this->getFilesystem()->chmod($this->getLockFile($app, $env), 0777);
   }
 
-  protected function unlock($app, $env)
+  protected function unlock(string $app, string $env): void
   {
     // release lock
     $this->getFilesystem()->remove($this->getLockFile($app, $env));
   }
 
-  protected function getLockFile($app, $env)
+  protected function getLockFile(string $app, string $env): string
   {
-    return sfConfig::get('sf_data_dir').'/'.$app.'_'.$env.'-cli.lck';
+    return sfConfig::get('sf_data_dir') . '/' . $app . '_' . $env . '-cli.lck';
   }
 }

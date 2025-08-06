@@ -3,50 +3,56 @@
 class sfCookie
 {
   /** @var string */
-  private $name;
+  private string $name;
+
   /** @var string|null */
-  private $value;
+  private string | null $value;
+
   /** @var \DateTimeInterface|null */
-  private $expires;
+  private DateTimeInterface | null $expires;
+
   /** @var string|null */
-  private $domain;
+  private string | null $domain;
+
   /** @var string */
-  private $path;
+  private string $path;
+
   /** @var bool */
-  private $httpOnly;
+  private bool $httpOnly;
+
   /** @var bool */
-  private $secure;
+  private bool $secure;
+
   /** @var string */
-  private $sameSite;
+  private string $sameSite;
 
   /**
-   * @param  string                             $name
-   * @param  string|null                        $value
-   * @param  DateTimeInterface|string|int|null  $expires
-   * @param  string|null                        $domain
-   * @param  string                             $path
-   * @param  bool                               $httpOnly
-   * @param  bool                               $secure
-   * @param  string                             $sameSite
+   * @param string                            $name
+   * @param string|null                       $value
+   * @param DateTimeInterface|string|int|null $expires
+   * @param string|null                       $domain
+   * @param string                            $path
+   * @param bool                              $httpOnly
+   * @param bool                              $secure
+   * @param string                            $sameSite
    */
   public function __construct(
-    string $name,
-    ?string $value,
-    $expires = null,
-    string $path = '/',
-    ?string $domain = null,
-    bool $httpOnly = false,
-    bool $secure = false,
-    string $sameSite = 'Lax'
-  )
-  {
-    $this->name = $name;
-    $this->value = $value;
-    $this->expires = $this->parseExpires($expires);
-    $this->path = $path;
-    $this->domain = $domain;
+    string                                  $name,
+    ?string                                 $value,
+    DateTimeInterface | string | int | null $expires = null,
+    string                                  $path = '/',
+    string | null                           $domain = null,
+    bool                                    $httpOnly = false,
+    bool                                    $secure = false,
+    string                                  $sameSite = 'Lax'
+  ) {
+    $this->name     = $name;
+    $this->value    = $value;
+    $this->expires  = $this->parseExpires($expires);
+    $this->path     = $path;
+    $this->domain   = $domain;
     $this->httpOnly = $httpOnly;
-    $this->secure = $secure;
+    $this->secure   = $secure;
     $this->sameSite = $sameSite;
   }
 
@@ -71,11 +77,11 @@ class sfCookie
   }
 
   /**
-   * @param  \DateTimeInterface|string|int|null  $expires
+   * @param \DateTimeInterface|string|int|null $expires
    * @return \DateTimeInterface|null
    * @throws \InvalidArgumentException
    */
-  private function parseExpires($expires): ?DateTimeInterface
+  private function parseExpires(DateTimeInterface | string | int | null $expires): ?DateTimeInterface
   {
     if ($expires === null) {
       return null;
@@ -86,7 +92,7 @@ class sfCookie
     }
 
     try {
-      if (is_string($expires) && !is_numeric($expires)) {
+      if (is_string($expires) && ! is_numeric($expires)) {
         return new DateTime($expires);
       }
       return DateTime::createFromFormat('U', $expires);

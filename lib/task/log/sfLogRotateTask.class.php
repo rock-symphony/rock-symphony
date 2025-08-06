@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -19,123 +19,116 @@
 class sfLogRotateTask extends sfBaseTask
 {
   /** the default period to rotate logs in days */
-  const DEF_PERIOD = 7;
+  public const DEF_PERIOD = 7;
 
   /** the default number of log historys to store, one history is created for every period */
-  const DEF_HISTORY = 10;
+  public const DEF_HISTORY = 10;
 
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addArguments(array(
+    $this->addArguments([
       new sfCommandArgument('application', sfCommandArgument::REQUIRED, 'The application name'),
       new sfCommandArgument('env', sfCommandArgument::REQUIRED, 'The environment name'),
-    ));
+    ]);
 
-    $this->addOptions(array(
+    $this->addOptions([
       new sfCommandOption('history', null, sfCommandOption::PARAMETER_REQUIRED, 'The maximum number of old log files to keep', self::DEF_HISTORY),
       new sfCommandOption('period', null, sfCommandOption::PARAMETER_REQUIRED, 'The period in days', self::DEF_PERIOD),
-    ));
+    ]);
 
-    $this->namespace = 'log';
-    $this->name = 'rotate';
+    $this->namespace        = 'log';
+    $this->name             = 'rotate';
     $this->briefDescription = 'Rotates an application\'s log files';
 
     $this->detailedDescription = <<<EOF
-The [log:rotate|INFO] task rotates application log files for a given
-environment:
+      The [log:rotate|INFO] task rotates application log files for a given
+      environment:
 
-  [./symfony log:rotate frontend dev|INFO]
+        [./symfony log:rotate frontend dev|INFO]
 
-You can specify a [period|COMMENT] or a [history|COMMENT] option:
+      You can specify a [period|COMMENT] or a [history|COMMENT] option:
 
-  [./symfony log:rotate frontend dev --history=10 --period=7|INFO]
-EOF;
+        [./symfony log:rotate frontend dev --history=10 --period=7|INFO]
+      EOF;
   }
 
   /**
    * @see sfTask
    */
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
     $this->rotate($arguments['application'], $arguments['env'], $options['period'], $options['history'], true);
+
+    return 0;
   }
 
   /**
    * Rotates log file.
    *
-   * @param  string $app       Application name
-   * @param  string $env       Enviroment name
-   * @param  string $period    Period 
-   * @param  string $history   History
-   * @param  bool   $override  Override
+   * @param string   $app       Application name
+   * @param string   $env       Environment name
+   * @param int|null $period    Period to rotate logs (in days)
+   * @param int|null $history   Number of log histories to store, one history is created for every period
+   * @param bool     $override  Override
    *
    * @author Joe Simms
    **/
-  public function rotate($app, $env, $period = null, $history = null, $override = false)
+  public function rotate(string $app, string $env, int | null $period = null, int | null $history = null, bool $override = false): void
   {
-    $logfile = $app.'_'.$env;
-    $logdir = sfConfig::get('sf_log_dir');
+    $logfile = $app . '_' . $env;
+    $logdir  = sfConfig::get('sf_log_dir');
 
     // set history and period values if not passed to default values
-    $period = isset($period) ? $period : self::DEF_PERIOD;
-    $history = isset($history) ? $history : self::DEF_HISTORY;
+    $period  = $period ?? self::DEF_PERIOD;
+    $history = $history ?? self::DEF_HISTORY;
 
     // get todays date
     $today = date('Ymd');
 
     // check history folder exists
-    if (!is_dir($logdir.'/history'))
-    {
-      $this->getFilesystem()->mkdirs($logdir.'/history');
+    if ( ! is_dir($logdir . '/history')) {
+      $this->getFilesystem()->mkdirs($logdir . '/history');
     }
 
     // determine date of last rotation
-    $logs = sfFinder::type('file')->maxdepth(1)->name($logfile.'_*.log')->sort_by_name()->in($logdir.'/history');
+    $logs      = sfFinder::type('file')->maxdepth(1)->name($logfile . '_*.log')->sort_by_name()->in($logdir . '/history');
     $recentlog = is_array($logs) ? array_pop($logs) : null;
 
-    if ($recentlog)
-    {
+    if ($recentlog) {
       // calculate date to rotate logs on
       $lastRotatedOn = filemtime($recentlog);
-      $rotateOn = date('Ymd', strtotime('+ '.$period.' days', $lastRotatedOn));
-    }
-    else
-    {
+      $rotateOn      = date('Ymd', strtotime('+ ' . $period . ' days', $lastRotatedOn));
+    } else {
       // no rotation has occured yet
       $rotateOn = null;
     }
 
-    $srcLog = $logdir.'/'.$logfile.'.log';
-    $destLog = $logdir.'/history/'.$logfile.'_'.$today.'.log';
+    $srcLog  = $logdir . '/' . $logfile . '.log';
+    $destLog = $logdir . '/history/' . $logfile . '_' . $today . '.log';
 
     // if rotate log on date doesn't exist, or that date is today, then rotate the log
-    if (!$rotateOn || ($rotateOn == $today) || $override)
-    {
+    if ( ! $rotateOn || ($rotateOn == $today) || $override) {
       // create a lock file
-      $lockFile = sfConfig::get('sf_data_dir').'/'.$app.'_'.$env.'-cli.lck';
+      $lockFile = sfConfig::get('sf_data_dir') . '/' . $app . '_' . $env . '-cli.lck';
       $this->getFilesystem()->touch($lockFile);
 
       // change mode so the web user can remove it if we die
       $this->getFilesystem()->chmod($lockFile, 0777);
 
       // if log file exists rotate it
-      if (file_exists($srcLog))
-      {
+      if (file_exists($srcLog)) {
         // check if the log file has already been rotated today
-        if (file_exists($destLog))
-        {
+        if (file_exists($destLog)) {
           // append log to existing rotated log
           $handle = fopen($destLog, 'a');
           $append = file_get_contents($srcLog);
 
           $this->logSection('file+', $destLog);
           fwrite($handle, $append);
-        }
-        else
-        {
+        } else {
           // copy log
           $this->getFilesystem()->copy($srcLog, $destLog);
         }
@@ -144,11 +137,10 @@ EOF;
         $this->getFilesystem()->remove($srcLog);
 
         // get all log history files for this application and environment
-        $newLogs = sfFinder::type('file')->maxdepth(1)->name($logfile.'_*.log')->sort_by_name()->in($logdir.'/history');
+        $newLogs = sfFinder::type('file')->maxdepth(1)->name($logfile . '_*.log')->sort_by_name()->in($logdir . '/history');
 
         // if the number of logs in history exceeds history then remove the oldest log
-        if (count($newLogs) > $history)
-        {
+        if (count($newLogs) > $history) {
           $this->getFilesystem()->remove($newLogs[0]);
         }
       }

@@ -19,12 +19,11 @@
  */
 abstract class sfResponse
 {
-  /** @var array */
-  protected $options = [];
-  /** @var sfEventDispatcher */
-  protected $dispatcher;
-  /** @var string */
-  protected $content = '';
+  protected array $options = [];
+
+  protected sfEventDispatcher $dispatcher;
+
+  protected string $content = '';
 
   /**
    * Class constructor.

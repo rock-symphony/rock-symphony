@@ -21,7 +21,7 @@
 abstract class sfStorage
 {
   /** @var array */
-  protected $options = [];
+  protected array $options = [];
 
   /**
    * Class constructor.
@@ -34,7 +34,7 @@ abstract class sfStorage
    *
    * @throws sfInitializationException If an error occurs while initializing this sfStorage
    */
-  public function __construct($options = [])
+  public function __construct(array $options = [])
   {
     $this->options = array_merge(
       ['auto_shutdown' => true],
@@ -68,7 +68,7 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while reading data from this storage
    */
-  abstract public function read(string $key);
+  abstract public function read(string $key): mixed;
 
   /**
    * Regenerates id that represents this storage.
@@ -90,7 +90,7 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while removing data from this storage
    */
-  abstract public function remove(string $key);
+  abstract public function remove(string $key): mixed;
 
   /**
    * Executes the shutdown procedure.
@@ -109,5 +109,5 @@ abstract class sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while writing to this storage
    */
-  abstract public function write(string $key, $data): void;
+  abstract public function write(string $key, mixed $data): void;
 }

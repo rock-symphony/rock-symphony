@@ -19,11 +19,14 @@
 class sfFileLogger extends sfLogger
 {
   /** @var string */
-  protected $type = 'symfony';
+  protected string $type = 'symfony';
+
   /** @var string */
-  protected $format = '%time% %type% [%priority%] %message%%EOL%';
+  protected string $format = '%time% %type% [%priority%] %message%%EOL%';
+
   /** @var string */
-  protected $timeFormat = 'M d H:i:s';
+  protected string $timeFormat = 'M d H:i:s';
+
   /** @var resource */
   protected $fp;
 
@@ -39,8 +42,8 @@ class sfFileLogger extends sfLogger
    * - dir_mode:    The mode to use when creating a directory (default to 0777)
    * - file_mode:   The mode to use when creating a file (default to 0666)
    *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param array             $options     An array of options.
    *
    * @throws sfConfigurationException
    * @throws sfInitializationException
@@ -48,31 +51,27 @@ class sfFileLogger extends sfLogger
    */
   public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    if (!isset($options['file']))
-    {
+    if ( ! isset($options['file'])) {
       throw new sfConfigurationException('You must provide a "file" parameter for this logger.');
     }
 
-    $this->format = $options['format'] ?? $this->format;
+    $this->format     = $options['format'] ?? $this->format;
     $this->timeFormat = $options['time_format'] ?? $this->timeFormat;
-    $this->type = $options['type'] ?? $this->type;
+    $this->type       = $options['type'] ?? $this->type;
 
     $dir     = dirname($options['file']);
     $dirMode = $options['dir_mode'] ?? 0777;
-    if (!is_dir($dir) && !@mkdir($dir, $dirMode, true) && !is_dir($dir))
-    {
+    if ( ! is_dir($dir) && ! @mkdir($dir, $dirMode, true) && ! is_dir($dir)) {
       throw new \RuntimeException(sprintf('Logger was not able to create a directory "%s"', $dir));
     }
 
     $fileExists = file_exists($options['file']);
-    if (!is_writable($dir) || ($fileExists && !is_writable($options['file'])))
-    {
+    if ( ! is_writable($dir) || ($fileExists && ! is_writable($options['file']))) {
       throw new sfFileException(sprintf('Unable to open the log file "%s" for writing.', $options['file']));
     }
 
     $this->fp = fopen($options['file'], 'a');
-    if (!$fileExists)
-    {
+    if ( ! $fileExists) {
       chmod($options['file'], isset($options['file_mode']) ? $options['file_mode'] : 0666);
     }
 
@@ -87,25 +86,32 @@ class sfFileLogger extends sfLogger
    */
   protected function doLog(string $message, int $priority): void
   {
+    if ( ! is_resource($this->fp)) {
+      // The stream must have been closed already (see shutdown())
+      return;
+    }
+
     flock($this->fp, LOCK_EX);
-    fwrite($this->fp, strtr($this->format, array(
+
+    fwrite($this->fp, strtr($this->format, [
       '%type%'     => $this->type,
       '%message%'  => $message,
       '%time%'     => date($this->timeFormat),
       '%priority%' => $this->getPriority($priority),
       '%EOL%'      => PHP_EOL,
-    )));
+    ]));
+
     flock($this->fp, LOCK_UN);
   }
 
   /**
    * Returns the priority string to use in log messages.
    *
-   * @param  string $priority The priority constant
+   * @param int $priority  The priority constant
    *
    * @return string The priority to use in log messages
    */
-  protected function getPriority($priority)
+  protected function getPriority(int $priority): string
   {
     return sfLogger::getPriorityName($priority);
   }
@@ -113,10 +119,9 @@ class sfFileLogger extends sfLogger
   /**
    * Executes the shutdown method.
    */
-  public function shutdown()
+  public function shutdown(): void
   {
-    if (is_resource($this->fp))
-    {
+    if (is_resource($this->fp)) {
       fclose($this->fp);
     }
   }

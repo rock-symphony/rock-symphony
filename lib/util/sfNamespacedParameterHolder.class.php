@@ -88,19 +88,13 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return mixed A parameter value, if the parameter exists, otherwise null
    */
-  public function & get(string $name, $default = null, string $ns = null)
+  public function & get(string $name, mixed $default = null, string | null $ns = null)
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
-    if (isset($this->parameters[$ns][$name]))
-    {
-      $value = & $this->parameters[$ns][$name];
-    }
-    else
-    {
+    if (isset($this->parameters[$ns][$name])) {
+      $value = &$this->parameters[$ns][$name];
+    } else {
       $value = $default;
     }
 
@@ -114,19 +108,15 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An indexed array of parameter names, if the namespace exists, otherwise null
    */
-  public function getNames(string $ns = null): array
+  public function getNames(string | null $ns = null): array
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
-    if (isset($this->parameters[$ns]))
-    {
+    if (isset($this->parameters[$ns])) {
       return array_keys($this->parameters[$ns]);
     }
 
-    return array();
+    return [];
   }
 
   /**
@@ -151,17 +141,13 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An associative array of parameters
    */
-  public function & getAll(string $ns = null): array
+  public function & getAll(string | null $ns = null): array
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
     $parameters = [];
 
-    if (isset($this->parameters[$ns]))
-    {
+    if (isset($this->parameters[$ns])) {
       $parameters = $this->parameters[$ns];
     }
 
@@ -176,12 +162,9 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return bool true, if the parameter exists, otherwise false
    */
-  public function has(string $name, string $ns = null): bool
+  public function has(string $name, string | null $ns = null): bool
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
     return isset($this->parameters[$ns][$name]);
   }
@@ -207,17 +190,13 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return mixed A parameter value, if the parameter was removed, otherwise default
    */
-  public function remove(string $name, $default = null, string $ns = null)
+  public function remove(string $name, mixed $default = null, string | null $ns = null)
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
     $retval = $default;
 
-    if (isset($this->parameters[$ns]) && array_key_exists($name, $this->parameters[$ns]))
-    {
+    if (isset($this->parameters[$ns]) && array_key_exists($name, $this->parameters[$ns])) {
       $retval = $this->parameters[$ns][$name];
       unset($this->parameters[$ns][$name]);
     }
@@ -232,17 +211,13 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array|null
    */
-  public function & removeNamespace(string $ns = null): ?array
+  public function & removeNamespace(string | null $ns = null): ?array
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
     $retval = null;
 
-    if (isset($this->parameters[$ns]))
-    {
+    if (isset($this->parameters[$ns])) {
       $retval =& $this->parameters[$ns];
       unset($this->parameters[$ns]);
     }
@@ -259,16 +234,12 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed        $value A parameter value
    * @param string|null  $ns    A parameter namespace
    */
-  public function set(string $name, $value, string $ns = null): void
+  public function set(string $name, mixed $value, string | null $ns = null): void
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
-    if (!isset($this->parameters[$ns]))
-    {
-      $this->parameters[$ns] = array();
+    if ( ! isset($this->parameters[$ns])) {
+      $this->parameters[$ns] = [];
     }
 
     $this->parameters[$ns][$name] = $value;
@@ -283,16 +254,12 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed        $value A reference to a parameter value
    * @param string|null  $ns    A parameter namespace
    */
-  public function setByRef(string $name, & $value, string $ns = null): void
+  public function setByRef(string $name, mixed & $value, string | null $ns = null): void
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
-    if (!isset($this->parameters[$ns]))
-    {
-      $this->parameters[$ns] = array();
+    if ( ! isset($this->parameters[$ns])) {
+      $this->parameters[$ns] = [];
     }
 
     $this->parameters[$ns][$name] =& $value;
@@ -307,20 +274,15 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array        $parameters An associative array of parameters and their associated values
    * @param string|null  $ns         A parameter namespace
    */
-  public function add(array $parameters, string $ns = null): void
+  public function add(array $parameters, string | null $ns = null): void
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
-    }
+    $ns = $ns ?: $this->default_namespace;
 
-    if (!isset($this->parameters[$ns]))
-    {
+    if ( ! isset($this->parameters[$ns])) {
       $this->parameters[$ns] = [];
     }
 
-    foreach ($parameters as $key => $value)
-    {
+    foreach ($parameters as $key => $value) {
       $this->parameters[$ns][$key] = $value;
     }
   }
@@ -334,20 +296,15 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array        $parameters An associative array of parameters and references to their associated values
    * @param string|null  $ns         A parameter namespace
    */
-  public function addByRef(array & $parameters, string $ns = null): void
+  public function addByRef(array & $parameters, string | null $ns = null): void
   {
-    if (!$ns)
-    {
-      $ns = $this->default_namespace;
+    $ns = $ns ?: $this->default_namespace;
+
+    if ( ! isset($this->parameters[$ns])) {
+      $this->parameters[$ns] = [];
     }
 
-    if (!isset($this->parameters[$ns]))
-    {
-      $this->parameters[$ns] = array();
-    }
-
-    foreach ($parameters as $key => &$value)
-    {
+    foreach ($parameters as $key => &$value) {
       $this->parameters[$ns][$key] =& $value;
     }
   }
