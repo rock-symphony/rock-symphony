@@ -86,6 +86,11 @@ class sfFileLogger extends sfLogger
    */
   protected function doLog(string $message, int $priority): void
   {
+    if ( ! is_resource($this->fp)) {
+      // The stream must have been closed already (see shutdown())
+      return;
+    }
+
     flock($this->fp, LOCK_EX);
 
     fwrite($this->fp, strtr($this->format, [
