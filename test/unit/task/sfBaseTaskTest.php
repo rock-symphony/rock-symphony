@@ -13,8 +13,9 @@ require_once sfConfig::get('sf_symfony_lib_dir').'/vendor/lime/lime.php';
 
 class TestTask extends sfBaseTask
 {
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
+    return 0;
   }
 }
 
@@ -33,30 +34,31 @@ $t->diag('->run()');
 
 class ApplicationTask extends sfBaseTask
 {
-  protected function configure()
+  protected function configure(): void
   {
     $this->addOption('application', null, sfCommandOption::PARAMETER_REQUIRED, '', true);
   }
 
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    if (!$this->configuration instanceof sfApplicationConfiguration)
-    {
+    if ( ! $this->configuration instanceof sfApplicationConfiguration) {
       throw new Exception('This task requires an application configuration be loaded.');
     }
+
+    return 0;
   }
 
-  public function getServiceContainer()
+  public function getServiceContainer(): sfServiceContainer
   {
     return parent::getServiceContainer();
   }
 
-  public function getRouting()
+  public function getRouting(): sfRouting
   {
     return parent::getRouting();
   }
 
-  public function getMailer()
+  public function getMailer(): sfMailer
   {
     return parent::getMailer();
   }

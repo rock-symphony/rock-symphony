@@ -18,35 +18,50 @@
  */
 class sfCommandArgument
 {
-  const REQUIRED = 1;
-  const OPTIONAL = 2;
+  public const REQUIRED = 1;
+  public const OPTIONAL = 2;
 
-  const IS_ARRAY = 4;
+  public const IS_ARRAY = 4;
 
-  protected
-    $name    = null,
-    $mode    = null,
-    $default = null,
-    $help    = '';
+  /**
+   * The argument name
+   */
+  protected string $name;
+
+  /**
+   * The argument mode
+   *
+   * @see self::REQUIRED
+   * @see self::OPTIONAL
+   * @see self::IS_ARRAY
+   */
+  protected int $mode;
+
+  /**
+   * The default value
+   */
+  protected mixed $default;
+
+  /**
+   * Help text
+   */
+  protected string $help;
 
   /**
    * Constructor.
    *
-   * @param string  $name    The argument name
-   * @param integer $mode    The argument mode: self::REQUIRED or self::OPTIONAL
-   * @param string  $help    A help text
-   * @param mixed   $default The default value (for self::OPTIONAL mode only)
+   * @param string   $name     The argument name
+   * @param int|null $mode     The argument mode: self::REQUIRED or self::OPTIONAL
+   * @param string   $help     A help text
+   * @param mixed    $default  The default value (for self::OPTIONAL mode only)
    *
    * @throws sfCommandException
    */
-  public function __construct($name, $mode = null, $help = '', $default = null)
+  public function __construct(string $name, int | null $mode = null, string $help = '', mixed $default = null)
   {
-    if (null === $mode)
-    {
+    if (null === $mode) {
       $mode = self::OPTIONAL;
-    }
-    else if (is_string($mode) || $mode > 7)
-    {
+    } elseif (is_string($mode) || $mode > 7) {
       throw new sfCommandException(sprintf('Argument mode "%s" is not valid.', $mode));
     }
 
@@ -62,7 +77,7 @@ class sfCommandArgument
    *
    * @return string The argument name
    */
-  public function getName()
+  public function getName(): string
   {
     return $this->name;
   }
@@ -70,7 +85,7 @@ class sfCommandArgument
   /**
    * Returns true if the argument is required.
    *
-   * @return Boolean true if parameter mode is self::REQUIRED, false otherwise
+   * @return bool true if parameter mode is self::REQUIRED, false otherwise
    */
   public function isRequired()
   {
@@ -80,7 +95,7 @@ class sfCommandArgument
   /**
    * Returns true if the argument can take multiple values.
    *
-   * @return Boolean true if mode is self::IS_ARRAY, false otherwise
+   * @return bool true if mode is self::IS_ARRAY, false otherwise
    */
   public function isArray()
   {
@@ -90,25 +105,20 @@ class sfCommandArgument
   /**
    * Sets the default value.
    *
-   * @param mixed $default The default value
+   * @param mixed $default  The default value
    *
    * @throws sfCommandException
    */
   public function setDefault($default = null)
   {
-    if (self::REQUIRED === $this->mode && null !== $default)
-    {
+    if (self::REQUIRED === $this->mode && null !== $default) {
       throw new sfCommandException('Cannot set a default value except for sfCommandParameter::OPTIONAL mode.');
     }
 
-    if ($this->isArray())
-    {
-      if (null === $default)
-      {
-        $default = array();
-      }
-      else if (!is_array($default))
-      {
+    if ($this->isArray()) {
+      if (null === $default) {
+        $default = [];
+      } elseif ( ! is_array($default)) {
         throw new sfCommandException('A default value for an array argument must be an array.');
       }
     }

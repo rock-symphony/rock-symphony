@@ -21,36 +21,36 @@ class sfProjectSendEmailsTask extends sfBaseTask
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addOptions(array(
+    $this->addOptions([
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', true),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
       new sfCommandOption('message-limit', null, sfCommandOption::PARAMETER_OPTIONAL, 'The maximum number of messages to send', 0),
       new sfCommandOption('time-limit', null, sfCommandOption::PARAMETER_OPTIONAL, 'The time limit for sending messages (in seconds)', 0),
-    ));
+    ]);
 
     $this->namespace = 'project';
-    $this->name = 'send-emails';
+    $this->name      = 'send-emails';
 
     $this->briefDescription = 'Sends emails stored in a queue';
 
     $this->detailedDescription = <<<EOF
-The [project:send-emails|INFO] sends emails stored in a queue:
+      The [project:send-emails|INFO] sends emails stored in a queue:
 
-  [php symfony project:send-emails|INFO]
+        [php symfony project:send-emails|INFO]
 
-You can limit the number of messages to send:
+      You can limit the number of messages to send:
 
-  [php symfony project:send-emails --message-limit=10|INFO]
+        [php symfony project:send-emails --message-limit=10|INFO]
 
-Or limit to time (in seconds):
+      Or limit to time (in seconds):
 
-  [php symfony project:send-emails --time-limit=10|INFO]
-EOF;
+        [php symfony project:send-emails --time-limit=10|INFO]
+      EOF;
   }
 
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
     $databaseManager = new sfDatabaseManager($this->configuration);
 
@@ -61,5 +61,7 @@ EOF;
     $sent = $this->getMailer()->flushQueue();
 
     $this->logSection('project', sprintf('sent %s emails', $sent));
+
+    return 0;
   }
 }
