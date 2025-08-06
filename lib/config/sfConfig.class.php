@@ -19,7 +19,7 @@
 class sfConfig
 {
   /** @var array */
-  protected static $config = [];
+  protected static array $config = [];
 
   /**
    * Retrieves a config parameter.
@@ -29,9 +29,9 @@ class sfConfig
    *
    * @return mixed A config parameter value, if the config parameter exists, otherwise null
    */
-  public static function get(string $name, $default = null)
+  public static function get(string $name, mixed $default = null): mixed
   {
-    return isset(self::$config[$name]) ? self::$config[$name] : $default;
+    return self::$config[$name] ?? $default;
   }
 
   /**
@@ -54,7 +54,7 @@ class sfConfig
    * @param string $name  A config parameter name
    * @param mixed  $value A config parameter value
    */
-  public static function set(string $name, $value): void
+  public static function set(string $name, mixed $value): void
   {
     self::$config[$name] = $value;
   }
