@@ -20,14 +20,14 @@ class sfCommandLogger extends sfConsoleLogger
   /**
    * Class constructor.
    *
-   * @param sfEventDispatcher $dispatcher A sfEventDispatcher instance
-   * @param array             $options    An array of options.
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param array             $options     An array of options.
    *
    * @throws \sfConfigurationException
    */
-  public function __construct(sfEventDispatcher $dispatcher, $options = array())
+  public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    $dispatcher->connect('command.log', array($this, 'listenToLogEvent'));
+    $dispatcher->connect('command.log', [$this, 'listenToLogEvent']);
 
     return parent::__construct($dispatcher, $options);
   }
@@ -35,25 +35,22 @@ class sfCommandLogger extends sfConsoleLogger
   /**
    * Listens to command.log events.
    *
-   * @param sfEvent $event An sfEvent instance
+   * @param sfEvent $event  An sfEvent instance
    */
-  public function listenToLogEvent(sfEvent $event)
+  public function listenToLogEvent(sfEvent $event): void
   {
     $priority = $event->getParameter('priority') ?? self::INFO;
 
     $prefix = '';
-    if ('application.log' == $event->getName())
-    {
-      $subject  = $event->getSubject();
-      $subject  = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');
+    if ('application.log' == $event->getName()) {
+      $subject = $event->getSubject();
+      $subject = is_object($subject) ? get_class($subject) : (is_string($subject) ? $subject : 'main');
 
-      $prefix = '>> '.$subject.' ';
+      $prefix = '>> ' . $subject . ' ';
     }
 
-    foreach ($event->getParameters() as $key => $message)
-    {
-      if ('priority' === $key)
-      {
+    foreach ($event->getParameters() as $key => $message) {
+      if ('priority' === $key) {
         continue;
       }
 

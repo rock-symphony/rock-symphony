@@ -11,11 +11,13 @@
 class sfEventLogger extends sfAbstractLogger implements sfLoggerInterface
 {
   /** * @var \sfEventDispatcher */
-  protected $dispatcher;
-  /** @var array */
-  protected $options;
+  protected sfEventDispatcher $dispatcher;
+
+  /** @var array<string,mixed> */
+  protected array $options;
+
   /** * @var int */
-  protected $level;
+  protected int $level;
 
   /**
    * {@inheritDoc}
