@@ -22,8 +22,8 @@
  */
 class sfWebRequest extends sfRequest
 {
-  const PORT_HTTP  = 80;
-  const PORT_HTTPS = 443;
+  public const PORT_HTTP  = 80;
+  public const PORT_HTTPS = 443;
 
   /** @var string[]|null */
   protected ?array $languages = null;
@@ -610,7 +610,7 @@ class sfWebRequest extends sfRequest
    *
    * @return mixed The cookie value
    */
-  public function getCookie(string $name, $defaultValue = null)
+  public function getCookie(string $name, mixed $defaultValue = null): mixed
   {
     $retval = $defaultValue;
 
@@ -783,7 +783,7 @@ class sfWebRequest extends sfRequest
    * @param string       $format     The format
    * @param string|array $mimeTypes  The associated mime types (the preferred one must be the first as it will be used as the content type)
    */
-  public function setFormat(string $format, $mimeTypes): void
+  public function setFormat(string $format, array | string $mimeTypes): void
   {
     $this->formats[$format] = is_array($mimeTypes) ? $mimeTypes : [$mimeTypes];
   }
@@ -900,7 +900,7 @@ class sfWebRequest extends sfRequest
    *
    * @return mixed The GET parameter value
    */
-  public function getGetParameter(string $name, $default = null)
+  public function getGetParameter(string $name, mixed $default = null): mixed
   {
     return $this->getParameters[$name] ?? sfToolkit::getArrayValueForPath($this->getParameters, $name, $default);
   }
@@ -913,7 +913,7 @@ class sfWebRequest extends sfRequest
    *
    * @return mixed The POST parameter value
    */
-  public function getPostParameter(string $name, $default = null)
+  public function getPostParameter(string $name, mixed $default = null): mixed
   {
     return $this->postParameters[$name] ?? sfToolkit::getArrayValueForPath($this->postParameters, $name, $default);
   }
@@ -926,7 +926,7 @@ class sfWebRequest extends sfRequest
    *
    * @return mixed The parameter value
    */
-  public function getUrlParameter(string $name, $default = null)
+  public function getUrlParameter(string $name, mixed $default = null): mixed
   {
     return $this->requestParameters[$name] ?? sfToolkit::getArrayValueForPath($this->requestParameters, $name, $default);
   }

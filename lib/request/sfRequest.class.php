@@ -22,12 +22,12 @@
  */
 abstract class sfRequest
 {
-  public const GET    = 'GET';
-  public const POST   = 'POST';
-  public const PUT    = 'PUT';
-  public const PATCH  = 'PATCH';
-  public const DELETE = 'DELETE';
-  public const HEAD   = 'HEAD';
+  public const GET     = 'GET';
+  public const POST    = 'POST';
+  public const PUT     = 'PUT';
+  public const PATCH   = 'PATCH';
+  public const DELETE  = 'DELETE';
+  public const HEAD    = 'HEAD';
   public const OPTIONS = 'OPTIONS';
 
   public const METHODS = [
@@ -37,13 +37,13 @@ abstract class sfRequest
     self::PATCH,
     self::DELETE,
     self::HEAD,
-    self::OPTIONS
+    self::OPTIONS,
   ];
 
   protected sfEventDispatcher $dispatcher;
-  protected ?string $content = null;
-  protected ?string $method = null;
-  protected array $options = [];
+  protected ?string           $content = null;
+  protected ?string           $method  = null;
+  protected array             $options = [];
   protected sfParameterHolder $parameterHolder;
   protected sfParameterHolder $attributeHolder;
 
@@ -54,18 +54,17 @@ abstract class sfRequest
    *
    *  * logging: Whether to enable logging or not (false by default)
    *
-   * @param  sfEventDispatcher $dispatcher  An sfEventDispatcher instance
-   * @param  array             $parameters  An associative array of initialization parameters
-   * @param  array             $attributes  An associative array of initialization attributes
-   * @param  array             $options     An associative array of options
+   * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
+   * @param array             $parameters  An associative array of initialization parameters
+   * @param array             $attributes  An associative array of initialization attributes
+   * @param array             $options     An associative array of options
    */
   public function __construct(sfEventDispatcher $dispatcher, array $parameters = [], array $attributes = [], array $options = [])
   {
     $this->dispatcher = $dispatcher;
-    $this->options = $options;
+    $this->options    = $options;
 
-    if (!isset($this->options['logging']))
-    {
+    if ( ! isset($this->options['logging'])) {
       $this->options['logging'] = false;
     }
 
@@ -77,11 +76,11 @@ abstract class sfRequest
   /**
    * Return an option value or null if option does not exist
    *
-   * @param string $name The option name.
+   * @param string $name  The option name.
    *
    * @return mixed The option value
    */
-  public function getOption(string $name)
+  public function getOption(string $name): mixed
   {
     return $this->options[$name] ?? null;
   }
@@ -99,7 +98,7 @@ abstract class sfRequest
   /**
    * Extracts parameter values from the request.
    *
-   * @param  array $names  An indexed array of parameter names to extract
+   * @param array $names  An indexed array of parameter names to extract
    *
    * @return array An associative array of parameters and their values. If
    *               a specified parameter doesn't exist an empty string will
@@ -107,13 +106,11 @@ abstract class sfRequest
    */
   public function extractParameters(array $names): array
   {
-    $array = array();
+    $array = [];
 
     $parameters = $this->parameterHolder->getAll();
-    foreach ($parameters as $key => $value)
-    {
-      if (in_array($key, $names))
-      {
+    foreach ($parameters as $key => $value) {
+      if (in_array($key, $names)) {
         $array[$key] = $value;
       }
     }
@@ -140,7 +137,7 @@ abstract class sfRequest
    */
   public function setMethod(string $method): void
   {
-    if (!in_array(strtoupper($method), self::METHODS)) {
+    if ( ! in_array(strtoupper($method), self::METHODS)) {
       throw new sfException(sprintf('Invalid request method: %s.', $method));
     }
 
@@ -183,7 +180,7 @@ abstract class sfRequest
   /**
    * Indicates whether or not an attribute exist for the current request.
    *
-   * @param  string $name  Attribute name
+   * @param string $name  Attribute name
    *
    * @return bool true, if the attribute exists otherwise false
    */
@@ -196,10 +193,10 @@ abstract class sfRequest
    * Sets an attribute for the request.
    *
    * @param string $name   Attribute name
-   * @param mixed $value  Value for the attribute
+   * @param mixed  $value  Value for the attribute
    *
    */
-  public function setAttribute(string $name, $value): void
+  public function setAttribute(string $name, mixed $value): void
   {
     $this->attributeHolder->set($name, $value);
   }
@@ -207,12 +204,12 @@ abstract class sfRequest
   /**
    * Retrieves a parameter for the current request.
    *
-   * @param string $name    Parameter name
-   * @param mixed $default Parameter default value
+   * @param string $name     Parameter name
+   * @param mixed  $default  Parameter default value
    *
    * @return mixed
    */
-  public function getParameter(string $name, $default = null)
+  public function getParameter(string $name, mixed $default = null)
   {
     return $this->parameterHolder->get($name, $default);
   }
@@ -220,7 +217,7 @@ abstract class sfRequest
   /**
    * Indicates whether or not a parameter exist for the current request.
    *
-   * @param  string $name  Parameter name
+   * @param string $name  Parameter name
    *
    * @return bool true, if the parameter exists otherwise false
    */
@@ -233,10 +230,10 @@ abstract class sfRequest
    * Sets a parameter for the current request.
    *
    * @param string $name   Parameter name
-   * @param mixed $value  Parameter value
+   * @param mixed  $value  Parameter value
    *
    */
-  public function setParameter(string $name, $value): void
+  public function setParameter(string $name, mixed $value): void
   {
     $this->parameterHolder->set($name, $value);
   }
@@ -246,10 +243,9 @@ abstract class sfRequest
    *
    * @return string|false The content or false if none is available
    */
-  public function getContent()
+  public function getContent(): string | false
   {
-    if (null === $this->content && '' === trim($this->content = file_get_contents('php://input')))
-    {
+    if (null === $this->content && '' === trim($this->content = file_get_contents('php://input'))) {
       $this->content = false;
     }
 
