@@ -22,6 +22,8 @@ abstract class sfBaseTask extends sfCommandApplicationTask
 
   protected int | null $statusStartTime = null;
 
+  protected sfFilesystem | null $filesystem = null;
+
   /**
    * @see sfTask
    * @inheritdoc
