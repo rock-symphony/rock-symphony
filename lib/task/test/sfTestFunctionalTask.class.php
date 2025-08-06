@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches functional tests.
  *
@@ -76,8 +78,11 @@ class sfTestFunctionalTask extends sfTestBaseTask
       $files = [];
 
       foreach ($arguments['controller'] as $controller) {
-        $finder = sfFinder::type('file')->follow_link()->name(basename($controller) . 'Test.php');
-        $files  = array_merge($files, $finder->in(sfConfig::get('sf_test_dir') . '/functional/' . $app . '/' . dirname($controller)));
+        $finder = Finder::files()->followLinks()->name(basename($controller) . 'Test.php');
+        $files  = [
+          ...$files,
+          ...$finder->in(sfConfig::get('sf_test_dir') . '/functional/' . $app . '/' . dirname($controller)),
+        ];
       }
 
       if (count($files) > 0) {
@@ -98,8 +103,9 @@ class sfTestFunctionalTask extends sfTestBaseTask
       $h->base_dir = sfConfig::get('sf_test_dir') . '/functional/' . $app;
 
       // filter and register functional tests
-      $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
-      $h->register($finder->in($h->base_dir));
+      $h->register(
+        Finder::files()->followLinks()->name('*Test.php')->in($h->base_dir),
+      );
 
       $ret = $h->run() ? 0 : 1;
 

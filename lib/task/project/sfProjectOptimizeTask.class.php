@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Optimizes a project for better performance.
  *
@@ -139,7 +141,7 @@ class sfProjectOptimizeTask extends sfBaseTask
   {
     $data = [];
 
-    $finder = sfFinder::type('file')->name('*Helper.php');
+    $finder = Finder::files()->name('*Helper.php');
 
     // module helpers
     foreach ($modules as $module) {
@@ -177,7 +179,9 @@ class sfProjectOptimizeTask extends sfBaseTask
     $files = [];
 
     foreach ($modules as $module) {
-      $files[$module] = sfFinder::type('file')->follow_link()->relative()->in($this->configuration->getTemplateDirs($module));
+      $files[$module] = Finder::files()->followLinks()->relative()->in(
+        $this->configuration->getTemplateDirs($module),
+      );
     }
 
     return $files;
@@ -194,7 +198,7 @@ class sfProjectOptimizeTask extends sfBaseTask
     // plugins
     $pluginSubPaths = $this->configuration->getPluginSubPaths(DIRECTORY_SEPARATOR . 'modules');
     $modules        = [];
-    foreach (sfFinder::type('dir')->maxdepth(0)->follow_link()->relative()->in($pluginSubPaths) as $module) {
+    foreach (Finder::dirs()->maxDepth(0)->followLinks()->relative()->in($pluginSubPaths) as $module) {
       if (in_array($module, sfConfig::get('sf_enabled_modules'))) {
         $modules[] = $module;
       }
@@ -205,7 +209,7 @@ class sfProjectOptimizeTask extends sfBaseTask
 
     return array_unique(
       array_merge(
-        sfFinder::type('dir')->maxdepth(0)->follow_link()->relative()->in($dirs),
+        Finder::dirs()->maxDepth(0)->followLinks()->relative()->in($dirs),
         $modules,
       ),
     );

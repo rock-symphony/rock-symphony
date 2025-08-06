@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * sfSymfonyCommandApplication manages the symfony CLI.
  *
@@ -97,8 +99,7 @@ class sfSymfonyCommandApplication extends sfCommandApplication
     // project tasks
     $dirs[] = sfConfig::get('sf_lib_dir') . '/task';
 
-    $finder = sfFinder::type('file')->name('*Task.class.php');
-    foreach ($finder->in($dirs) as $file) {
+    foreach (Finder::files()->name('*Task.class.php')->in($dirs) as $file) {
       $this->taskFiles[basename($file, '.class.php')] = $file;
     }
 

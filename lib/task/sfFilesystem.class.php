@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * sfFilesystem provides basic utility to manipulate the file system.
  *
@@ -184,7 +186,7 @@ class sfFilesystem
   public function symlink(string $originDir, string $targetDir, bool $copyOnWindows = false): void
   {
     if ('\\' == DIRECTORY_SEPARATOR && $copyOnWindows) {
-      $this->mirror($originDir, $targetDir, sfFinder::type('any'));
+      $this->mirror($originDir, $targetDir, Finder::any());
       return;
     }
 
@@ -224,12 +226,12 @@ class sfFilesystem
    *
    * @param string   $originDir  The origin directory
    * @param string   $targetDir  The target directory
-   * @param sfFinder $finder     An sfFinder instance
+   * @param Finder   $finder     A Finder instance
    * @param array    $options    An array of options (see copy())
    *
    * @throws sfException
    */
-  public function mirror(string $originDir, string $targetDir, sfFinder $finder, array $options = []): void
+  public function mirror(string $originDir, string $targetDir, Finder $finder, array $options = []): void
   {
     foreach ($finder->relative()->in($originDir) as $file) {
       if (is_dir($originDir . DIRECTORY_SEPARATOR . $file)) {

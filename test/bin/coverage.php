@@ -8,7 +8,9 @@
  * file that was distributed with this source code.
  */
 
-$name = '*';
+use RockSymphony\Util\Finder;
+
+$name    = '*';
 $verbose = false;
 
 if (isset($argv[1]))
@@ -39,7 +41,7 @@ $c->extension = '.class.php';
 $c->verbose = $verbose;
 $c->base_dir = realpath(__DIR__.'/../../lib');
 
-$finder = sfFinder::type('file')->name($name.'.class.php')->prune('vendor')->prune('test')->prune('data');
+$finder = Finder::files()->name($name.'.class.php')->prune('vendor')->prune('test')->prune('data');
 
 $c->register($finder->in($c->base_dir));
 $c->run();

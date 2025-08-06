@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Finds deprecated helpers usage.
  *
@@ -108,7 +110,7 @@ class sfDeprecatedHelpersValidation extends sfValidation
     ];
 
     $found = [];
-    $files = sfFinder::type('file')->name('*.php')->prune('vendor')->in([
+    $files = Finder::files()->name('*.php')->prune('vendor')->in([
       sfConfig::get('sf_apps_dir'),
       sfConfig::get('sf_lib_dir'),
       sfConfig::get('sf_test_dir'),

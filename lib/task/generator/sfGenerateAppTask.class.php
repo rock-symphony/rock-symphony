@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
 use Symfony\Component\Yaml\Yaml;
 
 require_once(__DIR__ . '/sfGeneratorBaseTask.class.php');
@@ -103,7 +104,7 @@ class sfGenerateAppTask extends sfGeneratorBaseTask
     }
 
     // Create basic application structure
-    $finder = sfFinder::type('any')->discard('.sf');
+    $finder = Finder::any()->discard('.sf');
     $this->getFilesystem()->mirror($skeletonDir . '/app', $appDir, $finder);
 
     // Create $app.php or index.php if it is our first app
@@ -118,7 +119,7 @@ class sfGenerateAppTask extends sfGeneratorBaseTask
     }
 
     // Set no_script_name value in settings.yml for production environment
-    $files = sfFinder::type('file')->in([$appDir . '/config', $appDir . '/lib']);
+    $files = Finder::files()->in([$appDir . '/config', $appDir . '/lib']);
     $this->getFilesystem()->replaceTokens($files, '##', '##', [
       'APP_NAME'          => $app,
       'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',

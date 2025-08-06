@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Clears the symfony cache.
  *
@@ -76,7 +78,7 @@ class sfCacheClearTask extends sfBaseTask
     }
 
     // finder to find directories (1 level) in a directory
-    $finder = sfFinder::type('dir')->discard('.*')->maxdepth(0)->relative();
+    $finder = Finder::dirs()->ignoreDotFiles()->maxDepth(0)->relative();
 
     // iterate through applications
     $apps = null === $options['app'] ? $finder->in(sfConfig::get('sf_apps_dir')) : [$options['app']];
@@ -124,7 +126,7 @@ class sfCacheClearTask extends sfBaseTask
 
     // clear global cache
     if (null === $options['app'] && 'all' == $options['type']) {
-      $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in(sfConfig::get('sf_cache_dir')));
+      $this->getFilesystem()->remove(Finder::files()->ignoreDotFiles()->in(sfConfig::get('sf_cache_dir')));
     }
 
     return 0;
@@ -144,7 +146,7 @@ class sfCacheClearTask extends sfBaseTask
 
     if (is_dir($subDir)) {
       // remove cache files
-      $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in($subDir));
+      $this->getFilesystem()->remove(Finder::files()->ignoreDotFiles()->in($subDir));
     }
   }
 
@@ -172,7 +174,7 @@ class sfCacheClearTask extends sfBaseTask
 
     if (is_dir($subDir)) {
       // remove cache files
-      $this->getFilesystem()->remove(sfFinder::type('file')->discard('.*')->in($subDir));
+      $this->getFilesystem()->remove(Finder::files()->ignoreDotFiles()->in($subDir));
     }
   }
 

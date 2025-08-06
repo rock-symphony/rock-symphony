@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Abstract class for validation classes.
  *
@@ -37,18 +39,6 @@ abstract class sfValidation extends sfBaseTask
   public function execute(array $arguments = [], array $options = []): int
   {
     throw new sfException('You can\'t execute this task.');
-  }
-
-  /**
-   * Returns a finder that exclude upgrade scripts from being upgraded!
-   *
-   * @param string $type  String directory or file or any (for both file and directory)
-   *
-   * @return sfFinder A sfFinder instance
-   */
-  protected function getFinder(string $type): sfFinder
-  {
-    return sfFinder::type($type)->prune('symfony')->discard('symfony');
   }
 
   /**
@@ -118,15 +108,5 @@ abstract class sfValidation extends sfBaseTask
       glob(sfConfig::get('sf_apps_dir') . '/*/config'),
       glob(sfConfig::get('sf_config_dir'))
     );
-  }
-
-  /**
-   * Returns all application names.
-   *
-   * @return string[] An array of application names
-   */
-  protected function getApplications(): array
-  {
-    return sfFinder::type('dir')->maxdepth(0)->relative()->in(sfConfig::get('sf_apps_dir'));
   }
 }

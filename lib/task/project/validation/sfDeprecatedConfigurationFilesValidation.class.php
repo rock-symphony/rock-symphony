@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Finds deprecated configuration files usage.
  *
@@ -37,14 +39,14 @@ class sfDeprecatedConfigurationFilesValidation extends sfValidation
   public function validate(): array
   {
     // mailer.yml
-    $files = sfFinder::type('file')->name('mailer.yml')->in($this->getProjectConfigDirectories());
+    $files = Finder::files()->name('mailer.yml')->in($this->getProjectConfigDirectories());
     $found = [];
     foreach ($files as $file) {
       $found[$file] = true;
     }
 
     // modules/*/validate/*.yml
-    $files = sfFinder::type('file')->name('*.yml')->in(
+    $files = Finder::files()->name('*.yml')->in(
       array_merge(
         glob(sfConfig::get('sf_apps_dir') . '/*/modules/*/validate'),
         glob(sfConfig::get('sf_plugins_dir') . '/*/modules/*/validate')
@@ -55,7 +57,7 @@ class sfDeprecatedConfigurationFilesValidation extends sfValidation
     }
 
     // old generator.yml
-    $files = sfFinder::type('file')->name('generator.yml')->in([
+    $files = Finder::files()->name('generator.yml')->in([
       sfConfig::get('sf_apps_dir'),
       sfConfig::get('sf_plugins_dir'),
     ]);

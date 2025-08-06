@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Clears all non production environment controllers.
  *
@@ -60,7 +62,7 @@ class sfProjectClearControllersTask extends sfBaseTask
    */
   protected function execute(array $arguments = [], array $options = []): int
   {
-    $finder = sfFinder::type('file')->maxdepth(1)->name('*.php');
+    $finder = Finder::files()->maxDepth(1)->name('*.php');
 
     foreach ($finder->in(sfConfig::get('sf_web_dir')) as $controller) {
       $content = file_get_contents($controller);

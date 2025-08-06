@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * sfProjectConfiguration represents a configuration for a symfony project.
  *
@@ -439,13 +441,16 @@ class sfProjectConfiguration
 
     // search for *Plugin directories representing plugins
     // follow links and do not recurse. No need to exclude VC because they do not end with *Plugin
-    $finder = sfFinder::type('dir')->maxdepth(0)->ignore_version_control(false)->follow_link()->name('*Plugin');
-    $dirs   = [
-      $this->getSymfonyLibDir() . '/plugins',
-      sfConfig::get('sf_plugins_dir'),
-    ];
+    $plugins = Finder::dirs('dir')->maxDepth(0)
+      ->ignoreVersionControl(false)
+      ->followLinks()
+      ->name('*Plugin')
+      ->in([
+          $this->getSymfonyLibDir() . '/plugins',
+          sfConfig::get('sf_plugins_dir'),
+      ]);
 
-    foreach ($finder->in($dirs) as $path) {
+    foreach ($plugins as $path) {
       $pluginPaths[basename($path)] = $path;
     }
 

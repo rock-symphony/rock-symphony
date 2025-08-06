@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * sfTesterResponse implements tests for the symfony response object.
  *
@@ -198,11 +200,11 @@ class sfTesterResponse extends sfTester
         {
           $filesystem = new sfFilesystem();
 
-          $finder = sfFinder::type('any')->discard('.sf');
+          $finder = Finder::any()->discard('.sf');
           $filesystem->mirror(__DIR__.'/w3', $cache, $finder);
 
-          $finder = sfFinder::type('file');
-          $filesystem->replaceTokens($finder->in($cache), '##', '##', array('LOCAL_W3' => $local));
+          $finder = Finder::files();
+          $filesystem->replaceTokens($finder->in($cache), '##', '##', ['LOCAL_W3' => $local]);
         }
 
         $content = preg_replace('#(<!DOCTYPE[^>]+")http://www.w3.org(.*")#i', '\\1'.$local.'\\2', $content);

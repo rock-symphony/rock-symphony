@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches all tests.
  *
@@ -100,8 +102,9 @@ class sfTestAllTask extends sfTestBaseTask
       }
     } else {
       // filter and register all tests
-      $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
-      $h->register($finder->in($h->base_dir));
+      $h->register(
+        Finder::files()->followLinks()->name('*Test.php')->in($h->base_dir),
+      );
     }
 
     $ret = $h->run() ? 0 : 1;

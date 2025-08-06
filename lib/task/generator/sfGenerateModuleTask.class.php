@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 require_once(__DIR__ . '/sfGeneratorBaseTask.class.php');
 
 /**
@@ -95,7 +97,7 @@ class sfGenerateModuleTask extends sfGeneratorBaseTask
     }
 
     // create basic application structure
-    $finder = sfFinder::type('any')->discard('.sf');
+    $finder = Finder::any()->discard('.sf');
     $this->getFilesystem()->mirror($skeletonDir . '/module', $moduleDir, $finder);
 
     // create basic test
@@ -105,7 +107,7 @@ class sfGenerateModuleTask extends sfGeneratorBaseTask
     $this->getFilesystem()->replaceTokens(sfConfig::get('sf_test_dir') . '/functional/' . $app . DIRECTORY_SEPARATOR . $module . 'ActionsTest.php', '##', '##', $constants);
 
     // customize php and yml files
-    $finder = sfFinder::type('file')->name('*.php', '*.yml');
+    $finder = Finder::files()->name('*.php', '*.yml');
     $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $constants);
 
     return 0;

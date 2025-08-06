@@ -9,8 +9,7 @@
  */
 
 $app = 'frontend';
-if (!include(__DIR__.'/../bootstrap/functional.php'))
-{
+if ( ! include(__DIR__ . '/../bootstrap/functional.php')) {
   return;
 }
 
@@ -19,12 +18,10 @@ class sfAuthTestBrowser extends sfTestBrowser
   public function checkNonAuth(): self
   {
     return $this->get('/auth/basic')
-
       ->with('request', function (sfTesterRequest $request) {
         $request->isParameter('module', 'auth');
         $request->isParameter('action', 'basic');
       })
-
       ->with('response', function (sfTesterResponse $response) {
         $response->isStatusCode(401);
         $response->checkElement('#user', '');
@@ -36,12 +33,10 @@ class sfAuthTestBrowser extends sfTestBrowser
   public function checkAuth(): self
   {
     return $this->get('/auth/basic')
-
       ->with('request', function (sfTesterRequest $request) {
         $request->isParameter('module', 'auth');
         $request->isParameter('action', 'basic');
       })
-
       ->with('response', function (sfTesterResponse $response) {
         $response->isStatusCode(200);
         $response->checkElement('#user', 'foo');
@@ -54,14 +49,8 @@ class sfAuthTestBrowser extends sfTestBrowser
 $b = new sfAuthTestBrowser();
 
 // default main page
-$b->
-  checkNonAuth()->
-
-  setAuth('foo', 'bar')->
-
-  checkAuth()->
-
-  restart()->
-
-  checkNonAuth()
-;
+$b->checkNonAuth()
+  ->setAuth('foo', 'bar')
+  ->checkAuth()
+  ->restart()
+  ->checkNonAuth();
