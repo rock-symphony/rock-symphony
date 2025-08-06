@@ -19,28 +19,33 @@
 abstract class sfComponent
 {
   /** @var string */
-  protected $moduleName;
+  protected string $moduleName;
+
   /** @var string */
-  protected $actionName;
+  protected string $actionName;
+
   /** @var sfContext */
-  protected $context;
+  protected sfContext $context;
+
   /** @var sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+
   /** @var sfRequest */
-  protected $request;
+  protected sfRequest $request;
+
   /** @var sfResponse */
-  protected $response;
+  protected sfResponse $response;
+
   /** @var sfParameterHolder */
-  protected $varHolder;
+  protected sfParameterHolder $varHolder;
+
   /** @var sfParameterHolder */
-  protected $requestParameterHolder;
+  protected sfParameterHolder $requestParameterHolder;
 
   /**
-   * Class constructor.
-   *
    * @param sfContext $context
-   * @param string $moduleName
-   * @param string $actionName
+   * @param string    $moduleName
+   * @param string    $actionName
    */
   public function __construct(sfContext $context, string $moduleName, string $actionName)
   {
@@ -65,11 +70,11 @@ abstract class sfComponent
    * user account, a shopping cart, or even a something as simple as a
    * single product.
    *
-   * @param sfRequest $request The current sfRequest object
+   * @param sfRequest $request  The current sfRequest object
    *
    * @return mixed     A string containing the view name associated with this action
    */
-  abstract function execute(sfRequest $request);
+  abstract function execute(sfRequest $request): mixed;
 
   /**
    * Gets the module name associated with this component.
@@ -114,11 +119,11 @@ abstract class sfComponent
   /**
    * Retrieves a service from the service container.
    *
-   * @param  string $id The service identifier
+   * @param string $id  The service identifier
    *
    * @return object The service instance
    */
-  public function getService(string $id)
+  public function getService(string $id): mixed
   {
     return $this->getServiceContainer()->getService($id);
   }
@@ -136,31 +141,30 @@ abstract class sfComponent
   /**
    * Logs a message using the sfLogger object.
    *
-   * @param mixed  $message  String or object containing the message to log
-   * @param string $priority The priority of the message
-   *                         (available priorities: emerg, alert, crit, err,
-   *                         warning, notice, info, debug)
+   * @param mixed  $message   String or object containing the message to log
+   * @param string $priority  The priority of the message
+   *                          (available priorities: emerg, alert, crit, err,
+   *                          warning, notice, info, debug)
    *
    * @see sfLogger
    */
-  public function logMessage($message, string $priority = 'info'): void
+  public function logMessage(string $message, string $priority = 'info'): void
   {
-    if (sfConfig::get('sf_logging_enabled'))
-    {
-      $this->dispatcher->notify(new sfEvent($this, 'application.log', array($message, 'priority' => constant('sfLogger::'.strtoupper($priority)))));
+    if (sfConfig::get('sf_logging_enabled')) {
+      $this->dispatcher->notify(new sfEvent($this, 'application.log', [$message, 'priority' => constant('sfLogger::' . strtoupper($priority))]));
     }
   }
 
   /**
    * Gets the translation for the given string
    *
-   * @param  string $string     The string to translate
-   * @param  array  $args       An array of arguments for the translation
-   * @param  string $catalogue  The catalogue name
+   * @param string $string     The string to translate
+   * @param array  $args       An array of arguments for the translation
+   * @param string $catalogue  The catalogue name
    *
    * @return string The translated string
    */
-  public function __(string $string, array $args = array(), string $catalogue = 'messages'): string
+  public function __(string $string, array $args = [], string $catalogue = 'messages'): string
   {
     return $this->context->getI18N()->__($string, $args, $catalogue);
   }
@@ -172,12 +176,12 @@ abstract class sfComponent
    *
    * <code>$this->getRequest()->getParameterHolder()->get($name)</code>
    *
-   * @param string $name    The parameter name
-   * @param mixed  $default The default value if parameter does not exist
+   * @param string $name     The parameter name
+   * @param mixed  $default  The default value if parameter does not exist
    *
-   * @return string The request parameter value
+   * @return mixed The request parameter value
    */
-  public function getRequestParameter(string $name, $default = null)
+  public function getRequestParameter(string $name, mixed $default = null): mixed
   {
     return $this->requestParameterHolder->get($name, $default);
   }
@@ -189,7 +193,7 @@ abstract class sfComponent
    *
    * <code>$this->getRequest()->getParameterHolder()->has($name)</code>
    *
-   * @param string $name The parameter name
+   * @param string $name  The parameter name
    * @return boolean true if the request parameter exists, false otherwise
    */
   public function hasRequestParameter(string $name): bool
@@ -246,13 +250,13 @@ abstract class sfComponent
    *
    * <code>$this->getContext()->getRouting()->generate(...)</code>
    *
-   * @param string  $route    The route name
-   * @param array   $params   An array of parameters for the route
-   * @param Boolean $absolute Whether to generate an absolute URL or not
+   * @param string  $route     The route name
+   * @param array   $params    An array of parameters for the route
+   * @param Boolean $absolute  Whether to generate an absolute URL or not
    *
    * @return string  The URL
    */
-  public function generateUrl(string $route, array $params = array(), bool $absolute = false): string
+  public function generateUrl(string $route, array $params = [], bool $absolute = false): string
   {
     return $this->context->getRouting()->generate($route, $params, $absolute);
   }
@@ -288,11 +292,11 @@ abstract class sfComponent
    * by symfony, so this is your responsability to ensure that the
    * value is escaped properly.
    *
-   * @param string  $name  The variable name
-   * @param mixed   $value The variable value
-   * @param Boolean $safe  true if the value is safe for output (false by default)
+   * @param string  $name   The variable name
+   * @param mixed   $value  The variable value
+   * @param Boolean $safe   true if the value is safe for output (false by default)
    */
-  public function setVar(string $name, $value, bool $safe = false): void
+  public function setVar(string $name, mixed $value, bool $safe = false): void
   {
     $this->varHolder->set($name, $safe ? new sfOutputEscaperSafe($value) : $value);
   }
@@ -300,11 +304,11 @@ abstract class sfComponent
   /**
    * Gets a variable set for the template.
    *
-   * @param string $name The variable name
+   * @param string $name  The variable name
    *
    * @return mixed  The variable value
    */
-  public function getVar(string $name)
+  public function getVar(string $name): mixed
   {
     return $this->varHolder->get($name);
   }
@@ -326,8 +330,8 @@ abstract class sfComponent
    *
    * <code>$this->setVar('name', 'value')</code>
    *
-   * @param string $key   The variable name
-   * @param string $value The variable value
+   * @param string $key    The variable name
+   * @param string $value  The variable value
    *
    * @return boolean always true
    *
@@ -345,7 +349,7 @@ abstract class sfComponent
    *
    * <code>$this->getVar('name')</code>
    *
-   * @param string $key The variable name
+   * @param string $key  The variable name
    *
    * @return mixed The variable value
    *
@@ -363,7 +367,7 @@ abstract class sfComponent
    *
    * <code>$this->getVarHolder()->has('name')</code>
    *
-   * @param string $name The variable name
+   * @param string $name  The variable name
    *
    * @return boolean true if the variable is set
    */
@@ -379,7 +383,7 @@ abstract class sfComponent
    *
    * <code>$this->getVarHolder()->remove('name')</code>
    *
-   * @param string $name The variable Name
+   * @param string $name  The variable Name
    */
   public function __unset($name)
   {
