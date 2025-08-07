@@ -35,18 +35,6 @@ final class Finder
         return $this->type;
     }
 
-    public function setType(string $type): self
-    {
-        match ($type) {
-            'file'      => $this->finder->files(),
-            'directory' => $this->finder->directories(),
-            'any'       => null, // nothing
-            default     => throw new InvalidArgumentException("Unsupported type given: `$type`."),
-        };
-
-        $this->type = $type;
-    }
-
     public static function files(): self
     {
         return new self('file');
