@@ -165,6 +165,10 @@ final class Finder
 
         $directories = array_filter($directories, 'is_dir');
 
+        if ( ! $directories) {
+            return [];
+        }
+
         foreach ($this->finder->in($directories) as $file) {
             $files[] = $this->relative ? $file->getRelativePathname() : $file->getPathname();
         }
