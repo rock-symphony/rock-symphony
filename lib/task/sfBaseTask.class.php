@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Base class for all symfony tasks.
  *
@@ -18,45 +20,55 @@
  */
 abstract class sfBaseTask extends sfCommandApplicationTask
 {
-  /** @var \sfProjectConfiguration|\sfApplicationConfiguration */
-  protected $configuration   = null;
-  /** @var int|null */
-  protected $statusStartTime = null;
-  /** @var sfFilesystem|null */
-  protected $filesystem = null;
+  protected sfProjectConfiguration | sfApplicationConfiguration | null $configuration = null;
+
+  protected int | null $statusStartTime = null;
+
+  protected sfFilesystem | null $filesystem = null;
 
   /**
    * @see sfTask
    * @inheritdoc
    */
-  protected function doRun(sfCommandManager $commandManager, $options)
+  protected function doRun(sfCommandManager $commandManager, array | string | null $options): int
   {
-    $event = $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', array('command_manager' => $commandManager)), $options);
+    $event   = $this->dispatcher->filter(
+      new sfEvent($this, 'command.filter_options', ['command_manager' => $commandManager]),
+      $options,
+    );
     $options = $event->getReturnValue();
 
     $this->process($commandManager, $options);
 
-    $event = new sfEvent($this, 'command.pre_command', array('arguments' => $commandManager->getArgumentValues(), 'options' => $commandManager->getOptionValues()));
+    $event = new sfEvent($this, 'command.pre_command', [
+      'arguments' => $commandManager->getArgumentValues(),
+      'options'   => $commandManager->getOptionValues(),
+    ]);
+
     $this->dispatcher->notifyUntil($event);
-    if ($event->isProcessed())
-    {
+
+    if ($event->isProcessed()) {
       return $event->getReturnValue();
     }
 
     $this->checkProjectExists();
 
-    $requiresApplication = $commandManager->getArgumentSet()->hasArgument('application') || $commandManager->getOptionSet()->hasOption('application');
-    if (null === $this->configuration || ($requiresApplication && !$this->configuration instanceof sfApplicationConfiguration))
-    {
-      $application = $commandManager->getArgumentSet()->hasArgument('application') ? $commandManager->getArgumentValue('application') : ($commandManager->getOptionSet()->hasOption('application') ? $commandManager->getOptionValue('application') : null);
-      $env = $commandManager->getOptionSet()->hasOption('env') ? $commandManager->getOptionValue('env') : 'test';
+    $requiresApplication = $commandManager->getArgumentSet()->hasArgument('application')
+                           || $commandManager->getOptionSet()->hasOption('application');
 
-      if (true === $application)
-      {
+    if (null === $this->configuration || ($requiresApplication && ! $this->configuration instanceof sfApplicationConfiguration)) {
+      $application = $commandManager->getArgumentSet()->hasArgument('application')
+        ? $commandManager->getArgumentValue('application')
+        : ($commandManager->getOptionSet()->hasOption('application')
+          ? $commandManager->getOptionValue('application')
+          : null);
+
+      $env = ($commandManager->getOptionSet()->hasOption('env') ? $commandManager->getOptionValue('env') : 'test') ?: 'test';
+
+      if (true === $application) {
         $application = $this->getFirstApplication();
 
-        if ($commandManager->getOptionSet()->hasOption('application'))
-        {
+        if ($commandManager->getOptionSet()->hasOption('application')) {
           $commandManager->setOption($commandManager->getOptionSet()->getOption('application'), $application);
         }
       }
@@ -64,8 +76,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
       $this->configuration = $this->createConfiguration($application, $env);
     }
 
-    if (!$this->withTrace())
-    {
+    if ( ! $this->withTrace()) {
       sfConfig::set('sf_logging_enabled', false);
     }
 
@@ -79,9 +90,9 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Sets the current task's configuration.
    *
-   * @param sfProjectConfiguration $configuration
+   * @param sfProjectConfiguration | null $configuration
    */
-  public function setConfiguration(sfProjectConfiguration $configuration = null)
+  public function setConfiguration(sfProjectConfiguration | null $configuration = null): void
   {
     $this->configuration = $configuration;
   }
@@ -91,16 +102,12 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @return sfFilesystem A sfFilesystem instance
    */
-  public function getFilesystem()
+  public function getFilesystem(): sfFilesystem
   {
-    if (!isset($this->filesystem))
-    {
-      if ($this->isVerbose())
-      {
+    if ( ! isset($this->filesystem)) {
+      if ($this->isVerbose()) {
         $this->filesystem = new sfFilesystem($this->dispatcher, $this->formatter);
-      }
-      else
-      {
+      } else {
         $this->filesystem = new sfFilesystem();
       }
     }
@@ -111,14 +118,13 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Checks if the current directory is a symfony project directory.
    *
-   * @return true if the current directory is a symfony project directory, false otherwise
+   * @return void If the current directory is a symfony project directory, throws otherwise
    *
    * @throws sfException
    */
-  public function checkProjectExists()
+  public function checkProjectExists(): void
   {
-    if (!file_exists('symfony'))
-    {
+    if ( ! file_exists('symfony')) {
       throw new sfException('You must be in a symfony project directory.');
     }
   }
@@ -126,16 +132,15 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Checks if an application exists.
    *
-   * @param  string $app The application name
+   * @param string $app  The application name
    *
-   * @return bool true if the application exists, false otherwise
+   * @return void if the application exists, throws otherwise
    *
    * @throws sfException
    */
-  public function checkAppExists($app)
+  public function checkAppExists(string $app): void
   {
-    if (!is_dir(sfConfig::get('sf_apps_dir').'/'.$app))
-    {
+    if ( ! is_dir(sfConfig::get('sf_apps_dir') . '/' . $app)) {
       throw new sfException(sprintf('Application "%s" does not exist', $app));
     }
   }
@@ -143,17 +148,16 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Checks if a module exists.
    *
-   * @param  string $app    The application name
-   * @param  string $module The module name
+   * @param string $app     The application name
+   * @param string $module  The module name
    *
-   * @return bool true if the module exists, false otherwise
+   * @return void if the module exists, throws otherwise
    *
    * @throws sfException
    */
-  public function checkModuleExists($app, $module)
+  public function checkModuleExists(string $app, string $module): void
   {
-    if (!is_dir(sfConfig::get('sf_apps_dir').'/'.$app.'/modules/'.$module))
-    {
+    if ( ! is_dir(sfConfig::get('sf_apps_dir') . '/' . $app . '/modules/' . $module)) {
       throw new sfException(sprintf('Module "%s/%s" does not exist.', $app, $module));
     }
   }
@@ -163,10 +167,9 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @return boolean
    */
-  protected function withTrace()
+  protected function withTrace(): bool
   {
-    if (null !== $this->commandApplication && !$this->commandApplication->withTrace())
-    {
+    if (null !== $this->commandApplication && ! $this->commandApplication->withTrace()) {
       return false;
     }
 
@@ -178,10 +181,9 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @return boolean
    */
-  protected function isVerbose()
+  protected function isVerbose(): bool
   {
-    if (null !== $this->commandApplication && !$this->commandApplication->isVerbose())
-    {
+    if (null !== $this->commandApplication && ! $this->commandApplication->isVerbose()) {
       return false;
     }
 
@@ -193,10 +195,9 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @return boolean
    */
-  protected function isDebug()
+  protected function isDebug(): bool
   {
-    if (null !== $this->commandApplication && !$this->commandApplication->isDebug())
-    {
+    if (null !== $this->commandApplication && ! $this->commandApplication->isDebug()) {
       return false;
     }
 
@@ -206,37 +207,30 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Creates a configuration object.
    *
-   * @param string  $application The application name
-   * @param string  $env         The environment name
+   * @param string|null $application  The application name
+   * @param string      $env          The environment name
    *
    * @return sfProjectConfiguration A sfProjectConfiguration instance
    */
-  protected function createConfiguration($application, $env)
+  protected function createConfiguration(string | null $application, string $env): sfProjectConfiguration
   {
-    if (null !== $application)
-    {
+    if (null !== $application) {
       $this->checkAppExists($application);
 
-      require_once sfConfig::get('sf_config_dir').'/ProjectConfiguration.class.php';
+      require_once sfConfig::get('sf_config_dir') . '/ProjectConfiguration.class.php';
 
-      $configuration = ProjectConfiguration::getApplicationConfiguration($application, $env, $this->isDebug(), null, $this->dispatcher);
+      return ProjectConfiguration::getApplicationConfiguration($application, $env, $this->isDebug(), null, $this->dispatcher);
     }
-    else
-    {
-      if (file_exists(sfConfig::get('sf_config_dir').'/ProjectConfiguration.class.php'))
-      {
-        require_once sfConfig::get('sf_config_dir').'/ProjectConfiguration.class.php';
-        $configuration = new ProjectConfiguration(null, $this->dispatcher);
-      }
-      else
-      {
-        $configuration = new sfProjectConfiguration(getcwd(), $this->dispatcher);
-      }
 
-      if (null !== $env)
-      {
-        sfConfig::set('sf_environment', $env);
-      }
+    if (file_exists(sfConfig::get('sf_config_dir') . '/ProjectConfiguration.class.php')) {
+      require_once sfConfig::get('sf_config_dir') . '/ProjectConfiguration.class.php';
+      $configuration = new ProjectConfiguration(null, $this->dispatcher);
+    } else {
+      $configuration = new sfProjectConfiguration(getcwd(), $this->dispatcher);
+    }
+
+    if (null !== $env) {
+      sfConfig::set('sf_environment', $env);
     }
 
     return $configuration;
@@ -245,29 +239,25 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Returns the first application in apps.
    *
-   * @return string The Application name
+   * @return string|null The Application name, if available
    */
-  protected function getFirstApplication()
+  protected function getFirstApplication(): string | null
   {
-    if (count($dirs = sfFinder::type('dir')->maxdepth(0)->follow_link()->relative()->in(sfConfig::get('sf_apps_dir'))))
-    {
-      return $dirs[0];
-    }
+    $dirs = Finder::dirs()->maxDepth(0)->followLinks()->relative()->in(sfConfig::get('sf_apps_dir'));
 
-    return null;
+    return $dirs[0] ?? null;
   }
 
   /**
    * Mirrors a directory structure inside the created project.
    *
-   * @param string   $dir    The directory to mirror
-   * @param sfFinder $finder A sfFinder instance to use for the mirroring
+   * @param string      $dir     The directory to mirror
+   * @param Finder|null $finder  A sfFinder instance to use for the mirroring
    */
-  protected function installDir($dir, $finder = null)
+  protected function installDir(string $dir, Finder | null $finder = null)
   {
-    if (null === $finder)
-    {
-      $finder = sfFinder::type('any')->discard('.sf');
+    if (null === $finder) {
+      $finder = Finder::any()->discard('.sf');
     }
 
     $this->getFilesystem()->mirror($dir, sfConfig::get('sf_root_dir'), $finder);
@@ -280,19 +270,16 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * You can define global tokens by defining the $this->tokens property.
    *
-   * @param array $dirs   An array of directory where to do the replacement
-   * @param array $tokens An array of tokens to use
+   * @param string[]             $dirs    An array of directory where to do the replacement
+   * @param array<string,string> $tokens  An array of tokens to use
    */
-  protected function replaceTokens($dirs = array(), $tokens = array())
+  protected function replaceTokens(array $dirs = [], array $tokens = [])
   {
-    if (!$dirs)
-    {
-      $dirs = array(sfConfig::get('sf_config_dir'), sfConfig::get('sf_lib_dir'));
-    }
+    $dirs = $dirs ?: [sfConfig::get('sf_config_dir'), sfConfig::get('sf_lib_dir')];
 
-    $tokens = array_merge(isset($this->tokens) ? $this->tokens : array(), $tokens);
+    $tokens = array_merge($this->tokens ?? [], $tokens);
 
-    $this->getFilesystem()->replaceTokens(sfFinder::type('file')->prune('vendor')->in($dirs), '##', '##', $tokens);
+    $this->getFilesystem()->replaceTokens(Finder::files()->prune('vendor')->in($dirs), '##', '##', $tokens);
   }
 
   /**
@@ -302,8 +289,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    */
   protected function reloadTasks()
   {
-    if (null === $this->commandApplication)
-    {
+    if (null === $this->commandApplication) {
       return;
     }
 
@@ -313,12 +299,10 @@ abstract class sfBaseTask extends sfCommandApplicationTask
     $this->commandApplication->loadTasks($this->configuration);
 
     $disabledPluginsRegex = sprintf('#^(%s)#', implode('|', array_diff($this->configuration->getAllPluginPaths(), $this->configuration->getPluginPaths())));
-    $tasks = array();
-    foreach (get_declared_classes() as $class)
-    {
+    $tasks                = [];
+    foreach (get_declared_classes() as $class) {
       $r = new Reflectionclass($class);
-      if ($r->isSubclassOf('sfTask') && !$r->isAbstract() && !preg_match($disabledPluginsRegex, $r->getFileName()))
-      {
+      if ($r->isSubclassOf('sfTask') && ! $r->isAbstract() && ! preg_match($disabledPluginsRegex, $r->getFileName())) {
         $tasks[] = new $class($this->dispatcher, $this->formatter);
       }
     }
@@ -329,12 +313,11 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * @see sfCommandApplicationTask
    */
-  protected function createTask($name)
+  protected function createTask($name): sfCommandApplicationTask
   {
     $task = parent::createTask($name);
 
-    if ($task instanceof sfBaseTask)
-    {
+    if ($task instanceof sfBaseTask) {
       $task->setConfiguration($this->configuration);
     }
 
@@ -344,38 +327,33 @@ abstract class sfBaseTask extends sfCommandApplicationTask
   /**
    * Show status of task
    *
-   * @param integer $done
-   * @param integer $total
-   * @param integer $size
+   * @param int $done
+   * @param int $total
+   * @param int $size
    * @return void
    */
-  protected function showStatus($done, $total, $size = 30)
+  protected function showStatus(int $done, int $total, int $size = 30): void
   {
     // if we go over our bound, just ignore it
-    if ($done > $total)
-    {
+    if ($done > $total) {
       $this->statusStartTime = null;
       return;
     }
 
-    if (null === $this->statusStartTime)
-    {
+    if (null === $this->statusStartTime) {
       $this->statusStartTime = time();
     }
 
-    $now = time();
+    $now  = time();
     $perc = (double)($done / $total);
-    $bar = floor($perc * $size);
+    $bar  = floor($perc * $size);
 
     $statusBar = "\r[";
     $statusBar .= str_repeat('=', $bar);
-    if ($bar < $size)
-    {
+    if ($bar < $size) {
       $statusBar .= '>';
       $statusBar .= str_repeat(' ', $size - $bar);
-    }
-    else
-    {
+    } else {
       $statusBar .= "=";
     }
 
@@ -385,68 +363,58 @@ abstract class sfBaseTask extends sfCommandApplicationTask
 
     $rate = $done ? ($now - $this->statusStartTime) / $done : 0;
     $left = $total - $done;
-    $eta = round($rate * $left, 2);
+    $eta  = round($rate * $left, 2);
 
     $elapsed = $now - $this->statusStartTime;
 
-    $eta = $this->convertTime($eta);
+    $eta     = $this->convertTime($eta);
     $elapsed = $this->convertTime($elapsed);
 
     $memory = memory_get_usage(true);
-    if ($memory>1024*1024*1024*10)
-    {
-      $memory = sprintf('%.2fGB', $memory/1024/1024/1024);
-    }
-    elseif ($memory>1024*1024*10)
-    {
-      $memory = sprintf('%.2fMB', $memory/1024/1024);
-    }
-    elseif ($memory>1024*10)
-    {
-      $memory = sprintf('%.2fkB', $memory/1024);
-    }
-    else
-    {
+    if ($memory > 1024 * 1024 * 1024 * 10) {
+      $memory = sprintf('%.2fGB', $memory / 1024 / 1024 / 1024);
+    } elseif ($memory > 1024 * 1024 * 10) {
+      $memory = sprintf('%.2fMB', $memory / 1024 / 1024);
+    } elseif ($memory > 1024 * 10) {
+      $memory = sprintf('%.2fkB', $memory / 1024);
+    } else {
       $memory = sprintf('%.2fB', $memory);
     }
 
-    $statusBar .= ' [ remaining: '.$eta.' | elapsed: '.$elapsed.' ] (memory: '.$memory.')     ';
+    $statusBar .= ' [ remaining: ' . $eta . ' | elapsed: ' . $elapsed . ' ] (memory: ' . $memory . ')     ';
 
     echo $statusBar;
 
     // when done, send a newline
-    if ($done == $total)
-    {
+    if ($done == $total) {
       $this->statusStartTime = null;
       echo "\n";
     }
   }
 
   /**
-   * Convert time into humain format
+   * Convert time into human format
    *
-   * @param integer $time
+   * @param int $time
    * @return string
    */
-  private function convertTime($time)
+  private function convertTime(int $time): string
   {
     $string = '';
 
-    if ($time > 3600)
-    {
-      $h = (int) abs($time / 3600);
-      $time -= ($h * 3600);
-      $string .= $h. ' h ';
+    if ($time > 3600) {
+      $h      = (int)abs($time / 3600);
+      $time   -= ($h * 3600);
+      $string .= $h . ' h ';
     }
 
-    if ($time > 60)
-    {
-      $m = (int) abs($time / 60);
-      $time -= ($m * 60);
-      $string .= $m. ' min ';
+    if ($time > 60) {
+      $m      = (int)abs($time / 60);
+      $time   -= ($m * 60);
+      $string .= $m . ' min ';
     }
 
-    $string .= (int) $time.' sec';
+    $string .= (int)$time . ' sec';
 
     return $string;
   }

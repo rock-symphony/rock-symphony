@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Finds deprecated methods usage.
  *
@@ -18,30 +20,30 @@
  */
 class sfDeprecatedMethodsValidation extends sfValidation
 {
-  public function getHeader()
+  public function getHeader(): string
   {
     return 'Checking usage of deprecated methods';
   }
 
-  public function getExplanation()
+  public function getExplanation(): array
   {
-    return array(
-          '',
-          '  The files above use deprecated functions and/or methods',
-          '  that have been removed in symfony 1.4.',
-          '',
-          '  You can find a list of all deprecated methods under the',
-          '  "Methods and Functions" section of the DEPRECATED tutorial:',
-          '',
-          '  http://www.symfony-project.org/tutorial/1_4/en/deprecated',
-          '',
-    );
+    return [
+      '',
+      '  The files above use deprecated functions and/or methods',
+      '  that have been removed in symfony 1.4.',
+      '',
+      '  You can find a list of all deprecated methods under the',
+      '  "Methods and Functions" section of the DEPRECATED tutorial:',
+      '',
+      '  http://www.symfony-project.org/tutorial/1_4/en/deprecated',
+      '',
+    ];
   }
 
-  public function validate()
+  public function validate(): array
   {
     $found = array_merge(
-      $this->doValidate(array(
+      $this->doValidate([
         'sfToolkit::getTmpDir',
         'sfToolkit::removeArrayValueForPath',
         'sfToolkit::hasArrayValueForPath',
@@ -53,45 +55,55 @@ class sfDeprecatedMethodsValidation extends sfValidation
         'getXDebugStack',
         'checkSymfonyVersion',
         'sh',
-      ), array(
+      ], [
         sfConfig::get('sf_apps_dir'),
         sfConfig::get('sf_lib_dir'),
         sfConfig::get('sf_test_dir'),
         sfConfig::get('sf_plugins_dir'),
-      )),
+      ]),
 
-      $this->doValidate(array(
-        'contains', 'responseContains', 'isRequestParameter', 'isResponseHeader',
-        'isUserCulture', 'isRequestFormat', 'checkResponseElement',
-      ), sfConfig::get('sf_test_dir')),
+      $this->doValidate([
+        'contains',
+        'responseContains',
+        'isRequestParameter',
+        'isResponseHeader',
+        'isUserCulture',
+        'isRequestFormat',
+        'checkResponseElement',
+      ], sfConfig::get('sf_test_dir')),
 
-      $this->doValidate(array(
-        'getDefaultView', 'handleError', 'validate', 'debugMessage', 'getController()->sendEmail'
-      ), $this->getProjectActionDirectories())
+      $this->doValidate([
+        'getDefaultView',
+        'handleError',
+        'validate',
+        'debugMessage',
+        'getController()->sendEmail',
+      ], $this->getProjectActionDirectories())
     );
 
     return $found;
   }
 
-  public function doValidate($methods, $dir)
+  /**
+   * @param array           $methods
+   * @param string[]|string $dir
+   * @return string[]
+   */
+  public function doValidate(array $methods, array | string $dir): array
   {
-    $found = array();
-    $files = sfFinder::type('file')->name('*.php')->prune('vendor')->in($dir);
-    foreach ($files as $file)
-    {
+    $found = [];
+    $files = Finder::files()->name('*.php')->prune('vendor')->in($dir);
+    foreach ($files as $file) {
       $content = sfToolkit::stripComments(file_get_contents($file));
 
-      $matches = array();
-      foreach ($methods as $method)
-      {
-        if (preg_match('#\b'.preg_quote($method, '#').'\b#', $content))
-        {
+      $matches = [];
+      foreach ($methods as $method) {
+        if (preg_match('#\b' . preg_quote($method, '#') . '\b#', $content)) {
           $matches[] = $method;
         }
       }
 
-      if ($matches)
-      {
+      if ($matches) {
         $found[$file] = implode(', ', $matches);
       }
     }

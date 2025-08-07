@@ -16,7 +16,9 @@ $t = new lime_test(4);
 
 class myComponent extends sfComponent
 {
-  function execute(sfRequest $request) {}
+  function execute(sfRequest $request): mixed {
+    return null;
+  }
 }
 
 $context = sfContextMock::mockInstance([

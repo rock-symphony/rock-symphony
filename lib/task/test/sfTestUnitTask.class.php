@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches unit tests.
  *
@@ -21,98 +23,91 @@ class sfTestUnitTask extends sfTestBaseTask
   /**
    * @see sfTask
    */
-  protected function configure()
+  protected function configure(): void
   {
-    $this->addArguments(array(
+    $this->addArguments([
       new sfCommandArgument('name', sfCommandArgument::OPTIONAL | sfCommandArgument::IS_ARRAY, 'The test name'),
-    ));
+    ]);
 
-    $this->addOptions(array(
+    $this->addOptions([
       new sfCommandOption('xml', null, sfCommandOption::PARAMETER_REQUIRED, 'The file name for the JUnit compatible XML log file'),
-    ));
+    ]);
 
-    $this->namespace = 'test';
-    $this->name = 'unit';
+    $this->namespace        = 'test';
+    $this->name             = 'unit';
     $this->briefDescription = 'Launches unit tests';
 
     $this->detailedDescription = <<<EOF
-The [test:unit|INFO] task launches unit tests:
+      The [test:unit|INFO] task launches unit tests:
 
-  [./symfony test:unit|INFO]
+        [./symfony test:unit|INFO]
 
-The task launches all tests found in [test/unit|COMMENT].
+      The task launches all tests found in [test/unit|COMMENT].
 
-If some tests fail, you can use the [--trace|COMMENT] option to have more
-information about the failures:
+      If some tests fail, you can use the [--trace|COMMENT] option to have more
+      information about the failures:
 
-  [./symfony test:unit -t|INFO]
+        [./symfony test:unit -t|INFO]
 
-You can launch unit tests for a specific name:
+      You can launch unit tests for a specific name:
 
-  [./symfony test:unit strtolower|INFO]
+        [./symfony test:unit strtolower|INFO]
 
-You can also launch unit tests for several names:
+      You can also launch unit tests for several names:
 
-  [./symfony test:unit strtolower strtoupper|INFO]
+        [./symfony test:unit strtolower strtoupper|INFO]
 
-The task can output a JUnit compatible XML log file with the [--xml|COMMENT]
-options:
+      The task can output a JUnit compatible XML log file with the [--xml|COMMENT]
+      options:
 
-  [./symfony test:unit --xml=log.xml|INFO]
-EOF;
+        [./symfony test:unit --xml=log.xml|INFO]
+      EOF;
   }
 
   /**
    * @see sfTask
    */
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    if (count($arguments['name']))
-    {
-      $files = array();
+    if (count($arguments['name'])) {
+      $files = [];
 
-      foreach ($arguments['name'] as $name)
-      {
-        $finder = sfFinder::type('file')->follow_link()->name(basename($name).'Test.php');
-        $files = array_merge($files, $finder->in(sfConfig::get('sf_test_dir').'/unit/'.dirname($name)));
+      foreach ($arguments['name'] as $name) {
+        $finder = Finder::files()->followLinks()->name(basename($name) . 'Test.php');
+        $files  = array_merge($files, $finder->in(sfConfig::get('sf_test_dir') . '/unit/' . dirname($name)));
       }
 
-      if(count($files) > 0)
-      {
-        foreach ($files as $file)
-        {
+      if (count($files) > 0) {
+        foreach ($files as $file) {
           include($file);
         }
-      }
-      else
-      {
+      } else {
         $this->logSection('test', 'no tests found', null, 'ERROR');
       }
-    }
-    else
-    {
-      require_once __DIR__.'/sfLimeHarness.class.php';
+    } else {
+      require_once __DIR__ . '/sfLimeHarness.class.php';
 
-      $h = new sfLimeHarness(array(
+      $h = new sfLimeHarness([
         'force_colors' => isset($options['color']) && $options['color'],
         'verbose'      => isset($options['trace']) && $options['trace'],
-        'test_path'    => sfConfig::get('sf_cache_dir') . '/lime'
-      ));
-      $h->addPlugins(array_map(array($this->configuration, 'getPluginConfiguration'), $this->configuration->getPlugins()));
-      $h->base_dir = sfConfig::get('sf_test_dir').'/unit';
+        'test_path'    => sfConfig::get('sf_cache_dir') . '/lime',
+      ]);
+      $h->addPlugins(array_map([$this->configuration, 'getPluginConfiguration'], $this->configuration->getPlugins()));
+      $h->base_dir = sfConfig::get('sf_test_dir') . '/unit';
 
       // filter and register unit tests
-      $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
+      $finder = Finder::files()->followLinks()->name('*Test.php');
       $h->register($finder->in($h->base_dir));
 
       $ret = $h->run() ? 0 : 1;
 
-      if ($options['xml'])
-      {
+      if ($options['xml']) {
         file_put_contents($options['xml'], $h->to_xml());
       }
 
       return $ret;
     }
+
+    return 0;
   }
 }

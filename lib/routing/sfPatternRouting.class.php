@@ -46,29 +46,27 @@ class sfPatternRouting extends sfRouting
    * @see sfRouting
    * @inheritdoc
    */
-  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
+  public function __construct(sfEventDispatcher $dispatcher, sfCache | null $cache = null, array $options = [])
   {
-    $options = array_merge(array(
-      'variable_prefixes'                => array(':'),
-      'segment_separators'               => array('/', '.'),
+    $options = array_merge([
+      'variable_prefixes'                => [':'],
+      'segment_separators'               => ['/', '.'],
       'variable_regex'                   => '[\w\d_]+',
       'load_configuration'               => false,
       'suffix'                           => '',
       'generate_shortest_url'            => true,
       'extra_parameters_as_query_string' => true,
       'lookup_cache_dedicated_keys'      => false,
-    ), $options);
+    ], $options);
 
     // for BC
-    if ('.' == $options['suffix'])
-    {
+    if ('.' == $options['suffix']) {
       $options['suffix'] = '';
     }
 
     parent::__construct($dispatcher, $cache, $options);
 
-    if (null !== $this->cache && !$options['lookup_cache_dedicated_keys'] && $cacheData = $this->cache->get('symfony.routing.data'))
-    {
+    if (null !== $this->cache && ! $options['lookup_cache_dedicated_keys'] && $cacheData = $this->cache->get('symfony.routing.data')) {
       $this->cacheData = unserialize($cacheData);
     }
   }

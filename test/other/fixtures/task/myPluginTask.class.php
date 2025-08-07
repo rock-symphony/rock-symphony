@@ -1,12 +1,15 @@
 <?php
-class myPluginTask extends sfBaseTask 
+
+class myPluginTask extends sfBaseTask
 {
-  public function configure()
+  public function configure(): void
   {
     $this->namespace = 'p';
-    $this->name = 'run';
+    $this->name      = 'run';
   }
-  public function execute($arguments = array(), $options = array())
+
+  public function execute(array $arguments = [], array $options = []): int
   {
+    return 0;
   }
 }

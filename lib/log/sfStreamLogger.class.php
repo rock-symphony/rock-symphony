@@ -58,7 +58,7 @@ class sfStreamLogger extends sfLogger
    *
    * @param resource $stream A php stream
    */
-  public function setStream($stream)
+  public function setStream($stream): void
   {
     $this->stream = $stream;
   }

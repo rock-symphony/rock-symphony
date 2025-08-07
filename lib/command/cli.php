@@ -9,31 +9,22 @@
  */
 
 // Try autoloading using composer if available.
-if (file_exists(__DIR__.'/../../../../vendor/autoload.php'))
-{
-  require_once __DIR__.'/../../../../vendor/autoload.php';
-}
-elseif (file_exists(__DIR__.'/../../vendor/autoload.php'))
-{
-  require_once __DIR__.'/../../vendor/autoload.php';
-}
-else
-{
+if (file_exists(__DIR__ . '/../../../../vendor/autoload.php')) {
+  require_once __DIR__ . '/../../../../vendor/autoload.php';
+} elseif (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+  require_once __DIR__ . '/../../vendor/autoload.php';
+} else {
   throw new RuntimeException('Cannot locate composer\'s vendor/autoload.php');
 }
 
-try
-{
+try {
   $dispatcher = new sfEventDispatcher();
-  $logger = new sfCommandLogger($dispatcher);
+  $logger     = new sfCommandLogger($dispatcher);
 
-  $application = new sfSymfonyCommandApplication($dispatcher, null, array('symfony_lib_dir' => realpath(__DIR__.'/..')));
-  $statusCode = $application->run();
-}
-catch (Exception $e)
-{
-  if (!isset($application))
-  {
+  $application = new sfSymfonyCommandApplication($dispatcher, null, ['symfony_lib_dir' => realpath(__DIR__ . '/..')]);
+  $statusCode  = $application->run();
+} catch (Exception $e) {
+  if ( ! isset($application)) {
     throw $e;
   }
 

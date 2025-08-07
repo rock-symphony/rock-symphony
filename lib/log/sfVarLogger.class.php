@@ -19,9 +19,10 @@
 class sfVarLogger extends sfLogger
 {
   /** @var array[] */
-  protected $logs = [];
+  protected array $logs = [];
+
   /** @var bool */
-  protected $xdebugLogging = false;
+  protected bool $xdebugLogging = false;
 
   /**
    * Class constructor.
@@ -30,18 +31,17 @@ class sfVarLogger extends sfLogger
    *
    * - xdebug_logging: Whether to add xdebug trace to the logs (false by default).
    *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param array             $options     An array of options.
    *
    * @throws sfInitializationException
    */
   public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    $this->xdebugLogging = isset($options['xdebug_logging']) ? $options['xdebug_logging'] : false;
+    $this->xdebugLogging = $options['xdebug_logging'] ?? false;
 
     // disable xdebug when an HTTP debug session exists (crashes Apache, see #2438)
-    if (isset($_GET['XDEBUG_SESSION_START']) || isset($_COOKIE['XDEBUG_SESSION']))
-    {
+    if (isset($_GET['XDEBUG_SESSION_START']) || isset($_COOKIE['XDEBUG_SESSION'])) {
       $this->xdebugLogging = false;
     }
 
@@ -54,14 +54,15 @@ class sfVarLogger extends sfLogger
    * Each log entry has the following attributes:
    *
    *  * priority
+   *  * priority_name
    *  * time
    *  * message
    *  * type
-   *  * debugStack
+   *  * debug_backtrace
    *
-   * @return array An array of logs
+   * @return array<{"priority":int,'priority_name':string,"time":int,"message":string,"type":string,"debug_backtrace":array}> An array of logs
    */
-  public function getLogs()
+  public function getLogs(): array
   {
     return $this->logs;
   }
@@ -69,15 +70,14 @@ class sfVarLogger extends sfLogger
   /**
    * Returns all the types in the logs.
    *
-   * @return array An array of types
+   * @return string[] An array of types
    */
-  public function getTypes()
+  public function getTypes(): array
   {
-    $types = array();
-    foreach ($this->logs as $log)
-    {
-      if (!in_array($log['type'], $types))
-      {
+    $types = [];
+
+    foreach ($this->logs as $log) {
+      if ( ! in_array($log['type'], $types)) {
         $types[] = $log['type'];
       }
     }
@@ -90,15 +90,13 @@ class sfVarLogger extends sfLogger
   /**
    * Returns all the priorities in the logs.
    *
-   * @return array An array of priorities
+   * @return string[] An array of priorities
    */
-  public function getPriorities()
+  public function getPriorities(): array
   {
-    $priorities = array();
-    foreach ($this->logs as $log)
-    {
-      if (!in_array($log['priority'], $priorities))
-      {
+    $priorities = [];
+    foreach ($this->logs as $log) {
+      if ( ! in_array($log['priority'], $priorities)) {
         $priorities[] = $log['priority'];
       }
     }
@@ -111,15 +109,13 @@ class sfVarLogger extends sfLogger
   /**
    * Returns the highest priority in the logs.
    *
-   * @return integer The highest priority
+   * @return int The highest priority
    */
-  public function getHighestPriority()
+  public function getHighestPriority(): int
   {
     $priority = 1000;
-    foreach ($this->logs as $log)
-    {
-      if ($log['priority'] < $priority)
-      {
+    foreach ($this->logs as $log) {
+      if ($log['priority'] < $priority) {
         $priority = $log['priority'];
       }
     }
@@ -137,20 +133,19 @@ class sfVarLogger extends sfLogger
   {
     // get log type in {}
     $type = 'sfOther';
-    if (preg_match('/^\s*{([^}]+)}\s*(.+?)$/s', $message, $matches))
-    {
+    if (preg_match('/^\s*{([^}]+)}\s*(.+?)$/s', $message, $matches)) {
       $type    = $matches[1];
       $message = $matches[2];
     }
 
-    $this->logs[] = array(
+    $this->logs[] = [
       'priority'        => $priority,
       'priority_name'   => $this->getPriorityName($priority),
       'time'            => time(),
       'message'         => $message,
       'type'            => $type,
       'debug_backtrace' => $this->getDebugBacktrace(),
-    );
+    ];
   }
 
   /**
@@ -160,29 +155,28 @@ class sfVarLogger extends sfLogger
    *
    * @see debug_backtrace()
    */
-  protected function getDebugBacktrace()
+  protected function getDebugBacktrace(): array
   {
     // if we have xdebug and dev has not disabled the feature, add some stack information
-    if (!$this->xdebugLogging || !function_exists('debug_backtrace'))
-    {
-      return array();
+    if ( ! $this->xdebugLogging || ! function_exists('debug_backtrace')) {
+      return [];
     }
 
     $traces = debug_backtrace();
 
     // remove sfLogger and sfEventDispatcher from the top of the trace
-    foreach ($traces as $i => $trace)
-    {
-      $class = isset($trace['class']) ? $trace['class'] : substr($file = basename($trace['file']), 0, strpos($file, '.'));
+    foreach ($traces as $i => $trace) {
+      $class = $trace['class'] ?? substr($file = basename($trace['file']), 0, strpos($file, '.'));
 
       if (
-        !class_exists($class)
-        ||
-        (!in_array($class, array('sfLogger', 'sfEventDispatcher')) && !is_subclass_of($class, 'sfLogger') && !is_subclass_of($class, 'sfEventDispatcher'))
-      )
-      {
-        $traces = array_slice($traces, $i);
-        break;
+        ! class_exists($class)
+        || (
+          ! in_array($class, [sfLogger::class, sfEventDispatcher::class])
+          && ! is_subclass_of($class, sfLogger::class)
+          && ! is_subclass_of($class, sfEventDispatcher::class)
+        )
+      ) {
+        return array_slice($traces, $i);
       }
     }
 

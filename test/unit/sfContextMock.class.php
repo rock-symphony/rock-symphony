@@ -11,7 +11,7 @@
 class sfContextMock extends sfContext
 {
   /** @var string */
-  private $sessionPath = '';
+  private string $sessionPath = '';
 
   static public function mockInstance(array $factories = [], bool $force = false): sfContextMock
   {
@@ -36,7 +36,7 @@ class sfContextMock extends sfContext
     sfToolkit::clearDirectory($this->sessionPath);
   }
 
-  static public function hasInstance(string $name = null): bool
+  static public function hasInstance(string | null $name = null): bool
   {
     return true;
   }

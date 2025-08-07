@@ -83,10 +83,9 @@ class sfFileCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set(string $key, string $data, int $lifetime = null): bool
+  public function set(string $key, string $data, int | null $lifetime = null): bool
   {
-    if ($this->getOption('automatic_cleaning_factor') > 0 && mt_rand(1, $this->getOption('automatic_cleaning_factor')) == 1)
-    {
+    if ($this->getOption('automatic_cleaning_factor') > 0 && mt_rand(1, $this->getOption('automatic_cleaning_factor')) == 1) {
       $this->clean(sfCache::OLD);
     }
 
