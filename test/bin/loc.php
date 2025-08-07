@@ -1,6 +1,8 @@
 <?php
 
-$root_dir = realpath(__DIR__.'/../..');
+use RockSymphony\Util\Finder;
+
+$root_dir = realpath(__DIR__ . '/../..');
 require_once($root_dir.'/lib/vendor/lime/lime.php');
 require_once($root_dir.'/lib/util/sfFinder.class.php');
 
@@ -12,12 +14,12 @@ printf("==============%s\n\n", str_repeat('=', strlen($version)));
 
 // symfony core LOC
 $total_loc = 0;
-$files = sfFinder::type('file')->name('*.php')->prune('vendor', 'plugins')->in($root_dir.'/lib');
+$files = Finder::files()->name('*.php')->prune('vendor', 'plugins')->in($root_dir.'/lib');
 foreach ($files as $file)
 {
   $total_loc += count(lime_coverage::get_php_lines($file));
 }
-$files = sfFinder::type('file')->name('*.php')->prune('vendor')->in($root_dir.'/lib/plugins/*/lib');
+$files = Finder::files()->name('*.php')->prune('vendor')->in($root_dir.'/lib/plugins/*/lib');
 foreach ($files as $file)
 {
   $total_loc += count(lime_coverage::get_php_lines($file));
@@ -25,7 +27,7 @@ foreach ($files as $file)
 
 // symfony tests LOC
 $total_tests_loc = 0;
-$files = sfFinder::type('file')->name('*Test.php')->in(array(
+$files = Finder::files()->name('*Test.php')->in(array(
   $root_dir.'/test/unit',
   $root_dir.'/test/functional',
   $root_dir.'/test/other',

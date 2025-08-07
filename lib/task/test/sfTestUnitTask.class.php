@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches unit tests.
  *
@@ -71,7 +73,7 @@ class sfTestUnitTask extends sfTestBaseTask
       $files = [];
 
       foreach ($arguments['name'] as $name) {
-        $finder = sfFinder::type('file')->follow_link()->name(basename($name) . 'Test.php');
+        $finder = Finder::files()->followLinks()->name(basename($name) . 'Test.php');
         $files  = array_merge($files, $finder->in(sfConfig::get('sf_test_dir') . '/unit/' . dirname($name)));
       }
 
@@ -94,7 +96,7 @@ class sfTestUnitTask extends sfTestBaseTask
       $h->base_dir = sfConfig::get('sf_test_dir') . '/unit';
 
       // filter and register unit tests
-      $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
+      $finder = Finder::files()->followLinks()->name('*Test.php');
       $h->register($finder->in($h->base_dir));
 
       $ret = $h->run() ? 0 : 1;

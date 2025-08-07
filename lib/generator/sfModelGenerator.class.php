@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Model generator.
  *
@@ -60,7 +62,7 @@ abstract class sfModelGenerator extends sfGenerator
     $this->configuration = $this->loadConfiguration();
 
     // generate files
-    $this->generatePhpFiles($this->generatedModuleName, sfFinder::type('file')->relative()->in($themeDir));
+    $this->generatePhpFiles($this->generatedModuleName, Finder::files()->relative()->in($themeDir));
 
     // move helper file
     if (file_exists($file = $this->generatorManager->getBasePath().'/'.$this->getGeneratedModuleName().'/lib/helper.php'))

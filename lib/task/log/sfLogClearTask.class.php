@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Clears log files.
  *
@@ -39,7 +41,7 @@ class sfLogClearTask extends sfBaseTask
    */
   protected function execute(array $arguments = [], array $options = []): int
   {
-    $logs = sfFinder::type('file')->in(sfConfig::get('sf_log_dir'));
+    $logs = Finder::files()->in(sfConfig::get('sf_log_dir'));
     $this->getFilesystem()->remove($logs);
 
     return 0;

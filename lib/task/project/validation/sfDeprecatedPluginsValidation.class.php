@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Finds deprecated plugins usage.
  *
@@ -38,7 +40,7 @@ class sfDeprecatedPluginsValidation extends sfValidation
   public function validate(): array
   {
     $found = [];
-    $files = sfFinder::type('file')->name('*Configuration.class.php')->in($this->getProjectConfigDirectories());
+    $files = Finder::files()->name('*Configuration.class.php')->in($this->getProjectConfigDirectories());
     foreach ($files as $file) {
       $content = sfToolkit::stripComments(file_get_contents($file));
 

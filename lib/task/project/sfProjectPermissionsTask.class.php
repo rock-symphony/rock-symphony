@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Fixes symfony directory permissions.
  *
@@ -61,8 +63,8 @@ class sfProjectPermissionsTask extends sfBaseTask
     ];
 
     foreach ($dirs as $dir) {
-      $this->chmod(sfFinder::type('dir')->in($dir), 0777);
-      $this->chmod(sfFinder::type('file')->in($dir), 0666);
+      $this->chmod(Finder::dirs()->in($dir), 0777);
+      $this->chmod(Finder::files()->in($dir), 0666);
     }
 
     // note those files that failed

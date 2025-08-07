@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Base class for all symfony tasks.
  *
@@ -241,23 +243,21 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    */
   protected function getFirstApplication(): string | null
   {
-    if (count($dirs = sfFinder::type('dir')->maxdepth(0)->follow_link()->relative()->in(sfConfig::get('sf_apps_dir')))) {
-      return $dirs[0];
-    }
+    $dirs = Finder::dirs()->maxDepth(0)->followLinks()->relative()->in(sfConfig::get('sf_apps_dir'));
 
-    return null;
+    return $dirs[0] ?? null;
   }
 
   /**
    * Mirrors a directory structure inside the created project.
    *
-   * @param string        $dir     The directory to mirror
-   * @param sfFinder|null $finder  A sfFinder instance to use for the mirroring
+   * @param string      $dir     The directory to mirror
+   * @param Finder|null $finder  A sfFinder instance to use for the mirroring
    */
-  protected function installDir(string $dir, sfFinder | null $finder = null)
+  protected function installDir(string $dir, Finder | null $finder = null)
   {
     if (null === $finder) {
-      $finder = sfFinder::type('any')->discard('.sf');
+      $finder = Finder::any()->discard('.sf');
     }
 
     $this->getFilesystem()->mirror($dir, sfConfig::get('sf_root_dir'), $finder);
@@ -279,7 +279,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
 
     $tokens = array_merge($this->tokens ?? [], $tokens);
 
-    $this->getFilesystem()->replaceTokens(sfFinder::type('file')->prune('vendor')->in($dirs), '##', '##', $tokens);
+    $this->getFilesystem()->replaceTokens(Finder::files()->prune('vendor')->in($dirs), '##', '##', $tokens);
   }
 
   /**

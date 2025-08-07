@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches a plugin test suite.
  *
@@ -66,8 +68,9 @@ class sfTestPluginTask extends sfTestBaseTask
 
     $h->base_dir = sfConfig::get('sf_plugins_dir') . '/' . $arguments['plugin'] . '/test/' . $options['only'];
 
-    $finder = sfFinder::type('file')->follow_link()->name('*Test.php');
-    $h->register($finder->in($h->base_dir));
+    $h->register(
+      Finder::files()->followLinks()->name('*Test.php')->in($h->base_dir),
+    );
 
     return $h->run() ? 0 : 1;
   }

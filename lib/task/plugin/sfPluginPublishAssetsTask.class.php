@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Publishes Web Assets for Core and third party plugins
  *
@@ -66,7 +68,7 @@ class sfPluginPublishAssetsTask extends sfBaseTask
     }
 
     if ($options['core-only']) {
-      $corePlugins          = sfFinder::type('dir')->relative()->maxdepth(0)->in($this->configuration->getSymfonyLibDir() . '/plugins');
+      $corePlugins          = Finder::dirs()->relative()->maxDepth(0)->in($this->configuration->getSymfonyLibDir() . '/plugins');
       $arguments['plugins'] = array_unique(array_merge($arguments['plugins'], array_intersect($enabledPlugins, $corePlugins)));
     } elseif ( ! count($arguments['plugins'])) {
       $arguments['plugins'] = $enabledPlugins;

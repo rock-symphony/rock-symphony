@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Launches the symfony test suite.
  *
@@ -69,7 +71,7 @@ EOF;
 
     // remove generated files
     if ($options['rebuild-all']) {
-      $finder = sfFinder::type('dir')->name(['base', 'om', 'map']);
+      $finder = Finder::dirs()->name(['base', 'om', 'map']);
       foreach ($finder->in(glob($h->base_dir . '/../lib/plugins/*/test/functional/fixtures/lib')) as $dir) {
         sfToolkit::clearDirectory($dir);
       }
@@ -81,7 +83,7 @@ EOF;
       }
     } else {
       $h->register(
-        sfFinder::type('file')->prune('fixtures')->name('*Test.php')->in(
+        Finder::files()->prune('fixtures')->name('*Test.php')->in(
           array_merge(
           // unit tests
             [$h->base_dir . '/unit'],

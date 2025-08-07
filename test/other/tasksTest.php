@@ -1,6 +1,8 @@
 <?php
 
-require_once __DIR__.'/../../vendor/autoload.php';
+use RockSymphony\Util\Finder;
+
+require_once __DIR__ . '/../../vendor/autoload.php';
 require_once __DIR__.'/../../lib/vendor/lime/lime.php';
 require_once __DIR__.'/../../lib/util/sfToolkit.class.php';
 
@@ -67,7 +69,7 @@ class sf_test_project
       $fs->mkdirs($this->tmp_dir . '/vendor');
 
       // mirror vendor directory entries
-      foreach (sfFinder::type('any')->maxdepth(0)->in(__DIR__.'/../../vendor') as $vendor_entry) {
+      foreach (Finder::any()->maxDepth(0)->in(__DIR__.'/../../vendor') as $vendor_entry) {
           $vendor_entry_basename = basename($vendor_entry);
           $fs->symlink($vendor_entry, "{$this->tmp_dir}/vendor/{$vendor_entry_basename}");
       }

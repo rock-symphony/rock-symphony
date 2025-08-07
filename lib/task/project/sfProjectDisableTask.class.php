@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Disables an application in a given environment.
  *
@@ -54,7 +56,7 @@ class sfProjectDisableTask extends sfBaseTask
       $applications = [$arguments['env']];
       $env          = $arguments['app'][0];
     } else {
-      $applications = count($arguments['app']) ? $arguments['app'] : sfFinder::type('dir')->relative()->maxdepth(0)->in(sfConfig::get('sf_apps_dir'));
+      $applications = $arguments['app'] ?: Finder::dirs()->relative()->maxDepth(0)->in(sfConfig::get('sf_apps_dir'));
       $env          = $arguments['env'];
     }
 

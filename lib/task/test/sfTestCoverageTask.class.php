@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Outputs test code coverage.
  *
@@ -101,7 +103,7 @@ class sfTestCoverageTask extends sfBaseTask
   protected function getFiles(array | string $directory): array
   {
     if (is_dir($directory)) {
-      return sfFinder::type('file')->name('*.php')->in($directory);
+      return Finder::files()->name('*.php')->in($directory);
     } elseif (file_exists($directory)) {
       return [$directory];
     } else {

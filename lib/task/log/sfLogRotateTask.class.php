@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Rotates an application log files.
  *
@@ -94,7 +96,7 @@ class sfLogRotateTask extends sfBaseTask
     }
 
     // determine date of last rotation
-    $logs      = sfFinder::type('file')->maxdepth(1)->name($logfile . '_*.log')->sort_by_name()->in($logdir . '/history');
+    $logs      = Finder::files()->maxDepth(1)->name($logfile . '_*.log')->sortByName()->in($logdir . '/history');
     $recentlog = is_array($logs) ? array_pop($logs) : null;
 
     if ($recentlog) {
@@ -137,7 +139,7 @@ class sfLogRotateTask extends sfBaseTask
         $this->getFilesystem()->remove($srcLog);
 
         // get all log history files for this application and environment
-        $newLogs = sfFinder::type('file')->maxdepth(1)->name($logfile . '_*.log')->sort_by_name()->in($logdir . '/history');
+        $newLogs = Finder::files()->maxDepth(1)->name($logfile . '_*.log')->sortByName()->in($logdir . '/history');
 
         // if the number of logs in history exceeds history then remove the oldest log
         if (count($newLogs) > $history) {
