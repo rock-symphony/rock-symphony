@@ -276,16 +276,6 @@ abstract class sfComponent
   }
 
   /**
-   * Gets the current mailer instance.
-   *
-   * @return sfMailer A sfMailer instance
-   */
-  public function getMailer(): sfMailer
-  {
-    return $this->getContext()->getMailer();
-  }
-
-  /**
    * Sets a variable for the template.
    *
    * If you add a safe value, the variable won't be output escaped

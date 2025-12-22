@@ -23,9 +23,6 @@ abstract class sfCommandApplicationTask extends sfTask
   /** @var sfSymfonyCommandApplication|null */
   protected sfCommandApplication | null $commandApplication = null;
 
-  /** @var sfMailer|null */
-  private sfMailer | null $mailer = null;
-
   /** @var sfRouting|null */
   private sfRouting | null $routing = null;
 
@@ -105,37 +102,6 @@ abstract class sfCommandApplicationTask extends sfTask
   protected function runTask(string $name, array $arguments = [], array $options = []): int
   {
     return $this->createTask($name)->run($arguments, $options);
-  }
-
-  /**
-   * Returns a mailer instance.
-   *
-   * Notice that your task should accept an application option.
-   * The mailer configuration is read from the current configuration
-   * instance, which is automatically created according to the current
-   * --application option.
-   *
-   * @return sfMailer A sfMailer instance
-   */
-  protected function getMailer(): sfMailer
-  {
-    if (null === $this->mailer) {
-      $this->mailer = $this->initializeMailer();
-    }
-
-    return $this->mailer;
-  }
-
-  /**
-   * Initialize mailer
-   *
-   * @return sfMailer A sfMailer instance
-   */
-  protected function initializeMailer(): sfMailer
-  {
-    $config = $this->getFactoryConfiguration();
-
-    return new $config['mailer']['class']($this->dispatcher, $config['mailer']['param']);
   }
 
   /**
