@@ -8,6 +8,8 @@
  * file that was distributed with this source code.
  */
 
+use RockSymphony\Util\Finder;
+
 /**
  * Finds deprecated classes usage.
  *
@@ -18,72 +20,112 @@
  */
 class sfDeprecatedClassesValidation extends sfValidation
 {
-  public function getHeader()
+  public function getHeader(): string
   {
     return 'Checking usage of deprecated classes';
   }
 
-  public function getExplanation()
+  public function getExplanation(): array
   {
-    return array(
-          '',
-          '  The files above use deprecated classes',
-          '  that have been removed in symfony 1.4.',
-          '',
-          '  You can find a list of all deprecated classes under the',
-          '  "Classes" section of the DEPRECATED tutorial:',
-          '',
-          '  http://www.symfony-project.org/tutorial/1_4/en/deprecated',
-          '',
-    );
+    return [
+      '',
+      '  The files above use deprecated classes',
+      '  that have been removed in symfony 1.4.',
+      '',
+      '  You can find a list of all deprecated classes under the',
+      '  "Classes" section of the DEPRECATED tutorial:',
+      '',
+      '  http://www.symfony-project.org/tutorial/1_4/en/deprecated',
+      '',
+    ];
   }
 
-  public function validate()
+  public function validate(): array
   {
-    $classes = array(
-      'sfDoctrineLogger', 'sfNoRouting', 'sfPathInfoRouting', 'sfRichTextEditor',
-      'sfRichTextEditorFCK', 'sfRichTextEditorTinyMCE', 'sfCrudGenerator', 'sfAdminGenerator',
-      'sfPropelCrudGenerator', 'sfPropelAdminGenerator', 'sfPropelUniqueValidator', 'sfDoctrineUniqueValidator',
-      'sfLoader', 'sfConsoleRequest', 'sfConsoleResponse', 'sfConsoleController',
-      'sfDoctrineDataRetriever', 'sfPropelDataRetriever',
-      'sfWidgetFormI18nSelectLanguage', 'sfWidgetFormI18nSelectCurrency', 'sfWidgetFormI18nSelectCountry',
-      'sfWidgetFormChoiceMany', 'sfWidgetFormPropelChoiceMany', 'sfWidgetFormDoctrineChoiceMany',
-      'sfValidatorChoiceMany', 'sfValidatorPropelChoiceMany', 'sfValidatorPropelDoctrineMany',
-      'SfExtensionObjectBuilder', 'SfExtensionPeerBuilder', 'SfMultiExtendObjectBuilder',
-      'SfNestedSetBuilder', 'SfNestedSetPeerBuilder', 'SfObjectBuilder', 'SfPeerBuilder',
-      'sfWidgetFormPropelSelect', 'sfWidgetFormPropelSelectMany',
-      'sfWidgetFormDoctrineSelect', 'sfWidgetFormDoctrineSelectMany',
+    $classes = [
+      'sfDoctrineLogger',
+      'sfNoRouting',
+      'sfPathInfoRouting',
+      'sfRichTextEditor',
+      'sfRichTextEditorFCK',
+      'sfRichTextEditorTinyMCE',
+      'sfCrudGenerator',
+      'sfAdminGenerator',
+      'sfPropelCrudGenerator',
+      'sfPropelAdminGenerator',
+      'sfPropelUniqueValidator',
+      'sfDoctrineUniqueValidator',
+      'sfLoader',
+      'sfConsoleRequest',
+      'sfConsoleResponse',
+      'sfConsoleController',
+      'sfDoctrineDataRetriever',
+      'sfPropelDataRetriever',
+      'sfWidgetFormI18nSelectLanguage',
+      'sfWidgetFormI18nSelectCurrency',
+      'sfWidgetFormI18nSelectCountry',
+      'sfWidgetFormChoiceMany',
+      'sfWidgetFormPropelChoiceMany',
+      'sfWidgetFormDoctrineChoiceMany',
+      'sfValidatorChoiceMany',
+      'sfValidatorPropelChoiceMany',
+      'sfValidatorPropelDoctrineMany',
+      'SfExtensionObjectBuilder',
+      'SfExtensionPeerBuilder',
+      'SfMultiExtendObjectBuilder',
+      'SfNestedSetBuilder',
+      'SfNestedSetPeerBuilder',
+      'SfObjectBuilder',
+      'SfPeerBuilder',
+      'sfWidgetFormPropelSelect',
+      'sfWidgetFormPropelSelectMany',
+      'sfWidgetFormDoctrineSelect',
+      'sfWidgetFormDoctrineSelectMany',
 
       // classes from sfCompat10Plugin
-      'sfEzComponentsBridge', 'sfZendFrameworkBridge', 'sfProcessCache', 'sfValidatorConfigHandler',
-      'sfActionException', 'sfValidatorException', 'sfFillInFormFilter', 'sfValidationExecutionFilter',
-      'sfRequestCompat10', 'sfFillInForm', 'sfCallbackValidator', 'sfCompareValidator', 'sfDateValidator',
-      'sfEmailValidator', 'sfFileValidator', 'sfNumberValidator', 'sfRegexValidator', 'sfStringValidator',
-      'sfUrlValidator', 'sfValidator', 'sfValidatorManager', 'sfMailView', 'sfMail',
-    );
+      'sfEzComponentsBridge',
+      'sfZendFrameworkBridge',
+      'sfProcessCache',
+      'sfValidatorConfigHandler',
+      'sfActionException',
+      'sfValidatorException',
+      'sfFillInFormFilter',
+      'sfValidationExecutionFilter',
+      'sfRequestCompat10',
+      'sfFillInForm',
+      'sfCallbackValidator',
+      'sfCompareValidator',
+      'sfDateValidator',
+      'sfEmailValidator',
+      'sfFileValidator',
+      'sfNumberValidator',
+      'sfRegexValidator',
+      'sfStringValidator',
+      'sfUrlValidator',
+      'sfValidator',
+      'sfValidatorManager',
+      'sfMailView',
+      'sfMail',
+    ];
 
-    $found = array();
-    $files = sfFinder::type('file')->name('*.php')->prune('vendor')->in(array(
+    $found = [];
+    $files = Finder::files()->name('*.php')->prune('vendor')->in([
       sfConfig::get('sf_apps_dir'),
       sfConfig::get('sf_lib_dir'),
       sfConfig::get('sf_test_dir'),
       sfConfig::get('sf_plugins_dir'),
-    ));
-    foreach ($files as $file)
-    {
+    ]);
+    foreach ($files as $file) {
       $content = sfToolkit::stripComments(file_get_contents($file));
 
-      $matches = array();
-      foreach ($classes as $class)
-      {
-        if (preg_match('#\b'.preg_quote($class, '#').'\b#', $content))
-        {
+      $matches = [];
+      foreach ($classes as $class) {
+        if (preg_match('#\b' . preg_quote($class, '#') . '\b#', $content)) {
           $matches[] = $class;
         }
       }
 
-      if ($matches)
-      {
+      if ($matches) {
         $found[$file] = implode(', ', $matches);
       }
     }

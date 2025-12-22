@@ -14,10 +14,14 @@ $t = new lime_test(0);
 
 class myStorage extends sfStorage
 {
-  public function read(string $key) {}
-  public function remove(string $key) {}
+  public function read(string $key): mixed {
+    return null;
+  }
+  public function remove(string $key): mixed {
+    return null;
+  }
   public function shutdown(): void {}
-  public function write(string $key, $data): void {}
+  public function write(string $key, mixed $data): void {}
   public function regenerate(bool $destroy = false): void {}
 }
 

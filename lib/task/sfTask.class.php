@@ -19,23 +19,31 @@
 abstract class sfTask
 {
   /** @var string */
-  protected $namespace = '';
+  protected string $namespace = '';
+
   /** @var string */
-  protected $name = null;
+  protected string $name;
+
   /** @var string[] */
-  protected $aliases = array();
+  protected array $aliases = [];
+
   /** @var string */
-  protected $briefDescription = '';
+  protected string $briefDescription = '';
+
   /** @var string */
-  protected $detailedDescription = '';
+  protected string $detailedDescription = '';
+
   /** @var \sfCommandArgument[] */
-  protected $arguments = array();
+  protected array $arguments = [];
+
   /** @var \sfCommandOption[] */
-  protected $options = array();
+  protected array $options = [];
+
   /** @var \sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+
   /** @var \sfFormatter */
-  protected $formatter;
+  protected sfFormatter $formatter;
 
   /**
    * Constructor.
@@ -54,8 +62,9 @@ abstract class sfTask
   /**
    * Configures the current task.
    */
-  protected function configure()
+  protected function configure(): void
   {
+    // Point of extension for sub-classes
   }
 
   /**
@@ -63,7 +72,7 @@ abstract class sfTask
    *
    * @return sfFormatter The formatter instance
    */
-  public function getFormatter()
+  public function getFormatter(): sfFormatter
   {
     return $this->formatter;
   }
@@ -71,9 +80,9 @@ abstract class sfTask
   /**
    * Sets the formatter instance.
    *
-   * @param sfFormatter $formatter The formatter instance
+   * @param sfFormatter $formatter  The formatter instance
    */
-  public function setFormatter(sfFormatter $formatter)
+  public function setFormatter(sfFormatter $formatter): void
   {
     $this->formatter = $formatter;
   }
@@ -84,9 +93,9 @@ abstract class sfTask
    * @param sfCommandManager $commandManager  An sfCommandManager instance
    * @param mixed            $options         The command line options
    *
-   * @return integer 0 if everything went fine, or an error code
+   * @return int 0 if everything went fine, or an error code
    */
-  public function runFromCLI(sfCommandManager $commandManager, $options = null)
+  public function runFromCLI(sfCommandManager $commandManager, array | string | null $options = null)
   {
     $commandManager->getArgumentSet()->addArguments($this->getArguments());
     $commandManager->getOptionSet()->addOptions($this->getOptions());
@@ -100,32 +109,30 @@ abstract class sfTask
    * @param array|string $arguments  An array of arguments or a string representing the CLI arguments and options
    * @param array        $options    An array of options
    *
-   * @return integer 0 if everything went fine, or an error code
+   * @return int 0 if everything went fine, or an error code
    */
-  public function run($arguments = array(), $options = array())
+  public function run(array | string $arguments = [], array $options = []): int
   {
-    $commandManager = new sfCommandManager(new sfCommandArgumentSet($this->getArguments()), new sfCommandOptionSet($this->getOptions()));
+    $commandManager = new sfCommandManager(
+      new sfCommandArgumentSet($this->getArguments()),
+      new sfCommandOptionSet($this->getOptions()),
+    );
 
-    if (is_array($arguments) && is_string(key($arguments)))
-    {
+    if (is_array($arguments) && is_string(key($arguments))) {
       // index arguments by name for ordering and reference
-      $indexArguments = array();
-      foreach ($this->arguments as $argument)
-      {
+
+      /** @var array<string,sfCommandArgument> $indexArguments */
+      $indexArguments = [];
+      foreach ($this->arguments as $argument) {
         $indexArguments[$argument->getName()] = $argument;
       }
 
-      foreach ($arguments as $name => $value)
-      {
-        if (false !== $pos = array_search($name, array_keys($indexArguments)))
-        {
-          if ($indexArguments[$name]->isArray())
-          {
-            $value = implode(' ', (array) $value);
-            $arguments[$pos] = isset($arguments[$pos]) ? $arguments[$pos].' '.$value : $value;
-          }
-          else
-          {
+      foreach ($arguments as $name => $value) {
+        if (false !== $pos = array_search($name, array_keys($indexArguments))) {
+          if ($indexArguments[$name]->isArray()) {
+            $value           = implode(' ', (array)$value);
+            $arguments[$pos] = isset($arguments[$pos]) ? $arguments[$pos] . ' ' . $value : $value;
+          } else {
             $arguments[$pos] = $value;
           }
 
@@ -137,30 +144,30 @@ abstract class sfTask
     }
 
     // index options by name for reference
-    $indexedOptions = array();
-    foreach ($this->options as $option)
-    {
+    /** @var array<string,sfCommandOption> $indexedOptions */
+    $indexedOptions = [];
+    foreach ($this->options as $option) {
       $indexedOptions[$option->getName()] = $option;
     }
 
-    foreach ($options as $name => $value)
-    {
-      if (is_string($name))
-      {
-        if (false === $value || null === $value || (isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() && !$value))
-        {
+    foreach ($options as $name => $value) {
+      if (is_string($name)) {
+        if (false === $value || null === $value || (isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() && ! $value)) {
           unset($options[$name]);
           continue;
         }
 
         // convert associative array
-        $value = true === $value ? $name : sprintf('%s=%s', $name, isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() ? implode(' --'.$name.'=', (array) $value) : $value);
+        $value = true === $value ? $name : sprintf(
+          '%s=%s',
+          $name,
+          isset($indexedOptions[$name]) && $indexedOptions[$name]->isArray() ? implode(' --' . $name . '=', (array)$value) : $value
+        );
       }
 
       // add -- before each option if needed
-      if (0 !== strpos($value, '--'))
-      {
-        $value = '--'.$value;
+      if (strpos($value, '--') !== 0) {
+        $value = '--' . $value;
       }
 
       $options[] = $value;
@@ -175,7 +182,7 @@ abstract class sfTask
    *
    * @return sfCommandArgument[] An array of sfCommandArgument objects.
    */
-  public function getArguments()
+  public function getArguments(): array
   {
     return $this->arguments;
   }
@@ -185,7 +192,7 @@ abstract class sfTask
    *
    * @param sfCommandArgument[] $arguments  An array of arguments
    */
-  public function addArguments($arguments)
+  public function addArguments(array $arguments): void
   {
     $this->arguments = array_merge($this->arguments, $arguments);
   }
@@ -193,7 +200,7 @@ abstract class sfTask
   /**
    * Add an argument.
    *
-   * This method always use the sfCommandArgument class to create an option.
+   * Construct an sfCommandArgument instance and add it to the arguments list.
    *
    * @see sfCommandArgument::__construct()
    * @param string $name
@@ -201,7 +208,7 @@ abstract class sfTask
    * @param string $help
    * @param mixed  $default
    */
-  public function addArgument($name, $mode = null, $help = '', $default = null)
+  public function addArgument(string $name, int | null $mode = null, string $help = '', mixed $default = null): void
   {
     $this->arguments[] = new sfCommandArgument($name, $mode, $help, $default);
   }
@@ -211,7 +218,7 @@ abstract class sfTask
    *
    * @return sfCommandOption[] An array of sfCommandOption objects.
    */
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->options;
   }
@@ -219,9 +226,9 @@ abstract class sfTask
   /**
    * Adds an array of option objects.
    *
-   * @param array $options    An array of options
+   * @param sfCommandOption[] $options  An array of options
    */
-  public function addOptions($options)
+  public function addOptions(array $options): void
   {
     $this->options = array_merge($this->options, $options);
   }
@@ -229,17 +236,17 @@ abstract class sfTask
   /**
    * Add an option.
    *
-   * This method always use the sfCommandOption class to create an option.
+   * Construct an sfCommandOption instance and add it to the options list.
    *
    * @see sfCommandOption::__construct()
    *
-   * @param string $name
-   * @param string $shortcut
-   * @param int    $mode
-   * @param string $help
-   * @param mixed  $default
+   * @param string      $name
+   * @param string|null $shortcut
+   * @param int|null    $mode
+   * @param string      $help
+   * @param mixed       $default
    */
-  public function addOption($name, $shortcut = null, $mode = null, $help = '', $default = null)
+  public function addOption(string $name, string | null $shortcut = null, int | null $mode = null, string $help = '', mixed $default = null): void
   {
     $this->options[] = new sfCommandOption($name, $shortcut, $mode, $help, $default);
   }
@@ -249,7 +256,7 @@ abstract class sfTask
    *
    * @return string The task namespace
    */
-  public function getNamespace()
+  public function getNamespace(): string
   {
     return $this->namespace;
   }
@@ -259,22 +266,19 @@ abstract class sfTask
    *
    * @return string The task name
    */
-  public function getName()
+  public function getName(): string
   {
-    if ($this->name)
-    {
+    if (! empty($this->name)) {
       return $this->name;
     }
 
     $name = get_class($this);
 
-    if ('sf' == substr($name, 0, 2))
-    {
+    if ('sf' == substr($name, 0, 2)) {
       $name = substr($name, 2);
     }
 
-    if ('Task' == substr($name, -4))
-    {
+    if ('Task' == substr($name, -4)) {
       $name = substr($name, 0, -4);
     }
 
@@ -286,9 +290,9 @@ abstract class sfTask
    *
    * @return string The fully qualified task name
    */
-  final function getFullName()
+  final function getFullName(): string
   {
-    return $this->getNamespace() ? $this->getNamespace().':'.$this->getName() : $this->getName();
+    return $this->getNamespace() ? $this->getNamespace() . ':' . $this->getName() : $this->getName();
   }
 
   /**
@@ -296,7 +300,7 @@ abstract class sfTask
    *
    * @return string The brief description for the task
    */
-  public function getBriefDescription()
+  public function getBriefDescription(): string
   {
     return $this->briefDescription;
   }
@@ -309,9 +313,10 @@ abstract class sfTask
    *
    * @return string The detailed description for the task
    */
-  public function getDetailedDescription()
+  public function getDetailedDescription(): string
   {
     $formatter = $this->getFormatter();
+
     return preg_replace_callback('/\[(.+?)\|(\w+)\]/s', function ($match) use ($formatter) {
       return $formatter->format($match['1'], $match['2']);
     }, $this->detailedDescription);
@@ -320,9 +325,9 @@ abstract class sfTask
   /**
    * Returns the aliases for the task.
    *
-   * @return array An array of aliases for the task
+   * @return string[] An array of aliases for the task
    */
-  public function getAliases()
+  public function getAliases(): array
   {
     return $this->aliases;
   }
@@ -332,22 +337,24 @@ abstract class sfTask
    *
    * @return string The synopsis
    */
-  public function getSynopsis()
+  public function getSynopsis(): string
   {
-    $options = array();
-    foreach ($this->getOptions() as $option)
-    {
-      $shortcut = $option->getShortcut() ? sprintf('-%s|', $option->getShortcut()) : '';
-      $options[] = sprintf('['.($option->isParameterRequired() ? '%s--%s="..."' : ($option->isParameterOptional() ? '%s--%s[="..."]' : '%s--%s')).']', $shortcut, $option->getName());
+    $options = [];
+
+    foreach ($this->getOptions() as $option) {
+      $shortcut  = $option->getShortcut() ? sprintf('-%s|', $option->getShortcut()) : '';
+      $options[] = sprintf(
+        '[' . ($option->isParameterRequired() ? '%s--%s="..."' : ($option->isParameterOptional() ? '%s--%s[="..."]' : '%s--%s')) . ']',
+        $shortcut,
+        $option->getName()
+      );
     }
 
-    $arguments = array();
-    foreach ($this->getArguments() as $argument)
-    {
-      $arguments[] = sprintf($argument->isRequired() ? '%s' : '[%s]', $argument->getName().($argument->isArray() ? '1' : ''));
+    $arguments = [];
+    foreach ($this->getArguments() as $argument) {
+      $arguments[] = sprintf($argument->isRequired() ? '%s' : '[%s]', $argument->getName() . ($argument->isArray() ? '1' : ''));
 
-      if ($argument->isArray())
-      {
+      if ($argument->isArray()) {
         $arguments[] = sprintf('... [%sN]', $argument->getName());
       }
     }
@@ -355,26 +362,27 @@ abstract class sfTask
     return sprintf('%%s %s %s %s', $this->getFullName(), implode(' ', $options), implode(' ', $arguments));
   }
 
-  protected function process(sfCommandManager $commandManager, $options)
+  protected function process(sfCommandManager $commandManager, array | string | null $options): void
   {
     $commandManager->process($options);
-    if (!$commandManager->isValid())
-    {
+    if ( ! $commandManager->isValid()) {
       throw new sfCommandArgumentsException(sprintf("The execution of task \"%s\" failed.\n- %s", $this->getFullName(), implode("\n- ", $commandManager->getErrors())));
     }
   }
 
-  protected function doRun(sfCommandManager $commandManager, $options)
+  protected function doRun(sfCommandManager $commandManager, array | string | null $options): int
   {
-    $event = $this->dispatcher->filter(new sfEvent($this, 'command.filter_options', array('command_manager' => $commandManager)), $options);
+    $event   = $this->dispatcher->filter(
+      new sfEvent($this, 'command.filter_options', ['command_manager' => $commandManager]),
+      $options,
+    );
     $options = $event->getReturnValue();
 
     $this->process($commandManager, $options);
 
-    $event = new sfEvent($this, 'command.pre_command', array('arguments' => $commandManager->getArgumentValues(), 'options' => $commandManager->getOptionValues()));
+    $event = new sfEvent($this, 'command.pre_command', ['arguments' => $commandManager->getArgumentValues(), 'options' => $commandManager->getOptionValues()]);
     $this->dispatcher->notifyUntil($event);
-    if ($event->isProcessed())
-    {
+    if ($event->isProcessed()) {
       return $event->getReturnValue();
     }
 
@@ -388,14 +396,11 @@ abstract class sfTask
   /**
    * Logs a message.
    *
-   * @param mixed $messages  The message as an array of lines of a single string
+   * @param string[]|string $messages  The message as an array of lines of a single string
    */
-  public function log($messages)
+  public function log(array | string $messages): void
   {
-    if (!is_array($messages))
-    {
-      $messages = array($messages);
-    }
+    $messages = is_array($messages) ? $messages : [$messages];
 
     $this->dispatcher->notify(new sfEvent($this, 'command.log', $messages));
   }
@@ -403,73 +408,63 @@ abstract class sfTask
   /**
    * Logs a message in a section.
    *
-   * @param string  $section  The section name
-   * @param string  $message  The message
-   * @param int     $size     The maximum size of a line
-   * @param string  $style    The color scheme to apply to the section string (INFO, ERROR, or COMMAND)
+   * @param string   $section  The section name
+   * @param string   $message  The message
+   * @param int|null $size     The maximum size of a line
+   * @param string   $style    The color scheme to apply to the section string (INFO, ERROR, or COMMAND)
    */
-  public function logSection($section, $message, $size = null, $style = 'INFO')
+  public function logSection(string $section, string $message, int | null $size = null, string $style = 'INFO'): void
   {
-    $this->dispatcher->notify(new sfEvent($this, 'command.log', array($this->formatter->formatSection($section, $message, $size, $style))));
+    $this->dispatcher->notify(new sfEvent($this, 'command.log', [$this->formatter->formatSection($section, $message, $size, $style)]));
   }
 
   /**
    * Logs a message as a block of text.
    *
-   * @param string|array $messages The message to display in the block
-   * @param string       $style    The style to use
+   * @param string[]|string $messages  The message to display in the block
+   * @param string          $style     The style to use
    */
-  public function logBlock($messages, $style)
+  public function logBlock(array | string $messages, string $style): void
   {
-    if (!is_array($messages))
-    {
-      $messages = array($messages);
-    }
+    $messages = is_array($messages) ? $messages : [$messages];
 
     $style = str_replace('_LARGE', '', $style, $count);
-    $large = (Boolean) $count;
+    $large = (boolean)$count;
 
-    $len = 0;
-    $lines = array();
-    foreach ($messages as $message)
-    {
+    $len   = 0;
+    $lines = [];
+    foreach ($messages as $message) {
       $lines[] = sprintf($large ? '  %s  ' : ' %s ', $message);
-      $len = max($this->strlen($message) + ($large ? 4 : 2), $len);
+      $len     = max($this->strlen($message) + ($large ? 4 : 2), $len);
     }
 
-    $messages = $large ? array(str_repeat(' ', $len)) : array();
-    foreach ($lines as $line)
-    {
-      $messages[] = $line.str_repeat(' ', $len - $this->strlen($line));
+    $messages = $large ? [str_repeat(' ', $len)] : [];
+    foreach ($lines as $line) {
+      $messages[] = $line . str_repeat(' ', $len - $this->strlen($line));
     }
-    if ($large)
-    {
+    if ($large) {
       $messages[] = str_repeat(' ', $len);
     }
 
-    foreach ($messages as $message)
-    {
+    foreach ($messages as $message) {
       $this->log($this->formatter->format($message, $style));
     }
   }
 
   /**
-   * Asks a question to the user.
+   * Asks the user a question.
    *
-   * @param string|array $question The question to ask
-   * @param string       $style    The style to use (QUESTION by default)
-   * @param string       $default  The default answer if none is given by the user
+   * @param string[]|string   $question  The question to ask
+   * @param string|null|false $style     The style to use (QUESTION by default)
+   * @param string            $default   The default answer if none is given by the user
    *
    * @return string      The user answer
    */
-  public function ask($question, $style = 'QUESTION', $default = null)
+  public function ask(array | string $question, string | false | null $style = 'QUESTION', mixed $default = null): string
   {
-    if (false === $style)
-    {
+    if (false === $style) {
       $this->log($question);
-    }
-    else
-    {
+    } else {
       $this->logBlock($question, null === $style ? 'QUESTION' : $style);
     }
 
@@ -479,32 +474,27 @@ abstract class sfTask
   }
 
   /**
-   * Asks a confirmation to the user.
+   * Asks the user a confirmation.
    *
    * The question will be asked until the user answer by nothing, yes, or no.
    *
-   * @param string|array $question The question to ask
-   * @param string       $style    The style to use (QUESTION by default)
-   * @param Boolean      $default  The default answer if the user enters nothing
+   * @param string[]|string $question  The question to ask
+   * @param string          $style     The style to use (QUESTION by default)
+   * @param Boolean         $default   The default answer if the user enters nothing
    *
    * @return Boolean     true if the user has confirmed, false otherwise
    */
-  public function askConfirmation($question, $style = 'QUESTION', $default = true)
+  public function askConfirmation(array | string $question, string $style = 'QUESTION', mixed $default = true): bool
   {
-    $answer = 'z';
-    while ($answer && !in_array(strtolower($answer[0]), array('y', 'n')))
-    {
+    do {
       $answer = $this->ask($question, $style);
-    }
+    } while ($answer && ! in_array(strtolower($answer[0]), ['y', 'n']));
 
-    if (false === $default)
-    {
+    if ($default === false) {
       return $answer && 'y' == strtolower($answer[0]);
     }
-    else
-    {
-      return !$answer || 'y' == strtolower($answer[0]);
-    }
+
+    return ! $answer || 'y' == strtolower($answer[0]);
   }
 
   /**
@@ -516,57 +506,46 @@ abstract class sfTask
    *  * attempts: Max number of times to ask before giving up (false by default, which means infinite)
    *  * style:    Style for question output (QUESTION by default)
    *
-   * @param   string|array    $question
-   * @param   sfValidatorBase $validator
-   * @param   array           $options
+   * @param string[]|string                                          $question
+   * @param sfValidatorBase                                          $validator
+   * @param array{'value':mixed,'attempts':int|false,'style':string} $options
    *
    * @return mixed
    *
    * @throws sfValidatorError
    */
-  public function askAndValidate($question, sfValidatorBase $validator, array $options = array())
+  public function askAndValidate(array | string $question, sfValidatorBase $validator, array $options = []): mixed
   {
-    if (!is_array($question))
-    {
-      $question = array($question);
-    }
+    $question = is_array($question) ? $question : [$question];
 
-    $options = array_merge(array(
+    $options = array_merge([
       'value'    => null,
       'attempts' => false,
       'style'    => 'QUESTION',
-    ), $options);
+    ], $options);
 
     // does the provided value passes the validator?
-    if ($options['value'])
-    {
-      try
-      {
+    if ($options['value']) {
+      try {
         return $validator->clean($options['value']);
-      }
-      catch (sfValidatorError $error)
-      {
+      } catch (sfValidatorError $error) {
+        // ignore
       }
     }
 
     // no, ask the user for a valid user
     /** @var sfValidatorError|null $error */
     $error = null;
-    while (false === $options['attempts'] || $options['attempts']--)
-    {
-      if (null !== $error)
-      {
+    while (false === $options['attempts'] || $options['attempts']--) {
+      if (null !== $error) {
         $this->logBlock($error->getMessage(), 'ERROR');
       }
 
       $value = $this->ask($question, $options['style'], null);
 
-      try
-      {
+      try {
         return $validator->clean($value);
-      }
-      catch (sfValidatorError $error)
-      {
+      } catch (sfValidatorError $error) {
       }
     }
 
@@ -578,9 +557,9 @@ abstract class sfTask
    *
    * @return string An XML string representing the task
    */
-  public function asXml()
+  public function asXml(): string
   {
-    $dom = new DOMDocument('1.0', 'UTF-8');
+    $dom               = new DOMDocument('1.0', 'UTF-8');
     $dom->formatOutput = true;
     $dom->appendChild($taskXML = $dom->createElement('task'));
     $taskXML->setAttribute('id', $this->getFullName());
@@ -595,20 +574,18 @@ abstract class sfTask
 
     $taskXML->appendChild($helpXML = $dom->createElement('help'));
     $help = $this->detailedDescription;
-    $help = str_replace(array('|COMMENT', '|INFO'), array('|strong', '|em'), $help);
+    $help = str_replace(['|COMMENT', '|INFO'], ['|strong', '|em'], $help);
     $help = preg_replace('/\[(.+?)\|(\w+)\]/s', '<$2>$1</$2>', $help);
     $helpXML->appendChild($dom->createTextNode(implode("\n ", explode("\n", $help))));
 
     $taskXML->appendChild($aliasesXML = $dom->createElement('aliases'));
-    foreach ($this->getAliases() as $alias)
-    {
+    foreach ($this->getAliases() as $alias) {
       $aliasesXML->appendChild($aliasXML = $dom->createElement('alias'));
       $aliasXML->appendChild($dom->createTextNode($alias));
     }
 
     $taskXML->appendChild($argumentsXML = $dom->createElement('arguments'));
-    foreach ($this->getArguments() as $argument)
-    {
+    foreach ($this->getArguments() as $argument) {
       $argumentsXML->appendChild($argumentXML = $dom->createElement('argument'));
       $argumentXML->setAttribute('name', $argument->getName());
       $argumentXML->setAttribute('is_required', $argument->isRequired() ? 1 : 0);
@@ -617,32 +594,28 @@ abstract class sfTask
       $helpXML->appendChild($dom->createTextNode($argument->getHelp()));
 
       $argumentXML->appendChild($defaultsXML = $dom->createElement('defaults'));
-      $defaults = is_array($argument->getDefault()) ? $argument->getDefault() : ($argument->getDefault() ? array($argument->getDefault()) : array());
-      foreach ($defaults as $default)
-      {
+      $defaults = is_array($argument->getDefault()) ? $argument->getDefault() : ($argument->getDefault() ? [$argument->getDefault()] : []);
+      foreach ($defaults as $default) {
         $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
         $defaultXML->appendChild($dom->createTextNode($default));
       }
     }
 
     $taskXML->appendChild($optionsXML = $dom->createElement('options'));
-    foreach ($this->getOptions() as $option)
-    {
+    foreach ($this->getOptions() as $option) {
       $optionsXML->appendChild($optionXML = $dom->createElement('option'));
-      $optionXML->setAttribute('name', '--'.$option->getName());
-      $optionXML->setAttribute('shortcut', $option->getShortcut() ? '-'.$option->getShortcut() : '');
+      $optionXML->setAttribute('name', '--' . $option->getName());
+      $optionXML->setAttribute('shortcut', $option->getShortcut() ? '-' . $option->getShortcut() : '');
       $optionXML->setAttribute('accept_parameter', $option->acceptParameter() ? 1 : 0);
       $optionXML->setAttribute('is_parameter_required', $option->isParameterRequired() ? 1 : 0);
       $optionXML->setAttribute('is_multiple', $option->isArray() ? 1 : 0);
       $optionXML->appendChild($helpXML = $dom->createElement('description'));
       $helpXML->appendChild($dom->createTextNode($option->getHelp()));
 
-      if ($option->acceptParameter())
-      {
+      if ($option->acceptParameter()) {
         $optionXML->appendChild($defaultsXML = $dom->createElement('defaults'));
-        $defaults = is_array($option->getDefault()) ? $option->getDefault() : ($option->getDefault() ? array($option->getDefault()) : array());
-        foreach ($defaults as $default)
-        {
+        $defaults = is_array($option->getDefault()) ? $option->getDefault() : ($option->getDefault() ? [$option->getDefault()] : []);
+        foreach ($defaults as $default) {
           $defaultsXML->appendChild($defaultXML = $dom->createElement('default'));
           $defaultXML->appendChild($dom->createTextNode($default));
         }
@@ -655,23 +628,25 @@ abstract class sfTask
   /**
    * Executes the current task.
    *
-   * @param array    $arguments  An array of arguments
-   * @param array    $options    An array of options
+   * @param array $arguments  An array of arguments
+   * @param array $options    An array of options
    *
-   * @return integer 0 if everything went fine, or an error code
+   * @return int 0 if everything went fine, or an error code
    */
-   abstract protected function execute($arguments = array(), $options = array());
+  abstract protected function execute(array $arguments = [], array $options = []): int;
 
-   protected function strlen($string)
-   {
-     if (!function_exists('mb_strlen')) {
-         return strlen($string);
-     }
+  protected function strlen(string $string): int
+  {
+    if ( ! function_exists('mb_strlen')) {
+      return strlen($string);
+    }
 
-     if (false === $encoding = mb_detect_encoding($string)) {
-         return strlen($string);
-     }
+    $encoding = mb_detect_encoding($string);
 
-     return mb_strlen($string, $encoding);
-   }
+    if ($encoding === false) {
+      return strlen($string);
+    }
+
+    return mb_strlen($string, $encoding);
+  }
 }

@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2007 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -17,7 +17,10 @@
  * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  * @version    SVN: $Id$
  */
-require_once(__DIR__.'/../../lib/exception/sfException.class.php');
+
+use RockSymphony\Util\Finder;
+
+require_once(__DIR__ . '/../../lib/exception/sfException.class.php');
 require_once(__DIR__.'/../../lib/task/sfFilesystem.class.php');
 require_once(__DIR__.'/../../lib/util/sfFinder.class.php');
 require_once(__DIR__.'/../../lib/vendor/lime/lime.php');
@@ -40,7 +43,7 @@ if (($stability == 'beta' || $stability == 'alpha') && count(explode('.', $argv[
 {
   $version_prefix = $argv[1];
 
-  list($result) = $filesystem->execute('svn status -u '.getcwd());
+  [$result] = $filesystem->execute('svn status -u '.getcwd());
   if (preg_match('/Status against revision\:\s+(\d+)\s*$/im', $result, $match))
   {
     $version = $match[1];
@@ -62,7 +65,7 @@ else
 print sprintf("Releasing symfony version \"%s\".\n", $version);
 
 // tests
-list($result) = $filesystem->execute('php data/bin/symfony symfony:test');
+[$result] = $filesystem->execute('php data/bin/symfony symfony:test');
 
 if (0 != $result)
 {
@@ -77,12 +80,11 @@ if (is_file('package.xml'))
 $filesystem->copy(getcwd().'/package.xml.tmpl', getcwd().'/package.xml');
 
 // add class files
-$finder = sfFinder::type('file')->relative();
 $xml_classes = '';
 $dirs = array('lib' => 'php', 'data' => 'data');
 foreach ($dirs as $dir => $role)
 {
-  $class_files = $finder->in($dir);
+  $class_files = Finder::files()->relative()->in($dir);
   foreach ($class_files as $file)
   {
     $xml_classes .= '<file role="'.$role.'" baseinstalldir="symfony" install-as="'.$file.'" name="'.$dir.'/'.$file.'" />'."\n";
@@ -97,7 +99,7 @@ $filesystem->replaceTokens(getcwd().DIRECTORY_SEPARATOR.'package.xml', '##', '##
   'STABILITY'       => $stability,
 ));
 
-list($results) = $filesystem->execute('pear package');
+[$results] = $filesystem->execute('pear package');
 echo $results;
 
 $filesystem->remove(getcwd().DIRECTORY_SEPARATOR.'package.xml');

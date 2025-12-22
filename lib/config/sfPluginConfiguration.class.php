@@ -19,33 +19,33 @@
 abstract class sfPluginConfiguration
 {
   /** @var \sfProjectConfiguration */
-  protected $configuration;
+  protected sfProjectConfiguration $configuration;
+
   /** @var \sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+
   /** @var string */
-  protected $name;
+  protected string $name;
+
   /** @var string */
-  protected $rootDir;
+  protected string $rootDir;
 
   /**
-   * Constructor.
-   *
-   * @param sfProjectConfiguration $configuration The project configuration
-   * @param string                 $rootDir       The plugin root directory
-   * @param string                 $name          The plugin name
+   * @param sfProjectConfiguration $configuration  The project configuration
+   * @param string|null            $rootDir        The plugin root directory
+   * @param string|null            $name           The plugin name
    */
-  public function __construct(sfProjectConfiguration $configuration, $rootDir = null, $name = null)
+  public function __construct(sfProjectConfiguration $configuration, string | null $rootDir = null, string | null $name = null)
   {
     $this->configuration = $configuration;
-    $this->dispatcher = $configuration->getEventDispatcher();
-    $this->rootDir = null === $rootDir ? $this->guessRootDir() : realpath($rootDir);
-    $this->name = null === $name ? $this->guessName() : $name;
+    $this->dispatcher    = $configuration->getEventDispatcher();
+    $this->rootDir       = null === $rootDir ? $this->guessRootDir() : realpath($rootDir);
+    $this->name          = null === $name ? $this->guessName() : $name;
 
     $this->setup();
     $this->configure();
 
-    if (!$this->configuration instanceof sfApplicationConfiguration)
-    {
+    if ( ! $this->configuration instanceof sfApplicationConfiguration) {
       $this->initialize();
     }
   }
@@ -55,23 +55,21 @@ abstract class sfPluginConfiguration
    *
    * This method can be used when creating a base plugin configuration class for other plugins to extend.
    */
-  public function setup()
+  public function setup(): void
   {
   }
 
   /**
    * Configures the plugin.
    */
-  public function configure()
+  public function configure(): void
   {
   }
 
   /**
    * Initializes the plugin.
-   *
-   * @return boolean|null If false sfApplicationConfiguration will look for a config.php (maintains BC with symfony < 1.2)
    */
-  public function initialize()
+  public function initialize(): void
   {
   }
 
@@ -80,7 +78,7 @@ abstract class sfPluginConfiguration
    *
    * @return string
    */
-  public function getRootDir()
+  public function getRootDir(): string
   {
     return $this->rootDir;
   }
@@ -90,7 +88,7 @@ abstract class sfPluginConfiguration
    *
    * @return string
    */
-  public function getName()
+  public function getName(): string
   {
     return $this->name;
   }
@@ -100,10 +98,11 @@ abstract class sfPluginConfiguration
    *
    * @return string
    */
-  protected function guessRootDir()
+  protected function guessRootDir(): string
   {
     $r = new ReflectionClass(get_class($this));
-    return realpath(dirname($r->getFileName()).'/..');
+
+    return realpath(dirname($r->getFileName()) . '/..');
   }
 
   /**
@@ -111,7 +110,7 @@ abstract class sfPluginConfiguration
    *
    * @return string
    */
-  protected function guessName()
+  protected function guessName(): string
   {
     return substr(get_class($this), 0, -13);
   }

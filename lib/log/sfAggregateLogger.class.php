@@ -19,7 +19,7 @@
 class sfAggregateLogger extends sfLogger
 {
   /** @var sfLoggerInterface[] */
-  protected $loggers = [];
+  protected array $loggers = [];
 
   /**
    * Class constructor.
@@ -28,8 +28,8 @@ class sfAggregateLogger extends sfLogger
    *
    * - loggers: Logger objects that extends sfLogger.
    *
-   * @param  sfEventDispatcher $dispatcher  A sfEventDispatcher instance
-   * @param  array             $options     An array of options.
+   * @param sfEventDispatcher $dispatcher  A sfEventDispatcher instance
+   * @param array             $options     An array of options.
    *
    * @throws sfInitializationException If an error occurs while initializing this sfLogger.
    */
@@ -37,11 +37,9 @@ class sfAggregateLogger extends sfLogger
   {
     $this->dispatcher = $dispatcher;
 
-    if (isset($options['loggers']))
-    {
-      if (!is_array($options['loggers']))
-      {
-        $options['loggers'] = array($options['loggers']);
+    if (isset($options['loggers'])) {
+      if ( ! is_array($options['loggers'])) {
+        $options['loggers'] = [$options['loggers']];
       }
 
       $this->addLoggers($options['loggers']);
@@ -53,9 +51,9 @@ class sfAggregateLogger extends sfLogger
   /**
    * Retrieves current loggers.
    *
-   * @return array List of loggers
+   * @return sfLoggerInterface[] List of loggers
    */
-  public function getLoggers()
+  public function getLoggers(): array
   {
     return $this->loggers;
   }
@@ -63,12 +61,11 @@ class sfAggregateLogger extends sfLogger
   /**
    * Adds an array of loggers.
    *
-   * @param object $loggers An array of Logger objects
+   * @param sfLoggerInterface[] $loggers  An array of Logger objects
    */
-  public function addLoggers($loggers)
+  public function addLoggers(array $loggers): void
   {
-    foreach ($loggers as $logger)
-    {
+    foreach ($loggers as $logger) {
       $this->addLogger($logger);
     }
   }
@@ -76,13 +73,13 @@ class sfAggregateLogger extends sfLogger
   /**
    * Adds a logger.
    *
-   * @param sfLoggerInterface $logger The Logger object
+   * @param sfLoggerInterface $logger  The Logger object
    */
-  public function addLogger(sfLoggerInterface $logger)
+  public function addLogger(sfLoggerInterface $logger): void
   {
     $this->loggers[] = $logger;
 
-    $this->dispatcher->disconnect('application.log', array($logger, 'listenToLogEvent'));
+    $this->dispatcher->disconnect('application.log', fn () => $logger->listenToLogEven());
   }
 
   /**
@@ -93,8 +90,7 @@ class sfAggregateLogger extends sfLogger
    */
   protected function doLog(string $message, int $priority): void
   {
-    foreach ($this->loggers as $logger)
-    {
+    foreach ($this->loggers as $logger) {
       $logger->log($message, $priority);
     }
   }
@@ -102,16 +98,14 @@ class sfAggregateLogger extends sfLogger
   /**
    * Executes the shutdown method.
    */
-  public function shutdown()
+  public function shutdown(): void
   {
-    foreach ($this->loggers as $logger)
-    {
-      if ($logger instanceof sfLogger)
-      {
+    foreach ($this->loggers as $logger) {
+      if ($logger instanceof sfLogger) {
         $logger->shutdown();
       }
     }
 
-    $this->loggers = array();
+    $this->loggers = [];
   }
 }

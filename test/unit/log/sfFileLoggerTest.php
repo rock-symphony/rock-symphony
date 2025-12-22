@@ -45,12 +45,12 @@ $t->like($lines[1], '/bar/', '->log() logs a message to the file');
 
 class TestLogger extends sfFileLogger
 {
-  public function getTimeFormat()
+  public function getTimeFormat(): string
   {
     return $this->timeFormat;
   }
 
-  protected function getPriority($priority)
+  protected function getPriority(int $priority): string
   {
     return '*'.$priority.'*';
   }

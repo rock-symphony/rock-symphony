@@ -24,20 +24,17 @@ abstract class sfTestBaseTask extends sfBaseTask
    * The plugin directory must exist and have at least one file or folder
    * inside for that plugin to exist.
    *
-   * @param   string  $plugin
+   * @param string $plugin
    *
    * @return  boolean True if the plugin exist, false otherwise
    */
-  protected function checkPluginExists($plugin)
+  protected function checkPluginExists(string $plugin): bool
   {
-    try
-    {
+    try {
       sfApplicationConfiguration::getActive()->getPluginConfiguration($plugin);
 
       return true;
-    }
-    catch (Exception $e)
-    {
+    } catch (Exception $e) {
       return false;
     }
   }

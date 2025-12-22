@@ -18,19 +18,19 @@ $t = new lime_test(68);
 
 class myRequest extends sfRequest
 {
-  public $relativeUrlRoot = '';
+  public string $relativeUrlRoot = '';
 
-  public function getRelativeUrlRoot()
+  public function getRelativeUrlRoot(): string
   {
     return $this->relativeUrlRoot;
   }
 
-  public function isSecure()
+  public function isSecure(): bool
   {
     return false;
   }
 
-  public function getHost()
+  public function getHost(): string
   {
     return 'localhost';
   }
@@ -40,8 +40,8 @@ class myResponse extends sfWebResponse
 {
   public function resetAssets(): void
   {
-    $this->javascripts = array_combine($this->positions, array_fill(0, count($this->positions), array()));
-    $this->stylesheets = array_combine($this->positions, array_fill(0, count($this->positions), array()));
+    $this->javascripts = array_combine(self::POSITIONS, array_fill(0, count(self::POSITIONS), []));
+    $this->stylesheets = array_combine(self::POSITIONS, array_fill(0, count(self::POSITIONS), []));
   }
 }
 

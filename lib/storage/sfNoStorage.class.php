@@ -34,7 +34,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while reading data from this storage
    */
-  public function read(string $key)
+  public function read(string $key): mixed
   {
     return null;
   }
@@ -50,7 +50,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while removing data from this storage
    */
-  public function remove(string $key)
+  public function remove(string $key): mixed
   {
     return null;
   }
@@ -65,7 +65,7 @@ class sfNoStorage extends sfStorage
    *
    * @throws <b>sfStorageException</b> If an error occurs while writing to this storage
    */
-  public function write(string $key, $data): void
+  public function write(string $key, mixed $data): void
   {
   }
 

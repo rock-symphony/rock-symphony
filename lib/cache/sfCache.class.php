@@ -75,13 +75,13 @@ abstract class sfCache
   /**
    * Saves some data in the cache.
    *
-   * @param string $key      The cache key
-   * @param string $data     The data to put in cache
-   * @param int    $lifetime The lifetime
+   * @param string   $key       The cache key
+   * @param string   $data      The data to put in cache
+   * @param int|null $lifetime  The lifetime
    *
-   * @return Boolean true if no problem
+   * @return bool true if no problem
    */
-  abstract public function set(string $key, string $data, int $lifetime = null): bool;
+  abstract public function set(string $key, string $data, int | null $lifetime = null): bool;
 
   /**
    * Removes a content from the cache.

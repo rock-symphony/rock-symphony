@@ -13,8 +13,9 @@ require_once sfConfig::get('sf_symfony_lib_dir').'/vendor/lime/lime.php';
 
 class TestTask extends sfBaseTask
 {
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
+    return 0;
   }
 }
 
@@ -25,7 +26,7 @@ $dispatcher = new sfEventDispatcher();
 require_once $rootDir.'/config/ProjectConfiguration.class.php';
 $configuration = new ProjectConfiguration($rootDir, $dispatcher);
 
-$t = new lime_test(11);
+$t = new lime_test(8);
 $task = new TestTask($dispatcher, new sfFormatter());
 
 // ->run()
@@ -33,32 +34,28 @@ $t->diag('->run()');
 
 class ApplicationTask extends sfBaseTask
 {
-  protected function configure()
+  protected function configure(): void
   {
     $this->addOption('application', null, sfCommandOption::PARAMETER_REQUIRED, '', true);
   }
 
-  protected function execute($arguments = array(), $options = array())
+  protected function execute(array $arguments = [], array $options = []): int
   {
-    if (!$this->configuration instanceof sfApplicationConfiguration)
-    {
+    if ( ! $this->configuration instanceof sfApplicationConfiguration) {
       throw new Exception('This task requires an application configuration be loaded.');
     }
+
+    return 0;
   }
 
-  public function getServiceContainer()
+  public function getServiceContainer(): sfServiceContainer
   {
     return parent::getServiceContainer();
   }
 
-  public function getRouting()
+  public function getRouting(): sfRouting
   {
     return parent::getRouting();
-  }
-
-  public function getMailer()
-  {
-    return parent::getMailer();
   }
 }
 
@@ -104,11 +101,3 @@ $routing = $task->getRouting();
 $t->ok($routing instanceof sfRouting, '->getRouting() returns an sfPatternRouting');
 $t->is($routing, $task->getRouting(), '->getRouting() returns always the same instance');
 $t->ok($routing->hasRouteName('homepage'), '->getRouting() is correctly configured');
-
-// ->getMailer()
-$t->diag('->getMailer()');
-$mailer = $task->getMailer();
-
-$t->ok($mailer instanceof sfMailer, '->getMailer() returns an sfMailer');
-$t->is($mailer, $task->getMailer(), '->getMailer() returns always the same instance');
-$t->is($mailer->getDeliveryStrategy(), sfMailer::REALTIME, '->getMailer() is correctly configured');

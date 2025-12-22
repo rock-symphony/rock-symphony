@@ -14,11 +14,11 @@ define("DS", DIRECTORY_SEPARATOR);
 
 class myFilesystem extends sfFilesystem
 {
-  public function calculateRelativeDir($from, $to)
+  public function calculateRelativeDir(string $from, string $to): string
   {
     return parent::calculateRelativeDir($from, $to);
   }
-  public function canonicalizePath($path)
+  public function canonicalizePath(string $path): string
   {
     return parent::canonicalizePath($path);
   }

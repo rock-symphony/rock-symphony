@@ -12,22 +12,29 @@
  */
 class sfCacheSessionStorage extends sfStorage
 {
-  /** @var string */
-  protected $id;
+  /** @var string | null */
+  protected string | null $id;
+
   /** @var sfContext */
-  protected $context;
+  protected sfContext $context;
+
   /** @var sfEventDispatcher */
-  protected $dispatcher;
+  protected sfEventDispatcher $dispatcher;
+
   /** @var sfWebRequest */
-  protected $request;
+  protected sfWebRequest $request;
+
   /** @var sfWebResponse */
-  protected $response;
+  protected sfWebResponse $response;
+
   /** @var sfCache */
-  protected $cache;
+  protected sfCache $cache;
+
   /** @var array */
-  protected $data = [];
+  protected array $data = [];
+
   /** @var bool */
-  protected $dataChanged = false;
+  protected bool $dataChanged = false;
 
   /**
    * Class constructor.
@@ -48,106 +55,89 @@ class sfCacheSessionStorage extends sfStorage
 
     // bc with a slightly different name formerly used here, let's be
     // compatible with the base class name for it from here on out
-    if (isset($options['session_cookie_http_only']))
-    {
+    if (isset($options['session_cookie_http_only'])) {
       $options['session_cookie_httponly'] = $options['session_cookie_http_only'];
     }
 
-    parent::__construct(array_merge(
-      [
-        'session_name'            => 'sfproject',
-        'session_cookie_lifetime' => '+30 days',
-        'session_cookie_path'     => '/',
-        'session_cookie_domain'   => null,
-        'session_cookie_secure'   => false,
-        'session_cookie_httponly' => true,
-        'session_cookie_secret'   => 'sf$ecret',
-      ],
-      $options
-    ));
+    parent::__construct(
+      array_merge(
+        [
+          'session_name'            => 'sfproject',
+          'session_cookie_lifetime' => '+30 days',
+          'session_cookie_path'     => '/',
+          'session_cookie_domain'   => null,
+          'session_cookie_secure'   => false,
+          'session_cookie_httponly' => true,
+          'session_cookie_secret'   => 'sf$ecret',
+        ],
+        $options
+      )
+    );
 
-    if (empty($this->options['cache']['class']))
-    {
+    if (empty($this->options['cache']['class'])) {
       throw new InvalidArgumentException('sfCacheSessionStorage requires cache option.');
     }
 
     // create cache instance
-    $cacheClass = $this->options['cache']['class'];
-    $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : array());
+    $cacheClass  = $this->options['cache']['class'];
+    $this->cache = new $cacheClass(is_array($this->options['cache']['param']) ? $this->options['cache']['param'] : []);
 
-    $this->context     = sfContext::getInstance();
+    $this->context = sfContext::getInstance();
 
-    $this->dispatcher  = $this->context->getEventDispatcher();
-    $this->request     = $this->context->getRequest();
-    $this->response    = $this->context->getResponse();
+    $this->dispatcher = $this->context->getEventDispatcher();
+    $this->request    = $this->context->getRequest();
+    $this->response   = $this->context->getResponse();
 
     $cookie = $this->request->getCookie($this->options['session_name']);
 
-    if(strpos($cookie ?? '', ':') !== false)
-    {
+    if (strpos($cookie ?? '', ':') !== false) {
       // split cookie data id:signature(id+secret)
       [$id, $signature] = explode(':', $cookie, 2);
 
-      if($signature == sha1($id.':'.$this->options['session_cookie_secret']))
-      {
+      if ($signature == sha1($id . ':' . $this->options['session_cookie_secret'])) {
         // cookie is valid
         $this->id = $id;
-      }
-      else
-      {
+      } else {
         // cookie signature broken
         $this->id = null;
       }
-    }
-    else
-    {
+    } else {
       // cookie format wrong
       $this->id = null;
     }
 
-    if(empty($this->id))
-    {
+    if (empty($this->id)) {
       $this->id = $this->generateSessionId();
 
-      if(sfConfig::get('sf_logging_enabled'))
-      {
+      if (sfConfig::get('sf_logging_enabled')) {
         $this->dispatcher->notify(new sfEvent($this, 'application.log', ['New session created']));
       }
 
       // only send cookie when id is issued
       $this->setSessionCookie($this->id);
 
-      $this->data = array();
-    }
-    else
-    {
+      $this->data = [];
+    } else {
       // load data from cache. Watch out for the default case. We could
       // serialize(array()) as the default to the call but that would be a performance hit
       $raw = $this->cache->get($this->id, null);
-      if (null === $raw)
-      {
-        $this->data = array();
-      }
-      else
-      {
+      if (null === $raw) {
+        $this->data = [];
+      } else {
         $data = @unserialize($raw);
         // We test 'b:0' special case, because such a string would result
         // in $data being === false, while raw is serialized
         // see http://stackoverflow.com/questions/1369936/check-to-see-if-a-string-is-serialized
-        if ( $raw === 'b:0;' || $data !== false)
-        {
+        if ($raw === 'b:0;' || $data !== false) {
           $this->data = $data;
-        }
-        else
-        {
+        } else {
           // Probably an old cached value (BC)
           $this->data = $raw;
         }
       }
 
-      if(sfConfig::get('sf_logging_enabled'))
-      {
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array('Restored previous session')));
+      if (sfConfig::get('sf_logging_enabled')) {
+        $this->dispatcher->notify(new sfEvent($this, 'application.log', ['Restored previous session']));
       }
     }
     session_id($this->id);
@@ -159,12 +149,12 @@ class sfCacheSessionStorage extends sfStorage
    *
    * The preferred format for a key is directory style so naming conflicts can be avoided.
    *
-   * @param string $key  A unique key identifying your data.
-   * @param mixed  $data Data associated with your key.
+   * @param string $key   A unique key identifying your data.
+   * @param mixed  $data  Data associated with your key.
    *
    * @return void
    */
-  public function write(string $key, $data): void
+  public function write(string $key, mixed $data): void
   {
     $this->dataChanged = true;
 
@@ -176,20 +166,18 @@ class sfCacheSessionStorage extends sfStorage
    *
    * The preferred format for a key is directory style so naming conflicts can be avoided.
    *
-   * @param string $key A unique key identifying your data.
+   * @param string $key  A unique key identifying your data.
    *
    * @return mixed Data associated with the key.
    */
-  public function read(string $key)
+  public function read(string $key): mixed
   {
-    $retval = null;
-
-    if (isset($this->data[$key]))
-    {
-      $retval =& $this->data[$key];
+    if (isset($this->data[$key])) {
+      $value =& $this->data[$key];
+      return $value;
     }
 
-    return $retval;
+    return null;
   }
 
   /**
@@ -197,37 +185,36 @@ class sfCacheSessionStorage extends sfStorage
    *
    * The preferred format for a key is directory style so naming conflicts can be avoided.
    *
-   * @param string $key A unique key identifying your data.
+   * @param string $key  A unique key identifying your data.
    *
    * @return mixed Data associated with the key.
    */
-  public function remove(string $key)
+  public function remove(string $key): mixed
   {
-    $retval = null;
-
-    if (isset($this->data[$key]))
-    {
+    if (isset($this->data[$key])) {
       $this->dataChanged = true;
 
-      $retval =& $this->data[$key];
+      $value =& $this->data[$key];
+
       unset($this->data[$key]);
+
+      return $value;
     }
 
-    return $retval;
+    return null;
   }
 
   /**
    * Regenerates id that represents this storage.
    *
-   * @param boolean $destroy Destroy session when regenerating?
+   * @param boolean $destroy  Destroy session when regenerating?
    *
    * @throws <b>sfStorageException</b> If an error occurs while regenerating this storage
    */
   public function regenerate(bool $destroy = false): void
   {
-    if($destroy)
-    {
-      $this->data = array();
+    if ($destroy) {
+      $this->data = [];
       $this->cache->remove($this->id);
     }
 
@@ -250,9 +237,8 @@ class sfCacheSessionStorage extends sfStorage
     // destroy data and regenerate id
     $this->regenerate(true);
 
-    if(sfConfig::get('sf_logging_enabled'))
-    {
-      $this->dispatcher->notify(new sfEvent($this, 'application.log', array('new session created due to expiraton')));
+    if (sfConfig::get('sf_logging_enabled')) {
+      $this->dispatcher->notify(new sfEvent($this, 'application.log', ['new session created due to expiraton']));
     }
   }
 
@@ -264,12 +250,10 @@ class sfCacheSessionStorage extends sfStorage
   public function shutdown(): void
   {
     // only update cache if session has changed
-    if($this->dataChanged === true)
-    {
+    if ($this->dataChanged === true) {
       $this->cache->set($this->id, serialize($this->data));
-      if(sfConfig::get('sf_logging_enabled'))
-      {
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array('Storing session to cache')));
+      if (sfConfig::get('sf_logging_enabled')) {
+        $this->dispatcher->notify(new sfEvent($this, 'application.log', ['Storing session to cache']));
       }
     }
   }
@@ -288,7 +272,6 @@ class sfCacheSessionStorage extends sfStorage
 
   /**
    * @param string $session_id
-   * @return void
    */
   private function setSessionCookie(string $session_id): void
   {

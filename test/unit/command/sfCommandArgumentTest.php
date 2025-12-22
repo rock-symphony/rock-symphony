@@ -3,7 +3,7 @@
 /*
  * This file is part of the symfony package.
  * (c) 2004-2006 Fabien Potencier <fabien.potencier@symfony-project.com>
- * 
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
@@ -35,7 +35,7 @@ try
   $argument = new sfCommandArgument('foo', 'ANOTHER_ONE');
   $t->fail('__construct() throws an sfCommandException if the mode is not valid');
 }
-catch (sfCommandException $e)
+catch (TypeError $e)
 {
   $t->pass('__construct() throws an sfCommandException if the mode is not valid');
 }

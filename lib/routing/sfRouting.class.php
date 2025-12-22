@@ -37,10 +37,10 @@ abstract class sfRouting
    *  * context:        An array of context variables to help URL matching and generation
    *
    * @param sfEventDispatcher $dispatcher  An sfEventDispatcher instance
-   * @param sfCache           $cache       An sfCache instance
+   * @param sfCache|null      $cache       An sfCache instance
    * @param array             $options     An associative array of initialization options.
    */
-  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
+  public function __construct(sfEventDispatcher $dispatcher, sfCache | null $cache = null, array $options = [])
   {
     $this->dispatcher = $dispatcher;
 

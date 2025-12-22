@@ -7,10 +7,12 @@
  * file that was distributed with this source code.
  */
 
+use Psr\Log\LoggerInterface;
+
 /**
  * sfPsrLoggerAdapter is meant to be able to use a Prs compliant logger in symfony 1.
  *
- * @see https://github.com/php-fig/log
+ * @see        https://github.com/php-fig/log
  *
  * @package    symfony
  * @subpackage service
@@ -23,21 +25,21 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @var array
    */
-  private $buffer = [];
+  private array $buffer = [];
 
   /**
    * The logger that will the log will be forward to
    *
-   * @var \Psr\Log\LoggerInterface
+   * @var LoggerInterface
    */
-  private $logger;
+  private LoggerInterface $logger;
 
   /**
    * The service id that will be use as the psr logger
    *
    * @var string
    */
-  private $loggerServiceId = 'logger.psr';
+  private string $loggerServiceId = 'logger.psr';
 
   /**
    * Class constructor.
@@ -48,19 +50,17 @@ class sfPsrLoggerAdapter extends sfLogger
    * - auto_connect: If we must connect automatically to the context.load_factories to set the logger. Default: true
    *
    * @param sfEventDispatcher $dispatcher
-   * @param array $options
+   * @param array             $options
    *
    * @throws sfInitializationException
    */
   public function __construct(sfEventDispatcher $dispatcher, array $options = [])
   {
-    if (isset($options['logger_service_id']))
-    {
+    if (isset($options['logger_service_id'])) {
       $this->loggerServiceId = $options['logger_service_id'];
     }
 
-    if (!isset($options['auto_connect']) || $options['auto_connect'])
-    {
+    if ( ! isset($options['auto_connect']) || $options['auto_connect']) {
       $dispatcher->connect('context.load_factories', [$this, 'listenContextLoadFactoriesEvent']);
     }
 
@@ -74,24 +74,25 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @return void
    */
-  public function listenContextLoadFactoriesEvent(sfEvent $event)
+  public function listenContextLoadFactoriesEvent(sfEvent $event): void
   {
     /* @var $context sfContext */
     $context = $event->getSubject();
-    /** @var $logger \Psr\Log\LoggerInterface */
+    /** @var $logger LoggerInterface */
     $logger = $context->getService($this->loggerServiceId);
     $this->setLogger($logger);
-    $this->dispatcher->disconnect('context.load_factories', array($this, 'listenContextLoadFactoriesEvent'));
+    $this->dispatcher->disconnect('context.load_factories', [$this, 'listenContextLoadFactoriesEvent']);
   }
 
   /**
    * Set the logger
    *
-   * @param \Psr\Log\LoggerInterface $logger
+   * @param LoggerInterface $logger
    */
-  public function setLogger(\Psr\Log\LoggerInterface $logger)
+  public function setLogger(LoggerInterface $logger): void
   {
     $this->logger = $logger;
+
     $this->flushBuffer();
   }
 
@@ -100,16 +101,14 @@ class sfPsrLoggerAdapter extends sfLogger
    *
    * @return void
    */
-  public function flushBuffer()
+  public function flushBuffer(): void
   {
-    if (!$this->logger)
-    {
+    if ( ! $this->logger) {
       $this->buffer = [];
       return;
     }
 
-    foreach ($this->buffer as $log)
-    {
+    foreach ($this->buffer as $log) {
       $this->log($log['message'], $log['priority']);
     }
 
@@ -119,21 +118,19 @@ class sfPsrLoggerAdapter extends sfLogger
   /**
    * Logs a message.
    *
-   * @param string $message Message
-   * @param int    $priority Message priority
+   * @param string $message   Message
+   * @param int    $priority  Message priority
    *
    * @return void
    */
   protected function doLog(string $message, int $priority): void
   {
-    if (!$this->logger)
-    {
+    if ( ! $this->logger) {
       $this->buffer[] = compact('message', 'priority');
       return;
     }
 
-    switch ($priority)
-    {
+    switch ($priority) {
       case sfLogger::EMERG:
         $this->logger->emergency($message);
         break;

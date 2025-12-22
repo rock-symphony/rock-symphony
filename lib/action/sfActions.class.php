@@ -26,7 +26,7 @@ abstract class sfActions extends sfAction
    * This method try to execute the executeXXX() method of the current object where XXX is the
    * defined action name.
    *
-   * @param sfRequest $request The current sfRequest object
+   * @param sfRequest $request  The current sfRequest object
    *
    * @return string    A string containing the view name associated with this action
    *
@@ -34,26 +34,25 @@ abstract class sfActions extends sfAction
    *
    * @see sfAction
    */
-  public function execute(sfRequest $request)
+  public function execute(sfRequest $request): mixed
   {
     // dispatch action
-    $actionToRun = 'execute'.ucfirst($this->getActionName());
+    $actionToRun = 'execute' . ucfirst($this->getActionName());
 
-    if ($actionToRun === 'execute')
-    {
+    if ($actionToRun === 'execute') {
       // no action given
       throw new sfInitializationException(sprintf('sfAction initialization failed for module "%s". There was no action given.', $this->getModuleName()));
     }
 
-    if (!is_callable(array($this, $actionToRun)))
-    {
+    if ( ! is_callable([$this, $actionToRun])) {
       // action not found
-      throw new sfInitializationException(sprintf('sfAction initialization failed for module "%s", action "%s". You must create a "%s" method.', $this->getModuleName(), $this->getActionName(), $actionToRun));
+      throw new sfInitializationException(
+        sprintf('sfAction initialization failed for module "%s", action "%s". You must create a "%s" method.', $this->getModuleName(), $this->getActionName(), $actionToRun)
+      );
     }
 
-    if (sfConfig::get('sf_logging_enabled'))
-    {
-      $this->dispatcher->notify(new sfEvent($this, 'application.log', array(sprintf('Call "%s->%s()"', get_class($this), $actionToRun))));
+    if (sfConfig::get('sf_logging_enabled')) {
+      $this->dispatcher->notify(new sfEvent($this, 'application.log', [sprintf('Call "%s->%s()"', get_class($this), $actionToRun)]));
     }
 
     // run action

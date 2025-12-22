@@ -18,24 +18,24 @@
  */
 class sfAnsiColorFormatter extends sfFormatter
 {
-  protected
-    $styles = array(
-      'ERROR'    => array('bg' => 'red', 'fg' => 'white', 'bold' => true),
-      'INFO'     => array('fg' => 'green', 'bold' => true),
-      'COMMENT'  => array('fg' => 'yellow'),
-      'QUESTION' => array('bg' => 'cyan', 'fg' => 'black', 'bold' => false),
-    ),
-    $options    = array('bold' => 1, 'underscore' => 4, 'blink' => 5, 'reverse' => 7, 'conceal' => 8),
-    $foreground = array('black' => 30, 'red' => 31, 'green' => 32, 'yellow' => 33, 'blue' => 34, 'magenta' => 35, 'cyan' => 36, 'white' => 37),
-    $background = array('black' => 40, 'red' => 41, 'green' => 42, 'yellow' => 43, 'blue' => 44, 'magenta' => 45, 'cyan' => 46, 'white' => 47);
+  protected array $styles = [
+    'ERROR'    => ['bg' => 'red', 'fg' => 'white', 'bold' => true],
+    'INFO'     => ['fg' => 'green', 'bold' => true],
+    'COMMENT'  => ['fg' => 'yellow'],
+    'QUESTION' => ['bg' => 'cyan', 'fg' => 'black', 'bold' => false],
+  ];
+
+  protected array $options    = ['bold' => 1, 'underscore' => 4, 'blink' => 5, 'reverse' => 7, 'conceal' => 8];
+  protected array $foreground = ['black' => 30, 'red' => 31, 'green' => 32, 'yellow' => 33, 'blue' => 34, 'magenta' => 35, 'cyan' => 36, 'white' => 37];
+  protected array $background = ['black' => 40, 'red' => 41, 'green' => 42, 'yellow' => 43, 'blue' => 44, 'magenta' => 45, 'cyan' => 46, 'white' => 47];
 
   /**
    * Sets a new style.
    *
-   * @param string $name    The style name
-   * @param array  $options An array of options
+   * @param string $name     The style name
+   * @param array  $options  An array of options
    */
-  public function setStyle($name, $options = array())
+  public function setStyle(string $name, array $options = []): void
   {
     $this->styles[$name] = $options;
   }
@@ -43,57 +43,50 @@ class sfAnsiColorFormatter extends sfFormatter
   /**
    * Formats a text according to the given style or parameters.
    *
-   * @param  string   $text       The test to style
-   * @param  mixed    $parameters An array of options or a style name
+   * @param string $text        The test to style
+   * @param mixed  $parameters  An array of options or a style name
    *
    * @return string The styled text
    */
-  public function format($text = '', $parameters = array())
+  public function format(string $text = '', string | array $parameters = []): string
   {
-    if (!is_array($parameters) && 'NONE' == $parameters)
-    {
+    if ($parameters === 'NONE') {
       return $text;
     }
 
-    if (!is_array($parameters) && isset($this->styles[$parameters]))
-    {
+    if (is_string($parameters) && isset($this->styles[$parameters])) {
       $parameters = $this->styles[$parameters];
     }
 
-    $codes = array();
-    if (isset($parameters['fg']))
-    {
+    $codes = [];
+    if (isset($parameters['fg'])) {
       $codes[] = $this->foreground[$parameters['fg']];
     }
-    if (isset($parameters['bg']))
-    {
+    if (isset($parameters['bg'])) {
       $codes[] = $this->background[$parameters['bg']];
     }
-    foreach ($this->options as $option => $value)
-    {
-      if (isset($parameters[$option]) && $parameters[$option])
-      {
+    foreach ($this->options as $option => $value) {
+      if ( ! empty($parameters[$option])) {
         $codes[] = $value;
       }
     }
 
-    return "\033[".implode(';', $codes).'m'.$text."\033[0m";
+    return "\033[" . implode(';', $codes) . 'm' . $text . "\033[0m";
   }
-  
+
   /**
    * Formats a message within a section.
    *
-   * @param string  $section The section name
-   * @param string  $text    The text message
-   * @param integer $size    The maximum size allowed for a line
-   * @param string  $style   The color scheme to apply to the section string (INFO, ERROR, COMMENT or QUESTION)
+   * @param string   $section  The section name
+   * @param string   $text     The text message
+   * @param int|null $size     The maximum size allowed for a line
+   * @param string   $style    The color scheme to apply to the section string (INFO, ERROR, COMMENT or QUESTION)
    *
    * @return string
    */
-  public function formatSection($section, $text, $size = null, $style = 'INFO')
+  public function formatSection(string $section, string $text, int | null $size = null, string $style = 'INFO'): string
   {
-    if (null === $size)
-    {
+    if (null === $size) {
       $size = $this->size;
     }
 
@@ -106,25 +99,23 @@ class sfAnsiColorFormatter extends sfFormatter
   /**
    * Truncates a line.
    *
-   * @param string  $text The text
-   * @param integer $size The maximum size of the returned string
+   * @param string   $text  The text
+   * @param int|null $size  The maximum size of the returned string
    *
    * @return string The truncated string
    */
-  public function excerpt($text, $size = null)
+  public function excerpt(string $text, int | null $size = null): string
   {
-    if (!$size)
-    {
+    if ( ! $size) {
       $size = $this->size;
     }
 
-    if (strlen($text) < $size)
-    {
+    if (strlen($text) < $size) {
       return $text;
     }
 
     $subsize = floor(($size - 3) / 2);
 
-    return substr($text, 0, $subsize).$this->format('...', 'INFO').substr($text, -$subsize);
+    return substr($text, 0, $subsize) . $this->format('...', 'INFO') . substr($text, -$subsize);
   }
 }

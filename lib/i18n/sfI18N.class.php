@@ -45,11 +45,11 @@ class sfI18N
    *  * untranslated_prefix: The prefix to use when a message is not translated
    *  * untranslated_suffix: The suffix to use when a message is not translated
    *
-   * @param sfApplicationConfiguration $configuration   A sfApplicationConfiguration instance
-   * @param sfCache                    $cache           A sfCache instance
-   * @param array                      $options         An array of options
+   * @param sfApplicationConfiguration $configuration  A sfApplicationConfiguration instance
+   * @param sfCache|null               $cache          A sfCache instance
+   * @param array                      $options        An array of options
    */
-  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, array $options = [])
+  public function __construct(sfApplicationConfiguration $configuration, sfCache | null $cache = null, array $options = [])
   {
     $this->configuration = $configuration;
     $this->dispatcher = $configuration->getEventDispatcher();
@@ -100,10 +100,10 @@ class sfI18N
   /**
    * Sets the message source.
    *
-   * @param null  $dirs    An array of i18n directories if message source is a sfMessageSource_File subclass, null otherwise
-   * @param string $culture The culture
+   * @param null        $dirs     An array of i18n directories if message source is a sfMessageSource_File subclass, null otherwise
+   * @param string|null $culture  The culture
    */
-  public function setMessageSource($dirs, string $culture = null): void
+  public function setMessageSource($dirs, string | null $culture = null): void
   {
     if (null === $dirs)
     {
@@ -229,17 +229,18 @@ class sfI18N
   /**
    * Gets a country name.
    *
-   * @param  string $iso      The ISO code
-   * @param  string $culture  The culture for the translation
+   * @param string      $iso      The ISO code
+   * @param string|null $culture  The culture for the translation
    *
    * @return string The country name
    */
-  public function getCountry(string $iso, string $culture = null): string
+  public function getCountry(string $iso, string | null $culture = null): string
   {
-    $c = sfCultureInfo::getInstance(null === $culture ? $this->culture : $culture);
-    $countries = $c->getCountries();
+    $info = sfCultureInfo::getInstance(null === $culture ? $this->culture : $culture);
 
-    return (array_key_exists($iso, $countries)) ? $countries[$iso] : '';
+    $countries = $info->getCountries();
+
+    return $countries[$iso] ?? '';
   }
 
   /**
@@ -257,12 +258,12 @@ class sfI18N
   /**
    * Returns a timestamp from a date with time formatted with a given culture.
    *
-   * @param  string  $dateTime  The formatted date with time as string
-   * @param  string  $culture The culture
+   * @param string       $dateTime  The formatted date with time as string
+   * @param string| null $culture   The culture
    *
    * @return int|null The timestamp
    */
-  public function getTimestampForCulture(string $dateTime, string $culture = null): ?int
+  public function getTimestampForCulture(string $dateTime, string | null $culture = null): ?int
   {
     [$day, $month, $year] = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
     [$hour, $minute] = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
@@ -273,15 +274,14 @@ class sfI18N
   /**
    * Returns the day, month and year from a date formatted with a given culture.
    *
-   * @param  string|null $date    The formatted date as string
-   * @param  string      $culture The culture
+   * @param string|null $date     The formatted date as string
+   * @param string|null $culture  The culture
    *
    * @return array|null   An array with the day, month and year
    */
-  public function getDateForCulture(?string $date, string $culture = null): ?array
+  public function getDateForCulture(string | null $date, string | null $culture = null): ?array
   {
-    if (!$date)
-    {
+    if ( ! $date) {
       return null;
     }
 
@@ -322,7 +322,7 @@ class sfI18N
    *
    * @return array|null   An array with the hour and minute
    */
-  public function getTimeForCulture(?string $time, string $culture = null): ?array
+  public function getTimeForCulture(string | null $time, string | null $culture = null): ?array
   {
     if (!$time) return null;
 
