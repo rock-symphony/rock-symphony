@@ -24,7 +24,6 @@ class sfContext
 {
   protected sfEventDispatcher          $dispatcher;
   protected sfApplicationConfiguration $configuration;
-  protected array                      $mailerConfiguration           = [];
   protected array                      $serviceContainerConfiguration = [];
   protected array                      $factories                     = [];
   protected bool                       $hasShutdownUserAndStorage     = false;
@@ -239,30 +238,6 @@ class sfContext
   public function getController(): ?sfFrontWebController
   {
     return $this->factories['controller'] ?? null;
-  }
-
-  /**
-   * Retrieves the mailer.
-   *
-   * @return sfMailer The current sfMailer implementation instance.
-   */
-  public function getMailer(): sfMailer
-  {
-    if ( ! isset($this->factories['mailer'])) {
-      $this->factories['mailer'] = new $this->mailerConfiguration['class']($this->dispatcher, $this->mailerConfiguration);
-    }
-
-    return $this->factories['mailer'];
-  }
-
-  /**
-   * Set mailer configuration.
-   *
-   * @param array $configuration
-   */
-  public function setMailerConfiguration(array $configuration): void
-  {
-    $this->mailerConfiguration = $configuration;
   }
 
   /**
