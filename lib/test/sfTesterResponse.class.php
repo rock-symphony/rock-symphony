@@ -335,7 +335,7 @@ class sfTesterResponse extends sfTester
    *
    * @return $this
    */
-  public function setsCookie(string $name, string $value = null, array $attributes = []): self
+  public function setsCookie(string $name, ?string $value = null, array $attributes = []): self
   {
     foreach ($this->response->getCookies() as $cookie)
     {

@@ -25,7 +25,7 @@ class sfTestFunctional extends sfTestFunctionalBase
    * @param  \lime_test|null                $lime     A lime instance
    * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
+  public function __construct(sfBrowser $browser, ?lime_test $lime = null, array $testers = [])
   {
     $testers = array_merge([
       'form' => sfTesterForm::class,

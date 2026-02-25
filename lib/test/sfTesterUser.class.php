@@ -37,7 +37,7 @@ class sfTesterUser extends sfTester
    *
    * @return $this
    */
-  public function isAttribute(string $key, string $value, string $ns = null): self
+  public function isAttribute(string $key, string $value, ?string $ns = null): self
   {
     $this->tester->is($this->user->getAttribute($key, null, $ns), $value, sprintf('user attribute "%s" is "%s"', $key, $value));
 

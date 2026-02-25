@@ -14,7 +14,7 @@ $t = new lime_test(149);
 
 class sfPatternRoutingTest extends sfPatternRouting
 {
-  public function __construct(sfEventDispatcher $dispatcher, sfCache $cache = null, array $options = [])
+  public function __construct(sfEventDispatcher $dispatcher, ?sfCache $cache = null, array $options = [])
   {
     parent::__construct($dispatcher, $cache, $options);
 

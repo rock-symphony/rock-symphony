@@ -35,7 +35,7 @@ abstract class sfTestFunctionalBase
    * @param  lime_test|null                 $lime     A lime instance
    * @param  array<string,string|sfTester>  $testers  Testers to use
    */
-  public function __construct(sfBrowser $browser, lime_test $lime = null, array $testers = [])
+  public function __construct(sfBrowser $browser, ?lime_test $lime = null, array $testers = [])
   {
     $this->browser = $browser;
 
@@ -328,7 +328,7 @@ abstract class sfTestFunctionalBase
    *
    * @return $this The current sfTestFunctionalBase instance
    */
-  public function throwsException(string $class = null, string $message = null): self
+  public function throwsException(?string $class = null, ?string $message = null): self
   {
     $e = $this->browser->getCurrentException();
 
