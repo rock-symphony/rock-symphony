@@ -297,7 +297,7 @@ class sfWidgetFormSchemaDecorator extends sfWidgetFormSchema
    * @see sfWidgetFormSchema
    * @inheritdoc
    */
-  public function setParent(sfWidgetFormSchema $parent = null)
+  public function setParent(?sfWidgetFormSchema $parent = null)
   {
     $this->widget->setParent($parent);
 
