@@ -71,7 +71,7 @@ class sfXCacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set(string $key, string $data, int $lifetime = null): bool
+  public function set(string $key, string $data, ?int $lifetime = null): bool
   {
     $lifetime = $this->getLifetime($lifetime);
 

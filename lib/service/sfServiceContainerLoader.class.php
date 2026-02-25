@@ -25,7 +25,7 @@ abstract class sfServiceContainerLoader implements sfServiceContainerLoaderInter
    *
    * @param sfServiceContainerBuilder $container A sfServiceContainerBuilder instance
    */
-  public function __construct(sfServiceContainerBuilder $container = null)
+  public function __construct(?sfServiceContainerBuilder $container = null)
   {
     $this->container = $container;
   }

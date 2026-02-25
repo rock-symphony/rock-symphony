@@ -199,7 +199,7 @@ class sfWebResponse extends sfResponse
    * @param string $name  HTTP status text
    *
    */
-  public function setStatusCode(string $code, string $name = null): void
+  public function setStatusCode(string $code, ?string $name = null): void
   {
     $this->statusCode = $code;
     $this->statusText = null !== $name ? $name : self::$statusTexts[$code];
@@ -271,7 +271,7 @@ class sfWebResponse extends sfResponse
    *
    * @return string|null
    */
-  public function getHttpHeader(string $name, string $default = null): ?string
+  public function getHttpHeader(string $name, ?string $default = null): ?string
   {
     $name = $this->normalizeHeaderName($name);
 
@@ -477,7 +477,7 @@ class sfWebResponse extends sfResponse
    * @param string $name   HTTP header
    * @param string $value  Value for the http header
    */
-  public function addCacheControlHttpHeader(string $name, string $value = null): void
+  public function addCacheControlHttpHeader(string $name, ?string $value = null): void
   {
     $cacheControl = $this->getHttpHeader('Cache-Control');
     $currentHeaders = array();

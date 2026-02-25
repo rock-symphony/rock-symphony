@@ -153,7 +153,7 @@ abstract class sfWebDebugPanel
    *
    * @return string
    */
-  public function formatFileLink(string $file, int $line = null, string $text = null): string
+  public function formatFileLink(string $file, ?int $line = null, ?string $text = null): string
   {
     // this method is called a lot so we avoid calling class_exists()
     if ($file && !sfToolkit::isPathAbsolute($file))

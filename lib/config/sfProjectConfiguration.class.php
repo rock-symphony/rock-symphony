@@ -44,7 +44,7 @@ class sfProjectConfiguration
    * @param string              $rootDir    The project root directory
    * @param sfEventDispatcher   $dispatcher The event dispatcher
    */
-  public function __construct(string $rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct(?string $rootDir = null, ?sfEventDispatcher $dispatcher = null)
   {
     if (null === self::$active || $this instanceof sfApplicationConfiguration)
     {
@@ -582,7 +582,7 @@ class sfProjectConfiguration
    *
    * @return sfApplicationConfiguration A sfApplicationConfiguration instance
    */
-  static public function getApplicationConfiguration(string $application, string $environment, bool $debug, string $rootDir = null, sfEventDispatcher $dispatcher = null): sfApplicationConfiguration
+  static public function getApplicationConfiguration(string $application, string $environment, bool $debug, ?string $rootDir = null, ?sfEventDispatcher $dispatcher = null): sfApplicationConfiguration
   {
     $class = $application.'Configuration';
 

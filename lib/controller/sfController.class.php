@@ -381,7 +381,7 @@ abstract class sfController
    * @throws Exception
    * @throws sfException
    */
-  public function getPresentationFor(string $module, string $action, string $viewName = null): string
+  public function getPresentationFor(string $module, string $action, ?string $viewName = null): string
   {
     if (sfConfig::get('sf_logging_enabled'))
     {

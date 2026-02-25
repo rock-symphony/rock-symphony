@@ -49,7 +49,7 @@ class sfI18N
    * @param sfCache                    $cache           A sfCache instance
    * @param array                      $options         An array of options
    */
-  public function __construct(sfApplicationConfiguration $configuration, sfCache $cache = null, array $options = [])
+  public function __construct(sfApplicationConfiguration $configuration, ?sfCache $cache = null, array $options = [])
   {
     $this->configuration = $configuration;
     $this->dispatcher = $configuration->getEventDispatcher();
@@ -103,7 +103,7 @@ class sfI18N
    * @param null  $dirs    An array of i18n directories if message source is a sfMessageSource_File subclass, null otherwise
    * @param string $culture The culture
    */
-  public function setMessageSource($dirs, string $culture = null): void
+  public function setMessageSource($dirs, ?string $culture = null): void
   {
     if (null === $dirs)
     {
@@ -234,7 +234,7 @@ class sfI18N
    *
    * @return string The country name
    */
-  public function getCountry(string $iso, string $culture = null): string
+  public function getCountry(string $iso, ?string $culture = null): string
   {
     $c = sfCultureInfo::getInstance(null === $culture ? $this->culture : $culture);
     $countries = $c->getCountries();
@@ -262,7 +262,7 @@ class sfI18N
    *
    * @return int|null The timestamp
    */
-  public function getTimestampForCulture(string $dateTime, string $culture = null): ?int
+  public function getTimestampForCulture(string $dateTime, ?string $culture = null): ?int
   {
     [$day, $month, $year] = $this->getDateForCulture($dateTime, null === $culture ? $this->culture : $culture);
     [$hour, $minute] = $this->getTimeForCulture($dateTime, null === $culture ? $this->culture : $culture);
@@ -278,7 +278,7 @@ class sfI18N
    *
    * @return array|null   An array with the day, month and year
    */
-  public function getDateForCulture(?string $date, string $culture = null): ?array
+  public function getDateForCulture(?string $date, ?string $culture = null): ?array
   {
     if (!$date)
     {
@@ -322,7 +322,7 @@ class sfI18N
    *
    * @return array|null   An array with the hour and minute
    */
-  public function getTimeForCulture(?string $time, string $culture = null): ?array
+  public function getTimeForCulture(?string $time, ?string $culture = null): ?array
   {
     if (!$time) return null;
 

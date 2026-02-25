@@ -99,7 +99,7 @@ abstract class sfDatabaseSessionStorage extends sfSessionStorage
    *
    * @throws <b>DatabaseException</b> If a connection with the database does not exist or cannot be created
    */
-  public function sessionOpen(string $path = null, string $name = null): bool
+  public function sessionOpen(?string $path = null, ?string $name = null): bool
   {
     // what database are we using?
     /** @var sfDatabase $database */

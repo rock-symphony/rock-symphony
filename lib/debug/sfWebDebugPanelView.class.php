@@ -292,7 +292,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
    *
    * @return string
    */
-  protected function getParameterDescription(string $name, $parameter, string $nameFormat = null, string $typeFormat = null)
+  protected function getParameterDescription(string $name, $parameter, ?string $nameFormat = null, ?string $typeFormat = null)
   {
     if (null === $nameFormat)
     {

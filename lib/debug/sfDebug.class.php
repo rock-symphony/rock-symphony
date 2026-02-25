@@ -107,7 +107,7 @@ class sfDebug
    *
    * @return array The request parameter holders
    */
-  public static function requestAsArray(sfRequest $request = null): array
+  public static function requestAsArray(?sfRequest $request = null): array
   {
     if (!$request)
     {
@@ -128,7 +128,7 @@ class sfDebug
    *
    * @return array The response parameters
    */
-  public static function responseAsArray(sfResponse $response = null): array
+  public static function responseAsArray(?sfResponse $response = null): array
   {
     if (!$response)
     {
@@ -165,7 +165,7 @@ class sfDebug
    *
    * @return array The user parameters
    */
-  public static function userAsArray(sfUser $user = null): array
+  public static function userAsArray(?sfUser $user = null): array
   {
     if (!$user)
     {

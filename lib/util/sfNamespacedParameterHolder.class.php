@@ -114,7 +114,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An indexed array of parameter names, if the namespace exists, otherwise null
    */
-  public function getNames(string $ns = null): array
+  public function getNames(?string $ns = null): array
   {
     if (!$ns)
     {
@@ -176,7 +176,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return bool true, if the parameter exists, otherwise false
    */
-  public function has(string $name, string $ns = null): bool
+  public function has(string $name, ?string $ns = null): bool
   {
     if (!$ns)
     {
@@ -207,7 +207,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return mixed A parameter value, if the parameter was removed, otherwise default
    */
-  public function remove(string $name, $default = null, string $ns = null)
+  public function remove(string $name, $default = null, ?string $ns = null)
   {
     if (!$ns)
     {
@@ -259,7 +259,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed        $value A parameter value
    * @param string|null  $ns    A parameter namespace
    */
-  public function set(string $name, $value, string $ns = null): void
+  public function set(string $name, $value, ?string $ns = null): void
   {
     if (!$ns)
     {
@@ -283,7 +283,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param mixed        $value A reference to a parameter value
    * @param string|null  $ns    A parameter namespace
    */
-  public function setByRef(string $name, & $value, string $ns = null): void
+  public function setByRef(string $name, & $value, ?string $ns = null): void
   {
     if (!$ns)
     {
@@ -307,7 +307,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array        $parameters An associative array of parameters and their associated values
    * @param string|null  $ns         A parameter namespace
    */
-  public function add(array $parameters, string $ns = null): void
+  public function add(array $parameters, ?string $ns = null): void
   {
     if (!$ns)
     {
@@ -334,7 +334,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    * @param array        $parameters An associative array of parameters and references to their associated values
    * @param string|null  $ns         A parameter namespace
    */
-  public function addByRef(array & $parameters, string $ns = null): void
+  public function addByRef(array & $parameters, ?string $ns = null): void
   {
     if (!$ns)
     {
