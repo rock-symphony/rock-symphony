@@ -176,7 +176,7 @@ class sfWebResponse extends sfResponse
       $options = $options[0];
     } elseif (count($options) > 0 && array_keys($options) === array_keys(array_keys($options))) {
       // Options is a numeric array -- ordered arguments passed as before.
-      // (..., string $expires = null, string $path = '/', string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
+      // (..., ?string $expires = null, string $path = '/', ?string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
 
       // Make sure keys order matches previous function arguments order.
       $options = array_combine(

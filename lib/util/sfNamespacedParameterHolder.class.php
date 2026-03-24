@@ -88,7 +88,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return mixed A parameter value, if the parameter exists, otherwise null
    */
-  public function & get(string $name, $default = null, string $ns = null)
+  public function & get(string $name, $default = null, ?string $ns = null)
   {
     if (!$ns)
     {
@@ -151,7 +151,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array An associative array of parameters
    */
-  public function & getAll(string $ns = null): array
+  public function & getAll(?string $ns = null): array
   {
     if (!$ns)
     {
@@ -232,7 +232,7 @@ class sfNamespacedParameterHolder extends sfParameterHolder
    *
    * @return array|null
    */
-  public function & removeNamespace(string $ns = null): ?array
+  public function & removeNamespace(?string $ns = null): ?array
   {
     if (!$ns)
     {
