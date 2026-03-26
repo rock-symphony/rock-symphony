@@ -1,6 +1,46 @@
 CHANGELOG
 =========
 
+26/03/2026: Version 13.0
+------------------------
+
+* Fixed deprecation warnings on PHP 8.4 
+  ([#76](https://github.com/rock-symphony/rock-symphony/pull/76))
+
+05/08/2025: Version 12.0
+------------------------
+
+See ([#64](https://github.com/rock-symphony/rock-symphony/pull/64))
+
+* Dropped `ArrayAccess` interface from multiple core classes 
+  - from `sfEvent` ([#52](https://github.com/rock-symphony/rock-symphony/pull/52))
+  - from `sfRequest` ([#54](https://github.com/rock-symphony/rock-symphony/pull/54))
+  - from `sfUser` ([#59](https://github.com/rock-symphony/rock-symphony/pull/59))
+  - from `sfContext` ([#61](https://github.com/rock-symphony/rock-symphony/pull/61))
+
+* Dropped `Serializable` interface from:
+  - `sfParameterHolder` ([#55](https://github.com/rock-symphony/rock-symphony/pull/55))
+  - `sfRoute` ([#56](https://github.com/rock-symphony/rock-symphony/pull/56))
+  - `sfValidatorError` ([#57](https://github.com/rock-symphony/rock-symphony/pull/57))
+ 
+* Dropped `Iterator` interface from multiple classes in favor of `IteratorAggregate`
+  ([#58](https://github.com/rock-symphony/rock-symphony/pull/58))
+  
+* Dropped previous PHP8 compatibility quick fixes:
+  - `#[AllowDynamicProperties]` annotations ([#66](https://github.com/rock-symphony/rock-symphony/pull/66))
+  - `#[ReturnTypeWilLChange]` annotations ([#67](https://github.com/rock-symphony/rock-symphony/pull/67))
+
+05/10/2023: Version 11.0
+------------------------
+
+See ([#63](https://github.com/rock-symphony/rock-symphony/pull/63)):
+
+* Changed minimum PHP version requirement to 7.4
+* Allowed PHP 8.x
+* Fixed PHP 8.0 compatibility up to PHP 8.2
+* Dropped `Serializable` interface implementations 
+  in favor of the new magic methods: `__serialize` and `__unserialize`
+
 12/05/2021: Version 10.0
 ------------------
 
