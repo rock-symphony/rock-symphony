@@ -36,7 +36,7 @@ class sfContextMock extends sfContext
     sfToolkit::clearDirectory($this->sessionPath);
   }
 
-  static public function hasInstance(string $name = null): bool
+  static public function hasInstance(?string $name = null): bool
   {
     return true;
   }

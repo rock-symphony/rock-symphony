@@ -45,7 +45,7 @@ class sfContext
    *
    * @throws sfFactoryException
    */
-  static public function createInstance(sfApplicationConfiguration $configuration, string $name = null, string $class = self::class): sfContext
+  static public function createInstance(sfApplicationConfiguration $configuration, ?string $name = null, string $class = self::class): sfContext
   {
     if (null === $name)
     {
@@ -104,7 +104,7 @@ class sfContext
    *
    * @throws sfException
    */
-  static public function getInstance(string $name = null): sfContext
+  static public function getInstance(?string $name = null): sfContext
   {
     if (null === $name)
     {
@@ -127,7 +127,7 @@ class sfContext
    * @return bool true is instanced, otherwise false
    */
 
-  public static function hasInstance(string $name = null): bool
+  public static function hasInstance(?string $name = null): bool
   {
     if (null === $name)
     {

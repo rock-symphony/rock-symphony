@@ -88,7 +88,7 @@ class sfAPCuCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set(string $key, string $data, int $lifetime = null): bool
+  public function set(string $key, string $data, ?int $lifetime = null): bool
   {
     if (!$this->enabled)
     {

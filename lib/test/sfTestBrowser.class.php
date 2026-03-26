@@ -30,7 +30,7 @@ class sfTestBrowser extends sfTestFunctional
    * @param  string|null  $remote    Remote address to spook
    * @param  array        $options   Options for sfBrowser
    */
-  public function __construct(string $hostname = null, string $remote = null, array $options = [])
+  public function __construct(?string $hostname = null, ?string $remote = null, array $options = [])
   {
     $browser = new sfBrowser($hostname, $remote, $options);
 

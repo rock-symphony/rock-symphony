@@ -37,7 +37,7 @@ abstract class sfCommandApplicationTask extends sfTask
    *
    * @param sfCommandApplication $commandApplication A sfCommandApplication instance
    */
-  public function setCommandApplication(sfCommandApplication $commandApplication = null)
+  public function setCommandApplication(?sfCommandApplication $commandApplication = null)
   {
     $this->commandApplication = $commandApplication;
   }

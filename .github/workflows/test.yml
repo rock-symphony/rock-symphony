@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: [ '8.0', '8.1', '8.2' ]
+        php: [ '8.0', '8.1', '8.2', '8.3', '8.4' ]
 
     steps:
       - uses: actions/checkout@master
@@ -18,7 +18,7 @@ jobs:
           coverage: none
 
       - name: Install Dependencies
-        run: composer install
+        run: composer install --no-security-blocking
 
       - name: Check configuration
         run: php data/bin/check_configuration.php

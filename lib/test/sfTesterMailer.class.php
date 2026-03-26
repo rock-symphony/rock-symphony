@@ -44,7 +44,7 @@ class sfTesterMailer extends sfTester
    *
    * @return $this
    */
-  public function hasSent(int $nb = null): self
+  public function hasSent(?int $nb = null): self
   {
     if (null === $nb)
     {

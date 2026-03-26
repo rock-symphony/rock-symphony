@@ -15,7 +15,7 @@
  *    error_reporting: 2056
  *
  * 2. string expression:
- *     error_reporting: (E_ALL | E_STRICT) ^ E_DEPRECATED
+ *     error_reporting: E_ALL ^ E_DEPRECATED
  *
  * @internal Do not use this class in your project. It's internal and can be removed/modified at any time.
  *
@@ -72,7 +72,7 @@ class sfErrorReporting
     $parenthesis = "[()]";
     $space = "\s";
 
-    $regex = "/^ 
+    $regex = "/^
         (?:{$operator}|{$parenthesis}|{$space}|{$level}|{$number})+
         $ /x";
 

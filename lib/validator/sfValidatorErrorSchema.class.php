@@ -61,7 +61,7 @@ class sfValidatorErrorSchema extends sfValidatorError implements ArrayAccess, It
    *
    * @return $this The current error schema instance
    */
-  public function addError(sfValidatorError $error, string $name = null)
+  public function addError(sfValidatorError $error, ?string $name = null)
   {
     if (null === $name)
     {

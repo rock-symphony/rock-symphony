@@ -450,7 +450,7 @@ class sfWebRequest extends sfRequest
    *
    * @return string|null The preferred culture
    */
-  public function getPreferredCulture(array $cultures = null): ?string
+  public function getPreferredCulture(?array $cultures = null): ?string
   {
     $preferredCultures = $this->getLanguages();
 
@@ -828,7 +828,7 @@ class sfWebRequest extends sfRequest
    *
    * @return array  An associative array of files
    */
-  public function getFiles(string $key = null): array
+  public function getFiles(?string $key = null): array
   {
     if (null === $this->fixedFileArray)
     {

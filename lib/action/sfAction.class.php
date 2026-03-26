@@ -70,7 +70,7 @@ abstract class sfAction extends sfComponent
    * @throws sfError404Exception
    *
    */
-  public function forward404(string $message = null): void
+  public function forward404(?string $message = null): void
   {
     throw new sfError404Exception($this->get404Message($message));
   }
@@ -83,7 +83,7 @@ abstract class sfAction extends sfComponent
    *
    * @throws sfError404Exception
    */
-  public function forward404Unless(bool $condition, string $message = null): void
+  public function forward404Unless(bool $condition, ?string $message = null): void
   {
     if (!$condition)
     {
@@ -99,7 +99,7 @@ abstract class sfAction extends sfComponent
    *
    * @throws sfError404Exception
    */
-  public function forward404If(bool $condition, string $message = null): void
+  public function forward404If(bool $condition, ?string $message = null): void
   {
     if ($condition)
     {
@@ -289,7 +289,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string The partial content
    */
-  public function getPartial(string $templateName, array $vars = null): string
+  public function getPartial(string $templateName, ?array $vars = null): string
   {
     $this->getContext()->getConfiguration()->loadHelpers(['Partial']);
 
@@ -312,7 +312,7 @@ abstract class sfAction extends sfComponent
    *
    * @see    getPartial
    */
-  public function renderPartial(string $templateName, array $vars = null): string
+  public function renderPartial(string $templateName, ?array $vars = null): string
   {
     return $this->renderText($this->getPartial($templateName, $vars));
   }
@@ -332,7 +332,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string  The component rendered content
    */
-  public function getComponent(string $moduleName, string $componentName, array $vars = null): string
+  public function getComponent(string $moduleName, string $componentName, ?array $vars = null): string
   {
     $this->getContext()->getConfiguration()->loadHelpers(['Partial']);
 
@@ -356,7 +356,7 @@ abstract class sfAction extends sfComponent
    *
    * @see    getComponent
    */
-  public function renderComponent(string $moduleName, string $componentName, array $vars = null): string
+  public function renderComponent(string $moduleName, string $componentName, ?array $vars = null): string
   {
     return $this->renderText($this->getComponent($moduleName, $componentName, $vars));
   }
@@ -434,7 +434,7 @@ abstract class sfAction extends sfComponent
    * @param string $name    Template name
    * @param string $module  The module (current if null)
    */
-  public function setTemplate(string $name, string $module = null): void
+  public function setTemplate(string $name, ?string $module = null): void
   {
     if (sfConfig::get('sf_logging_enabled'))
     {
@@ -524,7 +524,7 @@ abstract class sfAction extends sfComponent
    *
    * @return string The error message or a default one if null
    */
-  protected function get404Message(string $message = null): string
+  protected function get404Message(?string $message = null): string
   {
     return null === $message ? sprintf('This request has been forwarded to a 404 error page by the action "%s/%s".', $this->getModuleName(), $this->getActionName()) : $message;
   }

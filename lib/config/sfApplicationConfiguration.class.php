@@ -44,7 +44,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    * @param string            $rootDir        The project root directory
    * @param sfEventDispatcher $dispatcher     An event dispatcher
    */
-  public function __construct(string $environment, bool $debug, string $rootDir = null, sfEventDispatcher $dispatcher = null)
+  public function __construct(string $environment, bool $debug, ?string $rootDir = null, ?sfEventDispatcher $dispatcher = null)
   {
     $this->environment = $environment;
     $this->debug       = $debug;
@@ -390,7 +390,7 @@ abstract class sfApplicationConfiguration extends ProjectConfiguration
    *
    * @return string[]  An array of directories
    */
-  public function getHelperDirs(string $moduleName = null): array
+  public function getHelperDirs(?string $moduleName = null): array
   {
     $dirs = array();
 

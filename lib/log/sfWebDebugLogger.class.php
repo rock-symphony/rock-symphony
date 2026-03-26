@@ -93,9 +93,6 @@ class sfWebDebugLogger extends sfVarLogger
     $message = sprintf(' %%s at %s on line %s (%s)', $errfile, $errline, str_replace('%', '%%', $errstr));
     switch ($errno)
     {
-      case E_STRICT:
-        $this->dispatcher->notify(new sfEvent($this, 'application.log', array('priority' => sfLogger::ERR, sprintf($message, 'Strict notice'))));
-        break;
       case E_NOTICE:
         $this->dispatcher->notify(new sfEvent($this, 'application.log', array('priority' => sfLogger::NOTICE, sprintf($message, 'Notice'))));
         break;

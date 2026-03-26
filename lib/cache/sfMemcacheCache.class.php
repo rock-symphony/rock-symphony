@@ -117,7 +117,7 @@ class sfMemcacheCache extends sfCache
    * @see sfCache
    * @inheritdoc
    */
-  public function set(string $key, string $data, int $lifetime = null): bool
+  public function set(string $key, string $data, ?int $lifetime = null): bool
   {
     $lifetime = null === $lifetime ? $this->getOption('lifetime') : $lifetime;
 

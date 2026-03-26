@@ -39,7 +39,7 @@ class sfCommandManager
    * @param sfCommandArgumentSet $argumentSet A sfCommandArgumentSet object
    * @param sfCommandOptionSet   $optionSet   A setOptionSet object
    */
-  public function __construct(sfCommandArgumentSet $argumentSet = null, sfCommandOptionSet $optionSet = null)
+  public function __construct(?sfCommandArgumentSet $argumentSet = null, ?sfCommandOptionSet $optionSet = null)
   {
     if (null === $argumentSet)
     {

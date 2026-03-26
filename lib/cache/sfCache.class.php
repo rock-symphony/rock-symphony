@@ -81,7 +81,7 @@ abstract class sfCache
    *
    * @return Boolean true if no problem
    */
-  abstract public function set(string $key, string $data, int $lifetime = null): bool;
+  abstract public function set(string $key, string $data, ?int $lifetime = null): bool;
 
   /**
    * Removes a content from the cache.

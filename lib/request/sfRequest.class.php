@@ -175,7 +175,7 @@ abstract class sfRequest
    *
    * @return mixed An attribute value
    */
-  public function getAttribute(string $name, string $default = null)
+  public function getAttribute(string $name, ?string $default = null)
   {
     return $this->attributeHolder->get($name, $default);
   }

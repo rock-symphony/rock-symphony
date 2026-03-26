@@ -2,7 +2,7 @@
 
 require_once(__DIR__ . '/../../bootstrap/unit.php');
 
-$t = new lime_test(20);
+$t = new lime_test(21);
 
 $error_reporting = new sfErrorReporting();
 
@@ -20,18 +20,23 @@ $t->is(E_WARNING, $error_reporting->parse('E_WARNING'), 'E_WARNING');
 
 $t->diag('->parse() compiles strings to their values');
 $t->is(E_ERROR | E_WARNING, $error_reporting->parse('E_ERROR | E_WARNING'), 'E_ERROR | E_WARNING');
-$t->is(E_STRICT | E_DEPRECATED, $error_reporting->parse('E_STRICT | E_DEPRECATED'), 'E_STRICT | E_DEPRECATED');
+$t->is(E_NOTICE | E_DEPRECATED, $error_reporting->parse('E_NOTICE | E_DEPRECATED'), 'E_NOTICE | E_DEPRECATED');
 $t->is(E_ERROR & E_WARNING, $error_reporting->parse('E_ERROR & E_WARNING'), 'E_ERROR & E_WARNING');
-$t->is(E_STRICT & E_DEPRECATED, $error_reporting->parse('E_STRICT & E_DEPRECATED'), 'E_STRICT & E_DEPRECATED');
+$t->is(E_NOTICE & E_DEPRECATED, $error_reporting->parse('E_NOTICE & E_DEPRECATED'), 'E_NOTICE & E_DEPRECATED');
 $t->is(
-  (E_ALL | E_STRICT) ^ E_DEPRECATED,
-  $error_reporting->parse('(E_ALL | E_STRICT) ^ E_DEPRECATED'),
-  'E_ALL | E_STRICT ^ E_DEPRECATED'
+  (E_ALL | E_NOTICE) ^ E_DEPRECATED,
+  $error_reporting->parse('(E_ALL | E_NOTICE) ^ E_DEPRECATED'),
+  'E_ALL | E_NOTICE ^ E_DEPRECATED'
 );
 $t->is(
-  (E_ALL & E_STRICT) ^ E_NOTICE,
-  $error_reporting->parse('(E_ALL & E_STRICT) ^ E_NOTICE'),
-  'E_ALL & E_STRICT ^ E_NOTICE'
+  (E_ALL & E_WARNING) ^ E_NOTICE,
+  $error_reporting->parse('(E_ALL & E_WARNING) ^ E_NOTICE'),
+  '(E_ALL & E_WARNING) ^ E_NOTICE'
+);
+$t->is(
+  E_ALL ^ E_NOTICE,
+  $error_reporting->parse('E_ALL ^ E_NOTICE'),
+  'E_ALL ^ E_NOTICE'
 );
 
 $t->diag('->parse() throws InvalidArgumentException for unsupported input');

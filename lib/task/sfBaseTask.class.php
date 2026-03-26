@@ -81,7 +81,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
    *
    * @param sfProjectConfiguration $configuration
    */
-  public function setConfiguration(sfProjectConfiguration $configuration = null)
+  public function setConfiguration(?sfProjectConfiguration $configuration = null)
   {
     $this->configuration = $configuration;
   }

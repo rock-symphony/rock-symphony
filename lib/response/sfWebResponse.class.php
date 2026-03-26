@@ -176,7 +176,7 @@ class sfWebResponse extends sfResponse
       $options = $options[0];
     } elseif (count($options) > 0 && array_keys($options) === array_keys(array_keys($options))) {
       // Options is a numeric array -- ordered arguments passed as before.
-      // (..., string $expires = null, string $path = '/', string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
+      // (..., ?string $expires = null, string $path = '/', ?string $domain = null, bool $secure = false, bool $httponly = false, string $samesite = 'Lax')
 
       // Make sure keys order matches previous function arguments order.
       $options = array_combine(
@@ -199,7 +199,7 @@ class sfWebResponse extends sfResponse
    * @param string $name  HTTP status text
    *
    */
-  public function setStatusCode(string $code, string $name = null): void
+  public function setStatusCode(string $code, ?string $name = null): void
   {
     $this->statusCode = $code;
     $this->statusText = null !== $name ? $name : self::$statusTexts[$code];
@@ -271,7 +271,7 @@ class sfWebResponse extends sfResponse
    *
    * @return string|null
    */
-  public function getHttpHeader(string $name, string $default = null): ?string
+  public function getHttpHeader(string $name, ?string $default = null): ?string
   {
     $name = $this->normalizeHeaderName($name);
 
@@ -477,7 +477,7 @@ class sfWebResponse extends sfResponse
    * @param string $name   HTTP header
    * @param string $value  Value for the http header
    */
-  public function addCacheControlHttpHeader(string $name, string $value = null): void
+  public function addCacheControlHttpHeader(string $name, ?string $value = null): void
   {
     $cacheControl = $this->getHttpHeader('Cache-Control');
     $currentHeaders = array();
