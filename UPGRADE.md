@@ -24,3 +24,5 @@ Upgrade guide
 11. [Upgrade 11.0 to 12.0](./docs/upgrade/Upgrade_11.0_to_12.0.md)
 
 12. [Upgrade 12.0 to 13.0](./docs/upgrade/Upgrade_12.0_to_13.0.md)
+
+13. [Upgrade 13.0 to 14.0](./docs/upgrade/Upgrade_13.0_to_14.0.md)
