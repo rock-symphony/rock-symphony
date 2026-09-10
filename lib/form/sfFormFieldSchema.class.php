@@ -32,7 +32,7 @@ class sfFormFieldSchema extends sfFormField implements ArrayAccess, IteratorAggr
    * @param string             $value  The field value
    * @param sfValidatorError   $error  A sfValidatorError instance
    */
-  public function __construct(sfWidgetFormSchema $widget, ?sfFormField $parent = null, $name, $value, ?sfValidatorError $error = null)
+  public function __construct(sfWidgetFormSchema $widget, ?sfFormField $parent, $name, $value, ?sfValidatorError $error = null)
   {
     parent::__construct($widget, $parent, $name, $value, $error);
 

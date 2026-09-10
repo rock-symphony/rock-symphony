@@ -72,7 +72,7 @@ class sfSessionStorage extends sfStorage
 
     session_name($sessionName);
 
-    if (!(boolean) ini_get('session.use_cookies') && $sessionId = $this->options['session_id'])
+    if (!(bool) ini_get('session.use_cookies') && $sessionId = $this->options['session_id'])
     {
       session_id($sessionId);
     }
@@ -91,7 +91,7 @@ class sfSessionStorage extends sfStorage
       session_cache_limiter($this->options['session_cache_limiter']);
     }
 
-    if ($this->options['auto_start'] && !self::$sessionStarted)
+    if ($this->options['auto_start'] && PHP_SESSION_ACTIVE !== session_status())
     {
       session_start();
       self::$sessionStarted = true;
@@ -181,5 +181,7 @@ class sfSessionStorage extends sfStorage
   {
     // don't need a shutdown procedure because read/write do it in real-time
     session_write_close();
+    self::$sessionStarted = false;
+    self::$sessionIdRegenerated = false;
   }
 }

@@ -240,7 +240,7 @@ class sfMessageSource_SQLite3 extends sfMessageSource_Database
 
     $db = new SQLite3($this->source, SQLITE3_OPEN_READWRITE);
     $result = $db->exec("UPDATE catalogue SET date_modified = {$time} WHERE cat_id = {$cat_id}");
-    $res = (boolean) $db->changes();
+    $res = (bool) $db->changes();
     $db->close();
 
     if ($this->cache)

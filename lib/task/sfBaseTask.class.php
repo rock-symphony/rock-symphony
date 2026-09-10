@@ -364,7 +364,7 @@ abstract class sfBaseTask extends sfCommandApplicationTask
     }
 
     $now = time();
-    $perc = (double)($done / $total);
+    $perc = (float) ($done / $total);
     $bar = floor($perc * $size);
 
     $statusBar = "\r[";

@@ -201,7 +201,7 @@ class sfServiceDefinition
    */
   public function setShared($shared)
   {
-    $this->shared = (Boolean) $shared;
+    $this->shared = (bool) $shared;
 
     return $this;
   }

@@ -86,7 +86,7 @@ class sfValidatorDate extends sfValidatorBase
     // convert timestamp to date number format
     if (is_numeric($value))
     {
-      $cleanTime = (integer) $value;
+      $cleanTime = (int) $value;
       $clean     = date('YmdHis', $cleanTime);
     }
     // convert string to date number format

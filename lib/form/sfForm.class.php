@@ -184,7 +184,7 @@ class sfForm implements ArrayAccess, IteratorAggregate, Countable
    */
   public function hasGlobalErrors()
   {
-    return (Boolean) count($this->getGlobalErrors());
+    return (bool) count($this->getGlobalErrors());
   }
 
   /**

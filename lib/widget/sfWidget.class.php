@@ -304,7 +304,7 @@ abstract class sfWidget
    */
   static public function setXhtml($boolean)
   {
-    self::$xhtml = (boolean) $boolean;
+    self::$xhtml = (bool) $boolean;
   }
 
   /**

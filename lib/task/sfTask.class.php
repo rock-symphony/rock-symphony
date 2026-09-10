@@ -427,7 +427,7 @@ abstract class sfTask
     }
 
     $style = str_replace('_LARGE', '', $style, $count);
-    $large = (Boolean) $count;
+    $large = (bool) $count;
 
     $len = 0;
     $lines = array();
