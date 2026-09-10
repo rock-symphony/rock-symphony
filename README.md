@@ -58,8 +58,7 @@ Roadmap
 Requirements
 ------------
 
-Starting from PHP 5.6.0 and then goes up with every new major version.
-The latest v11.0 release requires PHP 7.4.
+Rock Symphony 14.0 requires PHP 8.0 or newer and supports PHP through 8.5.
 
 Migrating to Rock Symphony
 --------------------------

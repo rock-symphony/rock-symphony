@@ -139,7 +139,7 @@ abstract class sfWidgetForm extends sfWidget
    */
   public function setHidden($boolean)
   {
-    $this->setOption('is_hidden', (boolean) $boolean);
+    $this->setOption('is_hidden', (bool) $boolean);
 
     return $this;
   }

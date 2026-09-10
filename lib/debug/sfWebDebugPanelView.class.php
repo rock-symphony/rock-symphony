@@ -361,7 +361,7 @@ class sfWebDebugPanelView extends sfWebDebugPanel
   {
     if (is_numeric($value))
     {
-      $value = (integer) $value;
+      $value = (int) $value;
     }
 
     return var_export($value, true);

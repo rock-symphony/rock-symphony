@@ -19,7 +19,7 @@ require_once($_test_dir.'/../lib/vendor/lime/lime.php');
 
 sfConfig::set('sf_symfony_lib_dir', realpath($_test_dir.'/../lib'));
 
-$t = new lime_test(8);
+$t = new lime_test(10);
 
 // initialize the storage
 try
@@ -58,4 +58,13 @@ $storage->remove($key);
 $t->is($storage->read($key), null, '->remove() removes data from the storage');
 
 // shutdown the storage
+$storage->shutdown();
+
+$storage = new sfSessionStorage();
+$t->is(session_status(), PHP_SESSION_ACTIVE, '->shutdown() allows a new storage instance to restart the session');
+
+$session_id = session_id();
+$storage->regenerate();
+$t->isnt(session_id(), $session_id, '->shutdown() allows a new storage instance to regenerate the session id');
+
 $storage->shutdown();

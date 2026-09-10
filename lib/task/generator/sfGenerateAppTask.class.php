@@ -130,7 +130,7 @@ EOF;
       'APP_NAME'          => $app,
       'NO_SCRIPT_NAME'    => $firstApp ? 'true' : 'false',
       'CSRF_SECRET'       => Yaml::dump(Yaml::parse($options['csrf-secret']), 0),
-      'ESCAPING_STRATEGY' => Yaml::dump((boolean) Yaml::parse($options['escaping-strategy']), 0),
+      'ESCAPING_STRATEGY' => Yaml::dump((bool) Yaml::parse($options['escaping-strategy']), 0),
       'USE_DATABASE'      => sfConfig::has('sf_orm') ? 'true' : 'false',
       'APP_USER_CLASS'    => $appUserClass,
     ));

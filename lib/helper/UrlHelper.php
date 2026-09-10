@@ -44,7 +44,7 @@ function link_to1($name, $internal_uri, $options = array())
   }
   if (isset($html_options['absolute']))
   {
-    $absolute = (boolean) $html_options['absolute'];
+    $absolute = (bool) $html_options['absolute'];
     unset($html_options['absolute']);
   }
 

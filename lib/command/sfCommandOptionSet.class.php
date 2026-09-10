@@ -70,7 +70,7 @@ class sfCommandOptionSet
     {
       throw new sfCommandException(sprintf('An option named "%s" already exist.', $option->getName()));
     }
-    else if (isset($this->shortcuts[$option->getShortcut()]))
+    else if ($option->getShortcut() && isset($this->shortcuts[$option->getShortcut()]))
     {
       throw new sfCommandException(sprintf('An option with shortcut "%s" already exist.', $option->getShortcut()));
     }

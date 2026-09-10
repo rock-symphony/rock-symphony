@@ -28,7 +28,7 @@ class sfFormatter
       if (function_exists('shell_exec'))
       {
         // this is tricky because "tput cols 2>&1" is not accurate
-        $maxLineSize = ctype_digit(trim(shell_exec('tput cols 2>&1'))) ? (integer) shell_exec('tput cols') : 78;
+        $maxLineSize = ctype_digit(trim(shell_exec('tput cols 2>&1'))) ? (int) shell_exec('tput cols') : 78;
       }
       else
       {

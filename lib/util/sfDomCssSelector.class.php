@@ -432,7 +432,7 @@ class sfDomCssSelector implements Countable, IteratorAggregate
           }
           break;
         case 'nth-child':
-          if ($nodes[$i] === $this->nth($nodes[$i]->parentNode->firstChild, (integer) $selector['parameter']))
+          if ($nodes[$i] === $this->nth($nodes[$i]->parentNode->firstChild, (int) $selector['parameter']))
           {
             $matchingNodes[] = $nodes[$i];
           }
@@ -450,13 +450,13 @@ class sfDomCssSelector implements Countable, IteratorAggregate
           }
           break;
         case 'lt':
-          if ($i < (integer) $selector['parameter'])
+          if ($i < (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }
           break;
         case 'gt':
-          if ($i > (integer) $selector['parameter'])
+          if ($i > (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }
@@ -475,7 +475,7 @@ class sfDomCssSelector implements Countable, IteratorAggregate
           break;
         case 'nth':
         case 'eq':
-          if ($i == (integer) $selector['parameter'])
+          if ($i == (int) $selector['parameter'])
           {
             $matchingNodes[] = $nodes[$i];
           }

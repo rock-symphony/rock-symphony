@@ -25,7 +25,7 @@ $dispatcher = new sfEventDispatcher();
 require_once $rootDir.'/config/ProjectConfiguration.class.php';
 $configuration = new ProjectConfiguration($rootDir, $dispatcher);
 
-$t = new lime_test(11);
+$t = new lime_test(8);
 $task = new TestTask($dispatcher, new sfFormatter());
 
 // ->run()
@@ -54,11 +54,6 @@ class ApplicationTask extends sfBaseTask
   public function getRouting()
   {
     return parent::getRouting();
-  }
-
-  public function getMailer()
-  {
-    return parent::getMailer();
   }
 }
 
@@ -104,11 +99,3 @@ $routing = $task->getRouting();
 $t->ok($routing instanceof sfRouting, '->getRouting() returns an sfPatternRouting');
 $t->is($routing, $task->getRouting(), '->getRouting() returns always the same instance');
 $t->ok($routing->hasRouteName('homepage'), '->getRouting() is correctly configured');
-
-// ->getMailer()
-$t->diag('->getMailer()');
-$mailer = $task->getMailer();
-
-$t->ok($mailer instanceof sfMailer, '->getMailer() returns an sfMailer');
-$t->is($mailer, $task->getMailer(), '->getMailer() returns always the same instance');
-$t->is($mailer->getDeliveryStrategy(), sfMailer::REALTIME, '->getMailer() is correctly configured');

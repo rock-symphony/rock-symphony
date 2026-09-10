@@ -74,7 +74,7 @@ class sfValidatorTime extends sfValidatorBase
     }
     else
     {
-      $clean = (integer) $value;
+      $clean = (int) $value;
     }
 
     return $clean === $this->getEmptyValue() ? $clean : date($this->getOption('time_output'), $clean);

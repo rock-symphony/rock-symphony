@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+10/09/2026: Version 14.0
+------------------------
+
+* Removed the legacy mailer subsystem and the abandoned SwiftMailer dependency
+  ([#77](https://github.com/rock-symphony/rock-symphony/pull/77))
+* Added support for Symfony YAML 6 and 7
+* Added support for PHP 8.5
+* Removed references to the `magic_quotes_runtime` setting, which was removed in PHP 8.0
+
 26/03/2026: Version 13.0
 ------------------------
 
